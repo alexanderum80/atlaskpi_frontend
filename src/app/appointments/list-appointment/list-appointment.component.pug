@@ -1,14 +1,11 @@
 .appointments-container.z-depth-1.bgm-white(layout="column", layout-padding)
     .controls(flex)
         .p-10(layout-xs="column", layout-gt-sm="row", layout-align-center-center, layout-padding)
-            bw-select-picker.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
+            bw-checkbox.m-t-25(flex, flex-xs="100", flex-gt-sm="33",
                                     [fg]="fg",
-                                    field="timezone",
-                                    label="Timezone:",
-                                    [items]="timeZonesList",
-                                    [liveSearch]="true",
-                                    liveSearchPlaceholder="...search...",
-                                    noneSelectedText="Select Timezone")
+                                    field="cancelled",
+                                    label="Show cancellations"
+            )
             bw-select-picker.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
                                     [fg]="fg", 
                                     field="provider",
@@ -64,13 +61,6 @@
                     .text-center.m-t-15(flex)
                         h3 {{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}
 
-        .p-10(layout="row")
-            div(flex-none)
-                bw-checkbox(
-                    [fg]="fg",
-                    field="cancelled",
-                    label="Show cancellations"
-                )
 
     //- calendar info
     .calendar-info(flex)
