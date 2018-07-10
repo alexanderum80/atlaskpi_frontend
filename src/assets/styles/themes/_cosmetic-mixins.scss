@@ -56,11 +56,11 @@
 @mixin background-horizontal($startColor: #3C3C3C, $endColor: #999999) {
     background-color: $startColor;
     background-image: -webkit-gradient(linear, to right top, to left top, from($startColor), to($endColor));
-    background-image: -webkit-linear-gradient(left, $startColor, $endColor);
-    background-image:    -moz-linear-gradient(left, $startColor, $endColor);
-    background-image:     -ms-linear-gradient(left, $startColor, $endColor);
-    background-image:      -o-linear-gradient(left, $startColor, $endColor);
-    background-image:         linear-gradient(left, $startColor, $endColor);
+    background-image: -webkit-linear-gradient(to right, $startColor, $endColor);
+    background-image:    -moz-linear-gradient(to right, $startColor, $endColor);
+    background-image:     -ms-linear-gradient(to right, $startColor, $endColor);
+    background-image:      -o-linear-gradient(to right, $startColor, $endColor);
+    background-image:         linear-gradient(to right, $startColor, $endColor);
     background-image:         linear-gradient(to right, $startColor, $endColor);
     filter:            progid:DXImageTransform.Microsoft.gradient(startColorStr='#{$startColor}', endColorStr='#{$endColor}', gradientType='1');
 }
