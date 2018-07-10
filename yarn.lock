@@ -218,6 +218,14 @@
     semver "^5.3.0"
     semver-intersect "^1.1.2"
 
+"@swimlane/ngx-datatable@^13.0.1":
+  version "13.0.1"
+  resolved "http://npm.atlaskpi.com:9000/@swimlane%2fngx-datatable/-/ngx-datatable-13.0.1.tgz#6e949e19130b2054e2715d30d158751c4fbaa502"
+
+"@types/async@2.0.49":
+  version "2.0.49"
+  resolved "http://npm.atlaskpi.com:9000/@types%2fasync/-/async-2.0.49.tgz#92e33d13f74c895cb9a7f38ba97db8431ed14bc0"
+
 "@types/babel-types@*", "@types/babel-types@^7.0.0":
   version "7.0.4"
   resolved "http://npm.atlaskpi.com:9000/@types%2fbabel-types/-/babel-types-7.0.4.tgz#bfd5b0d0d1ba13e351dff65b6e52783b816826c8"
@@ -227,6 +235,30 @@
   resolved "http://npm.atlaskpi.com:9000/@types%2fbabylon/-/babylon-6.16.3.tgz#c2937813a89fcb5e79a00062fc4a8b143e7237bb"
   dependencies:
     "@types/babel-types" "*"
+
+"@types/change-case@^2.3.1":
+  version "2.3.1"
+  resolved "http://npm.atlaskpi.com:9000/@types%2fchange-case/-/change-case-2.3.1.tgz#dbaf4efb63ad8586ab8819179a790904ccb6a837"
+  dependencies:
+    change-case "*"
+
+"@types/geojson@*":
+  version "7946.0.4"
+  resolved "http://npm.atlaskpi.com:9000/@types%2fgeojson/-/geojson-7946.0.4.tgz#4e049756383c3f055dd8f3d24e63fb543e98eb07"
+
+"@types/graphql@0.12.6":
+  version "0.12.6"
+  resolved "http://npm.atlaskpi.com:9000/@types%2fgraphql/-/graphql-0.12.6.tgz#3d619198585fcabe5f4e1adfb5cf5f3388c66c13"
+
+"@types/highcharts@^5.0.25":
+  version "5.0.25"
+  resolved "http://npm.atlaskpi.com:9000/@types%2fhighcharts/-/highcharts-5.0.25.tgz#a80620cc4f62acb160f27b1f9c0dfa57b3102fb3"
+  dependencies:
+    "@types/geojson" "*"
+
+"@types/intro.js@^2.4.3":
+  version "2.4.3"
+  resolved "http://npm.atlaskpi.com:9000/@types%2fintro.js/-/intro.js-2.4.3.tgz#dabdec09604732e25a321a0040dd8ec34190dff6"
 
 "@types/jasmine@*", "@types/jasmine@^2.6.0", "@types/jasmine@~2.8.6":
   version "2.8.8"
@@ -257,6 +289,16 @@
 "@types/selenium-webdriver@^2.53.35", "@types/selenium-webdriver@~2.53.39":
   version "2.53.43"
   resolved "http://npm.atlaskpi.com:9000/@types%2fselenium-webdriver/-/selenium-webdriver-2.53.43.tgz#2de3d718819bc20165754c4a59afb7e9833f6707"
+
+"@types/validate.js@^0.11.0":
+  version "0.11.0"
+  resolved "http://npm.atlaskpi.com:9000/@types%2fvalidate.js/-/validate.js-0.11.0.tgz#121a83aecfdb848f46a4c796644e0da7cb1633c8"
+  dependencies:
+    validate.js "*"
+
+"@types/zen-observable@^0.5.3":
+  version "0.5.4"
+  resolved "http://npm.atlaskpi.com:9000/@types%2fzen-observable/-/zen-observable-0.5.4.tgz#b863a4191e525206819e008097ebf0fb2e3a1cdc"
 
 "@webassemblyjs/ast@1.4.3":
   version "1.4.3"
@@ -499,6 +541,29 @@ amdefine@>=0.0.4:
   version "1.0.1"
   resolved "http://npm.atlaskpi.com:9000/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
 
+angular-calendar@^0.25.2:
+  version "0.25.2"
+  resolved "http://npm.atlaskpi.com:9000/angular-calendar/-/angular-calendar-0.25.2.tgz#2655dfa6108cd1a35d4429907ff4ab804c135df9"
+  dependencies:
+    angular-draggable-droppable "^3.0.0"
+    angular-resizable-element "^3.0.0"
+    calendar-utils "^0.1.2"
+    date-fns "^1.28.5"
+    positioning "^1.3.1"
+    tslib "^1.9.0"
+
+angular-draggable-droppable@^3.0.0:
+  version "3.0.1"
+  resolved "http://npm.atlaskpi.com:9000/angular-draggable-droppable/-/angular-draggable-droppable-3.0.1.tgz#72df5dab23b0932cdcd57264194cbba1f045dbab"
+  dependencies:
+    tslib "^1.9.0"
+
+angular-resizable-element@^3.0.0:
+  version "3.1.0"
+  resolved "http://npm.atlaskpi.com:9000/angular-resizable-element/-/angular-resizable-element-3.1.0.tgz#ee1b66216f48014a930e8074198cd01de16a346c"
+  dependencies:
+    tslib "^1.9.0"
+
 ansi-html@0.0.7:
   version "0.0.7"
   resolved "http://npm.atlaskpi.com:9000/ansi-html/-/ansi-html-0.0.7.tgz#813584021962a9e9e6fd039f940d12f56ca7859e"
@@ -534,6 +599,68 @@ anymatch@^2.0.0:
   dependencies:
     micromatch "^3.1.4"
     normalize-path "^2.1.1"
+
+apollo-angular-link-http-common@~1.1.0:
+  version "1.1.1"
+  resolved "http://npm.atlaskpi.com:9000/apollo-angular-link-http-common/-/apollo-angular-link-http-common-1.1.1.tgz#fee337e6e30c71699982097b150bfb64877d5614"
+
+apollo-angular-link-http@^1.1.1:
+  version "1.1.1"
+  resolved "http://npm.atlaskpi.com:9000/apollo-angular-link-http/-/apollo-angular-link-http-1.1.1.tgz#0b17fdd0bc5bc55d5c595d1880e2559c29b5db3f"
+  dependencies:
+    apollo-angular-link-http-common "~1.1.0"
+
+apollo-angular@^1.1.2:
+  version "1.1.2"
+  resolved "http://npm.atlaskpi.com:9000/apollo-angular/-/apollo-angular-1.1.2.tgz#7aaad1c996d26b538eea043b825c0ab59fdfe8e5"
+
+apollo-cache-inmemory@^1.2.5:
+  version "1.2.5"
+  resolved "http://npm.atlaskpi.com:9000/apollo-cache-inmemory/-/apollo-cache-inmemory-1.2.5.tgz#b57951947b1db486a60db11c7dcfc6b112e5abe9"
+  dependencies:
+    apollo-cache "^1.1.12"
+    apollo-utilities "^1.0.16"
+    graphql-anywhere "^4.1.14"
+
+apollo-cache@^1.1.12:
+  version "1.1.12"
+  resolved "http://npm.atlaskpi.com:9000/apollo-cache/-/apollo-cache-1.1.12.tgz#070015c9051b2ebb69676beb10466a9c0b259f91"
+  dependencies:
+    apollo-utilities "^1.0.16"
+
+apollo-client@^2.3.5:
+  version "2.3.5"
+  resolved "http://npm.atlaskpi.com:9000/apollo-client/-/apollo-client-2.3.5.tgz#74b62bd7e7bd7030d01c35e2e221ed65a807af23"
+  dependencies:
+    "@types/zen-observable" "^0.5.3"
+    apollo-cache "^1.1.12"
+    apollo-link "^1.0.0"
+    apollo-link-dedup "^1.0.0"
+    apollo-utilities "^1.0.16"
+    symbol-observable "^1.0.2"
+    zen-observable "^0.8.0"
+  optionalDependencies:
+    "@types/async" "2.0.49"
+
+apollo-link-dedup@^1.0.0:
+  version "1.0.9"
+  resolved "http://npm.atlaskpi.com:9000/apollo-link-dedup/-/apollo-link-dedup-1.0.9.tgz#3c4e4af88ef027cbddfdb857c043fd0574051dad"
+  dependencies:
+    apollo-link "^1.2.2"
+
+apollo-link@^1.0.0, apollo-link@^1.2.2:
+  version "1.2.2"
+  resolved "http://npm.atlaskpi.com:9000/apollo-link/-/apollo-link-1.2.2.tgz#54c84199b18ac1af8d63553a68ca389c05217a03"
+  dependencies:
+    "@types/graphql" "0.12.6"
+    apollo-utilities "^1.0.0"
+    zen-observable-ts "^0.8.9"
+
+apollo-utilities@^1.0.0, apollo-utilities@^1.0.16:
+  version "1.0.16"
+  resolved "http://npm.atlaskpi.com:9000/apollo-utilities/-/apollo-utilities-1.0.16.tgz#787310df4c3900a68c0beb3d351c59725a588cdb"
+  dependencies:
+    fast-json-stable-stringify "^2.0.0"
 
 app-root-path@^2.0.1:
   version "2.1.0"
@@ -920,6 +1047,10 @@ boom@2.x.x:
   dependencies:
     hoek "2.x.x"
 
+bootstrap-sass@^3.3.7:
+  version "3.3.7"
+  resolved "http://npm.atlaskpi.com:9000/bootstrap-sass/-/bootstrap-sass-3.3.7.tgz#6596c7ab40f6637393323ab0bc80d064fc630498"
+
 brace-expansion@^1.1.7:
   version "1.1.11"
   resolved "http://npm.atlaskpi.com:9000/brace-expansion/-/brace-expansion-1.1.11.tgz#3c7fcbf529d87226f3d2f52b966ff5271eb441dd"
@@ -1097,11 +1228,15 @@ cache-loader@^1.2.2:
     neo-async "^2.5.0"
     schema-utils "^0.4.2"
 
+calendar-utils@^0.1.2:
+  version "0.1.2"
+  resolved "http://npm.atlaskpi.com:9000/calendar-utils/-/calendar-utils-0.1.2.tgz#79642f1beb49dc0c8719e2b5d480f7730501d74a"
+
 callsite@1.0.0:
   version "1.0.0"
   resolved "http://npm.atlaskpi.com:9000/callsite/-/callsite-1.0.0.tgz#280398e5d664bd74038b6f0905153e6e8af1bc20"
 
-camel-case@3.0.x:
+camel-case@3.0.x, camel-case@^3.0.0:
   version "3.0.0"
   resolved "http://npm.atlaskpi.com:9000/camel-case/-/camel-case-3.0.0.tgz#ca3c3688a4e9cf3a4cda777dc4dcbc713249cf73"
   dependencies:
@@ -1171,6 +1306,29 @@ chalk@~2.2.2:
     ansi-styles "^3.1.0"
     escape-string-regexp "^1.0.5"
     supports-color "^4.0.0"
+
+change-case@*, change-case@^3.0.2:
+  version "3.0.2"
+  resolved "http://npm.atlaskpi.com:9000/change-case/-/change-case-3.0.2.tgz#fd48746cce02f03f0a672577d1d3a8dc2eceb037"
+  dependencies:
+    camel-case "^3.0.0"
+    constant-case "^2.0.0"
+    dot-case "^2.1.0"
+    header-case "^1.0.0"
+    is-lower-case "^1.1.0"
+    is-upper-case "^1.1.0"
+    lower-case "^1.1.1"
+    lower-case-first "^1.0.0"
+    no-case "^2.3.2"
+    param-case "^2.1.0"
+    pascal-case "^2.0.0"
+    path-case "^2.1.0"
+    sentence-case "^2.1.0"
+    snake-case "^2.1.0"
+    swap-case "^1.1.0"
+    title-case "^2.1.0"
+    upper-case "^1.1.1"
+    upper-case-first "^1.1.0"
 
 character-parser@^2.1.1:
   version "2.2.0"
@@ -1425,6 +1583,13 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   version "1.1.0"
   resolved "http://npm.atlaskpi.com:9000/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
 
+constant-case@^2.0.0:
+  version "2.0.0"
+  resolved "http://npm.atlaskpi.com:9000/constant-case/-/constant-case-2.0.0.tgz#4175764d389d3fa9c8ecd29186ed6005243b6a46"
+  dependencies:
+    snake-case "^2.1.0"
+    upper-case "^1.1.1"
+
 constantinople@^3.0.1:
   version "3.1.2"
   resolved "http://npm.atlaskpi.com:9000/constantinople/-/constantinople-3.1.2.tgz#d45ed724f57d3d10500017a7d3a889c1381ae647"
@@ -1636,6 +1801,10 @@ dashdash@^1.12.0:
   resolved "http://npm.atlaskpi.com:9000/dashdash/-/dashdash-1.14.1.tgz#853cfa0f7cbe2fed5de20326b8dd581035f6e2f0"
   dependencies:
     assert-plus "^1.0.0"
+
+date-fns@^1.28.5:
+  version "1.29.0"
+  resolved "http://npm.atlaskpi.com:9000/date-fns/-/date-fns-1.29.0.tgz#12e609cdcb935127311d04d33334e2960a2a54e6"
 
 date-now@^0.1.4:
   version "0.1.4"
@@ -1878,6 +2047,12 @@ domutils@1.5.1:
     dom-serializer "0"
     domelementtype "1"
 
+dot-case@^2.1.0:
+  version "2.1.1"
+  resolved "http://npm.atlaskpi.com:9000/dot-case/-/dot-case-2.1.1.tgz#34dcf37f50a8e93c2b3bca8bb7fb9155c7da3bee"
+  dependencies:
+    no-case "^2.2.0"
+
 duplexify@^3.4.2, duplexify@^3.6.0:
   version "3.6.0"
   resolved "http://npm.atlaskpi.com:9000/duplexify/-/duplexify-3.6.0.tgz#592903f5d80b38d037220541264d69a198fb3410"
@@ -2031,6 +2206,10 @@ es6-iterator@~2.0.3:
     d "1"
     es5-ext "^0.10.35"
     es6-symbol "^3.1.1"
+
+es6-object-assign@^1.1.0:
+  version "1.1.0"
+  resolved "http://npm.atlaskpi.com:9000/es6-object-assign/-/es6-object-assign-1.1.0.tgz#c2c3582656247c39ea107cb1e6652b6f9f24523c"
 
 es6-promise@^4.0.3:
   version "4.2.4"
@@ -2652,6 +2831,22 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6:
   version "4.1.11"
   resolved "http://npm.atlaskpi.com:9000/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
 
+graphql-anywhere@^4.1.14:
+  version "4.1.14"
+  resolved "http://npm.atlaskpi.com:9000/graphql-anywhere/-/graphql-anywhere-4.1.14.tgz#89664cb885faaec1cbc66905351fadae8cc85a04"
+  dependencies:
+    apollo-utilities "^1.0.16"
+
+graphql-tag@^2.9.2:
+  version "2.9.2"
+  resolved "http://npm.atlaskpi.com:9000/graphql-tag/-/graphql-tag-2.9.2.tgz#2f60a5a981375f430bf1e6e95992427dc18af686"
+
+graphql@^0.13.2:
+  version "0.13.2"
+  resolved "http://npm.atlaskpi.com:9000/graphql/-/graphql-0.13.2.tgz#4c740ae3c222823e7004096f832e7b93b2108270"
+  dependencies:
+    iterall "^1.2.1"
+
 handle-thing@^1.2.5:
   version "1.2.5"
   resolved "http://npm.atlaskpi.com:9000/handle-thing/-/handle-thing-1.2.5.tgz#fd7aad726bf1a5fd16dfc29b2f7a6601d27139c4"
@@ -2783,6 +2978,23 @@ hawk@~3.1.3:
 he@1.1.x:
   version "1.1.1"
   resolved "http://npm.atlaskpi.com:9000/he/-/he-1.1.1.tgz#93410fd21b009735151f8868c2f271f3427e23fd"
+
+header-case@^1.0.0:
+  version "1.0.1"
+  resolved "http://npm.atlaskpi.com:9000/header-case/-/header-case-1.0.1.tgz#9535973197c144b09613cd65d317ef19963bd02d"
+  dependencies:
+    no-case "^2.2.0"
+    upper-case "^1.1.3"
+
+highcharts-custom-events@^2.1.4:
+  version "2.1.4"
+  resolved "http://npm.atlaskpi.com:9000/highcharts-custom-events/-/highcharts-custom-events-2.1.4.tgz#dc74e9f61453645ad35e142281a8f824c73cac77"
+  dependencies:
+    highcharts ">=5.0.9"
+
+highcharts@>=5.0.9, highcharts@^6.1.1:
+  version "6.1.1"
+  resolved "http://npm.atlaskpi.com:9000/highcharts/-/highcharts-6.1.1.tgz#49dc34f5e963744ecd7eb87603b6cdaf8304c13a"
 
 hmac-drbg@^1.0.0:
   version "1.0.1"
@@ -3014,6 +3226,10 @@ internal-ip@1.2.0:
   dependencies:
     meow "^3.3.0"
 
+intro.js@^2.9.3:
+  version "2.9.3"
+  resolved "http://npm.atlaskpi.com:9000/intro.js/-/intro.js-2.9.3.tgz#001d9a7bca66d8f4d2d0253c9b3345e9ae4320c3"
+
 invariant@^2.2.2:
   version "2.2.4"
   resolved "http://npm.atlaskpi.com:9000/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
@@ -3173,6 +3389,12 @@ is-glob@^4.0.0:
   dependencies:
     is-extglob "^2.1.1"
 
+is-lower-case@^1.1.0:
+  version "1.1.3"
+  resolved "http://npm.atlaskpi.com:9000/is-lower-case/-/is-lower-case-1.1.3.tgz#7e147be4768dc466db3bfb21cc60b31e6ad69393"
+  dependencies:
+    lower-case "^1.1.0"
+
 is-number@^0.1.1:
   version "0.1.1"
   resolved "http://npm.atlaskpi.com:9000/is-number/-/is-number-0.1.1.tgz#69a7af116963d47206ec9bd9b48a14216f1e3806"
@@ -3244,6 +3466,12 @@ is-symbol@^1.0.1:
 is-typedarray@~1.0.0:
   version "1.0.0"
   resolved "http://npm.atlaskpi.com:9000/is-typedarray/-/is-typedarray-1.0.0.tgz#e479c80858df0c1b11ddda6940f96011fcda4a9a"
+
+is-upper-case@^1.1.0:
+  version "1.1.2"
+  resolved "http://npm.atlaskpi.com:9000/is-upper-case/-/is-upper-case-1.1.2.tgz#8d0b1fa7e7933a1e58483600ec7d9661cbaf756f"
+  dependencies:
+    upper-case "^1.1.0"
 
 is-utf8@^0.2.0:
   version "0.2.1"
@@ -3378,6 +3606,10 @@ istanbul@^0.4.5:
     supports-color "^3.1.0"
     which "^1.1.1"
     wordwrap "^1.0.0"
+
+iterall@^1.2.1:
+  version "1.2.2"
+  resolved "http://npm.atlaskpi.com:9000/iterall/-/iterall-1.2.2.tgz#92d70deb8028e0c39ff3164fdbf4d8b088130cd7"
 
 jasmine-core@~2.8.0:
   version "2.8.0"
@@ -3763,7 +3995,13 @@ loud-rejection@^1.0.0, loud-rejection@^1.6.0:
     currently-unhandled "^0.4.1"
     signal-exit "^3.0.0"
 
-lower-case@^1.1.1:
+lower-case-first@^1.0.0:
+  version "1.0.2"
+  resolved "http://npm.atlaskpi.com:9000/lower-case-first/-/lower-case-first-1.0.2.tgz#e5da7c26f29a7073be02d52bac9980e5922adfa1"
+  dependencies:
+    lower-case "^1.1.2"
+
+lower-case@^1.1.0, lower-case@^1.1.1, lower-case@^1.1.2:
   version "1.1.4"
   resolved "http://npm.atlaskpi.com:9000/lower-case/-/lower-case-1.1.4.tgz#9a2cabd1b9e8e0ae993a4bf7d5875c39c42e8eac"
 
@@ -4004,6 +4242,16 @@ mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0:
   dependencies:
     minimist "0.0.8"
 
+moment-timezone@^0.5.21:
+  version "0.5.21"
+  resolved "http://npm.atlaskpi.com:9000/moment-timezone/-/moment-timezone-0.5.21.tgz#3cba247d84492174dbf71de2a9848fa13207b845"
+  dependencies:
+    moment ">= 2.9.0"
+
+"moment@>= 2.9.0", moment@^2.22.2:
+  version "2.22.2"
+  resolved "http://npm.atlaskpi.com:9000/moment/-/moment-2.22.2.tgz#3c257f9839fc0e93ff53149632239eb90783ff66"
+
 move-concurrently@^1.0.1:
   version "1.0.1"
   resolved "http://npm.atlaskpi.com:9000/move-concurrently/-/move-concurrently-1.0.1.tgz#be2c005fda32e0b29af1f05d7c4b33214c701f92"
@@ -4089,7 +4337,27 @@ ng-cli-pug-loader@^0.1.3:
     jasmine "^2.8.0"
     typescript "^2.5.2"
 
-no-case@^2.2.0:
+ng2-date-picker@^2.10.0:
+  version "2.10.0"
+  resolved "http://npm.atlaskpi.com:9000/ng2-date-picker/-/ng2-date-picker-2.10.0.tgz#b919ade82752a08edf268f84d50e050340abf4f8"
+  dependencies:
+    moment "^2.22.2"
+    tslib "^1.9.0"
+
+ng2-material-dropdown@0.10.0:
+  version "0.10.0"
+  resolved "http://npm.atlaskpi.com:9000/ng2-material-dropdown/-/ng2-material-dropdown-0.10.0.tgz#c524937ac0e9ad833f5dcecd9c98f64aca0519cc"
+  dependencies:
+    tslib "^1.9.0"
+
+ngx-chips@^1.9.2:
+  version "1.9.2"
+  resolved "http://npm.atlaskpi.com:9000/ngx-chips/-/ngx-chips-1.9.2.tgz#5082147d8db6f0b97f09e813590b80b7def0ab6a"
+  dependencies:
+    ng2-material-dropdown "0.10.0"
+    tslib "^1.9.0"
+
+no-case@^2.2.0, no-case@^2.3.2:
   version "2.3.2"
   resolved "http://npm.atlaskpi.com:9000/no-case/-/no-case-2.3.2.tgz#60b813396be39b3f1288a4c1ed5d1e7d28b464ac"
   dependencies:
@@ -4472,7 +4740,7 @@ parallel-transform@^1.1.0:
     inherits "^2.0.3"
     readable-stream "^2.1.5"
 
-param-case@2.1.x:
+param-case@2.1.x, param-case@^2.1.0:
   version "2.1.1"
   resolved "http://npm.atlaskpi.com:9000/param-case/-/param-case-2.1.1.tgz#df94fd8cf6531ecf75e6bef9a0858fbc72be2247"
   dependencies:
@@ -4536,6 +4804,13 @@ parseurl@~1.3.2:
   version "1.3.2"
   resolved "http://npm.atlaskpi.com:9000/parseurl/-/parseurl-1.3.2.tgz#fc289d4ed8993119460c156253262cdc8de65bf3"
 
+pascal-case@^2.0.0:
+  version "2.0.1"
+  resolved "http://npm.atlaskpi.com:9000/pascal-case/-/pascal-case-2.0.1.tgz#2d578d3455f660da65eca18ef95b4e0de912761e"
+  dependencies:
+    camel-case "^3.0.0"
+    upper-case-first "^1.1.0"
+
 pascalcase@^0.1.1:
   version "0.1.1"
   resolved "http://npm.atlaskpi.com:9000/pascalcase/-/pascalcase-0.1.1.tgz#b363e55e8006ca6fe21784d2db22bd15d7917f14"
@@ -4543,6 +4818,12 @@ pascalcase@^0.1.1:
 path-browserify@0.0.0:
   version "0.0.0"
   resolved "http://npm.atlaskpi.com:9000/path-browserify/-/path-browserify-0.0.0.tgz#a0b870729aae214005b7d5032ec2cbbb0fb4451a"
+
+path-case@^2.1.0:
+  version "2.1.1"
+  resolved "http://npm.atlaskpi.com:9000/path-case/-/path-case-2.1.1.tgz#94b8037c372d3fe2906e465bb45e25d226e8eea5"
+  dependencies:
+    no-case "^2.2.0"
 
 path-dirname@^1.0.0:
   version "1.0.2"
@@ -4642,6 +4923,10 @@ portfinder@^1.0.13, portfinder@^1.0.9:
     debug "^2.2.0"
     mkdirp "0.5.x"
 
+positioning@^1.3.1:
+  version "1.4.0"
+  resolved "http://npm.atlaskpi.com:9000/positioning/-/positioning-1.4.0.tgz#4aeca0eed70a50e38766348a89ebec7df1b6a2e7"
+
 posix-character-classes@^0.1.0:
   version "0.1.1"
   resolved "http://npm.atlaskpi.com:9000/posix-character-classes/-/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
@@ -4723,6 +5008,10 @@ process@^0.11.10:
 promise-inflight@^1.0.1:
   version "1.0.1"
   resolved "http://npm.atlaskpi.com:9000/promise-inflight/-/promise-inflight-1.0.1.tgz#98472870bf228132fcbdd868129bad12c3c029e3"
+
+promise-polyfill@^6.0.2:
+  version "6.1.0"
+  resolved "http://npm.atlaskpi.com:9000/promise-polyfill/-/promise-polyfill-6.1.0.tgz#dfa96943ea9c121fca4de9b5868cb39d3472e057"
 
 promise@^7.0.1, promise@^7.1.1:
   version "7.3.1"
@@ -5420,6 +5709,13 @@ send@0.16.2:
     range-parser "~1.2.0"
     statuses "~1.4.0"
 
+sentence-case@^2.1.0:
+  version "2.1.1"
+  resolved "http://npm.atlaskpi.com:9000/sentence-case/-/sentence-case-2.1.1.tgz#1f6e2dda39c168bf92d13f86d4a918933f667ed4"
+  dependencies:
+    no-case "^2.2.0"
+    upper-case-first "^1.1.2"
+
 serialize-javascript@^1.4.0:
   version "1.5.0"
   resolved "http://npm.atlaskpi.com:9000/serialize-javascript/-/serialize-javascript-1.5.0.tgz#1aa336162c88a890ddad5384baebc93a655161fe"
@@ -5525,6 +5821,12 @@ slash@^1.0.0:
 slide@^1.1.3:
   version "1.1.6"
   resolved "http://npm.atlaskpi.com:9000/slide/-/slide-1.1.6.tgz#56eb027d65b4d2dce6cb2e2d32c4d4afc9e1d707"
+
+snake-case@^2.1.0:
+  version "2.1.0"
+  resolved "http://npm.atlaskpi.com:9000/snake-case/-/snake-case-2.1.0.tgz#41bdb1b73f30ec66a04d4e2cad1b76387d4d6d9f"
+  dependencies:
+    no-case "^2.2.0"
 
 snapdragon-node@^2.0.1:
   version "2.1.1"
@@ -5934,7 +6236,25 @@ supports-color@^5.1.0, supports-color@^5.3.0, supports-color@^5.4.0:
   dependencies:
     has-flag "^3.0.0"
 
-symbol-observable@^1.2.0:
+swap-case@^1.1.0:
+  version "1.1.2"
+  resolved "http://npm.atlaskpi.com:9000/swap-case/-/swap-case-1.1.2.tgz#c39203a4587385fad3c850a0bd1bcafa081974e3"
+  dependencies:
+    lower-case "^1.1.1"
+    upper-case "^1.1.1"
+
+sweetalert2@^7.25.0:
+  version "7.25.0"
+  resolved "http://npm.atlaskpi.com:9000/sweetalert2/-/sweetalert2-7.25.0.tgz#b23293ad0e1e92c0bd3fdf85e18a352a66a09071"
+
+sweetalert@^2.1.0:
+  version "2.1.0"
+  resolved "http://npm.atlaskpi.com:9000/sweetalert/-/sweetalert-2.1.0.tgz#d605dec840058fa8ad4a1f7c2c8c194bc72c27fa"
+  dependencies:
+    es6-object-assign "^1.1.0"
+    promise-polyfill "^6.0.2"
+
+symbol-observable@^1.0.2, symbol-observable@^1.2.0:
   version "1.2.0"
   resolved "http://npm.atlaskpi.com:9000/symbol-observable/-/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
 
@@ -5986,6 +6306,13 @@ timers-browserify@^2.0.4:
   resolved "http://npm.atlaskpi.com:9000/timers-browserify/-/timers-browserify-2.0.10.tgz#1d28e3d2aadf1d5a5996c4e9f95601cd053480ae"
   dependencies:
     setimmediate "^1.0.4"
+
+title-case@^2.1.0:
+  version "2.1.1"
+  resolved "http://npm.atlaskpi.com:9000/title-case/-/title-case-2.1.1.tgz#3e127216da58d2bc5becf137ab91dae3a7cd8faa"
+  dependencies:
+    no-case "^2.2.0"
+    upper-case "^1.0.3"
 
 tmp@0.0.24:
   version "0.0.24"
@@ -6243,7 +6570,13 @@ upath@^1.0.5:
   version "1.1.0"
   resolved "http://npm.atlaskpi.com:9000/upath/-/upath-1.1.0.tgz#35256597e46a581db4793d0ce47fa9aebfc9fabd"
 
-upper-case@^1.1.1:
+upper-case-first@^1.1.0, upper-case-first@^1.1.2:
+  version "1.1.2"
+  resolved "http://npm.atlaskpi.com:9000/upper-case-first/-/upper-case-first-1.1.2.tgz#5d79bedcff14419518fd2edb0a0507c9b6859115"
+  dependencies:
+    upper-case "^1.1.1"
+
+upper-case@^1.0.3, upper-case@^1.1.0, upper-case@^1.1.1, upper-case@^1.1.3:
   version "1.1.3"
   resolved "http://npm.atlaskpi.com:9000/upper-case/-/upper-case-1.1.3.tgz#f6b4501c2ec4cdd26ba78be7222961de77621598"
 
@@ -6353,6 +6686,10 @@ validate-npm-package-name@^3.0.0:
   resolved "http://npm.atlaskpi.com:9000/validate-npm-package-name/-/validate-npm-package-name-3.0.0.tgz#5fa912d81eb7d0c74afc140de7317f0ca7df437e"
   dependencies:
     builtins "^1.0.3"
+
+validate.js@*, validate.js@^0.12.0:
+  version "0.12.0"
+  resolved "http://npm.atlaskpi.com:9000/validate.js/-/validate.js-0.12.0.tgz#17f989e37c192ea2f826bbf19bf4e97e6e4be68f"
 
 vary@~1.1.2:
   version "1.1.2"
@@ -6744,6 +7081,16 @@ yeast@0.1.2:
 yn@^2.0.0:
   version "2.0.0"
   resolved "http://npm.atlaskpi.com:9000/yn/-/yn-2.0.0.tgz#e5adabc8acf408f6385fc76495684c88e6af689a"
+
+zen-observable-ts@^0.8.9:
+  version "0.8.9"
+  resolved "http://npm.atlaskpi.com:9000/zen-observable-ts/-/zen-observable-ts-0.8.9.tgz#d3c97af08c0afdca37ebcadf7cc3ee96bda9bab1"
+  dependencies:
+    zen-observable "^0.8.0"
+
+zen-observable@^0.8.0:
+  version "0.8.8"
+  resolved "http://npm.atlaskpi.com:9000/zen-observable/-/zen-observable-0.8.8.tgz#1ea93995bf098754a58215a1e0a7309e5749ec42"
 
 zone.js@^0.8.26:
   version "0.8.26"
