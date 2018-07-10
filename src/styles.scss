@@ -1,0 +1,27 @@
+/* You can add global styles to this file, and also import other style files */
+
+
+/* You can add global styles to this file, and also import other style files */
+
+@import './app/ng-material-components/styles/ng-material-components.scss';
+@import './assets/styles/themes/parent';
+@import './assets/styles/common';
+@import './assets/styles/layout';
+@import './assets/styles/spinner';
+@import './assets/styles/chart-inspector.scss';
+@import './assets/styles/card.scss';
+@import './assets/styles/pages/dashboards';
+@import './assets/styles/widgets';
+@import './assets/styles/calendar';
+@import './assets/styles/form';
+@import './assets/styles/date-time-picker';
+// ngx-datatable
+@import '~@swimlane/ngx-datatable/release/index.css';
+@import '~@swimlane/ngx-datatable/release/assets/icons.css';
+@import './assets/styles/material.css';
+// calendar
+@import '~angular-calendar/css/angular-calendar.css';
+// intro js
+@import '../node_modules/intro.js/introjs.css';
+// themes
+@import './assets/styles/themes/themes';
