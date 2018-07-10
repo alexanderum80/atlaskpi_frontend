@@ -1,0 +1,70 @@
+.simple-kpi-form-container(*ngIf="vm.fg")
+    .bgm-white.z-depth-1.p-40(flex="grow")
+    
+        div(layout="column")
+            
+            //- content
+            div(flex)
+
+                div(layout="row", layout-xs="column")
+
+                    //- left panel
+                    .overflow-auto(flex-initial)
+
+                        //- logo
+                        .m-10
+                            img.kpi-avatar(src='./assets/img/kpis/puzzle-complex.jpg')
+
+                        .m-10.m-b-20
+                            h2.c-black Basic Information:
+                        .m-t-25
+                            bw-text-box(flex-none, [fg]="vm.fg", field="name", label="Name", [required]="true")
+                            .error-message(*ngIf="vm.fg.get('name').errors && !vm.fg.get('name').errors.forbiddenName && (vm.fg.get('name').dirty || vm.fg.get('name').touched)") This field is required
+                            .error-message(*ngIf="vm.fg.get('name').errors && vm.fg.get('name').errors.forbiddenName && (vm.fg.get('name').dirty || vm.fg.get('name').touched)") Duplicated name
+                        .m-t-25
+                            bw-text-box(flex-none, [fg]="vm.fg", field="group", label="Group")
+                        .m-t-25
+                            bw-text-area(flex-none, [fg]="vm.fg",
+                                                        field="description",
+                                                        label="Description",
+                                                        placeholder="Kpi description ...",
+                                                        [autosize]="false")
+                    
+                    //- right panel
+                    .p-20(flex)
+
+                        div(layout="column")
+                            //- header
+                            .title.m-b-15(flex)
+                                h2 Build your complex KPI
+
+                            //- explanation
+                            .m-t-15(flex)
+                                | Type your formula below, use '@' to see the list of kpis. 
+                                | The formulas can include the following symbols "( ) / * + - @"
+
+                            //- expression container
+                            .m-t-35(flex)
+                                | Enter kpi expression
+                                
+                            .m-t-35(flex)
+                                kpi-expression-parser([kpis]="vm.kpis", [dataSources]="vm.dataSources", [expression]="vm.fg.get('expression')")
+
+                            //- filters
+                            div(flex)
+                                //- kpi-filter-list
+                                    //- (
+                                    //-     [filters]="vm.fg.get('filter')",
+                                    //-     [dataSource]="vm.selectedDataSource"
+                                    //- )
+            //- actions
+            div(flex)
+                div(layout="row", layout-align="end center")
+                    //- save
+                    div(flex-initial)
+                        bw-button(title="Save", icon="check", color="blue", (clicked)="save()", [disabled]="!vm.fg.valid || vm.fg.pristine")
+
+                    //- cancel
+                    div(flex-intial)
+                        bw-button(title="Cancel", icon="close", color="black", [simple]="true", (clicked)="cancel()")
+                        

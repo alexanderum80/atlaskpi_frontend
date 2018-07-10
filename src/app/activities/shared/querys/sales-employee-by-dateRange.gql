@@ -1,0 +1,6 @@
+query SalesEmployeeByDateRange($predefinedDateRange: String!){
+  salesEmployeeByDateRange(predefinedDateRange: $predefinedDateRange) {
+    employee
+    total
+  }
+}

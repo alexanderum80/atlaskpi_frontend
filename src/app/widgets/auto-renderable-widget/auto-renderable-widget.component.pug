@@ -1,0 +1,15 @@
+kpi-widget-view(*ngIf="widget", [widget]="widget", [widgetPreview]="true")
+
+.widget.z-depth-1(*ngIf="!widget", class="w-{{widgetBackgroundColor}} {{item.size}}",
+                  layout="column")
+
+    .p-5(layout="column", flex)
+        .p-5(layout="row", layout-align="start start", flex-initial)
+            .widget-title  {{item.name}}
+        
+        div(*ngIf="loading", flex, style="text-align: center")
+            bw-preloader(color="gray")
+        
+        div(*ngIf="placeholderVisible", layout="column", layout-align="center center", flex)
+            bw-button(flex-initial, [color]="previewButtonColor", title="Preview",
+                      icon="eye", (clicked)="previewWidget()")

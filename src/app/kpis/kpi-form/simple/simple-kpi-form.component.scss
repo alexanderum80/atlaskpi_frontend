@@ -1,0 +1,15 @@
+.simple-kpi-form-container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+.duplicatedNameMsg {
+    color: rgb(218, 73, 73);
+    margin-top: -10px;
+}
+
+.is-disabled {
+    filter: alpha(opacity=50);
+    opacity: 0.5;
+    pointer-events: none;
+}

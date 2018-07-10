@@ -1,0 +1,89 @@
+div(layout-gt-sm="row", layout-xs="column")
+  //- flex one
+  div.p-10(flex)
+    div(layout="column", layout-align-sm="center center", layout-align-xs="center")
+      //- one icon
+      div.p-b-10.m-auto(flex-none)
+        p.circle-number 1
+      //- one icon text
+      div(flex)
+        p Select users that should be notified
+
+      //- list users
+      div.custom-scroll-300(flex)
+        div(layout="row", layout-wrap, layout-padding)
+          div(
+            *ngFor="let item of vm.notifyUserArray.controls; let i =index",
+            flex-gt-sm="100",
+            flex-xs="50"
+          )
+            div(*ngIf="vm.alertUsers[i]", layout="row")
+              div.p-t-8(flex-initial)
+                bw-checkbox([fg]="item", field="selected")
+                bw-text-box([hidden]="true", [fg]="item", field="_id", [value]="vm.alertUsers[i]._id")
+
+              div(flex-initial)
+                bw-cropped-image.avatar(
+                  *ngIf="vm.alertUsers[i].profilePictureUrl",
+                  [width]="82",
+                  image="{{vm.alertUsers[i].profilePictureUrl}}",
+                  [border]="true", [borderWidth]="3"
+                )
+                .default-avatar(*ngIf="!vm.alertUsers[i].profilePictureUrl", [ngClass]="{'bgm-grayblue': getUserIntials(vm.alertUsers[i]._id) }")
+                  i(*ngIf="!getUserIntials(vm.alertUsers[i]._id)").zmdi.zmdi-account
+                  span.font-initials(*ngIf="getUserIntials(vm.alertUsers[i]._id)") {{ getUserIntials(vm.alertUsers[i]._id) }}
+              div.p-t-12.p-l-5(flex-initial)
+                p {{ getUserProfileName(vm.alertUsers[i]._id) }}
+
+
+  //- flex two
+  div.p-10(flex)
+    div(layout="column", layout-align-sm="center center", layout-align-xs="center")
+      //- two icon
+      div.p-b-10.m-auto(flex-none)
+        p.circle-number 2
+
+      //- two icon text
+      div(flex)
+        p How frequent you want to send the alert
+      
+      //- list of frequencies
+      div(flex)
+        bw-radio-group(*ngIf="vm.frequencyAlertItems", [fg]="vm.fg", field="frequency")
+          bw-radio(
+            *ngFor="let item of vm.frequencyAlertItems",
+            [label]="item.title",
+            [value]="item.id"
+          )
+
+  //- flex three
+  div.p-10(flex)
+    div(layout="column", layout-align-sm="center center", layout-align-xs="center")
+      //- three icon
+      div.p-b-10.m-auto(flex-none)
+        p.circle-number 3
+
+      //- three icon text
+      div(flex)
+        p How you want to deliver this notification
+      
+      //- email and push notification
+      //- email
+      div(flex)
+        div(layout="row", layout-padding)
+          div.p-r-10.p-t-5(flex-initial)
+            i.zmdi.zmdi-email.c-darkblue
+          div(flex-initial)
+            bw-checkbox([fg]="vm.fg", field="emailNotified")
+          div.p-t-5(flex-initial)
+            p Email
+
+      //- push
+      div(flex)
+        div(layout="row", layout-padding)
+          div.p-r-10.p-t-5(flex-initial)
+            i.zmdi.zmdi-smartphone-iphone.c-darkblue
+          div(flex-initial)
+            bw-checkbox([fg]="vm.fg", field="pushNotification")
+          div.p-t-5(flex-initial)
+            p Mobile App

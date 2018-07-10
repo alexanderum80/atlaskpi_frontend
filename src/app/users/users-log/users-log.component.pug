@@ -1,0 +1,51 @@
+.h-100(layout="column", layout-padding)
+    div(flex, #tableContainer)
+        bw-card([depth]="1", class="h-100 smaller-header")
+            bw-card-header(flex-none, [padded]='false')
+                div(layout="row", layout-padding)
+                    div(flex)
+                        .mainHeading.m-b-0
+                            p
+                                i.zmdi.zmdi-assignment-check.mdc-text-light-blue
+                                | Audit Log
+                    .text-right(flex)
+                        form.search-box-container([formGroup]="fg")
+                            input.search-box(formControlName="search", placeholder="Type to filter...", type="text")
+                
+            bw-card-body
+                ngx-datatable(
+                    #auditTable
+                    *ngIf="userLogs", 
+                    [style.height.px]="tableHeight",
+                    class='material striped expandable',
+                    [rows]="userLogs", 
+                    [columnMode]="'force'",
+                    [headerHeight]="50",
+                    [rowHeight]="50",
+                    [footerHeight]="50",
+                    [scrollbarV]="true")
+                    
+                    ngx-datatable-row-detail([rowHeight]="100", #myDetailRow (toggle)="onDetailToggle($event)")
+                        ng-template(let-row="row", let-expanded="expanded", ngx-datatable-row-detail-template)
+                            .overflow-auto(layout="column", layout-padding)
+                                div(flex) {{row.clientDetails}}
+                                div(flex) {{row.payload | json}}
+                
+                    ngx-datatable-column(
+                        [width]="50",
+                        [resizeable]="false",
+                        [sortable]="false",
+                        [draggable]="false",
+                        [canAutoResize]="false")
+                        ng-template(let-row="row", let-expanded="expanded", ngx-datatable-cell-template)
+                            a(
+                                href="javascript:void();",
+                                [class.datatable-icon-right]="!expanded",
+                                [class.datatable-icon-down]="expanded",
+                                title="Expand/Collapse Row",
+                                (click)="toggleExpandRow(row)")
+                            
+                    ngx-datatable-column(name="timestamp")
+                    ngx-datatable-column(name="accessBy")
+                    ngx-datatable-column(name="event")
+                    ngx-datatable-column(name="ipAddress")

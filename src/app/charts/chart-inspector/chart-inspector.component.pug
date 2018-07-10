@@ -1,0 +1,59 @@
+//- take all the column
+.h-100.m-10(*ngIf="item", layout="column", layout-padding, flex)
+
+    //- close button
+    div(layout="row", layout-align="end start")
+        bw-button.p-10(flex-none, color="gray", icon="close", size="sm", (clicked)="hideInspector()", class="normal", [simple]="true")
+    
+    //- title and close button.
+    div(layout="row", layout-padding, layout-align="start center")
+        i.zmdi.zmdi-chart-donut(flex-none)
+        .chart-title(flex) {{ item?.title }}
+       
+    //- chart details
+    .m-t-20(*ngIf="item", layout="row", layout-align="start start")
+        kpi-chart-item-details(flex, [item]="item")
+
+    //- actions
+    .m-t-20(layout="row", layout-padding, layout-align="center center")
+        bw-button(flex-none, color="blue", title="Clone", icon="copy", [disabled]="!vm.authorizedTo('CloneChartActivity')", [simple]="true", class="normal", (clicked)="clone()")
+        bw-button(flex-none, color="green", title="Edit", icon="edit", [disabled]="!vm.authorizedTo('ModifyChartActivity')", [simple]="true", class="normal", (clicked)="edit()")
+        bw-button(flex-none, color="red", title="Delete", icon="delete", [disabled]="!vm.authorizedTo('DeleteChartActivity')", [simple]="true", class="normal", (clicked)="removeConfirmation()")
+
+//- overlay for actions
+kpi-overlay
+    .h-100(layout="row", layout-padding, layout-align="center center")
+      div(*ngIf="!deleted", layout="column", layout-padding, layout-align="center center")
+          div(flex)
+              bw-button(color="red", title="Delete Chart", class="normal", [rounded]="true", (clicked)="remove()")
+          div(flex)
+              bw-button(color="white", title="Cancel", class="normal", [rounded]="true", (clicked)="cancelRemove()")
+      
+      div(*ngIf="deleted", layout="column", layout-padding, layout-align="center center")
+           i.zmdi.zmdi-check-circle.c-green.animated.fadeInDown.confirm-icon
+
+
+//- no item (posibly deleted)
+.h-100(*ngIf="!item", flex, layout="column")
+    //- close button
+    div(layout="row", layout-align="end start")
+        bw-button.p-10(flex-none, color="gray", icon="close", size="sm", (clicked)="hideInspector()", class="normal", [simple]="true")
+
+    //- title and close button.
+    div(layout="row", layout-padding, layout-align="start center")
+        i.zmdi.zmdi-chart-donut(flex-none)
+        .chart-title(flex) Pick a chart from the left.
+
+bw-modal(#errorModal='', animation="true", keyboard="true", backdrop="true")
+    bw-modal-header
+        h4.modal-title-c-black {{ lastError?.title }}
+
+    bw-modal-body
+        div(layout="row", layout-padding, layout-align="center center")
+            i.zmdi.zmdi-alert-octagon.c-red.big-icon.m-r-20(flex-none)
+            div(layout="column", flex)
+                .m-b-10(flex) {{ lastError?.msg }}
+                div(*ngFor="let item of lastError?.items", flex)
+                    strong {{item}}
+    bw-modal-footer
+        bw-button(color="blue", title="OK", [simple]="true", icon="close", (clicked)="errorModal.close()")

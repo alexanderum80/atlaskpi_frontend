@@ -1,0 +1,8 @@
+query forHelpCenter($username: String!) {
+  UserHelpCenter(username: $username) {
+    _id,
+   preferences {
+      helpCenter
+    }
+  }
+}

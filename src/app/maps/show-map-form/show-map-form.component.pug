@@ -1,0 +1,24 @@
+div(layout="row")
+    div(flex)
+        small.select-picker-placeholder.m-l-20(flex) Date Range
+        bw-select-picker(
+            [fg]="vm.formGroup",
+            leftIcon="calendar-alt",
+            field="dateRange",
+            [liveSearch]="true",
+            liveSearchPlaceholder="... search date ranges ...",
+            [items]="vm.dateRangeItems"
+        )
+div(layout="row")
+    div(*ngIf="isLoading", flex)
+        div.c-green.t-bold(#loading)
+    div(*ngIf="!isLoading", flex)
+        small.select-picker-placeholder.m-l-20(flex) Grouping
+        bw-select-picker(
+            [fg]="vm.formGroup",
+            leftIcon="group-work",
+            field="grouping",
+            [liveSearch]="true",
+            liveSearchPlaceholder="... search for grouping ...",
+            [items]="vm.groupingItems"
+        )

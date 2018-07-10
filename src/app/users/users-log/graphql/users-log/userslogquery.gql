@@ -1,0 +1,11 @@
+ query AccessLogs {
+    accessLogs {
+      timestamp
+      accessBy
+      ipAddress
+      clientDetails
+      event
+      eventType
+      payload
+    } 
+}

@@ -1,0 +1,36 @@
+.dashboard-show.p-relative(layout="column")
+    kpi-spinner(*ngIf="loading")
+    .big-widgets(*ngIf="bigWidgets.length", flex-none, [attr.layout-padding]="!isMobile")
+        div(layout="row", layout-wrap, layout-padding)
+            div(*ngFor="let bWidget of bigWidgets",
+                flex-xs="100",
+                flex-sm="50",
+                flex-gt-sm="50",
+                flex-gt-md="25")
+                kpi-widget-view.pointer-cursor([widget]="bWidget", (done)="onActionClicked($event)")
+
+    .big-widgets(*ngIf="showSocialWidgets", flex-none, [attr.layout-padding]="!isMobile")
+        div(layout="row", layout-wrap, layout-padding)
+            div(*ngFor="let sw of socialWidgets",
+                flex-xs="100",
+                flex-sm="50",
+                flex-gt-sm="50",
+                flex-gt-md="25")
+                kpi-social-widget.pointer-cursor([socialWidget]="sw")
+    
+    kpi-show-map(*ngIf="showMap", [markers]="mapMarkers", [legendColors]="legendColors")
+
+    .big-widgets(*ngIf="smallWidgets.length", flex-none, [attr.layout-padding]="!isMobile")
+        div(layout="row", layout-wrap, layout-padding)
+            div(*ngFor="let sWidget of smallWidgets",
+                flex-xs="50",
+                flex-sm="25",
+                flex-gt-sm="25",
+                flex-gt-md="12-5")
+                kpi-widget-view.pointer-cursor([widget]="sWidget", (done)="onActionClicked($event)")
+
+    .charts.flex(layout="row", layout-wrap, [attr.layout-padding]="!isMobile")
+        .space-charts(*ngFor="let chart of charts", flex-xs="100", flex-gt-xs="100", flex-gt-sm="50", flex-gt-lg="33")
+            kpi-chart-view(*ngIf="viewChart()",[chartData]="chart", [dateRanges]="dateRanges", [isFromDashboard]="isFromDashboard")
+
+kpi-widget-alert(#widgetAlert)

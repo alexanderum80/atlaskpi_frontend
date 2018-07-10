@@ -1,0 +1,21 @@
+.new-kpi-container(layout="row", layout-xs="column", layout-padding)
+
+    div(flex, [ngSwitch]="vm.selectedType")
+    
+        .kpi-selection-container
+            kpi-item-list(
+                *ngSwitchCase="0",
+                [items]="vm.kpiTypes",
+                [allowAdd]="false",
+                [actionItems]="null",
+                xsSize="100",
+                smSize="50",
+                xlSize="50",
+                itemType="standard",
+                (onItemClicked)="itemClicked($event)")
+
+        kpi-simple-kpi-form(*ngSwitchCase="1", #simpleForm)
+        
+        kpi-complex-kpi-form(*ngSwitchCase="2", #complexForm, flex)
+
+        kpi-external-source-kpi-form(*ngSwitchCase="4", #externalSourceForm, flex)

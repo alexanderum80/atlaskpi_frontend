@@ -1,0 +1,20 @@
+mutation RemoveKPI($id: String!) {
+    removeKPI(id: $id) {
+        entity {
+            chart {
+                title
+            }
+            widget {
+                name
+            }
+            complexKPI {
+                name
+            }
+        }
+        errors {
+            field
+            errors
+        }
+        success
+    }
+}

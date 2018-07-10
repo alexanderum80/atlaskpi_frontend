@@ -1,0 +1,8 @@
+query ServerSideConnectors {
+  connectors {
+    _id
+    name
+    active
+    type
+  } 
+}

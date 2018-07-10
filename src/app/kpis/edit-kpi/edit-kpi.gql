@@ -1,0 +1,16 @@
+mutation UpdateKpi($id: String!, $input: UpdateKpiInput!) {
+    updateKpi(id: $id, input: $input){
+
+        entity {
+            name
+            description
+            frequency
+        }
+
+        errors{
+            field
+            errors
+        }
+        success
+    }
+} 

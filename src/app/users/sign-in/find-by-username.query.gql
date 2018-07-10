@@ -1,0 +1,13 @@
+query FindByUserName($username: String) {
+    findByUserName(username: $username) {
+        username
+        profile {
+            agreement {
+                accept
+            }
+        }
+        roles {
+            name
+        }
+    }
+}

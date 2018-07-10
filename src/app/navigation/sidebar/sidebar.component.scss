@@ -1,0 +1,40 @@
+aside {
+    header {
+        a {
+            position: absolute;
+            left: 3px;
+            top: 29px;
+            padding: 5px 10px;
+
+            i {
+                font-size: 24px;
+            }
+        }
+        
+    }
+}
+
+
+@media only screen and (min-width:1199px) {
+    #toggle_sidebar {
+        visibility: hidden;
+    }
+}
+
+@media only screen and (max-width:1199px) {
+    #toggle_sidebar {
+        display: block;
+    }
+}
+
+// aside {
+//     height: 100%; 
+//     width: 0;
+//     position: fixed;
+//     z-index: 3000;
+//     top: 0;
+//     left: 0;
+//     overflow-x: hidden;
+//     padding-top: 60px;
+//     transition: 0.5s;
+// }

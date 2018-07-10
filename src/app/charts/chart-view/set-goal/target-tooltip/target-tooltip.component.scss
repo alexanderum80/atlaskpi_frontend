@@ -1,0 +1,57 @@
+.t-bold {
+    font-weight: bold;
+}
+
+.target-tooltip {
+    position: absolute;
+    top: -490px;
+}
+
+.footer-space {
+    background-color: lightgrey;
+}
+
+p {
+    font-weight: 400;
+}
+
+.b-light-blue {
+    border: 1px solid lightblue;
+}
+
+.target-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: rotate(-90deg);
+    margin-top: -255px;
+    margin-left: 250px;
+    border-width: 15px;
+    border-style: solid;
+    border-color: lightgrey transparent transparent
+}
+
+.align-ng-input {
+    position: relative;
+    top: -18px;
+}
+
+.mobile-tooltip-fontSize {
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+        word-wrap: break-word;
+        width: 16vh;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+        word-wrap: break-word;
+        width: 17vh;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        word-wrap: break-word;
+        width: 20vh;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        word-wrap: break-word;
+        width: 23vh;
+    }
+}

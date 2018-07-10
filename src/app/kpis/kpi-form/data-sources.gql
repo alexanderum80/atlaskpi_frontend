@@ -1,0 +1,15 @@
+query DataSources {
+	dataSources {
+	    name
+        description
+        dataSource
+        externalSource
+        fields {
+            name
+            path
+            type
+            allowGrouping
+        }
+        sources
+	} 
+}

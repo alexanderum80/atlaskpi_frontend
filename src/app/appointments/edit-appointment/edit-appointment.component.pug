@@ -1,0 +1,8 @@
+bw-modal(size="md", [openOnInit]="true", (onClosed)="cancel()", (onDismiss)="cancel()")
+    bw-modal-header
+        h4.modal-title.c-black Update Appointment
+    bw-modal-body
+        kpi-appointment-form(#appointmentForm)
+    bw-modal-footer
+        bw-button(color="blue" title="Save", icon = "check", class="normal", (clicked)="update()")
+        bw-button(title="Cancel", [simple]="true",icon = "cancel", (clicked)="cancel()")

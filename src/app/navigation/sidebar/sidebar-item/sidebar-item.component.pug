@@ -1,0 +1,12 @@
+li
+    a.dashboard-title(*ngIf="isVisible(menuItem)", [ngClass]="{ 'p-l-15': isDashboardChildren(menuItem) }", [class.active]="menuItem.active", [class.parent]="!menuItem.parent", (click)="selectItem($event)")
+      i.zmdi.zmdi.chart-title(aria-hidden='true', class="zmdi-{{menuItem.icon}}")
+      | {{menuItem.title}} 
+      i.zmdi.zmdi-caret-down.down-icon.zmdi-hc-2x(*ngIf="menuItem.active && menuItem.children")
+    ul.sub_menu(*ngIf="menuItem.children", [style.display]="menuItem.active ? 'block' : 'none'")
+      kpi-sidebar-item(*ngFor="let i of menuItem.children", [menuItem]="i", [parent]="menuItem", [childrenVisible]="true")
+      kpi-collapsable(*ngIf="menuItem.title.toLowerCase() === 'dashboards' && vm.countnotvisibles > 0", [enableShadow] = "false", [(collapsed)]="isCollapsedNotVisible", headerText="Show {{vm.countnotvisibles}} more", headerTextExpanded="Show Less", [color]="'white'", [marginBottom]= "'15px'")
+        kpi-sidebar-item(*ngFor="let i of menuItem.children", [menuItem]="i", [parent]="menuItem", [childrenVisible]="false")  
+      kpi-sidebar-item(*ngIf="showListDashboardItem", [menuItem]="vm.list_item", [parent]="menuItem", [childrenVisible]="true")  
+
+        

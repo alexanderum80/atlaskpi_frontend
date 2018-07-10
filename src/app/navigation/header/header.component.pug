@@ -1,0 +1,41 @@
+kpi-new-version(*ngIf="newVersion", (onClose)="newVersion=null")
+
+header#app-header.header(layout="row", layout-align="space-between")
+    div(layout="row", layout-align="space-around")
+        a#menu_link((click)="toggleSidebar()")
+            i.zmdi.zmdi-menu
+        //- ul.breadcrumb.m-b-0.m-0
+        //-   li
+        //-     a(routerLink='/') Home
+        //-   li KPIs
+    img.header-logo.hidden-md.hidden-lg(src='./assets/img/logos/logo.png')
+    .right-header([ngClass]="{'p-event-none': !smartBarPermission()}")
+        kpi-global-search.m-r-15([showSearchPage]="showSearchPage", (closed)="onSearchClosed()")
+    .right-header.hidden-md.hidden-lg.hide-more-vert
+        //- h4.block ATLAS KPI
+        bw-actions([actionItems]="actionItems", (actionClicked)="actionClicked($event)")
+    .right-header-container.hidden-xs(layout="row", layout-align="end center")
+        a.zmdi.zmdi-notifications-none.notifcationIcon(*ngIf="false", data-activates='dropdown1')
+            span.num 2
+        // Dropdown Structure
+        
+        .dropdow-menu
+            bw-cropped-image(*ngIf="avatarAddress", [width]="36", image="{{avatarAddress}}", (click)="toggleProfileDetails()", [borderWidth]="1")
+            .default-avatar(*ngIf="!avatarAddress", (click)="toggleProfileDetails()")
+                i.zmdi.zmdi-account
+        bw-actions([actionItems]="actionItems", [showBig]="true", (actionClicked)="actionClicked($event)")
+        
+.sidebar-calendar-container.z-depth-3(*ngIf="showSidebarCalendar")
+    kpi-sidebar-calendar
+    .close-btn((click)="toggleSidebarCalendar()")
+        i.zmdi.zmdi-close
+
+.dropdown-box(*ngIf="showSlide")
+    kpi-user-avatar-slide([userId]="currentUserId")
+
+kpi-help-center.help-center-container(*ngIf="showHelpCenter", (onClose)="onHelpCenterClosed()")
+
+.sidebar-activities-container.z-depth-3.animated.fadeIn([class.toggled]="showSidebarActivities")
+    kpi-activities
+    .close-btn.z-depth-1((click)="toggleSidebarActivities()")
+        i.zmdi.zmdi-arrow-right

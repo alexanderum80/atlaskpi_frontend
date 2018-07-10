@@ -1,0 +1,7 @@
+aside
+    header
+      a#toggle_sidebar(href="#", (click)="hideSidebar($event)")
+        i.zmdi.zmdi-arrow-left
+      img.mainlogo(src='./assets/img/logos/logo.png', height='35px')
+    ul
+      kpi-sidebar-item(*ngFor="let i of items", [menuItem]="i", [parent]="null")

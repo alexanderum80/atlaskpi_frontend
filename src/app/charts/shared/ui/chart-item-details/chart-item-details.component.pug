@@ -1,0 +1,38 @@
+.smaller-text
+
+    div(flex, layout="row", layout-padding, layout-align="start start")
+        .field-name(flex="35") Description:
+        .p-l-10.field-value(flex) {{ safe(item.subtitle) }}
+
+    div(flex, layout="row", layout-padding, layout-align="start start")
+        .field-name(flex="35") Group:
+        .p-l-10.field-value(flex) {{ safe(item.group) }}
+    
+    //- if it's predefined
+    div(*ngIf="!item.dateRange.custom?.from", flex, layout="row", layout-padding, layout-align="start start")
+        .field-name(flex="35") Date range:
+        .p-l-10.field-value(flex) {{ safe(item.dateRange?.predefined) }}
+    
+    //- if its custom
+    div(*ngIf="item.dateRange.custom?.from", flex, layout="row", layout-padding, layout-align="start start") 
+        div(layout="column", flex)
+            .field-name.p-b-10(flex="100") Date Range:
+            div(layout="row")
+                .field-name.p-l-10(flex="35") From:
+                .p-l-10.field-value(flex) {{ momentify(item.dateRange.custom.from) }}
+            div(layout="row")
+                .field-name.p-l-10(flex="35") To:
+                .p-l-10.field-value(flex) {{ momentify(item.dateRange.custom.to) }}
+                    
+    div(flex, layout="row", layout-padding, layout-align="start start")
+        .field-name(flex="35") Frequency:
+        .p-l-10.field-value(flex) {{ safe(item.frequency) }}
+
+    
+    div(flex, layout="row", layout-padding, layout-align="start start")
+        .field-name(flex="35") Groupings:
+        .p-l-10.field-value(flex) {{ safe(item.groupings) }}
+
+    div(flex, layout="row", layout-padding, layout-align="start start")
+        .field-name(flex="35") xAxisSource:
+        .p-l-10.field-value(flex) {{ safe(item.xAxisSource) }}

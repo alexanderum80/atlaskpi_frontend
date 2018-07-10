@@ -1,0 +1,129 @@
+.p-10(layout-xs="column", layout-gt-sm="row")
+    
+    
+    .m-t-25(flex, layout="column", layout-padding)
+        //- basic info
+        div(flex)
+            bw-text-box(flex-none, [fg]="fg", field="name", label="Name", [required]="true")
+            .duplicatedNameMsg(*ngIf="fg.get('name').errors && fg.get('name').errors.forbiddenName && (fg.get('name').dirty || fg.get('name').touched)") Duplicated name
+        div(flex)
+            bw-text-box(flex-none, [fg]="fg", field="description", label="Description")
+        div(flex)    
+            div(layout="row")
+                .m-r-10(flex="50", layout="column")
+                    small.select-picker-placeholder(flex) Size:
+                    bw-select-picker.m-r-10(flex, [fg]="fg",
+                                                    field="size",
+                                                    [items]="sizeSelectionList",
+                                                    noneSelectedText="Select Size")  
+                div(flex="50", layout="column")
+                    small.select-picker-placeholder(flex) Type:
+                    bw-select-picker(flex, [fg]="fg",
+                                                    field="type",
+                                                    [required]="true",
+                                                    [items]="typeSelectionList",
+                                                    noneSelectedText="Select Type")  
+        div(flex)
+            div(layout="row")
+                .m-r-10(layout="column", flex="50")
+                        small.select-picker-placeholder(flex) Order:
+                        bw-select-picker(flex, [fg]="fg",
+                                        field="order",
+                                        [items]="orderSelectionList",
+                                        noneSelectedText="Select Order") 
+                
+                div(layout="column", flex="50")
+                    small.select-picker-placeholder(flex, [hidden]="!isNumericWidget") Color:
+                    bw-select-picker(flex, [hidden]="!isNumericWidget", [fg]="fg",
+                                            field="color",
+                                            [items]="colorSelectionList",
+                                            noneSelectedText="Select Color")   
+
+
+
+
+        //- numeric details
+        .m-t-10(flex, [hidden]="showNumericWidgetSettings")
+        
+            //- numeric widget info
+            h2.m-b-20 Numeric Widget Settings:
+            
+            div(layout="column")
+                small.select-picker-placeholder(flex) Kpi:
+                bw-select-picker.zIndex-3-9(flex, [fg]="fg",
+                                        field="kpi",
+                                        [items]="kpiSelectionList",
+                                        [liveSearch]="true",
+                                        liveSearchPlaceholder="... search kpis ...",
+                                        noneSelectedText="Select Kpi") 
+            
+            div(layout="row")
+                .m-r-10(layout-column, flex="50")
+                    small.select-picker-placeholder(flex) Daterange:
+                    bw-select-picker(flex, [fg]="fg",
+                                            field="predefinedDateRange",
+                                            [items]="dateRangeSelectionList",
+                                            [liveSearch]="true",
+                                            liveSearchPlaceholder="... search date ranges ...",
+                                            noneSelectedText="Select DateRange") 
+                    div(flex, [hidden]="!isDateRangeCustom")
+                        bw-date-picker(flex-none, [fg]="fg", field="customFrom", label="From", [required]="true", [config]="datePickerConfig")
+                        bw-date-picker(flex-none, [fg]="fg", field="customTo", label="To", [required]="true", [config]="datePickerConfig")
+
+                div(layout-colum, flex="50")
+                    small.select-picker-placeholder(flex) Comparison (Optional):
+                    bw-select-picker(flex, [fg]="fg",
+                                                field="comparison",
+                                                [items]="comparisonSelectionList",
+                                                noneSelectedText="Select Comparison")  
+            div(layout="row")
+                .m-r-10(flex="50", layout="column")
+                    small.select-picker-placeholder(flex) Format:
+                    bw-select-picker(flex, [fg]="fg",
+                                                field="format",
+                                                [items]="valueFormatList",
+                                                noneSelectedText="Select Format") 
+
+                div(flex="50", layout="column", [hidden]="!fg.value.comparison")
+                    small.select-picker-placeholder(flex) Comparison Positive Outcome:
+                    bw-select-picker(flex, [fg]="fg",
+                                                field="comparisonArrowDirection",
+                                                [items]="comparisonArrowDirectionSelectionList",
+                                                noneSelectedText="Select Arrow Direction")  
+
+    
+        
+        
+        
+        
+        //- chart details
+        .m-10(flex, [hidden]="showChartWidgetSettings")
+            //- numeric widget info
+            h2.m-b-10 Chart Widget Settings:
+
+            div(layout="row")
+                bw-select-picker(flex,  [fg]="fg",
+                                        field="chart",
+                                        [liveSearch]="true",
+                                        liveSearchPlaceholder="Search Chart ...",
+                                        [items]="chartSelectionList",
+                                        noneSelectedText="Select Chart") 
+        
+    //- widget preview
+    .widget-preview.p-15(flex)
+        div(layout="column")
+            p.text-center.m-b-15(flex) Widget Preview:
+            
+            div(flex)
+                div(layout="row", layout-align="center center")
+                    div(*ngIf="isWidgetBig", flex-xs="100", flex-gt-sm="50", flex-gt-lg="25")
+                        kpi-widget-view.pointer-cursor([hidden]="!widgetModel", [widget]="widgetModel", [widgetPreview]="true")
+                    div(*ngIf="!isWidgetBig", flex-xs="50", flex-gt-sm="25", flex-gt-lg="12-5")
+                        kpi-widget-view.pointer-cursor([hidden]="!widgetModel", [widget]="widgetModel", [widgetPreview]="true")
+
+            div(flex)
+                .m-t-25.m-b-5(layout="row", layout-padding, layout-align="end end")
+                    bw-button(flex-initial, color="blue", title="Save", icon="floppy",
+                                            class="normal", (clicked)="saveWidget()", [disabled]="!widgetModelValid")
+                    bw-button(flex-initial, color="gray", [simple]="true", title="Cancel", icon="close",
+                                            class="normal", (clicked)="cancel()")

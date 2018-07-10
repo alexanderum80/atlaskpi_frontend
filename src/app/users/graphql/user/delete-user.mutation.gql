@@ -1,0 +1,12 @@
+mutation RemoveUser($id: String!) {
+    removeUser(id: $id) {
+        user {
+            _id
+            username
+        }
+        errors {
+            field
+            errors
+        }
+    }
+}

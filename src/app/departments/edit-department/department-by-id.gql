@@ -1,0 +1,7 @@
+query DepartmentById ($id: String!) {
+  departmentById(id: $id) {
+    _id
+    name
+    manager
+  }
+}

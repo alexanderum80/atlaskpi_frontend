@@ -1,0 +1,47 @@
+div(class="modal")
+  bw-modal(#modal='', class="t-0", [openOnInit]="true", (onClosed)="cancel()", 
+    (onDismiss)="cancel()", cancel="true", left="0")
+    .arrow.hidden-xs
+    bw-modal-header([show-close]="true")
+      .modal-title.c-black WELCOME TO ATLASKPI
+      .size-12 Follow this quick guide to make the most out of your system
+      hr.border-line
+      div(layow="row", layout-align="space-between")
+        div.hidden-xs.m-l-10
+          a.text-center.c-black(*ngIf="!toggled", (click)="toggleOptions()")
+              .zmdi.zmdi-chevron-left
+              .zmdi.zmdi-chevron-left
+          a.text-center.c-black(*ngIf="toggled", (click)="toggleOptions()")
+              .zmdi.zmdi-chevron-right
+              .zmdi.zmdi-chevron-right
+      
+      .container-body.text-center(layout="row", layout-padding)
+        .container-video.bgm-white
+          video.m-l-20.m-r-20(#viedoPlayer, width="100%", height="100%", poster="./assets/video/poster/poster.png", src="{{video[0].url}}",  autoplay, controls, (ended)="next(video[0].id, true)" )
+          
+        .container-titles-sx.hidden-xs([class.toggled]="toggled")
+           kpi-title-video.border-radius-5(#titleVideo, (selectedEvent)="next(0, false)")
+        
+      .m-t-20.hidden-lg.hide-button(layow="row", layout-align="space-between")
+        div.vertical-text
+          a.text-center.c-black(*ngIf="!toggledBottom", (click)="toggledBottoms()")
+            .zmdi.zmdi-chevron-right
+            .zmdi.zmdi-chevron-right
+              
+          a.text-center.c-black(*ngIf="toggledBottom", (click)="toggledBottoms()")
+            .zmdi.zmdi-chevron-left
+            .zmdi.zmdi-chevron-left
+
+      .container-titles-lg.hidden-lg.hide-button([class.display-block]="toggledBottom", [class.display-none]="!toggledBottom")
+        kpi-title-video(#titleVideolg,  (selectedEvent)="next(0, false)")
+
+    div.help-center-footer    
+      bw-modal-footer
+        div(layout="row", layout-padding)
+          div.m-t-8(flex)
+            progress(value="{{percent}}", max="100", class="barra", [attr.progress-value]="percent+percentSymbol")
+          div(flex-initial)
+            bw-button.next-btn(icon="arrow-right", title="NEXT", color="blue", (clicked)="next(video[0].id, true)")
+
+
+          

@@ -1,0 +1,22 @@
+query LocationById($id: String!) {
+    locationById(id: $id) {
+        _id
+        name
+        description
+        tags 
+        businessunits
+        operhours {
+            day
+            from
+            to
+            fromAMPM
+            toAMPM
+        }
+        street
+        city
+        state
+        country
+        zip
+        timezone
+    }
+}

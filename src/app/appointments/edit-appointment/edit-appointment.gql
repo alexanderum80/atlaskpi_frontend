@@ -1,0 +1,18 @@
+mutation UpdateAppointment($id: String!, $input: UpdateAppointmentInput!) {
+    updateAppointment(id: $id, input: $input){
+
+        entity {
+            source
+            fullname
+            reason
+            from
+            to
+        }
+
+        errors{
+            field
+            errors
+        }
+        success
+    }
+} 

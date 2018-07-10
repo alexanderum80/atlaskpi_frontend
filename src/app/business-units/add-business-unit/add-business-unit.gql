@@ -1,0 +1,14 @@
+mutation CreateBusinessUnit($input: CreateBusinessUnitInput!) {
+    createBusinessUnit(input: $input) {
+        entity {
+            name
+            serviceType
+        }
+
+        errors {
+            field
+            errors
+        }
+        success
+    }
+}

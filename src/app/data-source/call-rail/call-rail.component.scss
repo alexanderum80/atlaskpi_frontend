@@ -1,0 +1,41 @@
+@mixin tooltip($bottom) {
+    position: absolute;
+    z-index: 999;
+    background-color: white;
+    padding: 9px 8px 0px 0px;
+    left: 620px;
+    width: 360px;
+    bottom: $bottom;
+}
+
+@mixin tooltip-after($margin-top) {
+    content: "";
+    position: absolute;
+    left: 50%;
+    margin-left: -198px;
+    margin-top: $margin-top;
+    transform: rotate(90deg);
+    border-width: 9px;
+    border-style: solid;
+    border-color: white transparent transparent transparent;
+}
+
+.apiKey-tooltip {
+    @include tooltip(-63px);
+}
+
+.apiKey-tooltip::after {
+    @include tooltip-after(-245px);
+}
+
+.accountId-tooltip {
+    @include tooltip(235px);
+}
+
+.accountId-tooltip::after {
+    @include tooltip-after(-185px);
+}
+
+.modal-header {
+    background-color: lightgray;
+}

@@ -1,0 +1,15 @@
+mutation DeleteSlideshow($_id: String!){
+  deleteSlideshow(_id: $_id){
+    success
+    entity {
+      _id
+      name
+      description
+      charts
+    }
+    errors {
+      field
+      errors
+    }
+  }
+}

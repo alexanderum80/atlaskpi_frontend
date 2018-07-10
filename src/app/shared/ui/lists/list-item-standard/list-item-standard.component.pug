@@ -1,0 +1,22 @@
+.list-item-standard.z-depth-1.bgm-white.m-10.animated([style.cursor]="'pointer'",
+    [class.hover]="hover",
+    (mouseover)="onMouseOver($event)",
+    (mouseout)="onMouseOut($event)")
+
+    ng-container(*ngTemplateOutlet="(standardItemTemplate ? standardItemTemplate : defaultTemplate);context:{ item: item }")
+
+
+ng-template(#defaultTemplate)
+    //- description
+    .actions
+        bw-actions(*ngIf="actionItems", [actionItems]="actionItems", (actionClicked)="onActionClicked($event)")
+
+    .h-100.p-20.text-center(layout="column", layout-align="center center", layout-margin)
+        div(flex)
+            img(*ngIf="item.imagePath", [src]="item.imagePath", [style.height]="'120px'")
+            i.zmdi(*ngIf="item.icon", class="zmdi-{{ item.icon }}")
+        .m-t-20(flex)
+            h2.title 
+                | {{ item.title }}
+            .m-t-10.subtitle(*ngIf="item.subtitle") {{ item.subtitle }}
+            

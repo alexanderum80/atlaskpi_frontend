@@ -1,0 +1,27 @@
+kpi-item-list(
+    title="Dashboards",
+    [items]="vm.dashboardItems",
+    [actionItems]="vm.dashboardActionItems",
+    [itemViewModel]="vm",
+    [addItemActivityName]="'AddDashboardActivity'",
+    [itemListActivityName]="actionActivityNames",
+    [xsSize]="xsSize",
+    itemType="standard",
+    [tableRowTemplate]="tableItem",
+    (onAddActionClicked)="add()",
+    (onItemActionClicked)="actionClicked($event)",
+    (onItemClicked)="editClickedList($event)")
+
+ng-template(#tableItem, let-item="item")
+    //- image
+    div(flex-initial)
+        img(*ngIf="item.imagePath", [src]="item.imagePath", [style.height.px]="55")
+    //- title & subtitle
+    div(flex)
+        .m-t-10.m-l-10 
+            h2.title {{ item.title }}
+            small {{ item.subtitle }}
+    //- extras
+    div(flex)
+        .m-t-10.m-l-10
+            span {{ item.extras.description }}

@@ -1,0 +1,98 @@
+bw-text-box([fg]="fg", field="name", label="Role Name", [required]="true")
+.duplicatedNameMsg.p-b-20(*ngIf="fg.get('name').errors && fg.get('name').errors.forbiddenName && (fg.get('name').dirty || fg.get('name').touched)") Duplicated name
+div(*ngIf="groupPermissions", layout="column")
+  .flex
+    kpi-collapsable([(collapsed)]="Chart", headerText="Charts")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let chart of groupPermissions.Chart", [fg]="fg", field="{{chart._id}}", label="{{chart.action}}")
+    
+    kpi-collapsable(*ngIf="groupPermissions.Widget", [collapsed]="Widget", headerText="Widgets")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let widget of groupPermissions.Widget", [fg]="fg", field="{{widget._id}}", label="{{widget.action}}")
+
+    kpi-collapsable([(collapsed)]="Targets", headerText="Targets")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let target of groupPermissions.Target", [fg]="fg", field="{{target._id}}", label="{{target.action}}")
+
+    kpi-collapsable([(collapsed)]="Milestones", headerText="Milestones")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let milestone of groupPermissions.Milestone", [fg]="fg", field="{{milestone._id}}", label="{{milestone.action}}")
+
+    kpi-collapsable([(collapsed)]="DashboardTab", headerText="Dashboard & Tab")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let dashboard of groupPermissions.Dashboard", [fg]="fg", field="{{dashboard._id}}", label="{{dashboard.action}}")
+    
+    kpi-collapsable([(collapsed)]="Slideshows", headerText="Slideshow")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let slideshow of groupPermissions.Slideshow", [fg]="fg", field="{{slideshow._id}}", label="{{slideshow.action}}")
+
+    kpi-collapsable([(collapsed)]="SmartBar", headerText="Smartbar")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let smartbar of groupPermissions.SmartBar", [fg]="fg", field="{{smartbar._id}}", label="{{smartbar.action}}")
+
+    kpi-collapsable([(collapsed)]="Appointments", headerText="Appointments")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let appointment of groupPermissions.Appointment", [fg]="fg", field="{{appointment._id}}", label="{{appointment.action}}")
+    
+    kpi-collapsable([(collapsed)]="KPI", headerText="KPI")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let kpi of groupPermissions.KPI", [fg]="fg", field="{{kpi._id}}", label="{{kpi.action}}")
+    
+    kpi-collapsable([(collapsed)]="Access", headerText="Access")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let userAccess of groupPermissions.Access", [fg]="fg", field="{{userAccess._id}}", label="{{userAccess.action}}")
+    
+    kpi-collapsable([(collapsed)]="SecurityLog", headerText="Security Log")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let log of groupPermissions.SecurityLog", [fg]="fg", field="{{log._id}}", label="{{log.action}}")
+    
+    kpi-collapsable([(collapsed)]="Data", headerText="Data")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let userData of groupPermissions.Data", [fg]="fg", field="{{userData._id}}", label="{{userData.action}}")
+
+    kpi-collapsable([(collapsed)]="DataSource", headerText="Data Source")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let dsource of groupPermissions.Connector", [fg]="fg", field="{{dsource._id}}", label="{{dsource.action}}")
+
+    kpi-collapsable([(collapsed)]="Billing", headerText="Billing")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let bill of groupPermissions.Billing", [fg]="fg", field="{{bill._id}}", label="{{bill.action}}")
+    
+    kpi-collapsable([(collapsed)]="BusinessUnits", headerText="Business Unit")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let bUnit of groupPermissions.BusinessUnit", [fg]="fg", field="{{bUnit._id}}", label="{{bUnit.action}}")
+    
+    kpi-collapsable([(collapsed)]="Feed", headerText="Feed")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let aFeed of groupPermissions.Feed", [fg]="fg", field="{{aFeed._id}}", label="{{aFeed.action}}")
+    
+    kpi-collapsable([(collapsed)]="DataEntry", headerText="Data Entry")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let dEntry of groupPermissions.DataEntry", [fg]="fg", field="{{dEntry._id}}", label="{{dEntry.action}}")
+
+    kpi-collapsable([(collapsed)]="Users", headerText="Users")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let user of groupPermissions.User", [fg]="fg", field="{{user._id}}", label="{{user.action}}")
+    
+    kpi-collapsable([(collapsed)]="Roles", headerText="Roles")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let role of groupPermissions.Role", [fg]="fg", field="{{role._id}}", label="{{role.action}}")

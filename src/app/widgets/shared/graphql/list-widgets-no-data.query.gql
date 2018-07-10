@@ -1,0 +1,21 @@
+query WidgetListNoData($materialize: Boolean) {
+  listWidgets(materialize: $materialize) {
+    _id
+    order
+    name
+    description
+    type
+    size
+    color
+    chartWidgetAttributes {
+      chart
+    }
+    numericWidgetAttributes {
+      kpi
+      comparison
+      comparisonArrowDirection
+      trending
+      format
+    }
+  } 
+}

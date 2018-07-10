@@ -1,0 +1,11 @@
+query DashboardGQL($id: String!){
+  dashboard(id: $id){
+    _id
+    name
+    description
+    charts
+    widgets
+    owner
+    users
+  }
+}

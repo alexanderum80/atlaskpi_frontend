@@ -1,0 +1,15 @@
+mutation DeleteDashboard($id: String!){
+  deleteDashboard(id: $id) {
+    entity{
+      _id
+      name
+      description
+      charts
+    }
+    success
+    errors {
+      field
+      errors
+    }
+  }
+}

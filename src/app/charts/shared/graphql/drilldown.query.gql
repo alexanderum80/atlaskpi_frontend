@@ -1,0 +1,3 @@
+query DrillDown($id: String, $data: DrillDownData) {
+    drillDown(id: $id, data: $data) 
+}

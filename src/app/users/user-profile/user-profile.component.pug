@@ -1,0 +1,10 @@
+bw-modal#user-profile-container(#userProfileEdit='', size="md", (onClosed)="cancel()", (onDismiss)="cancel()", [openOnInit]="true")
+    bw-modal-header.modal-header(layout="column", layout-align="center center", image="./assets/img/backgrounds/bottom-banel.png")
+      .profile-picture
+        bw-cropped-image([width]="82", image="{{avatarAddress}}", [border]="true", [borderWidth]="3")
+        kpi-file-input([uploadMetadata]="uploadMetadata", (onUploadComplete)="uploadCompleted($event)")
+    bw-modal-body
+      kpi-user-profile-form(#userProfileForm, [model]="user")
+    bw-modal-footer
+        bw-button(color="blue", title="Save", icon = "check", class="normal", (clicked)="save()")
+        bw-button(title="Cancel", [simple]="true",icon = "cancel", (clicked)="cancel()")

@@ -1,0 +1,12 @@
+div(layout="column")
+    .result-details-item-container.z-depth-1.bgm-white.m-10(flex, *ngFor="let item of groupItem.data", (click)="gotoLink(groupItem, item)")
+        .icon(class="bgm-{{groupItem.color}}")
+            i.zmdi(class="zmdi-{{groupItem.icon}}")
+        .content(layout="column")
+            .typeName {{ groupItem.name }}
+            .name 
+                span.key Name: 
+                span.value {{ item.name }}
+            .description 
+                span.key Description: 
+                span.value {{ item.description }}

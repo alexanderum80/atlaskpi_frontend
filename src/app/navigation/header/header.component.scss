@@ -1,0 +1,119 @@
+@import '../../../assets/styles/themes/cosmetic-mixins.scss';
+
+header#app-header {
+    .default-avatar {
+        @include border-radius(90px);
+        border: 1px solid lightgray;
+        width: 45px;
+        height: 45px;
+        padding-left: 10px;
+        padding-top: 2px;
+
+        i {
+            font-size: 38px;
+        }
+    }
+}
+
+.header-logo {
+    height: 40px;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .hide-more-vert {
+        display: none;
+    }
+
+}
+
+@media only screen and (max-width: 600px) {
+    .sidebar-activities-container {
+        width: 100% !important;
+    }
+}
+
+.sidebar-calendar-container {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 290px;
+    background: white;
+    z-index: 2000;
+
+    .close-btn {
+        position: absolute;
+        right: 15px;
+        top: 10px;
+        color: #F15854;
+
+        i.zmdi {
+            font-size: 24px;
+        }
+    }
+}
+
+.help-center-container {
+    position: fixed;
+    top: 65px;
+    z-index: 200;
+}
+
+.activities-icon {
+    font-size: 30px;
+    padding-top: 5px;
+    color: rgb(214, 212, 212);
+}
+
+.activities-icon:hover {
+    cursor: pointer;
+}
+
+.sidebar-activities-container {
+    position: fixed;
+    right: -600px;
+    top: 65px;
+    bottom: 0;
+    width: 600px;
+    background: white;
+    z-index: 2001;
+    transition: all 0.3s ease-in-out;
+    overflow: auto;
+
+    .close-btn {
+        padding: 0 10px;
+        position: absolute;
+        right: 15px;
+        top: 10px;
+        color: black;
+
+        i.zmdi {
+            font-size: 24px;
+        }
+    }
+
+    .close-btn:hover {
+        cursor: pointer;
+    }
+    
+    &.toggled {
+        right: 0;
+    }
+}
+.dropdown-box {
+    position: absolute;
+    right: 180px;
+    top: 65px;
+    right: 25px;
+    width: 320px;
+    animation-delay: 3s;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    transition: all 0.3s ease-in-out;
+    //background-image: url("/assets/img/backgrounds/box.png");
+    z-index: 10;
+    background-repeat: no-repeat;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: lightgrey 1px 1px 30px 2px;
+}

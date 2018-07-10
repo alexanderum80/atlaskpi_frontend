@@ -1,0 +1,15 @@
+mutation Departament($id:String!,  $name : String!, $manager: String) {
+updateDepartment(_id: $id,  name: $name, manager : $manager){
+
+  entity {
+   name
+    
+ }
+
+errors{
+ field
+ errors
+     }
+    success
+  }
+   } 

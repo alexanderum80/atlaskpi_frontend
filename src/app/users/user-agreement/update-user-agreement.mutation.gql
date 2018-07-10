@@ -1,0 +1,11 @@
+mutation UpdateUserAgreement($input: UserAgreementInput) {
+    updateUserAgreement(input: $input) {
+        entity {
+            username
+        }
+        errors {
+            field
+            errors
+        }
+    }
+}

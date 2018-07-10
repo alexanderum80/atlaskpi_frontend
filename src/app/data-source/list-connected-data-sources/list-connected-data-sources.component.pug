@@ -1,0 +1,41 @@
+//- Widget Collection empty
+kpi-no-datasources(*ngIf="serverSideDataSourcesEmpty")
+
+div(layout="row", layout-align="center center", *ngIf="loading")
+    div(flex="45")
+    bw-preloader(flex, color="gray")
+
+div(layout="row", layout-wrap, layout-padding, layout-align="start start")
+    .box(flex-xs="100", flex-gt-xs="33", flex-gt-md="33", flex-gt-lg="33", *ngFor="let dataSource of listConnectedDataSources")
+        bw-card.m-b-5.p-relative([depth]="1")
+            bw-card-body.box([padded]="true")
+                div(layout="column")
+                    div(layout="row", layout-align="center center")
+                        div.social-image([ngStyle]="{'background' :'#ffffff url('+dataSource.getUrlMainImage()+') no-repeat center center' }", style="height:300px;")
+                    .text-center.text-wrap(flex)
+                        h1 {{dataSource.getUserLogin()}}
+                    div(flex-none)
+                        .m-b-10(layout="row", layout-padding, layout-align="center end")
+                            bw-button(flex-none, color="blue", title="Delete", icon="delete",
+                                class="normal", [block]="true", [disabled]="!vm.authorizedTo('DeleteConnectorActivity')",
+                                (clicked)="deleteDataSource(dataSource)")
+    
+    .box(flex-xs="100", flex-gt-xs="33", flex-gt-md="33", flex-gt-lg="33", *ngFor="let dataSource of listServerSideConnectedDataSources")
+        bw-card.m-b-5.p-relative([depth]="1")
+            bw-card-body.box([padded]="true")
+                div(layout="column")
+                    div(layout="row", layout-align="center center")
+                        div.social-image([ngStyle]="{'background' :'#ffffff url('+dataSource.getUrlMainImage()+') no-repeat center center' }", style="height:300px;",
+                                         [ngClass]="{ 'inactive-connector-img': !dataSource.getActive() }" )
+                    .text-center.text-wrap(flex)
+                        h1 {{ dataSource.getName() }}
+                    div(flex-none)
+                        .m-b-10(layout="row", layout-padding, layout-align="center end")
+                            bw-button(*ngIf="dataSource.getActive()", flex-none, color="blue", [title]="dataSource.getDisconnectButtonTitle()", icon="delete",
+                                      class="normal", [disabled]="!vm.authorizedTo('DeleteConnectorActivity')", [block]="true", (clicked)="removeServerSideConnector(dataSource)")
+                            bw-button(*ngIf="!dataSource.getActive()", flex-none, color="red", title="Reconnect", icon="trending-up",
+                                      class="normal", [block]="true", (clicked)="reconnectDataSource(dataSource)")
+
+kpi-add-item(*ngIf="!serverSideDataSourcesEmpty", [itemViewModel]="vm", [addItemActivityName]="'AddConnectorActivity'", (onItemClicked)="addDataSource()")
+
+kpi-call-rail

@@ -1,0 +1,21 @@
+//- icon
+div(layout="row", layout-align="center center")
+    div(flex-initial)
+        i.zmdi.zmdi-notifications-off.c-light-gray.no-data-icon
+
+//- short text
+div(layout="row", layout-align="center center")
+    div(flex-intial)
+        p Looks like you have not created any Alert yet!
+
+//- long text
+div.p-5(layout="row", layout-align="center center")
+    div(flex-intial)
+        p.c-light-gray
+            | Widget alerts will help you get updated information of your business on the go. 
+            | You can received notifications about any of your widgets, at your desired frequency 
+            | and always at convienent times based on your timezone.
+
+div(layout="row", layout-align="center center")
+    div(flex-intial)
+        bw-button(title="+ Start Here", color="blue", [rounded]="true", (clicked)="addAlert()")

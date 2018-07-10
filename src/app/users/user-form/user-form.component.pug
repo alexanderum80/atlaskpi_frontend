@@ -1,0 +1,29 @@
+div(flex)
+  div(layout="column")
+    div(layout-gt-sm="row", layout-xs="column")
+      div(flex)
+        bw-text-box([fg]="fg", field="firstName", leftIcon="account", label="First Name", [required]="true")
+      div(flex)
+        bw-text-box([fg]="fg", field="lastName", leftIcon="account", label="Last Name", [required]="true")
+
+
+    div(layout-gt-sm="row", layout-xs="column")
+      div.p-t-18(flex)
+        bw-email([fg]="fg", field="email", label="Email", [required]="true")
+      div(flex)
+        small.select-picker-placeholder.p-l-15(flex)
+          span.errorMsg
+          |   time zone:
+        bw-select-picker.text-ellip(
+          [fg]="fg",
+          field="timezone",
+          leftIcon="time-interval",
+          [items]="timeZoneList",
+          [liveSearch]="true",
+          liveSearchPlaceholder="...search...",
+          [required]="true"
+        )
+
+div(layout="row", layout-wrap)
+  bw-checkbox.col-sm-4([fg]="fg",
+    *ngFor="let role of roles", field="{{role.name}}", label="{{role.name}}", [disabled]="false")

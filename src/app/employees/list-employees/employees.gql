@@ -1,0 +1,31 @@
+query Employees {
+    employees {
+        _id
+        firstName
+        middleName
+        lastName
+        email
+        primaryNumber
+        dob
+        nationality
+        maritalStatus
+        address {
+            street1
+            street2
+            city
+            state
+            country
+            zipCode
+        }
+        employmentInfo {
+            location
+            bussinessUnit
+            department
+            position
+            startDate
+            typeOfEmployment
+            frequency
+            rate
+        }
+    }
+}

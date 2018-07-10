@@ -1,0 +1,5 @@
+query RoleByName($name: String!) {
+  roleByName(name: $name) {
+    _id
+  }
+}

@@ -1,0 +1,7 @@
+query BusinessUnitById($id: String!) {
+    businessUnitById(id: $id) {
+        _id
+        name
+        serviceType
+    }
+}

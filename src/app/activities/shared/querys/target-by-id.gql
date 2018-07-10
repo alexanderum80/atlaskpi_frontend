@@ -1,0 +1,21 @@
+query FindTargetById($id: String) {
+    findTargetById(id: $id) {
+        _id
+        name
+        datepicker
+        vary
+        amount
+        amountBy
+        period
+        owner
+        target
+        visible
+        notify {
+            users
+            notification
+        }
+        chart
+        stackName
+        nonStackName
+    }
+}

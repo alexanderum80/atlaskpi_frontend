@@ -1,0 +1,33 @@
+button.btn.btn-float.waves-effect.bgm-blue((click)="openListConnectedDataSources()")
+    i.zmdi.zmdi-arrow-back
+
+div(layout="row", layout-wrap, layout-padding, layout-align="start start")
+    .box(flex-xs="100", flex-gt-xs="33", flex-gt-md="33", flex-gt-lg="33", *ngFor="let dataSource of listAllDataSources")
+        bw-card.m-b-5.p-relative([depth]="1")
+            bw-card-body.box([padded]="true")
+                div(layout="column")
+                    div(layout="row", layout-align="center center")
+                        div.social-image([ngStyle]="{'background' :'#ffffff url('+dataSource.getUrlMainImage()+') no-repeat center center' }" , style="height:300px;")
+                    .text-center.text-wrap(flex)
+                        h1.f-x-large {{dataSource.getTitle()}}
+                    div(flex-none)
+                        .m-b-10(layout="row", layout-padding, layout-align="center end")
+                            bw-button(flex-none, color="blue", title="Connect", icon="trending-up",
+                                class="normal", [block]="true", (clicked)="tryConnectDataSource(dataSource)")
+
+    
+    .box(flex-xs="100", flex-gt-xs="33", flex-gt-md="33", flex-gt-lg="33", *ngFor="let dataSource of allServerSideDataSources")
+        bw-card.m-b-5.p-relative([depth]="1")
+            bw-card-body.box([padded]="true")
+                div(layout="column")
+                    div(layout="row", layout-align="center center")
+                        div.social-image([ngStyle]="{'background' :'#ffffff url('+dataSource.getUrlMainImage()+') no-repeat center center' }" , style="height:300px;")
+                    .text-center.text-wrap(flex)
+                        h1.f-x-large {{ dataSource.getName() }}
+                    div(flex-none)
+                        .m-b-10(layout="row", layout-padding, layout-align="center end")
+                            bw-button(flex-none, color="blue", title="Connect", icon="trending-up",
+                                class="normal", [block]="true", (clicked)="tryConnectDataSource(dataSource)")
+
+
+kpi-call-rail

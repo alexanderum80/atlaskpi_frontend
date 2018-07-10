@@ -1,0 +1,20 @@
+@mixin cover-parent {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.overlay {
+    @include cover-parent();
+    background-color: transparent;
+    z-index: 10;
+    .background {
+        @include cover-parent();
+    }
+    .content {
+        height: 100%;
+        background-color: transparent;
+    }
+}

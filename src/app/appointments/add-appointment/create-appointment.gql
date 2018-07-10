@@ -1,0 +1,11 @@
+mutation AddAppointment($input: AppointmentInput) {
+  createAppointment(input: $inpu) {
+     _id
+     from
+     to
+     fullName
+     provider
+     reason
+     state
+  }
+}

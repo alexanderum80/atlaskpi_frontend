@@ -1,0 +1,5 @@
+mutation RemoveConnector($id: String!) {
+  removeConnector(id: $id) {
+    success
+  } 
+}

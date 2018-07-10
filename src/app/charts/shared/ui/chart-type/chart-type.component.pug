@@ -1,0 +1,10 @@
+//- chart type selector
+.charts-selector.m-20(flex-initial)
+    .flex#step-two
+        div(layout="column", layout-align="center")
+            bw-button(flex, color="green", [title]="chartTypeButtonTitle", icon="chart",
+                        class="normal", [block]="true", (clicked)="toggle()")
+        .chart-gallery(*ngIf="showing", layout="column")
+            kpi-chart-gallery.m-b-20
+            
+//- tour-step(selector="step-two", order="2", position="right", title="Chart creation tutorial") First, select the type of chart you want to create.

@@ -1,0 +1,9 @@
+.no-datasources-container.h-100.p-15(layout="column", layout-align="center center")
+  .text-center(flex-initial)
+    i.icon.zmdi.zmdi-grid
+  .text-center(flex)
+    h2 Looks Like there are no datasources yet
+    small Connect to your social profiles and keep track of your metrics
+  .m-t-35(flex)
+    bw-button(color="blue", title="Add Datasource", icon="plus", [disabled]="!vm.authorizedTo('AddConnectorActivity')",
+              [rounded]="true", size="lg", (clicked)="addDataSource()")

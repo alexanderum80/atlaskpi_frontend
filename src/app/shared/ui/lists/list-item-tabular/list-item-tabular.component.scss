@@ -1,0 +1,15 @@
+.list-item-tabular {
+    border-bottom: 1px solid #f6f6f6;
+
+    &:hover {
+        background-color: #f6f6f6;
+    }
+
+    img {
+        height: 55px;
+    }
+
+    .title {
+        font-weight: 400;
+    }
+}

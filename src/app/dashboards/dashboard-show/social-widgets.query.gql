@@ -1,0 +1,13 @@
+query SocialWidgets{
+  listSocialWidgets {
+    connectorId
+    name
+    value
+    valueDescription
+    type
+    historicalData {
+      value
+      period
+    }
+  }
+}

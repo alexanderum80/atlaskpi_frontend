@@ -1,0 +1,34 @@
+mutation EditUserProfile($id: String!, $input: UserProfileInput  ){
+  editUserProfile(id: $id, input: $input) {
+    entity {
+      _id
+      username
+      timestamps
+      profile {
+        firstName
+        lastName
+        middleName
+        sex
+        dob
+        phoneNumber
+        timezone
+      }
+      preferences {
+        notification {
+          general
+          chat
+          email
+          dnd
+        }
+        chart {
+          showTour
+        }
+      }
+    }
+    errors {
+      field
+      errors
+    }
+    success
+  }
+}

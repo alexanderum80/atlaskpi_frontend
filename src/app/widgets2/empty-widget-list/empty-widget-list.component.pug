@@ -1,0 +1,11 @@
+.empty-widget-list
+    div(layout="column", layout-align="center center")
+        div(flex)
+            i.icon.zmdi.zmdi-widgets
+        
+        div(flex)
+            h2(i18n) Looks Like there are no widgets defined yet
+            small(i18n) Widgets let you add numeric values with comparison to previous dates or charts
+        
+        div(flex)
+            bw-button(color="blue", title="Add First Widget", icon="plus", [rounded]="true", size="lg", (clicked)="addWidget()")

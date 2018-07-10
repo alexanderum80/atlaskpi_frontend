@@ -1,0 +1,11 @@
+query TargetByDate($date: String!) {
+  targetByDate(date: $date){
+    _id
+    name
+    datepicker
+    period
+    target
+    stackName
+    nonStackName
+  }
+}

@@ -1,0 +1,11 @@
+query {
+	dateRanges {
+        dateRange {
+            predefined
+        }
+        comparisonItems {
+            key
+            value
+        }
+  }
+}

@@ -1,0 +1,7 @@
+query Permissions {
+    findAllPermissions {
+        _id
+        action
+        subject
+    }
+}

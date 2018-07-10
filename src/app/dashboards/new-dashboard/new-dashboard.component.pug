@@ -1,0 +1,7 @@
+.body
+  .opacity
+     bw-cropped-image([width]="250", image="../assets/img/pages/broken-pie.png", [border]="false")
+  .title Looks Like there are no dashboards defined yet
+  .subtitle.m-b-35 Dashboard are a very easy and quick way to understand how is your business doing
+  bw-button(color="blue", title="+ ADD FIRST DASHBOARD", class="button", [rounded]="true",
+    size="lg", (clicked)="onAddDashboard()")

@@ -1,0 +1,29 @@
+query SearchAppointments($criteria: SearchAppointmentCriteriaInput) {
+   searchAppointments(criteria: $criteria) {
+     _id
+     source
+     reason
+     comments
+     from
+     to
+     duration
+     cancelled
+     customer {
+       externalId
+       fullname
+     }
+     location {
+       externalId
+       name
+     }
+     provider {
+       externalId
+       name
+     }
+     reason
+     event {
+       color
+       name
+     }
+  }
+}

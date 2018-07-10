@@ -1,0 +1,11 @@
+mutation ($input: ChartAttributesInput!) {
+    createChart(input: $input) {
+        entity {
+            _id
+        }
+        errors {
+            field
+            errors
+        }
+    }
+}

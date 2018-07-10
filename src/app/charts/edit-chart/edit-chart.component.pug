@@ -1,0 +1,7 @@
+.z-depth-1.bgm-white.m-10.p-10(layout="column", layout-padding)
+    div(layout="row", layout-align="center center", *ngIf="loading")
+        div(flex="45")
+        bw-preloader(flex, color="gray")
+    div(flex)
+        kpi-chart-form.animated.fadeIn(*ngIf="chart && !loading", [fg]="fg", [chartModel]="chartModel", [chartId]="id",
+                                         (result)="onChartFormEvent($event)")

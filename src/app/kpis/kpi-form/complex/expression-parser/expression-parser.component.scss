@@ -1,0 +1,55 @@
+@import '../../../../../assets/styles/_declaration';
+
+%selected {
+    color: white;
+    background-color: $formButton;
+}
+
+.expression-parser-container {
+    padding-right: 5px;
+    border-bottom: 1px solid lightgray;
+    
+    .content {
+        border: 0;
+        margin: 3px;
+    }
+
+    textarea[type=text]:focus:not([readonly]) {
+        border-bottom: none;
+    }
+
+    textarea {
+        width: 100%;
+    }
+
+    .suggestions-container {
+        margin-top: 6px;
+        overflow: auto;
+
+        .suggestion-group {
+            .group-name {
+                padding: 8px;
+                text-align: center;
+                background-color: #efefef;
+            }
+
+            .suggestion {
+                cursor: pointer;
+    
+                &:hover, &.selected {
+                    @extend %selected;
+                }
+                
+                .name {
+                    font-size: 14px;
+                    font-weight: 400;
+                }
+                .description {
+                    font-size: 10px;
+                    font-weight: 100;
+                }
+            }
+        }
+
+    }
+}

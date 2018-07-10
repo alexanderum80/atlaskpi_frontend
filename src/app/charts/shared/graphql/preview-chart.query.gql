@@ -1,0 +1,3 @@
+query ($input: ChartAttributesInput!) {
+    previewChart(input: $input) 
+}

@@ -1,0 +1,28 @@
+mutation UpdateLocation($id:String!, $input: LocationInput){
+  updateLocation(id: $id, input:$input) {
+    entity {
+        _id
+        name
+        description
+        tags
+        businessunits
+        operhours {
+            day
+            from
+            to
+            fromAMPM
+            toAMPM
+        }
+        street
+        city
+        state
+        country
+        zip
+        timezone
+    }
+    errors {
+      field
+    }
+    success
+  }
+}

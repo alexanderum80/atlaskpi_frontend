@@ -1,0 +1,9 @@
+@import '../../../../../assets/styles/_declaration';
+.no-data-message {
+    font-family: cursive;
+    position: relative;
+    top: -100px;
+    display: block;
+    color: $lightGray;
+    @include bold();
+}

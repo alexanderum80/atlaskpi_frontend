@@ -1,0 +1,10 @@
+query AppointmentById($id: String!) {
+    appointmentById(id: $id) {
+        _id
+        source
+        fullname
+        reason
+        from
+        to
+    }
+}

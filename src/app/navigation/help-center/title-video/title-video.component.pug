@@ -1,0 +1,21 @@
+.title-video-container.bgm-white(layout="column", layout-padding)
+    div#header-videos(flex)
+        .header-title.m-10.c-black Videos in this TUTORIAL
+    div(flex)
+      .basic-title(layout="row")
+        .m-t-10.m-r-10.zmdi.zmdi-chevron-up.c-black
+        .m-t-10.c-black Basic
+      .h-100.p-b-10.overflow-auto
+        .m-l-20.m-t-10.text-left(*ngFor="let item of items", layout="row")
+          .zmdi.zmdi-youtube-play.m-l-20.c-black(
+            [ngClass]="{'c-black': !item.selected, 'c-blue': item.selected}",
+            [class.selected]="item.selected",
+            [class.unselected]="!item.selected"
+          ) 
+          .m-l-10(
+            [ngClass]="{'c-black': !item.selected, 'c-blue': item.selected}",
+            [class.selected]="item.selected",
+            [class.unselected]="!item.selected",
+            (click)="selectItem(item)"
+          )
+            | {{item.title}}

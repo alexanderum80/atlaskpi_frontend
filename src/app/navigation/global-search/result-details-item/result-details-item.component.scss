@@ -1,0 +1,54 @@
+@import "../../../../assets/styles/_declaration";
+@import "../../../../assets/styles/themes/_cosmetic-mixins";
+
+.result-details-item-container {
+    position: relative;
+    // width: 250px;
+    padding: 5px;
+    @include border-radius(5px);
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    .icon {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        height: 40px;
+        width: 40px;
+        padding-left: 10px;
+        padding-top: 8px; 
+        color: white;
+        border-radius: 23px;
+
+        i {
+            font-size: 25px;
+        }
+    }
+
+    .content {
+        padding-left: 50px;
+        font-size: 15px;
+        padding-bottom: 10px;
+    
+        .typeName {
+            padding: 10px 5px;
+            font-weight: bold;
+        }
+
+        .name {
+            padding: 0 5px;
+        }
+
+        .description {
+            padding: 2px 5px;
+        }
+
+        .key { 
+            font-size: 12px; 
+            font-weight: bold; 
+            color: $blueBorderColor;
+        }
+    }
+}

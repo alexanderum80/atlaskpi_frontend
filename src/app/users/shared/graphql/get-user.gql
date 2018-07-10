@@ -1,0 +1,17 @@
+query User($id: String!) {
+            User(id: $id) {
+            user {
+                _id
+                profile {
+                    firstName
+                    middleName
+                    lastName
+                }
+                roles
+            }
+            errors {
+                field
+                errors
+            }
+        }
+}

@@ -1,0 +1,27 @@
+form#login-form(flex, [formGroup]="fg", (ngSubmit)="signIn($event)")
+    .sign-in-container.h-100(layout="column", layout-align="center center", [class.mobile]="mobile")
+        //-logo
+        div(flex)
+            img.m-25.logo(src='/assets/img/logos/logo.png')
+        
+        //-company
+        .m-15(*ngIf="requireCompanyName", flex-none)
+            bw-text-box([fg]="fg", required, field="host", label="Company Name", leftIcon="home", [value]="companyInfo.subdomain")
+        //-email
+        .m-15(flex-none)
+            bw-email([fg]="fg", required, field="username", label="Email Address", [value]="companyInfo.email")
+        //-password
+        .m-15(flex-none)
+            bw-password([fg]="fg", field="password", label="Password")
+        //-action
+        .m-t-15(flex-none)
+            bw-button#sign-in(color="blue", title="SIGN IN", class="normal", [rounded]="true", (clicked)="signIn($event)",
+                        [disabled]="!canSignIn", type="submit" )
+        //-link to signup
+        .m-t-15(flex-none)
+            a(href="#", (click)="goToSignup($event)") I do not have an account
+        .m-t-15(flex-none)
+            a(href="#", (click)="forgotPassword($event)") Forgot Password
+        //-auth error message
+        .m-t-15.text-center(flex-none, [hidden]="!authError")
+            #invalid-credentials.error-message.c-red.animated([ngClass]="{'shake': authError}") {{authErrorMessage}}

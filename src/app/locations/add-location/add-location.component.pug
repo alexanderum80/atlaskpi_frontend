@@ -1,0 +1,8 @@
+bw-modal(size="lg", [openOnInit]="true", (onClosed)="cancel()", (onDismiss)="cancel()")
+    bw-modal-header
+        h4.modal-title.c-black.text-center Add Location
+    bw-modal-body
+        kpi-location-form(adding="true", #locationForm)
+    bw-modal-footer
+        bw-button(color="blue", title="Save", icon = "save", class="normal", (clicked)="save()",[disabled]="!_form.vm.valid")
+        bw-button(title="Cancel", [simple]="true",icon = "cancel", (clicked)="cancel()")

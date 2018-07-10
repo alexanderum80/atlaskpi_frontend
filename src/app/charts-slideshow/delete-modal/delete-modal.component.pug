@@ -1,0 +1,10 @@
+bw-modal(#kpiModal='', animation="true", keyboard="true", backdrop="true", size="lg",
+         (onClosed)="cancel()", (onDismiss)="cancel()")
+  bw-modal-header
+    h4.modal-title.c-black {{headerText}}
+  bw-modal-body
+    div(flex)
+      //-kpi-kpi-form(#kpiFormComponent='', [fg]="fg")  
+  bw-modal-footer
+    bw-button(color="blue", title="Save", class="normal", (clicked)="save()")
+    bw-button(title="Cancel", [simple]="true", icon="close", (clicked)="cancel()")

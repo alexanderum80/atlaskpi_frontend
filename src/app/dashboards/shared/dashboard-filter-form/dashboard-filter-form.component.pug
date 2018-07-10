@@ -1,0 +1,28 @@
+.filter-form-container(layout="row")
+    div(flex, layout="column", layout-padding)
+        .users(layout="row")
+            .p-r-15.zmdi.zmdi-accounts
+            .accessLevels-header Select Users
+        div.p-l-30(flex="100", layout="row") 
+            bw-select-picker.text-ellip.w-100([fg]="accessLevel",
+                        field="users",
+                        [items]="usersList",
+                        [multiple]="true",
+                        valueSeparator = ',',
+                        [liveSearch]="true",
+                        liveSearchPlaceholder="...search...",
+                        noneSelectedText="NOTHING SELECTED")
+
+    div(flex, layout="column", layout-padding)
+        .permitType(layout="row")
+            .p-r-15.zmdi.zmdi-badge-check
+            .accessLevels-header Permit Types
+        div.p-l-30(flex="100", layout="row") 
+            bw-select-picker.text-ellip.w-100([fg]="accessLevel",
+                        field="accessTypes",
+                        [items]="accessTypesList",
+                        [multiple]="true",
+                        valueSeparator = ',',
+                        [liveSearch]="true",
+                        liveSearchPlaceholder="...search...",
+                        noneSelectedText="NOTHING SELECTED")

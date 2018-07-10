@@ -1,0 +1,86 @@
+@import '../../../assets/styles/themes/_cosmetic-mixins';
+
+$vertical-spacing: 30px;
+
+.widget {
+
+    &.big {
+        min-height: 165px;
+        max-height: 165px;
+    }
+
+    &.small {
+        min-height: 150px;
+        max-height: 150px;
+    }
+    
+
+    .description-button {
+        position: absolute;
+        z-index: 20;
+        right: 5px;
+        top: 5px;
+    }
+    
+    .widget-title {
+        text-align: left;
+        margin-left: 5px;
+        margin-top: 7px;
+        font-size: 12px;
+        font-weight: bold;
+    
+        overflow: hidden;
+        width:80%;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+    }
+    
+    .widget-value {
+        margin-top: $vertical-spacing;
+        font-size: 1.8em;
+        font-weight: bold;
+    }
+
+    &.small {
+        .widget-value {
+            margin-top: $vertical-spacing;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+    }
+    
+    .widget-comparison-value {
+        font-size: 0.9em;
+        margin-bottom: $vertical-spacing;
+    }
+    
+    .widget-description {
+        background-color: rgba(0, 0, 0, 0.9);
+        color: white;
+        position: absolute;
+        bottom: 0;
+        top: 0;
+        display: block;
+        text-align: center;
+        width: 100%;
+        padding: 15px;
+    }
+    
+    .arrow-icon {
+        margin-top: $vertical-spacing;
+        font-size: 42px !important;
+        font-weight: bold;
+        margin-left: 5px;
+    }
+    
+    &.small {
+        .arrow-icon {
+            margin-top: $vertical-spacing;
+            font-size: 28px !important;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+    }
+
+}

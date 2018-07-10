@@ -1,0 +1,3 @@
+query Chart($id: String!, $dateRange: DateRange!, $frequency: String!) {
+    chart(id: $id, dateRange: $dateRange, frequency: $frequency) 
+}

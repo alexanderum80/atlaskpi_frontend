@@ -1,0 +1,57 @@
+@import '../../../assets/styles/_declaration';
+.mini-chart-title {
+    font-size: 0.9em;
+    font-weight: normal;
+    word-wrap: break-word;
+}
+
+.chart-description {
+    display: block;
+    text-align: center;
+    color: $grayColor;
+    @include bold();
+}
+
+.big-i-icon {
+    zoom: 10;
+    transform: scale(0.5);
+    opacity: 0.7;
+}
+
+.watermark {
+    
+    i {
+        position: absolute;
+        font-size: 152px;
+        color: #f3f3f3;
+
+        &.chart-icon {
+            margin-left: -90px;
+            margin-top: 90px;
+        }
+
+        &.donut-chart-icon {
+            margin-left: -40px;
+            margin-top: 30px;
+        }
+    }
+
+
+    // background: url("/assets/img/charts/others/charts-generic.png") no-repeat;
+    // background-size: contain;
+    // background-position: center;
+    // opacity: 0.5;
+    // filter: grayscale(100%); /* Current draft standard */
+    // -webkit-filter: grayscale(100%); /* New WebKit */
+    // -moz-filter: grayscale(100%);
+    // -ms-filter: grayscale(100%); 
+    // -o-filter: grayscale(100%); /* Not yet supported in Gecko, Opera or IE */ 
+    // filter: gray; /* IE */
+    // -webkit-filter: grayscale(1); /* Old WebKit */  
+    // position: absolute;
+    // top: 0;
+    // left: 0;
+    // right: 0;
+    // bottom: 0;
+    // vertical-align: middle;
+}

@@ -1,0 +1,6 @@
+query Roles {
+    findAllRoles {
+        _id
+        name
+    }
+}

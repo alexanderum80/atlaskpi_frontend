@@ -1,0 +1,56 @@
+form(*ngIf="vm.fg", layout="column", [formGroup]="vm.fg")
+    div(layout="column")
+
+            //- name
+            div(flex)
+                div(layout-xs="column", layout-gt-sm="row", layout-padding)
+                    div(flex)        
+                        bw-text-box([fg]="vm.fg", field="firstName", label="First Name", leftIcon="account")
+                    div(flex)
+                        bw-text-box([fg]="vm.fg", field="middleName", label="Middle Name")
+                    div(flex)
+                        bw-text-box([fg]="vm.fg", field="lastName", label="Last Name") 
+            div(flex)
+                div(layout-xs="column", layout-gt-sm="row", layout-padding)
+                    div(flex)
+                        bw-email([fg]="vm.fg", field="email", label="Email", [disabled]="true")
+                    div(flex)
+                        bw-phone([fg]="vm.fg", field="phoneNumber", label="Telephone Number")
+            div(flex)
+                div(layout-xs="column", layout-gt-sm="row", layout-padding)
+                    div(flex)
+                        bw-select-picker(
+                            [fg]="vm.fg",
+                            field="timezone",
+                            label="Time Zone",
+                            leftIcon="time-interval",
+                            [items]="vm.timeZoneList",
+                            [liveSearch]="true",
+                            liveSearchPlaceholder="...search..."
+                        )
+
+            .m-b-20
+                    kpi-collapsable([collapsed]="notifications", headerText="Notifications", [color]="'black'")
+                       div(layout="column", layout-align="center center")
+                            .m-t-5(layout="row")
+                               div(layout="column")
+                                   .m-t-15  
+                                        h4.modal-title.c-black General
+                                   .m-t-15     
+                                        h4.modal-title.c-black Chat
+                                   .m-t-15     
+                                        h4.modal-title.c-black Email Notifications
+                                   .m-t-15       
+                                        h4.modal-title.c-black Non Disturb Mode
+                               div(layout="column")
+                                   .m-t-15      
+                                        bw-toggle([fg]="vm.fg", field="general", Label="General", color="blue")
+                                   .m-t-15      
+                                        bw-toggle([fg]="vm.fg", field="chat", Label="Chat", color="blue")
+                                   .m-t-15      
+                                        bw-toggle([fg]="vm.fg", field="viaEmail", Label="Email Notifications", color="blue")
+                                   .m-t-15.m-b-15      
+                                        bw-toggle([fg]="vm.fg", field="dnd", Label="Non Disturb Mode", color="blue")
+                    
+
+    

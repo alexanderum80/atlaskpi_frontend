@@ -1,0 +1,17 @@
+mutation CreateAppointment($input: CreateAppointmentInput!) {
+    createAppointment(input: $input) {
+        entity {
+            source
+            fullname
+            reason
+            from
+            to
+        }
+
+        errors {
+            field
+            errors
+        }
+        success
+    }
+}

@@ -1,0 +1,8 @@
+bw-modal(size="lg", [openOnInit]="true", (onClosed)="cancel()", (onDismiss)="cancel()")
+    bw-modal-header
+        h4.modal-title.c-black Create Employee
+    bw-modal-body
+        kpi-employee-form(#employeeForm)
+    bw-modal-footer
+        bw-button(color="blue", title="Save", icon = "check", class="normal", (clicked)="save()")
+        bw-button(title="Cancel", [simple]="true",icon = "cancel", (clicked)="cancel()")

@@ -1,0 +1,63 @@
+@import "../../../assets/styles/declaration";
+@import "../../../assets/styles/themes/cosmetic-mixins";
+.sign-in-container {
+    padding: 40px 70px;
+    @include transition(all 0.4s ease-in-out 0s);
+    img.logo {
+        height: 40px;
+    }
+    .title {
+        font-size: 24px;
+        font-weight: bold;
+        color: $white-nav;
+    }
+    button {
+        width: 120px;
+        height: 40px;
+        color: #2fb6fc;
+        font-weight: bold;
+    }
+    &.mobile {
+        .email,
+        .password,
+        button {
+            margin-top: 35px !important;
+            @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+                margin-top: 0 !important;
+            }
+        }
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        padding: 0;
+    }
+}
+
+.mobile-sign-in-m-t {
+    margin-top: 15px !important;
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        margin-top: 5px !important;
+    }
+}
+
+.sign-in-container>div:not(:nth-last-of-type(-n+4)) {
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+        display: table;
+        width: 280px;
+        margin: 0 !important;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        display: table;
+        width: 280px;
+        margin: 0 !important;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        display: table;
+        width: 280px;
+        margin: 0 !important;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        display: table;
+        width: 280px;
+        margin: 0 !important;
+    }
+}

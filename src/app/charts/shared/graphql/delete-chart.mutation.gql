@@ -1,0 +1,9 @@
+mutation ($id: String!) {
+    deleteChart(id: $id) {
+        success
+        errors {
+            field
+            errors
+        }
+    }
+}

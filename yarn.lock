@@ -558,6 +558,10 @@ angular-draggable-droppable@^3.0.0:
   dependencies:
     tslib "^1.9.0"
 
+angular-highcharts@^6.2.6:
+  version "6.2.6"
+  resolved "http://npm.atlaskpi.com:9000/angular-highcharts/-/angular-highcharts-6.2.6.tgz#06f9e21ea1f3c7d85e755b47f2c2cd54a85d6a71"
+
 angular-resizable-element@^3.0.0:
   version "3.1.0"
   resolved "http://npm.atlaskpi.com:9000/angular-resizable-element/-/angular-resizable-element-3.1.0.tgz#ee1b66216f48014a930e8074198cd01de16a346c"
@@ -5556,6 +5560,10 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   resolved "http://npm.atlaskpi.com:9000/run-queue/-/run-queue-1.0.3.tgz#e848396f057d223f24386924618e25694161ec47"
   dependencies:
     aproba "^1.1.1"
+
+rxjs-compat@^6.2.1:
+  version "6.2.1"
+  resolved "http://npm.atlaskpi.com:9000/rxjs-compat/-/rxjs-compat-6.2.1.tgz#f5a5e4bd700db414e82aa7cb34e5c9222c6d3756"
 
 rxjs@^6.0.0:
   version "6.2.1"

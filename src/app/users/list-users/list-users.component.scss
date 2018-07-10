@@ -1,0 +1,8 @@
+@import '../../../assets/styles/_declaration.scss';
+::-webkit-scrollbar {
+    display: none;
+}
+
+.table-header {
+    background-color: $tableHeaderBk;
+}

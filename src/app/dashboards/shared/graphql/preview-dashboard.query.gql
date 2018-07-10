@@ -1,0 +1,8 @@
+query PreviewDashboard($input: DashboardInput) {
+    previewDashboard(input: $input) {
+      name
+      description
+    	charts
+      widgets
+    }
+}

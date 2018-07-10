@@ -1,0 +1,17 @@
+query GetMilestoneById ($id: String!) {
+  milestoneById(id: $id) {
+    _id,
+    target,
+    task,
+    dueDate,
+    status,
+    responsible {
+      _id
+      profile {
+        firstName
+        lastName
+      }
+      username
+    }  
+  }
+}

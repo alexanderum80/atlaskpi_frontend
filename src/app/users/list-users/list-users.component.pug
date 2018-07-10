@@ -1,0 +1,29 @@
+kpi-item-list(
+    title="Manage Users",
+    [items]="vm.userItems",
+    [itemViewModel]="vm",
+    [addItemActivityName]="'AddUserActivity'",
+    [itemListActivityName]="actionActivityNames",
+    itemType="standard",
+    [tableRowTemplate]="tableItem",
+    (onAddActionClicked)="add()",
+    (onItemActionClicked)="actionClicked($event)",
+    (onItemClicked)="editClickedList($event)")
+
+ng-template(#tableItem, let-item="item")
+    //- image
+    div(flex-initial)
+        img(*ngIf="item.imagePath", [src]="item.imagePath", [style.height.px]="55")
+    //- title & subtitle
+    div(flex)
+        .m-t-10.m-l-10 
+            h2.title {{ item.title }}
+            small {{ item.subtitle }}
+    //- extras
+    div(flex)
+        .m-t-10.m-l-10
+            span {{ item.extras.tags }}
+
+kpi-add-user
+kpi-edit-user
+kpi-add-role

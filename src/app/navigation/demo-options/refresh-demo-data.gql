@@ -1,0 +1,6 @@
+mutation RefreshDemoData {
+  refreshDataFromSpreadSheet(customer: "a") {
+    name
+    total
+  }
+}

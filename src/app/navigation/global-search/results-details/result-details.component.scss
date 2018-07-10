@@ -1,0 +1,13 @@
+@import "../../../../assets/styles/themes/_cosmetic-mixins";
+
+.result-details-container {
+    overflow: auto;
+
+    @include for-phone-only {
+        height: calc(100% - 150px) !important;
+    }
+
+    @include for-tablet-portrait-up {
+        height: calc(100% - 70px) !important;
+    }
+}

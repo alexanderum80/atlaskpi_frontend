@@ -1,0 +1,16 @@
+query User {
+  User {
+    _id
+    username
+    roles
+    emails {
+      _id
+      address
+    }
+    profile {
+      _id
+      firstName
+      lastName
+    }
+  }
+}

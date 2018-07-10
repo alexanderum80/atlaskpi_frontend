@@ -1,0 +1,13 @@
+query PreviewWidget($input: WidgetInput) {
+  previewWidget(input: $input) {
+    materialized {
+        value
+        comparison {
+          period
+          value
+          arrowDirection
+        }
+        chart
+    }
+  } 
+}

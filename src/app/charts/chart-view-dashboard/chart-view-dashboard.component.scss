@@ -1,0 +1,27 @@
+@import "../../../assets/styles/_declaration.scss";
+.mini-chart-title {
+    font-size: 0.9em;
+    font-weight: normal;
+    word-wrap: break-word;
+}
+
+.marker {
+    color: white;
+    position: absolute;
+    bottom: 0;
+    display: block;
+    text-align: right;
+    opacity: 0.8;
+    padding: 15px;
+    min-height: 40px;
+    width: 100%;
+}
+
+.checked {
+    font-size: 1.7em !important;
+    vertical-align: middle;
+}
+
+.selected {
+    border: solid 4px $lightBlueColor;
+}

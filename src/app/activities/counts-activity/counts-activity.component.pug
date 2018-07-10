@@ -1,0 +1,32 @@
+.activity(flex, layout="row")
+    .activity-icon
+        i.zmdi.zmdi-view-list-alt
+    .flex(layout="column")
+        .activity-content.flex(layout="row", layout-padding)
+            .flex(layout="column")
+                .activity-header.m-b-10 COUNTS
+                .activity-body A total of 
+                    strong {{ sales[0].totalCount }} 
+                    | sales were registered Yesterday.
+          
+            div.activity-detail-icon(layout="row", layout-align="end end")
+                i.zmdi.zmdi-eye((click)="showDetails()")
+    
+        div.users-activity-border(*ngIf="viewDetails", layout="row")
+            div(flex)
+                div There were 
+                    b(*ngFor="let source of sales[0].revenueSources; index as i")
+                        strong {{ source.count }} 
+                        b(*ngIf="source.count === 1") sale 
+                        b(*ngIf="source.count > 1") sales 
+                        | registered on  
+                        strong {{ source.source }}
+                        b(*ngIf="i + 2 < countDataSource") , 
+                        b(*ngIf="countDataSource - (i + 1) === 1") , and 
+                    | .This data was collected on 
+                    strong {{ startDayDate | date:'MM/dd/y' }} 
+                    | at 
+                    strong {{ startDayDate | date:'hh:mm aa' }}
+            div(flex-initial)
+                div(layout="row", layout-align="end start")
+                    i.zmdi.zmdi-close((click)="hideDetails()")

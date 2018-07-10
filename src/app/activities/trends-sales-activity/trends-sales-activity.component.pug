@@ -1,0 +1,27 @@
+.activity(flex, layout="row")
+    .activity-icon
+        i.zmdi.zmdi-trending-up
+    .flex(layout="column")
+        .activity-content.flex(layout="row", layout-padding)
+            .flex(layout="column")
+                .activity-header.m-b-10 TRENDS ACTIVITY
+                .activity-body Sales of last month were 
+                    strong {{ statusDescription }} 
+                    | the average for the period.
+          
+            div.activity-detail-icon(layout="row", layout-align="end end")
+                i.zmdi.zmdi-eye((click)="showDetails()")
+    
+        div.users-activity-border(*ngIf="viewDetails", layout="row")
+            div(flex)
+                div The average sales amount for the month of  
+                    strong {{ getMonth(monthAvgSales[0]._id.source) }} 
+                    |  is 
+                    strong {{ monthAvgSales[0].amount | currency }} 
+                    | and your current sales were 
+                    strong {{ lastMonthSales[0].total | currency }}
+                    | .
+                    
+            div(flex-initial)
+                div(layout="row", layout-align="end start")
+                    i.zmdi.zmdi-close((click)="hideDetails()")

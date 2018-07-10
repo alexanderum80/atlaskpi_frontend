@@ -1,0 +1,32 @@
+.add-button {
+    z-index: 1000;
+    position: absolute;
+    right:50px;
+    bottom: 50px;
+    transition: all .3s ease;
+}
+
+button {
+    position: fixed;
+    right: 15px;
+    bottom: 15px;
+
+    i {
+        font-size: 20px;
+    }
+
+    z-index: 100;
+}
+
+.social-image {
+    width: 100%;
+    max-width: 200px;
+    height: 100%;
+    max-height: 200px;
+    margin: 10px 0px;
+    background-size : contain !important;
+}
+
+.inactive-connector-img {
+    opacity: 0.5;
+}

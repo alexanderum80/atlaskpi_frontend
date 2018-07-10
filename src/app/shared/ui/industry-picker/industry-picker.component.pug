@@ -1,0 +1,15 @@
+div(class="{{componentClass}}")
+    bw-select-picker(flex, [fg]="fg",
+        field="industry",
+        [items]="industries",
+        [leftIcon]="industryIcon",
+        [liveSearch]="true",
+        liveSearchPlaceholder="... type to seach ...",
+        noneSelectedText="Select Industry")
+    bw-select-picker(flex, [fg]="fg",
+        field="subIndustry",
+        [items]="subIndustries",
+        [leftIcon]="subIndustryIcon",
+        [liveSearch]="true",
+        liveSearchPlaceholder="... type to seach ...",
+        noneSelectedText="Select Sub Industry")

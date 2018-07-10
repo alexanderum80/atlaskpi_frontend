@@ -1,0 +1,38 @@
+query PreviewWidget($input: WidgetInput) {
+  previewWidget(input: $input) {
+    _id
+    order
+    name
+    description
+    type
+    size
+    color
+    chartWidgetAttributes {
+      chart
+    }
+    numericWidgetAttributes {
+      kpi
+      comparison
+      comparisonArrowDirection
+      trending
+      format
+      dateRange {
+        predefined
+        custom {
+          from 
+          to
+        }
+      }
+    }
+    materialized {
+        value
+        comparison {
+          period
+          value
+          arrowDirection
+        }
+        trending
+        chart
+    }
+  } 
+}

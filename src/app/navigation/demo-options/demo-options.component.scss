@@ -1,0 +1,41 @@
+@import '../../../assets/styles/_declaration';
+@import '../../../assets/styles/themes/_cosmetic-mixins';
+
+$height: 120px;
+$width: 40px;
+
+.demo-options-container {
+    position: fixed;
+    top: calc(50% - #{$height / 2});
+    right: -6px;
+    height: $height;
+    width: $width;
+    @include border-radius(10px);
+    
+    border: solid 2px white;
+    color: white;
+    z-index: 500;
+    padding: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+
+    .content {
+        position: relative;
+        top: -60px;
+        left: 27px;
+        width: 200px;
+        height: 200px;
+        @include border-radius(5px);
+    
+    }
+
+    &.toggled {
+        right: 190px;
+    }
+
+    .toggle-options {
+        margin-left: 23px;
+        margin-top: -6px;
+        width: $height;    
+    }
+}

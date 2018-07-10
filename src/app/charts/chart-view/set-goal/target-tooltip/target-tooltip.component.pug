@@ -1,0 +1,62 @@
+.layout-column.bgm-aliceblue.b-r-5.b-light-blue
+  .flex-xs-100.flex-gt-xs-100.flex-gt-sm-100.flex-gt-lg-33
+    .layout-row.layout-padding.text-center
+      .flex-xs-100.flex-gt-xs-100.flex-gt-sm-100.flex-gt-lg-33
+        h2.c-blue Set a Target to Meet your Future Business Goals
+    .layout-row.layout-padding
+      .flex-xs-100.flex-gt-xs-100.flex-gt-sm-100.flex-gt-lg-33.text-center
+        section
+          p.p-10
+            | I would like to set a target for 
+            strong.t-bold Miami Spa Location.
+          p.p-10
+            | My goal is to 
+            strong.t-bold increase 
+            | total sales by 5%
+          p.p-10 
+            | starting from 
+            strong.t-bold last year.
+          p.p-10
+            | The deadline will be 
+            strong.t-bold December 31, 2017.
+          p.p-10
+            | This target will be called 
+            strong.t-bold Miami Sales Target
+            | .
+    .layout-row.layout-padding
+      .flex-xs-100.flex-gt-xs-45.flex-gt-sm-50.flex-gt-lg-33
+        h2 I would like to set a target for: 
+      .flex-xs-100.flex-gt-xs-60.flex-gt-sm-50.flex-gt-lg-33
+        bw-select-picker.align-ng-input([fg]="fg", field="chartName", [items]="chartItems")
+    .layout-row.layout-padding
+      .flex-xs-10.flex-gt-xs-50.flex-gt-sm-10.flex-gt-lg-33
+        h2 Goal: 
+      .flex-xs-30.flex-gt-xs-100.flex-gt-sm-25.flex-gt-lg-33
+        bw-select-picker.align-ng-input([fg]="fg", field="chartGoal", [items]="chartGoalItems")
+      .flex-xs-10.flex-gt-xs-50.flex-gt-sm-10.flex-gt-lg-33
+        h2 Value: 
+      .flex-xs-10.flex-gt-xs-100.flex-gt-sm-20.flex-gt-lg-33
+        bw-number.align-ng-input([fg]="fg", [value]="5", field="targetAmount")
+      .flex-xs-10.flex-gt-xs-50.flex-gt-sm-10.flex-gt-lg-33
+        h2 Unit: 
+      .flex-xs-10.flex-gt-xs-100.flex-gt-sm-20.flex-gt-lg-33
+        bw-select-picker.align-ng-input([fg]="fg", field="targetUnit", [items]="chartTargetUnit")
+    .layout-row.layout-padding
+      .flex-xs-50.flex-gt-xs-70.flex-gt-sm-60.flex-gt-lg-33
+        h2.mobile-tooltip-fontSize Starting Period: 
+      .flex-xs-40.flex-gt-xs-60.flex-gt-sm-50.flex-gt-lg-33
+        bw-select-picker.align-ng-input([fg]="fg", field="targetPeriod", [items]="chartPeriod")
+      .flex-xs-50.flex-gt-xs-70.flex-gt-sm-60.flex-gt-lg-33
+        h2 Deadline Date: 
+      .flex-xs-40.flex-gt-xs-50.flex-gt-sm-60.flex-gt-lg-33
+        bw-text-box.align-ng-input([fg]="fg", field="targetEndDate")
+    .layout-row.p-l-20
+      .flex-xs-10.flex-gt-xs-10.flex-gt-sm-10.flex-gt-lg-33
+        h2 Name: 
+      .flex-xs-30.flex-gt-xs-50.flex-gt-sm-50.flex-gt-lg-33
+        bw-text-box.align-ng-input([fg]="fg", field="targetName")
+    .layout-row.footer-space
+      .flex-90
+        p
+      .flex-18
+        bw-button(title="Set", color="cyan", (clicked)="toolTipClose()")

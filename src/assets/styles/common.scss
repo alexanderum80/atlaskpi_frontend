@@ -1,0 +1,745 @@
+@import './_declaration';
+@import './themes/_layouts';
+.text-small {
+    font-size: small !important;
+}
+
+.text-medium {
+    font-size: medium !important;
+}
+
+.text-smaller {
+    font-size: smaller !important;
+}
+
+.text-xx-large {
+    font-size: xx-large !important;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.t-indent-5 {
+    text-indent: 5px;
+}
+
+.t-indent-10 {
+    text-indent: 10px;
+}
+
+.t-bold {
+    font-weight: bold !important;
+}
+
+.m-8 {
+    margin: 8px;
+}
+
+.c-lightGray {
+    color: $lightGray;
+}
+
+.row-underline-lightgrey {
+    border-bottom: 1px solid $lightGray;
+}
+
+.bgm-aliceblue {
+    background-color: aliceblue !important;
+}
+
+.vertical-text {
+    transform: rotate(90deg);
+    transform-origin: left top 0;
+}
+
+.swal2-container {
+    z-index: 8000 !important;
+}
+
+.callrail-tooltip-header>.modal-header {
+    background-color: $transparentGray;
+}
+
+.modal-scroll {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+}
+
+.required-star:before {
+    content: '*  ';
+    color: red;
+}
+
+// start activity feed class
+.activity-detail-icon {
+    i.zmdi {
+        font-size: 150% !important;
+        opacity: 0.6;
+    }
+    i.zmdi:hover {
+        cursor: pointer;
+    }
+}
+
+.activity-details {
+    border-top: 2px gainsboro solid;
+    i.zmdi {
+        position: relative;
+        top: 5px;
+        left: 480px;
+    }
+    i.zmdi:hover {
+        cursor: pointer;
+    }
+}
+
+.activity {
+    padding: 5px 20px;
+    border-bottom: 4px gainsboro solid;
+}
+
+.users-activity-border {
+    border-top: 2px gainsboro solid;
+    padding: 15px 0px;
+}
+
+// end activity feed class
+.align-center {
+    align-items: center;
+    @media only screen and (min-width: 768px) and (max-width: 1024px) and (aspect-ratio: 3/4) and (orientation: portrait) {
+        align-items: center;
+    }
+    @media only screen and (min-width: 768px) and (max-width: 1024px) and (aspect-ratio: 4/3) and (orientation: landscape) {
+        align-items: center;
+    }
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 16/9) and (orientation: landscape) {
+        align-items: center;
+    }
+    @media screen and (min-width: 1200px) and (max-width: 1600px) {
+        align-items: center;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+        align-items: center;
+    }
+}
+
+.custom-scroll-500 {
+    height: 500px;
+    overflow: scroll;
+    position: relative;
+}
+
+.custom-scroll-400 {
+    height: 400px;
+    overflow: scroll;
+    position: relative;
+}
+
+.custom-scroll-300 {
+    height: 300px;
+    overflow: scroll;
+    position: relative;
+}
+
+.parent-button {
+    position: relative;
+    z-index: 999;
+}
+
+.child-button {
+    position: absolute;
+    right: 2px;
+    bottom: 8px;
+}
+
+.select-align {
+    @media only screen and (min-width: 1024px) and (max-width: 1366) and (aspect-ratio: 512/683) and (orientation: portrait) {
+        position: relative;
+        top: -27px;
+    }
+    @media only screen and (min-width: 768px) and (max-width: 1024px) and (aspect-ratio: 3/4) and (orientation: portrait) {
+        position: relative;
+        top: -27px;
+    }
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 16/9) and (orientation: landscape) {
+        position: relative;
+        top: -25px;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+        position: relative;
+        top: -27px;
+    }
+    @media screen and (min-width: 1200px) and (max-width: 1600px) {
+        position: relative;
+        top: -26px;
+    }
+}
+
+.z-1-index {
+    z-index: 1;
+}
+
+.h-90 {
+    height: 90% !important;
+}
+
+.table-mode-scroll {
+    overflow: scroll;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 22px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.o-hidden {
+    overflow: hidden;
+    width: 200px;
+}
+
+.l-h-10 {
+    line-height: 10px;
+}
+
+.disp-inherit {
+    display: inherit;
+}
+
+.b-r-5 {
+    border-radius: 5px;
+}
+
+.select-picker-placeholder {
+    font-size: 11px;
+    color: #959595;
+}
+
+.no-data-icon {
+    zoom: 20;
+    transform: scale(0.8);
+    opacity: 0.7;
+}
+
+.p-event-none {
+    pointer-events: none !important;
+}
+
+.big-icon {
+    font-size: 48px !important;
+}
+
+.text-ellip .filter-option {
+    text-overflow: ellipsis !important;
+    width: 180px !important;
+}
+
+.errorMsg {
+    color: rgb(218, 73, 73);
+}
+
+.errorMsg:before {
+    content: "*"
+}
+
+.target-tooltip-parent {
+    position: absolute;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    transform: scale(0.8);
+    padding: 15px;
+    // width: 50%;
+    // margin: 0 auto;
+    @media only screen and (min-width: 768px) and (max-width: 1024px) and (aspect-ratio: 4/3) and (orientation: landscape) {
+        position: absolute;
+        z-index: 999;
+        top: 0;
+        left: 0;
+        zoom: 0.59;
+        padding: 15px;
+    }
+    @media only screen and (min-width: 768px) and (max-width: 1024px) and (aspect-ratio: 3/4) and (orientation: portrait) {
+        position: absolute;
+        z-index: 999;
+        top: 0;
+        left: 0;
+        zoom: 0.55;
+        padding: 15px;
+    }
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 16/9) and (orientation: landscape) {
+        position: absolute;
+        z-index: 999;
+        top: 0;
+        left: 0;
+        zoom: 0.55;
+        padding: 15px;
+    }
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+        position: absolute;
+        z-index: 999;
+        top: 100px;
+        left: 10px;
+        transform: scale(1.0);
+        padding: 15px;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+        position: absolute;
+        z-index: 999;
+        top: 0;
+        left: 0;
+        zoom: 0.55;
+        padding: 15px;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+        position: absolute;
+        z-index: 999;
+        top: 80px;
+        left: 0;
+        transform: scale(1);
+        padding: 15px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+        position: absolute;
+        z-index: 999;
+        top: 0;
+        left: 10;
+        transform: scale(0.9);
+        padding: 15px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        position: absolute;
+        z-index: 999;
+        top: 0;
+        left: -113px;
+        transform: scale(0.59);
+        padding: 15px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        position: absolute;
+        z-index: 999;
+        top: 0;
+        left: 80px;
+        zoom: 0.9;
+        padding: 15px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        position: absolute;
+        z-index: 999;
+        top: 100px;
+        left: -50px;
+        zoom: 0.7;
+        padding: 15px;
+    }
+}
+
+.target-tooltip-parent::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 9px;
+    border-style: solid;
+    border-color: lightblue transparent transparent transparent;
+}
+
+@mixin d-inherit {
+    display: inherit;
+}
+
+.mobile-header {
+    // @media screen and (min-width: 1200px) and (max-width: 1600px) {
+    //     font-size: 8px;
+    // }
+    // @media only screen and (min-width: 1024px) and (max-width: 1366px) and (aspect-ratio: 512/683) and (orientation: portrait) {
+    //     font-size: 8px;
+    // }
+    // @media only screen and (min-width: 768px) and (max-width: 1024px) and (aspect-ratio: 4/3) and (orientation: landscape) {
+    //     font-size: 8px;
+    // }
+    // @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 16/9) and (orientation: landscape) {
+    //     font-size: 8px;
+    // }
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+        font-size: 13px;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+        font-size: 8px;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+        font-size: 12px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+        font-size: 8px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        font-size: 11px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        font-size: 8px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        font-size: 12px;
+    }
+}
+
+@mixin mobile-text-sizer($width, $lineHeight, $fontSize, $top) {
+    width: $width;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: $fontSize;
+    line-height: $lineHeight;
+    word-wrap: break-word;
+    position: relative;
+    top: $top;
+}
+
+.target-title {
+    @media screen and (min-width: 1200px) and (max-width: 1600px) {
+        @include mobile-text-sizer(360px, initial, inherit, 0);
+    }
+    @media only screen and (min-width: 768px) and (max-width: 1024px) and (aspect-ratio: 3/4) and (orientation: portrait) {
+        @include mobile-text-sizer(300px, initial, inherit, 0);
+    }
+    @media only screen and (min-width: 768px) and (max-width: 1024px) and (aspect-ratio: 4/3) and (orientation: landscape) {
+        @include mobile-text-sizer(400px, initial, inherit, 0);
+    }
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 16/9) and (orientation: landscape) {
+        @include mobile-text-sizer(560px, initial, inherit, 0);
+    }
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+        @include mobile-text-sizer(320px, initial, inherit, 0);
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+        @include mobile-text-sizer(280px, initial, inherit, 0);
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+        @include mobile-text-sizer(465px, initial, inherit, 0);
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        @include mobile-text-sizer(197px, initial, inherit, 0);
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        @include mobile-text-sizer(197px, initial, inherit, 0);
+    }
+}
+
+@mixin mobile-fontSize($fontSize, $top) {
+    font-size: $fontSize;
+    position: relative;
+    top: $top;
+}
+
+.mobile-button {
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+        font-size: 13px;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+        font-size: 8px;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+        font-size: 12px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+        font-size: 8px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        font-size: 11px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        font-size: 8px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        font-size: 8px;
+        width: 50px;
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+}
+
+.mobile-text-header-sizer {
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+        @include mobile-text-sizer(100px, 2px, 10px, 2px);
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+        @include mobile-text-sizer(100px, 2px, 10px, 2px);
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+        @include mobile-text-sizer(100px, 2px, 10px, 2px);
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+        @include mobile-text-sizer(100px, 2px, 10px, 2px);
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        @include mobile-text-sizer(100px, 2px, 10px, 2px);
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        @include mobile-text-sizer(100px, 2px, 10px, 2px);
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        @include mobile-text-sizer(100px, 2px, 10px, -2px);
+    }
+}
+
+.mobile-text-body-sizer {
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+        @include mobile-text-sizer(100px, 2px, 10px, 14px);
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+        @include mobile-text-sizer(100px, 2px, 10px, 14px);
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+        @include mobile-text-sizer(100px, 2px, 10px, 14px);
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+        @include mobile-text-sizer(100px, 2px, 10px, 14px);
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        @include mobile-text-sizer(100px, 2px, 10px, 14px);
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        @include mobile-text-sizer(100px, 2px, 10px, 13px);
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        @include mobile-text-sizer(100px, 25px, 10px, 2px);
+    }
+}
+
+.mobile-fontSizer {
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+        @include mobile-fontSize(12px, 5px);
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+        @include mobile-fontSize(12px, 5px);
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+        @include mobile-fontSize(12px, 5px);
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+        @include mobile-fontSize(12px, 5px);
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        @include mobile-fontSize(12px, 5px);
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        @include mobile-fontSize(12px, 5px);
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        @include mobile-fontSize(12px, 5px);
+    }
+}
+
+.mobile-text-center {
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+        text-align: center;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+        text-align: center;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+        text-align: center;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        text-align: center;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        text-align: center;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        text-align: center;
+    }
+}
+
+.h-100 {
+    @extend .h-100;
+    .h-100 {
+        @extend .h-100;
+         ::-webkit-scrollbar {
+            display: none;
+        }
+        @media only screen and (min-width: 1024px) and (max-width: 1366px) and (aspect-ratio: 512/683) and (orientation: portrait) {
+            overflow: auto;
+        }
+        @media only screen and (min-width: 768px) and (max-width: 1024px) and (aspect-ratio: 4/3) and (orientation: landscape) {
+            overflow: auto;
+        }
+        @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 16/9) and (orientation: landscape) {
+            overflow: auto;
+        }
+        @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+            overflow: auto;
+        }
+        @media only screen and (min-width: 375px) and (max-width: 669px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+            overflow: auto;
+        }
+        @media only screen and (min-width: 375px) and (max-width: 669px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+            overflow: auto;
+        }
+        @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+            overflow: auto;
+        }
+        @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+            overflow: auto;
+        }
+        @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+            overflow: auto;
+        }
+        @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+            overflow: auto;
+        }
+    }
+}
+
+@mixin layout-align-center-center() {
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+.dashboard-responsive {
+    @extend .layout-align-center-center;
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        -webkit-flex-wrap: wrap !important;
+        flex-wrap: wrap !important;
+    }
+}
+
+.chart-mobile-height {
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 16/9) and (orientation: landscape) {
+        display: table;
+    }
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+        display: table;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 669px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+        display: table;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 669px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+        display: table;
+        table-layout: fixed;
+        width: 100%;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+        display: table;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        display: table;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        display: table;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        display: table;
+    }
+}
+
+.dashboard-mobile-height {
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 16/9) and (orientation: landscape) {
+        display: block;
+    }
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+        display: block;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 669px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+        display: block;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 669px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+        display: block;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+        display: block;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        display: block;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        display: block;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        display: block;
+    }
+}
+
+// .chart-form-layout-mobile {
+//     @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 16/9) and (orientation: landscape) {
+//         flex-wrap: wrap;
+//         display: flex;
+//         flex-direction: row;
+//     }
+//     @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+//         flex-wrap: wrap;
+//         display: flex;
+//         flex-direction: row;
+//     }
+//     @media only screen and (min-width: 375px) and (max-width: 669px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+//         flex-wrap: wrap;
+//         display: flex;
+//         flex-direction: row;
+//     }
+//     @media only screen and (min-width: 375px) and (max-width: 669px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+//         flex-wrap: wrap;
+//         display: flex;
+//         flex-direction: row;
+//     }
+//     @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+//         flex-wrap: wrap;
+//         display: flex;
+//         flex-direction: row;
+//     }
+//     @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+//         flex-wrap: wrap;
+//         display: flex;
+//         flex-direction: row;
+//     }
+//     @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+//         flex-wrap: wrap;
+//         display: flex;
+//         flex-direction: row;
+//     }
+//     @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+//         flex-wrap: wrap;
+//         display: flex;
+//         flex-direction: row;
+//     }
+// }
+.mobile-input-space {
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 16/9) and (orientation: landscape) {
+        padding-bottom: 30px !important;
+    }
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+        padding-bottom: 30px !important;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 669px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+        padding-bottom: 30px !important;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 669px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+        padding-bottom: 30px !important;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+        padding-bottom: 30px !important;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        padding-bottom: 30px !important;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        padding-bottom: 30px !important;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        padding-bottom: 30px !important;
+    }
+}
+
+.mobile-layout-xs-column {
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        flex-direction: column;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        flex-direction: column;
+    }
+}

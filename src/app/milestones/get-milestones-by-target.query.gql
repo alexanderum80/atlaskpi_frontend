@@ -1,0 +1,17 @@
+query GetMilestonesByTarget ($target: String!) {
+  milestonesByTarget(target: $target) {
+    _id,
+    target,
+    task,
+    dueDate,
+    status,
+    responsible {
+      _id
+      profile {
+        firstName
+        lastName
+      }
+      username
+    }
+  }
+}

@@ -1,0 +1,24 @@
+mutation UpdateTarget($id: String, $data: TargetInput) {
+    updateTarget(id: $id, data: $data) {
+        success
+        entity {
+            datepicker
+            vary
+            amount
+            amountBy
+            type
+            period
+            notify {
+                users
+                notification
+            }
+            visible
+            owner
+            chart
+        }
+        errors {
+            field
+            errors
+        }
+    }
+}

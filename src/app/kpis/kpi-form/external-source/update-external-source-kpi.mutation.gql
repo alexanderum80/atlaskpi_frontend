@@ -1,0 +1,31 @@
+mutation UpdateKPI($id: String!, $input: KPIAttributesInput!) {
+    updateKPI(id: $id, input: $input) {
+    entity {
+      _id
+      code
+      name
+      baseKpi
+      description
+      group
+      groupings
+      dateRange {
+        predefined
+        custom {
+          from
+          to
+        }
+      }
+      filter
+      frequency
+      axisSelection
+      emptyValueReplacement
+      expression
+      type
+    }
+    errors {
+      field
+      errors
+    }
+    success
+  }
+}

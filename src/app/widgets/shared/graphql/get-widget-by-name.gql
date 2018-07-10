@@ -1,0 +1,5 @@
+query WidgetByName($name: String!) {
+  widgetByName(name: $name) {
+    _id
+  }
+}

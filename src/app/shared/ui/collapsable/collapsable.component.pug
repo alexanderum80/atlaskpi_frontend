@@ -1,0 +1,8 @@
+.collapsable-container.p-15([ngClass]="{'z-depth-1': enableShadow}")
+  h2(flex-none, style="cursor: pointer", (click)="changeValue()", [style.color]="color", [style.marginBottom] = "marginBottom") 
+    i.zmdi.zmdi-chevron-up.collapsable-icon.m-r-10(*ngIf="!collapsed", flex-none)
+    i.zmdi.zmdi-chevron-down.collapsable-icon.m-r-10(*ngIf="collapsed", flex-none)
+    span(*ngIf="collapsed || !collapsed && headerTextExpanded === ''", flex-none) {{ headerText }}
+    span(*ngIf="!collapsed && headerTextExpanded !== ''", flex-none) {{ headerTextExpanded }}
+  .content([class.hidden]="collapsed")
+    ng-content

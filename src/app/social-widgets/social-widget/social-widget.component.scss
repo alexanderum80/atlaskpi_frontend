@@ -1,0 +1,68 @@
+@import '../../../assets/styles/themes/_cosmetic-mixins';
+
+$vertical-spacing: 25px;
+
+.social-widget {
+
+    &.big {
+        min-height: 165px;
+        max-height: 165px;
+    }
+
+    .sw-title {
+        text-align: left;
+        margin-left: 5px;
+        margin-top: 7px;
+        font-size: 12px;
+        font-weight: bold;
+    
+        overflow: hidden;
+        width:80%;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+    }
+
+    .sw-icon {
+        position: absolute;
+        bottom: 25px;
+        left: 10px;
+        padding: 5px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+    }
+    
+    .sw-value {
+        margin-top: $vertical-spacing;
+        font-size: 1.8em;
+        font-weight: bold;
+    }
+
+    .sw-value-not-available {
+        margin-top: $vertical-spacing;
+        font-size: 1em;
+        font-weight: bold;
+    }
+
+    .main-value-description {
+        font-size: 0.9em;
+        margin-bottom: 5px;
+    }
+
+    .sw-historical-data {
+        font-size: 0.9em;
+        margin-bottom: $vertical-spacing;
+    }
+    
+    .sw-arrow {
+        margin-top: $vertical-spacing;
+        font-size: 42px !important;
+        font-weight: bold;
+        margin-left: 5px;
+    }
+}
+
+
+

@@ -1,0 +1,58 @@
+
+.show-map-container.z-depth-1.bgm-white(layout="column", layout-padding)
+    .legend-settings-btn
+        bw-button(color="white", icon="settings", (clicked)="showMapSettings()")
+    
+    .legend-settings.z-depth-1.bgm-white(*ngIf="showingMapSettings")
+        span.close-button((click)="closeMapSettings()")
+            i.zmdi.zmdi-close
+        h2 Map Settings
+        .m-t-20(layout="column")
+            div.m-10(flex)
+                kpi-show-map-form(#showMapForm)
+            div(flex)
+                div(layout="row", layout-align="end end")
+                    div(flex-initial)
+                        bw-button(color="blue", title="set", [disabled]="!isFormValid", (clicked)="showMapGroupings()")
+
+    
+    div(flex)
+        //- pre {{ markers | json }}
+        //- this creates a google map on the page with the given lat/lng from
+        //- the component as the initial center of the map:
+        agm-map(
+            [latitude]="lat",
+            [longitude]="lng",
+            [zoom]="10",
+            
+            gestureHandling="cooperative"
+            )
+            agm-marker(*ngFor="let m of markers; let i = index",
+                (markerClick)="clickedMarker(m, i)",
+                [iconUrl]="m.iconUrl",
+                [latitude]="m.lat",
+                [longitude]="m.lng")
+                    agm-info-window(*ngIf="!isMapMarkerGrouping")
+                        div([ngClass]="'c-' + m.color") Zip Code: {{ m.name }}
+                        div(*ngIf="m.groupingName") {{ m.groupingName }}
+                        strong Total: {{ m.value | currency }}
+
+                    agm-info-window(*ngIf="isMapMarkerGrouping")
+                        div.m-b-5.t-bold([ngClass]="'c-' + m.color") Zip Code: {{ m.name }}
+                        div(*ngFor="let list of m.itemList; let idx = index")
+                            small &nbsp; &nbsp; {{ list.groupName }} : {{ list.amount | currency}}
+                        div.t-bold.m-t-5 Total: {{ m.value | currency }}
+
+    .legend-button
+        bw-button(color="white", title="Legend", (clicked)="showLegend()")
+
+    .legend.z-depth-1.bgm-white(*ngIf="showingLegend", class="{{legendEffect}}")
+        span.close-button((click)="closeLegend()")
+            i.zmdi.zmdi-close
+        h2 Legend
+        .m-t-10(layout="column")
+            div.m-5(flex, *ngFor="let item of legendColors")
+                div(layout="row", layout-align="start center")
+                    img(flex-initial, src="assets/img/maps/{{item.color}}-pin.png")
+                    .m-l-15(flex) 
+                        .money-range {{item.min | currency }} - {{item.max | currency }}

@@ -1,0 +1,12 @@
+mutation RemoveTargetFromChart($id: String) {
+    removeTargetFromChart(id: $id) {
+        success
+        errors {
+            errors
+            field
+        }
+        entity {
+            _id
+        }
+    }
+}

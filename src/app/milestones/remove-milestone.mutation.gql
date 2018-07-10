@@ -1,0 +1,24 @@
+mutation DeleteMilestone($_id: String!){
+  deleteMilestone(_id: $_id) {
+  	success,
+    entity {
+      _id
+      target
+      task
+      dueDate
+      status
+      responsible {
+        _id
+        profile {
+          firstName
+          lastName
+        }
+        username
+      }     
+    },
+    errors {
+      field
+      errors
+    }
+  }
+}

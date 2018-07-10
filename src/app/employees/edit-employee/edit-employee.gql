@@ -1,0 +1,40 @@
+mutation UpdateEmployee($_id: String!, $employeeAttributes: EmployeeAttributesInput!) {
+    updateEmployee(_id: $_id, employeeAttributes: $employeeAttributes){
+
+        entity {
+            _id
+            firstName
+            middleName
+            lastName
+            email
+            primaryNumber
+            dob
+            nationality
+            maritalStatus
+            address {
+                street1
+                street2
+                city
+                state
+                country
+                zipCode
+            }
+            employmentInfo {
+                location
+                bussinessUnit
+                department
+                position
+                startDate
+                typeOfEmployment
+                frequency
+                rate
+            }
+        }
+
+        errors{
+            field
+            errors
+        }
+        success
+    }
+} 

@@ -1,0 +1,17 @@
+@import '../widget-view/widget-view.component.scss';
+
+div > bw-button {
+    color: gray;
+}
+
+.preview-button {
+    color: gray;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: block;
+    align-self: center;
+    padding: 15px;
+    min-height: 40px;
+    z-index: 20;
+}

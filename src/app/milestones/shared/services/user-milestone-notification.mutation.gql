@@ -1,0 +1,8 @@
+mutation UserMilestoneNotification($input: MilestoneNotificationInput){
+  userMilestoneNotification(input: $input) {
+    success
+    errors {
+      field
+    }
+  }
+}

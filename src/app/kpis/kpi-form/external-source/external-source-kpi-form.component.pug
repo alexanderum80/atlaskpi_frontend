@@ -1,0 +1,89 @@
+.simple-kpi-form-container(*ngIf="vm.fg")
+    .bgm-white.z-depth-1.p-40(flex="grow")
+    
+        div(layout="column")
+            //- header
+            div(flex)
+                h2 External Source KPI        
+            //- content
+            div(flex)
+
+                div(layout="row", layout-xs="column")
+
+                    //- left panel
+                    .overflow-auto(flex-initial)
+
+                        //- logo
+                        .m-10
+                            img.kpi-avatar(src='./assets/img/kpis/external-source-kpi.jpg')
+
+                        .m-10.m-b-20
+                            h2.c-black Basic Information:
+                        .m-t-25
+                            bw-text-box(flex-none, [fg]="vm.fg", field="name", label="Name", [required]="true")
+                            .error-message(*ngIf="vm.fg.get('name').errors && !vm.fg.get('name').errors.forbiddenName && (vm.fg.get('name').dirty || vm.fg.get('name').touched)") This field is required
+                            .error-message(*ngIf="vm.fg.get('name').errors && vm.fg.get('name').errors.forbiddenName && (vm.fg.get('name').dirty || vm.fg.get('name').touched)") Duplicated name
+                        .m-t-25
+                            bw-text-box(flex-none, [fg]="vm.fg", field="group", label="Group")
+                        .m-t-25
+                            bw-text-area(flex-none, [fg]="vm.fg",
+                                                        field="description",
+                                                        label="Description",
+                                                        placeholder="Kpi description ...",
+                                                        [autosize]="false")
+                    
+                    //- right panel
+                    .p-20(flex)
+
+                        //- aggreagtion expression
+                        .m-b-20
+                            //- kpi-collapsable([(collapsed)]="isCollapsedAggregation", headerText="Aggregation Expression:", [color]="'black'")
+                            .m-10.m-t-20(layout="column")
+                                div(flex)
+                                    bw-select-picker.m-r-10(flex, [fg]="vm.fg",
+                                                                label="Source",
+                                                                field="expression.dataSource",
+                                                                [items]="vm.dataSources",
+                                                                noneSelectedText="Select Data Source")
+                                div(flex, layout="row", layout-xs="column", layout-sm="column")
+                                    bw-select-picker.m-r-10(flex, [fg]="vm.fg",
+                                                                label="Function",
+                                                                field="expression.function",
+                                                                [items]="vm.aggregateFunctions")
+
+                                    bw-select-picker.m-r-10(flex, [fg]="vm.fg",
+                                                        label="Field",
+                                                        field="expression.field",
+                                                        [items]="vm.numericFields",
+                                                        [liveSearch]="true",
+                                                        liveSearchPlaceholder="...search...")
+                        
+                        //- arithmetic operation
+                        .m-b-20
+                            kpi-collapsable([collapsed]="isCollapsedAritmeticOperation", headerText="Arithmetic Operation (Optional):", [color]="'black'")
+                                .m-t-20(layout="row", flex, layout-xs="column", layout-sm="column")
+                                    bw-select-picker.m-r-10(flex, [fg]="vm.fg",
+                                                        field="expression.operator",
+                                                        [items]="vm.operators")
+
+                                    bw-number(flex, [fg]="vm.fg", field="expression.value", label="Value", [decimal]="true",
+                                                [ngClass]="{'is-disabled': !vm.fg.expression?.operator }")
+                                
+                        .m-b-20
+                            kpi-collapsable([collapsed]="isCollapsedFilters", headerText="Filters (Optional):", [color]="'black'")
+                                .m-t-20
+                                    kpi-filter-list(
+                                        [filters]="vm.fg.get('filter')",
+                                        [dataSource]="vm.selectedDataSource"
+                                    )
+
+            //- actions
+            div(flex)
+                div(layout="row", layout-align="end center")
+                    //- save
+                    div(flex-initial)
+                        bw-button(title="Save", icon="check", color="blue", (clicked)="save()", [disabled]="!vm.fg.valid || vm.fg.pristine")
+
+                    //- cancel
+                    div(flex-intial)
+                        bw-button(title="Cancel", icon="close", color="black", [simple]="true", (clicked)="cancel()")

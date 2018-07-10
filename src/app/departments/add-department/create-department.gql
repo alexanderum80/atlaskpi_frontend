@@ -1,0 +1,14 @@
+mutation Departament($name: String!, $manager: String) {
+createDepartment(name: $name, manager: $manager){
+  entity {
+   name
+    manager
+ }
+
+errors{
+ field
+ errors
+     }
+    success
+  }
+   } 

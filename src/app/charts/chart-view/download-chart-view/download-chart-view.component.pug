@@ -1,0 +1,14 @@
+.set-goal-container.h-100(layout="column", layout-padding)
+  //- set goal content
+  .flex
+    .h-100(layout="column")
+        div(flex)
+          .h-100(layout="row", layout-padding, layout-align="center center")
+            div(flex="45")
+              div(flex-none)
+                bw-button.m-b-5(*ngFor="let items of printExtension", (clicked)="chartDownload(items)", title="{{items.title}}", [block]="true", color="green", [simple]="true" ) 
+  div(flex-none)
+  div(layout="row", layout-align="end center", layout-padding)
+    div(flex-none)
+      bw-button(icon="close", [simple]="true", title="Cancel", color="white", (clicked)="cancel()")
+    

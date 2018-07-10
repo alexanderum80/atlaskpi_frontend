@@ -1,0 +1,21 @@
+query SearchUsers($details: PaginationDetails) {
+    users(details: $details) {
+    data {
+        _id
+        roles
+        profile {
+            _id
+            firstName
+            middleName
+            lastName
+            sex
+            dob
+        }
+    }
+        pagination {
+            itemsPerPage
+            currentPage
+            totalItems
+        }
+    }
+}

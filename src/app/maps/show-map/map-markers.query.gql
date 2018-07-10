@@ -1,0 +1,14 @@
+query MapMarkers($input: MapMarkerGroupingInput) {
+  mapMarkers(type: "customerAndZip", input: $input) {
+    name
+    lat
+    lng
+    value
+    color
+    groupingName
+    itemList {
+      amount
+      groupName
+    }
+  }
+}

@@ -1,0 +1,5 @@
+.chart-selector-container.animated.fadeIn([class.hover]="hover || selected", [class.pulse]="hover", (click)="clicked($event)") 
+    div(flex="20")
+        .text-center(flex)
+            img([src]="item.img", [style.width.px]="width")
+        .name.text-center(flex) {{item.name}}

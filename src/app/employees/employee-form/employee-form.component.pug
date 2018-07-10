@@ -1,0 +1,138 @@
+form(*ngIf="vm.fg", layout="column", [formGroup]="vm.fg")
+
+    //-  BASIC INFO
+    fieldset(flex)
+        .section-header BASIC INFO
+
+        div(layout="column")
+
+            //- name
+            div(flex)
+                div(layout-xs="column", layout-gt-sm="row", layout-padding)
+                    div(flex)        
+                        bw-text-box([fg]="vm.fg", field="firstName", label="First Name", leftIcon="account")
+                    div(flex)
+                        bw-text-box([fg]="vm.fg", field="middleName", label="Middle Name")
+                    div(flex)
+                        bw-text-box([fg]="vm.fg", field="lastName", label="Last Name")    
+
+            //- contact email, phone, dob
+            div(flex)
+                div(layout-xs="column", layout-gt-sm="row", layout-padding)
+                    div(flex)    
+                        bw-email([fg]="vm.fg", field="email", label="Email")
+                    div(flex)    
+                        bw-phone([fg]="vm.fg", field="primaryNumber", label="Primary Number")
+                    div(flex)    
+                        bw-date-picker([fg]="vm.fg", field="dob", label="DOB", [required]="false", [config]="datePickerConfig")
+
+            //- //- nationality and marital status 
+            //- div(flex)
+            //-     div(layout-xs="column", layout-gt-sm="row", layout-padding)
+            //-         div(flex)        
+            //-             bw-select-picker.flex.nogrow([fg]="vm.fg",
+            //-                 leftIcon="globe",
+            //-                 field="nationality",
+            //-                 [items]="nationalityList",
+            //-                 [liveSearch]="true",
+            //-                 liveSearchPlaceholder="... type to seach ...",
+            //-                 noneSelectedText="Nationality")
+            //-         div(flex)        
+            //-             bw-select-picker.flex.nogrow([fg]="vm.fg",
+            //-                 field="maritalStatus",
+            //-                 [items]="maritalStatusList",
+            //-                 [liveSearch]="true",
+            //-                 liveSearchPlaceholder="... type to seach ...",
+            //-                 noneSelectedText="Marital Status")
+
+    //- ADDRESS SECTION
+    fieldset(flex)    
+        .section-header ADDRESS
+
+        div(layout="column")
+
+            //- street and city
+            div(flex)
+                div(layout-xs="column", layout-gt-sm="row", layout-padding)
+                    div(flex)    
+                        bw-text-box([fg]="vm.fg", field="address.street1", label="Street")
+                    div(flex)    
+                        bw-text-box([fg]="vm.fg", field="address.city", label="City")
+
+            //- state, zip and country
+            div(flex)
+                div(layout-xs="column", layout-gt-sm="row", layout-padding)
+                    div(flex)
+                        bw-select-picker.flex.nogrow( [fg]="vm.fg",
+                            field="address.country",
+                            [items]="vm.countries",
+                            [liveSearch]="true",
+                            noneSelectedText="Country")   
+                    div(flex)
+                        bw-select-picker.flex.nogrow( [fg]="vm.fg",
+                            field="address.state",
+                            dependOnField="address.country",
+                            (dependantValueChanged)="updateStateList($event)",
+                            [items]="vm.states",
+                            [liveSearch]="true",
+                            noneSelectedText="State")
+                    div(flex)
+                        bw-text-box([fg]="vm.fg", field="address.zipCode", label="Zip", [required]="true")
+                   
+
+    //- EMPLOYMENT INFO SECTION
+    fieldset(flex)    
+        div(layout="row", layout-padding)
+            div(flex-initial)
+                .section-header EMPLOYMENT INFO
+            .m-l-15(flex)
+                bw-button(color="white", icon="plus", (clicked)="addEmployment()")
+
+        div(layout="column")
+
+            div(flex, *ngFor="let item of vm.fg.get('employmentInfo').controls; let i=index")
+                .m-t-15
+                    div(layout-xs="column", layout-gt-sm="row", layout-padding)
+                        div(flex)
+                            bw-select-picker.flex.nogrow( [fg]="item",
+                                leftIcon="house",
+                                field="location",
+                                [items]="vm.locations",
+                                [leftIcon]="icon",
+                                noneSelectedText="Location")
+                        div(flex)
+                            bw-select-picker.flex.nogrow( [fg]="item",
+                                field="bussinessUnit",
+                                [required]="true",
+                                [items]="vm.businessUnits",
+                                [leftIcon]="icon",
+                                noneSelectedText="Business Unit")
+                    div(layout-xs="column", layout-gt-sm="row", layout-padding)
+                        div(flex)
+                            bw-select-picker.flex.nogrow( [fg]="item",
+                                [required]="true",
+                                field="department",
+                                [items]="vm.departments",
+                                [leftIcon]="icon",
+                                noneSelectedText="Department")
+                        div(flex)
+                            bw-text-box([fg]="item", field="position", label="Position", [required]="true")
+
+
+                    div(layout-xs="column", layout-gt-sm="row", layout-padding)
+                        div(flex)
+                            bw-date-picker([fg]="item", field="startDate", label="Start Date", [required]="true", [config]="datePickerConfig")
+                        div(flex)
+                            bw-select-picker.flex.nogrow( [fg]="item",
+                                field="typeOfEmployment",
+                                [items]="vm.employmentTypes",
+                                [leftIcon]="icon",
+                                noneSelectedText="Type of Employment")
+                        div(flex)
+                            bw-text-box([fg]="item", field="rate", label="Rate", [required]="true")  
+                        div(flex)
+                            kpi-kpi-frequency-picker.flex.m-t-10([fg]="item")
+
+                    div(layout="row", layout-align="end center")
+                        div(flex-initial)
+                            bw-button(color="red", title="Remove", (clicked)="removeEmploymentInfo(item)")

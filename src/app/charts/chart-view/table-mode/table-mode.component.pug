@@ -1,0 +1,13 @@
+.p-relative.bgm-white.h-90
+  .chart-btn
+    bw-button(icon="close", color="gray", [simple]="true", (clicked)="cancel()")
+  .table-mode-scroll.table-responsive
+    table.table.table-hover.table-bordered
+      caption.text-center.p-b-15 {{title}}
+      thead
+        tr
+          th(*ngFor="let headers of categories; let i = index") {{headers}}
+      tbody
+        tr(*ngFor="let data of tableFormat; let t = index")
+          td(*ngFor="let d of data; let f = index") {{d}}
+        

@@ -1,0 +1,14 @@
+@import "../../../assets/styles/themes/_cosmetic-mixins";
+
+#search-result-container {
+
+    @include for-phone-only {
+        height: calc(100% - 180px) !important;
+    }
+
+    @include for-tablet-portrait-up {
+        height: calc(100% - 100px) !important;
+    }
+    
+    width: 100%;
+}

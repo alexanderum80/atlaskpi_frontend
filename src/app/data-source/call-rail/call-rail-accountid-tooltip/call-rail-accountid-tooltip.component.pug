@@ -1,0 +1,25 @@
+div(layout="row", layout-padding)
+  div.p-l-15(flex-initial)
+    i.zmdi.zmdi-key
+  div(flex-initial)
+    span &nbsp;
+    span.c-blue Where to find your Account ID
+div(layout="row", layout-padding)
+  div(flex)
+div(layout="row", layout-wrap, layout-padding)
+  div.p-l-15(flex)
+    p From your CallRail account:
+    p
+      | You can find the account id in the CallRail web UI. Find the nine digit number 
+      | following /a/ in the URL displayed in your browser when viewing the CallRail dashboard.
+
+//- img for account id url path
+div(layout="row", layout-padding)
+    img(src="{{imgPath}}", alt="Account ID Url").img-zoom
+
+//- ok button
+div(layout="row")
+  div(flex).bgm-gray
+    p
+  div(flex="10")
+    bw-button(title="OK", color="blue", (clicked)="closeToolTip()")

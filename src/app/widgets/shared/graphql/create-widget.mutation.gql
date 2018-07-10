@@ -1,0 +1,38 @@
+mutation ($input: WidgetInput!) {
+  createWidget(input: $input) {
+    entity {
+      _id
+      order
+      name
+      description
+      type
+      size
+      color
+      chartWidgetAttributes {
+        chart
+      }
+      numericWidgetAttributes {
+        kpi
+        comparison
+        comparisonArrowDirection
+        trending
+        format
+      }
+      materialized {
+        value
+        comparison {
+          period
+          value
+          arrowDirection
+        }
+        trending
+        chart
+      }
+    }
+    errors {
+      field
+      errors
+    }
+    success
+  }
+}

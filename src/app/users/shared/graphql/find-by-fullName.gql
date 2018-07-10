@@ -1,0 +1,14 @@
+query FindByFullName($firstName: String!, $lastName: String!) {
+  findByFullName(firstName: $firstName, lastName: $lastName) {
+    _id
+    username
+    emails {
+      _id
+      address
+    }
+    profile {
+      firstName
+      lastName
+    }
+  }
+}

@@ -1,0 +1,13 @@
+kpi-item-list(
+    title="Locations",
+    [items]="vm.locationItems",
+    [itemViewModel]="vm",
+    [addItemActivityName]="'AddLocationActivity'",
+    [itemListActivityName]="actionActivityNames",
+    itemType="standard",
+    (onAddActionClicked)="add()",
+    (onItemActionClicked)="actionClicked($event)",
+    (onItemClicked)="editClickedList($event)")
+
+//- outlet for add/edit and delete
+router-outlet

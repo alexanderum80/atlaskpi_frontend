@@ -1,0 +1,16 @@
+mutation UpdateDashboard($id: String!, $input: DashboardInput!){
+   updateDashboard (id: $id, input: $input) {
+    entity {
+      name
+      description
+      charts
+      widgets
+      visible
+    }
+     errors {
+      field
+      errors
+    }
+    success
+	}
+}

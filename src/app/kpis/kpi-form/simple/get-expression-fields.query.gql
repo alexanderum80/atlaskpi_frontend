@@ -1,0 +1,9 @@
+query KPIExpressionFields($input: KPIExpressionFieldInput) {
+    kpiExpressionFields(input: $input) {
+        name
+        path
+        type
+        allowGrouping
+        available
+    }
+}

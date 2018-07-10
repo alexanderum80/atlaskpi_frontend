@@ -1,0 +1,30 @@
+.activity(flex, layout="row")
+    .activity-icon
+        i.zmdi.zmdi-money
+    .flex(layout="column")
+        .activity-content.flex(layout="row")
+            .flex(layout="column")
+                .activity-header.m-b-10 EXPENSES
+                .activity-body Your total expenses yesterday were 
+                    strong {{ expenses[0].total | currency }}
+          
+            div.activity-detail-icon(layout="row", layout-align="end end")
+                i.zmdi.zmdi-eye((click)="showDetails()")
+    
+        div.users-activity-border(*ngIf="viewDetails", layout="row")
+            div(flex)
+                div There was 
+                    b(*ngFor="let expensesConcept of expenses[0].expenses; index as i")
+                        strong {{ expensesConcept.amount | currency }} 
+                        | expense by concept of 
+                        strong {{ expensesConcept.concept }}
+                        b(*ngIf="i + 2 < countDataSource") , 
+                        b(*ngIf="countDataSource - (i + 1) === 1") , and 
+                    | .This data was collected on 
+                    strong {{ startDayDate | date:'MM/dd/y' }} 
+                    | at 
+                    strong {{ startDayDate | date:'hh:mm aa' }}
+       
+            div(flex-initial)
+                div(layout="row", layout-align="end start")
+                    i.zmdi.zmdi-close((click)="hideDetails()")

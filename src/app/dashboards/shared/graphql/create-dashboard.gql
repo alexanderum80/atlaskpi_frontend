@@ -1,0 +1,17 @@
+ mutation createDashboard($input: DashboardInput!) {
+  createDashboard(input: $input) {
+    entity {
+      name
+      description
+      charts
+      widgets
+      owner
+      users
+    }
+     errors {
+      field
+      errors
+    }
+    success
+	}
+}

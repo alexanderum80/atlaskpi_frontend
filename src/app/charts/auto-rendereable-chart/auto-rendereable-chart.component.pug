@@ -1,0 +1,27 @@
+bw-card.m-b-0([depth]="1")
+    bw-card-body.box([padded]="true")
+       div(layout="column", layout-align="center center", style="min-height: 280px; min-width: 280px;")
+            div(flex-initial)
+                .text-center.text-wrap.mini-chart-title {{ item.title }}
+            
+            //- div(*ngIf="placeholderVisible", flex)
+                //- .text-center(flex)
+                    img([src]="placeholderImage", [style.width.px]="placeholderHeight", [style.height.px]="placeholderHeight")
+            
+
+            div(*ngIf="placeholderVisible && item", flex)
+                .watermark
+                    i.donut-chart-icon.zmdi.zmdi-chart-donut
+                    i.chart-icon.zmdi.zmdi-chart
+
+            bw-button.m-5(*ngIf="placeholderVisible && item", color="green", title="Preview",
+                            icon="eye", (clicked)="previewChart()", flex)
+
+            div(*ngIf="loading", flex, style="text-align: center")
+                bw-preloader(color="gray")
+            .box.p-t-5.p-relative(*ngIf="!loading && chart !== undefined")
+                div(*ngIf="chart.options?.series?.length > 0", flex, [chart]="chart", [style.min-height.px]="minHeight")
+            div(*ngIf="!loading && chart?.options?.series?.length === 0", flex, style="text-align: center",
+                       layout="column", layout-align="center center")
+                i.zmdi.zmdi-info-outline.big-i-icon(flex)
+                div(flex) THERE IS NO DATA AVAILABLE      

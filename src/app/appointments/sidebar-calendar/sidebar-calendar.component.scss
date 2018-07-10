@@ -1,0 +1,64 @@
+.sidebar-calendar {
+    position: relative;
+    background-color: #ebf0f5;
+
+    .appointment-list {
+        overflow: auto;
+
+        .selected-day {
+            margin-bottom: 20px;
+            text-align: center;
+    
+            .day { 
+                font-size: 6em;
+                font-weight: 400;
+                color: #8ac53e;
+            }
+            .month { 
+                position: relative;
+                margin-top: -14px;
+                margin-left: -10px;
+                font-size: 1em;
+                font-weight: 400;
+                text-transform: uppercase;
+            }
+        }
+
+        .appointment-details {
+            .appointment-time {
+                padding: 10px;
+                border: 2px solid #d8dce0;
+                border-radius: 10px;
+                text-align: center;
+                font-weight: bold;
+                background-color: white;
+                min-width: 60px;
+                min-height: 60px;
+                vertical-align: middle;
+
+                .time {
+                    font-size: 14px;
+                }
+
+                .am-pm {
+                    font-size: 9px;
+                }
+            }
+        }
+
+        .appointment-details {
+            color: #5f6c7b;
+            padding: 4px 10px 0 10px;
+
+            .details {
+                font-weight: bold;
+                font-size: 12px;
+            }
+            
+            .name {
+                font-size: 10px;
+            }
+        }
+
+    }
+}

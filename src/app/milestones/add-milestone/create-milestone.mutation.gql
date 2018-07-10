@@ -1,0 +1,24 @@
+mutation CreateMilestone($input: MilestoneInput){
+  createMilestone(input: $input) {
+  	success,
+    entity {
+      _id
+      target
+      task
+      dueDate
+      status
+      responsible {
+        _id
+        profile {
+          firstName
+          lastName
+        }
+        username
+      } 
+    },
+    errors {
+      field
+      errors
+    }
+  }
+}

@@ -1,0 +1,94 @@
+.chart-info,
+.charts-selector,
+.chart-format {
+    border-right: 1px solid #eee;
+}
+
+.chart-form-layout-mobile {
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 16/9) and (orientation: landscape) {
+        flex-wrap: wrap;
+        display: flex;
+        flex-direction: row;
+    }
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+        flex-wrap: wrap;
+        display: flex;
+        flex-direction: row;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 669px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+        flex-wrap: wrap;
+        display: flex;
+        flex-direction: row;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 669px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+        flex-wrap: wrap;
+        display: flex;
+        flex-direction: row;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+        flex-wrap: wrap;
+        display: flex;
+        flex-direction: row;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        flex-wrap: wrap;
+        display: flex;
+        flex-direction: row;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        flex-wrap: wrap;
+        display: flex;
+        flex-direction: row;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        flex-wrap: wrap;
+        display: flex;
+        flex-direction: row;
+    }
+}
+
+.chart-form-mobile {
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        flex: 0 1 100%;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        flex: 0 1 100%;
+    }
+}
+
+.chart-preview-mobile {
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        flex: 1 1 100%;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        flex: 1 1 100%;
+    }
+}
+
+.btn-mobile button {
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        font-size: xx-small;
+        text-align: center;
+        line-height: 220%;
+    }
+}
+
+.help-content-chart {
+    width: 30px;
+    height: 30px;
+    opacity: 0.7;
+    margin-left: 90%;
+    margin-top: 5px;
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+.help-icon-chart{
+    width: 30px;
+    height: 30px;
+    opacity: 0.7;
+    margin-top: 5px;
+    display: inline-block;
+    font-size: 30px !important; 
+    cursor: pointer;
+}

@@ -1,0 +1,5 @@
+.new-version-container.text-center.animated.fadeInDown([class.fadeOutUp]="shouldClose")
+    span.text New version available
+    bw-button(title="Update", color="white", [rounded]="true", (clicked)="reloadApp()")
+    .close
+        i.zmdi.zmdi-close((click)="close()")

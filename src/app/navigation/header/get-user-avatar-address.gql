@@ -1,0 +1,4 @@
+query GetUserAvatarAddress($id: String!) {
+  getUserAvatarAddress(id: $id) 
+}
+

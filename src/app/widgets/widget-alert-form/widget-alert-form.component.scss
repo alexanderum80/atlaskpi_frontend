@@ -1,0 +1,53 @@
+@import '../../../assets/styles/themes/cosmetic-mixins.scss';
+.circle-number {
+    color: lightgreen;
+    font-weight: bold;
+    border: 2px solid lightgreen;
+    border-radius: 25px;
+    padding: 14px;
+    width: 50px;
+    text-align: center;
+}
+
+.avatar {
+    zoom: 0.6;
+    display: block;
+    width: 30px;
+    text-align: center;
+    margin-right: 45px;
+}
+
+.default-avatar {
+    display: inline-block;
+    text-align: center;
+    width: 3.0em;
+    height: 3.0em;
+    line-height: 2.8em;
+    border-radius: 50%;
+    i {
+        font-size: 38px;
+    }
+}
+
+.p-t-8 {
+    padding-top: 8px;
+}
+
+.p-t-12 {
+    padding-top: 12px;
+}
+
+.m-auto {
+    margin: auto;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.font-initials {
+    font-size: 20px;
+    color: white;
+    font-weight: 100;
+    font-family: serif;
+}

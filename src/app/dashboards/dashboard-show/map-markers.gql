@@ -1,0 +1,9 @@
+query MapMarkersForDashboard {
+  mapMarkers(type: "customerAndZip") {
+    name
+    lat
+    lng
+    value
+    color
+  }
+}

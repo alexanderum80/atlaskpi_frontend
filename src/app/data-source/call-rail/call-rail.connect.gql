@@ -1,0 +1,9 @@
+mutation CallRailConnect($input: CallRailInput) {
+    callRailConnect(input: $input) {
+        success
+        errors {
+            errors
+            field
+        }
+    }
+}

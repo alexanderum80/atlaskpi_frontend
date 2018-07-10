@@ -1,0 +1,42 @@
+.alert {
+    padding-left: 30px;
+    font-size: 13px;
+
+    span {
+        cursor: pointer;
+    }
+
+    &:not(.alert-dismissible) {
+        padding-right: 30px;
+    }
+
+    &.alert-dismissable {
+        padding-right: 44px;
+    }
+}
+
+.alert-inverse {
+    @include alert-variant($alert-inverse-bg, $alert-inverse-border, $alert-inverse-text);
+}
+
+.growl-animated {
+    &.alert-inverse {
+        box-shadow: 0 0 5px rgba($alert-inverse-bg, .5);
+    }
+
+    &.alert-info {
+        box-shadow: 0 0 5px rgba($alert-info-bg, .5);
+    }
+
+    &.alert-success {
+        box-shadow: 0 0 5px rgba($alert-success-bg, .5);
+    }
+
+    &.alert-warning {
+        box-shadow: 0 0 5px rgba($alert-warning-bg, .5);
+    }
+
+    &.alert-danger {
+        box-shadow: 0 0 5px rgba($alert-danger-bg, .5);
+    }
+}

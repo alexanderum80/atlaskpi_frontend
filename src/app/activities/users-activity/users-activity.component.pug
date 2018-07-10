@@ -1,0 +1,171 @@
+//- activity for created target
+.activity(flex, *ngIf="isCreatedTarget")
+    div(layout="row")
+        //- initials and icon
+        .activity-icon
+            .avatar_info(layout="row", layout-align="space-around")
+                | {{ initials }}
+        
+        div(flex)
+            div(layout="column")
+                div(flex)
+                    div(layout="row", layout-padding)
+                        div(flex)
+                            div(layout="column")
+                                //- activity header for created target
+                                .activity-header.m-b-10 USERS ACTIVITY
+                                //- activity body for created target
+                                .activity-body
+                                    div
+                                        strong {{ activity.accessBy }} 
+                                        | created a new target named 
+                                        strong {{ targetName }} 
+                                        | for the period of {{ targetDate | date: 'MMM' }}, 
+                                        | in the amount of 
+                                        strong {{ targetAmount | currency }} 
+                                        | for 
+                                        strong {{ targetStackName }}
+                            //- show details icon
+                            div.activity-detail-icon(layout="row", layout-align="end end")
+                                i.zmdi.zmdi-eye((click)="showDetails()")
+
+                //- show details
+                div.users-activity-border(*ngIf="viewDetails", layout="row")
+                    div(flex)
+                        div
+                            | The target was {{ action }} on 
+                            strong {{ activity.timestamp | date:'MM/dd/y' }} 
+                            | at 
+                            strong {{ activity.timestamp | date:'shortTime' }}
+
+                    //- hide details
+                    div(flex-initial)
+                        div(layout="row", layout-align="end start")
+                            i.zmdi.zmdi-close((click)="hideDetails()")
+
+//- activity target or modified or deleted
+.activity(flex, *ngIf="isTargetModfiedOrDelete")
+    div(layout="row")
+        //- initials and icon
+        .activity-icon
+            .avatar_info(layout="row", layout-align="space-around")
+                | {{ initials }}
+        
+        div(flex)
+            div(layout="column")
+                div(flex)
+                    div(layout="row", layout-padding)
+                        div(flex)
+                            div(layout="column")
+                                //- target activity header
+                                .activity-header.m-b-10 USERS ACTIVITY
+                                //- target activity body
+                                .activity-body
+                                    div(*ngIf="isActivityActionModified") {{ activity.accessBy }} 
+                                        | {{ action }} a target 
+                                        strong {{ targetName }}
+
+                                    div(*ngIf="isActivityActionDeleted")
+                                        | {{ activity.accessBy }} deleted a target
+                            
+                            //- show details icon
+                            div.activity-detail-icon(layout="row", layout-align="end end")
+                                i.zmdi.zmdi-eye((click)="showDetails()")
+
+                //- show details
+                div.users-activity-border(*ngIf="viewDetails", layout="row")
+                    div(flex)
+                        div
+                            | The target was {{ action }} on 
+                            strong {{ activity.timestamp | date:'MM/dd/y' }} 
+                            | at 
+                            strong {{ activity.timestamp | date:'shortTime' }}
+
+                    //- hide details
+                    div(flex-initial)
+                        div(layout="row", layout-align="end start")
+                            i.zmdi.zmdi-close((click)="hideDetails()")
+
+//- activity user
+.activity(flex, *ngIf="isActivityTypeUser")
+    div(layout="row")
+        .activity-icon
+            .avatar_info(layout="row", layout-align="space-around")
+                | {{ initials }}
+        
+        div(flex)
+            div(layout="column")
+                div(flex)
+                    div(layout="row", layout-padding)
+                        div(flex)
+                            div(layout="column")
+                                //- activity header
+                                .activity-header.m-b-10 USERS ACTIVITY
+                                //- activity body
+                                .activity-body
+                                    | {{ activity.accessBy }} 
+                                    span(*ngIf="articleAnUser(activity)") {{ action }} an user
+                                    span(*ngIf="articleTheUser(activity)") {{ action }} the user
+                                        //- user for create/update user
+                                        strong(*ngIf="showUserOrRoleName")  {{ userName }}
+                                    | .
+                            
+                            //- show detail icon
+                            div.activity-detail-icon(layout="row", layout-align="end end")
+                                i.zmdi.zmdi-eye((click)="showDetails()")
+
+                //- show details
+                div.users-activity-border(*ngIf="viewDetails", layout="row")
+                    div(flex)
+                        div
+                            | This user was {{ action }} on 
+                            strong {{ activity.timestamp | date:'MM/dd/y' }} 
+                            | at 
+                            strong {{ activity.timestamp | date:'shortTime' }}
+
+                    //- hide details
+                    div(flex-initial)
+                        div(layout="row", layout-align="end start")
+                            i.zmdi.zmdi-close((click)="hideDetails()")
+
+
+//- activity role
+.activity(flex, *ngIf="isActivityTypeRole")
+    div(layout="row")
+        //- initials and icon
+        .activity-icon
+            .avatar_info(layout="row", layout-align="space-around")
+                | {{ initials }}
+        
+        div(flex)
+            div(layout="column")
+                div(flex)
+                    div(layout="row", layout-padding)
+                        div(flex)
+                            div(layout="column")
+                                //- activity header
+                                .activity-header.m-b-10 USERS ACTIVITY
+                                //- activity body
+                                .activity-body
+                                    | {{ activity.accessBy }} 
+                                    span(*ngIf="articleAnRole(activity)") {{ action }} a role
+                                    span(*ngIf="articleTheRole(activity)") {{ action }} the role
+                                        strong(*ngIf="showUserOrRoleName")  {{ roleName }}
+                                    | .
+
+                            //- show details eye icon
+                            div.activity-detail-icon(layout="row", layout-align="end end")
+                                i.zmdi.zmdi-eye((click)="showDetails()")
+
+                //- show details
+                div.users-activity-border(*ngIf="viewDetails", layout="row")
+                    div(flex)
+                        div
+                            | This role was {{ action }} on 
+                            strong {{ activity.timestamp | date:'MM/dd/y' }} 
+                            | at 
+                            strong {{ activity.timestamp | date:'shortTime' }}
+                    //- hide details
+                    div(flex-initial)
+                        div(layout="row", layout-align="end start")
+                            i.zmdi.zmdi-close((click)="hideDetails()")

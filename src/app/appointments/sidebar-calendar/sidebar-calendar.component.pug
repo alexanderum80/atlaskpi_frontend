@@ -1,0 +1,37 @@
+.sidebar-calendar.hv-100(layout="column")
+    .calendar-container.z-depth-1.bgm-white(flex-initial)
+        .m-r-20.m-t-20.m-l-20
+            bw-select-picker.m-r-20(flex="80", [fg]="fg", 
+                field="provider",
+                [multiple]="true",
+                [items]="providerList",
+                [liveSearch]="true",
+                noneSelectedText="All Providers",
+                #providerpicker,
+                #sideBarSelectProvider=""
+                )  
+        .m-20.m-b-40
+            dp-day-calendar(theme="dp-material", [config]="calendarConfig", (onSelect)="onDaySelected($event)")
+
+    
+
+    .appointment-list(flex)
+        .selected-day(flex-initial)
+            .day {{ selectedDay | momentFormat: 'D' }}
+            .month {{ selectedDay | momentFormat: 'MMMM' }}
+
+        .p-b-40(*ngIf="!loadingAppointments")
+            .appointment(*ngFor="let a of appointments")
+                .appointment-details(layout="row", layout-align="center start")
+                    .appointment-time(flex-inital, 
+                                    [ngStyle]="a.event?.color && {'border-color': a.event?.color}") 
+                        .time.p-t-5 {{ a.from | momentFormat: 'h:mm' }}
+                        .am-pm {{ a.from | momentFormat: 'A' }}
+                    .appointment-details(flex)
+                        .details {{ a.reason }}
+                        .name {{ a.customer.fullname }}
+                    .appointment-actions(flex-inital)
+                        bw-actions([actionItems]="actionItems", (actionClicked)="actionClicked($event, slideshow)")
+       
+
+

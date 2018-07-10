@@ -1,0 +1,8 @@
+query SlideshowByName( $name: String! ) {
+   slideshowByName( name: $name ){
+    _id
+    name 
+    description
+    charts
+  }
+}

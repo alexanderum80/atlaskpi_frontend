@@ -1,0 +1,31 @@
+<div class="dp-month-calendar-container">
+  <dp-calendar-nav
+      [label]="navLabel"
+      [showLeftNav]="showLeftNav"
+      [showLeftSecondaryNav]="showSecondaryLeftNav"
+      [showRightNav]="showRightNav"
+      [showRightSecondaryNav]="showSecondaryRightNav"
+      [isLabelClickable]="componentConfig.isNavHeaderBtnClickable"
+      [showGoToCurrent]="shouldShowCurrent()"
+      [theme]="theme"
+      (onLeftNav)="onLeftNav()"
+      (onLeftSecondaryNav)="onLeftSecondaryNav()"
+      (onRightNav)="onRightNav()"
+      (onRightSecondaryNav)="onRightSecondaryNav()"
+      (onLabelClick)="toggleCalendar()"
+      (goToCurrent)="goToCurrent()">
+  </dp-calendar-nav>
+
+  <div class="dp-calendar-wrapper">
+    <div class="dp-months-row" *ngFor="let monthRow of yearMonths">
+      <button type="button"
+              class="dp-calendar-month"
+              *ngFor="let month of monthRow"
+              [disabled]="month.disabled"
+              [ngClass]="getMonthBtnCssClass(month)"
+              (click)="monthClicked(month)"
+              [innerText]="month.text">
+      </button>
+    </div>
+  </div>
+</div>

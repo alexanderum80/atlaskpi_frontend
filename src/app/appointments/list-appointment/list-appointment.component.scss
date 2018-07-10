@@ -1,0 +1,44 @@
+
+.transition {
+    transition: all .3s ease;
+}
+
+.appointments-container {
+    margin: 0 10px;
+    
+    @media screen and (min-width: 1200px) and (max-width: 1600px) {
+        margin: 15px;
+    }
+    // iphone 6 plus portrait
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+        margin: 2px;
+    }
+    // iphone 6 plus landscape
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 16/9) and (orientation: landscape) {
+        margin: 2px;
+    }
+    // iphone 6 portrait
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+        margin: 2px;
+    }
+    // iphone 6 landscape
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+        margin: 2px;
+    }
+    // iphone 5/5s portrait
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        margin: 2px;
+    }
+    // iphone 5/5s landscape
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+        margin: 2px;
+    }
+    // iphone 4/4s portrait
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        margin: 2px;
+    }
+    // iphone 4/4s landscape
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        margin: 2px;
+    }
+}

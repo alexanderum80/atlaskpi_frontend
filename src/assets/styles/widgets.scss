@@ -1,0 +1,84 @@
+@import './themes/_widget-colors';
+@mixin widgetChildrenIconColor() {
+    ul.actions li>ul.dropdown-menu li>a>i.zmdi {
+        color: black !important;
+    }
+}
+
+@mixin widgetIconWhite() {
+    ul.actions li>a>i.zmdi {
+        color: white !important
+    }
+}
+
+.w-white {
+    background: $w-white !important;
+    color: black;
+    ul.actions li>a>i.zmdi {
+        color: black !important
+    }
+    @include widgetChildrenIconColor();
+}
+
+.w-orange {
+    background: $w-orange !important;
+    color: $w-white;
+    @include widgetIconWhite();
+    @include widgetChildrenIconColor();
+}
+
+.w-blue {
+    background: $w-blue !important;
+    color: $w-white;
+    @include widgetIconWhite();
+    @include widgetChildrenIconColor();
+}
+
+.w-green {
+    background: $w-green !important;
+    color: $w-white;
+    @include widgetIconWhite();
+    @include widgetChildrenIconColor();
+}
+
+.w-purple {
+    background: $w-purple !important;
+    color: $w-white;
+    @include widgetIconWhite();
+    @include widgetChildrenIconColor();
+}
+
+.w-light-green {
+    background: $w-light-green !important;
+    color: $w-white;
+    @include widgetIconWhite();
+    @include widgetChildrenIconColor();
+}
+
+.w-sei-green {
+    background: $w-sei-green !important;
+    color: $w-white;
+    @include widgetIconWhite();
+    @include widgetChildrenIconColor();
+}
+
+.w-purple {
+    background: $w-purple !important;
+    color: $w-white;
+    @include widgetIconWhite();
+    @include widgetChildrenIconColor();
+}
+
+.w-light-purple {
+    background: $w-light-purple !important;
+    color: $w-white;
+    @include widgetIconWhite();
+    @include widgetChildrenIconColor();
+}
+
+.w-pink {
+    background: $w-pink !important;
+    color: $w-white;
+    @include widgetIconWhite();
+    @include widgetChildrenIconColor();
+}

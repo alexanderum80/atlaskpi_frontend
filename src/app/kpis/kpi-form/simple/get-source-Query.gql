@@ -1,0 +1,5 @@
+query KpiCriteria($input: KPIFilterCriteria) {
+    kpiCriteria(input: $input) {
+        criteriaValue
+    }
+}

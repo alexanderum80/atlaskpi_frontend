@@ -1,0 +1,6 @@
+query MonthAvgSales($date: String!){
+  monthAvgSales(date: $date) {
+    _id { source }
+    amount
+  }
+}

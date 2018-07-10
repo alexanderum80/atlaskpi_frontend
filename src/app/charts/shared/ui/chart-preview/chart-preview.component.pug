@@ -1,0 +1,13 @@
+
+//- chart preview
+.block-header
+    h2.m-t-30.text-center  {{ title }}
+.h-100(layout="column", layout-align="start center")
+    .chart-fit-mobile.overflow-auto(flex)
+        div([chart]="chart", *ngIf="hasSeries")
+        div(*ngIf="isSeriesEmpty")
+            .h-100(layout="row", layout-padding, layout-align="center center")
+                div.text-center(flex)
+                    i.zmdi.zmdi-image.no-data-icon.c-lightGray
+    div(flex)
+        h2.text-center Chart Preview

@@ -1,0 +1,18 @@
+mutation DeleteWidgetFromDashboard($dashboardId: String!, $widgetId: String!) {
+    deleteWidgetFromDashboard(dashboardId: $dashboardId, widgetId: $widgetId) {
+        success
+        errors {
+            field
+            errors
+        }
+
+        entity {
+            _id
+            name
+            charts
+            widgets
+            owner
+            users
+        }
+    }
+}

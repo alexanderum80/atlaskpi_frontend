@@ -1,0 +1,34 @@
+div(layout-gt-sm="row", layout-sm="column")
+
+    //- chart info
+    div(flex)
+        bw-tab-set
+            bwTab(heading="Data")
+                  kpi-chart-basic-info.p-b-40([fg]="fg", [kpis]="kpis", [kpiList]="kpiList", [dashboardList]="dashboardList", [chartType]="chartType")
+            bwTab(heading="Format")
+                  kpi-chart-format-info(flex, [fg]="fg",
+                    [chartDefinition]="chartDefinition",
+                    [isLegendEnabled]="isLegendsEnabled()",
+                    [isInvertAxisEnabled]="isInvertAxisEnabled()",
+                    (TooltipChanges)="processTooltipChanges($event)",
+                    (labelItemsColorsChanges)="processLabelItemColors($event)",
+                    (serieColorChange)="processSerieColors($event)",
+                    [tooltip_state]="this.custom")
+
+    //- chart preview
+    div(flex)
+        .h-100(layout="column")
+            div(flex)
+                div(layout="row", layout-align="center center")
+                    div(flex)
+                        kpi-chart-preview([fg]="fg", [chartDefinition]="chartDefinition", [size]="chartSize", (serieName)="openSelectColor($event)")
+
+            .m-t-30(flex)
+                .m-b-10(layout="row", layout-margin, layout-align="end end")
+                    .m-l-10(flex-initial)
+                        .flex#step-eleven
+                            bw-button(flex-initial, color="blue", title="Save", icon="floppy",
+                                class="normal", (clicked)="saveChart()", [disabled]="!canSave")
+                    .m-l-10(flex-initial)
+                        bw-button(flex-initial, color="black", title="Cancel", icon="close", [simple]="true", 
+                            class="normal", (clicked)="cancel()")

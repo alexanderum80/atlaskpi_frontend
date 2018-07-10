@@ -1,0 +1,9 @@
+mutation DeleteBusinessUnit($id: String!) {
+    deleteBusinessUnit(_id: $id) {
+        errors {
+            field
+            errors
+        }
+        success
+    }
+}

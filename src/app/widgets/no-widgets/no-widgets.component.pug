@@ -1,0 +1,9 @@
+.no-widgets-container.h-100.p-15(layout="column", layout-align="center center")
+  .text-center(flex-initial)
+    i.icon.zmdi.zmdi-widgets
+  .text-center(flex)
+    h2 Looks Like there are no widgets defined yet
+    small Widgets let you add numeric values with comparison to previous dates or charts
+  .m-t-35(flex)
+    bw-button(color="blue", title="Add First Widget", icon="plus", [disabled]="!vm.authorizedTo('AddWidgetActivity')",
+              [rounded]="true", size="lg", (clicked)="addWidget()")

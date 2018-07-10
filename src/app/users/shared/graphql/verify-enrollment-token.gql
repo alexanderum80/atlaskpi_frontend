@@ -1,0 +1,9 @@
+query isEnrollmentTokenValid($token: String!) {
+    isEnrollmentTokenValid(token: $token) {
+        isValid
+        profile {
+            firstName
+            lastName
+        }
+    }
+}

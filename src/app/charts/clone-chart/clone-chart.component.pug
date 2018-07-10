@@ -1,0 +1,12 @@
+.h-100.chart-mobile-height(layout="column", layout-padding)
+
+    bw-card.full-height(flex, layout="column", [depth]="1")
+        bw-card-header(flex-none, [padded]='true')
+            h2
+                | Clone chart
+        bw-card-body(flex)
+          div(layout="row", layout-align="center center", *ngIf="loading")
+              div(flex="45")
+              bw-preloader(flex, color="gray")
+          kpi-chart-form.animated.fadeIn(*ngIf="chart && !loading", [fg]="fg", [chartModel]="chartModel",
+                                         (result)="onChartFormEvent($event)")

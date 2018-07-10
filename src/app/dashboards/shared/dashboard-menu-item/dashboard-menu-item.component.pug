@@ -1,0 +1,12 @@
+li(
+    class="{{activeClass}}",
+    [ngClass]="{ 'toggled': expanded, 'sub-menu': item.children }",
+    (click)="onItemClicked($event)")
+    a(href='', (click)="$event.preventDefault()", [class.fc-alt]="alt")
+        i(*ngIf="item.icon", class="zmdi zmdi-{{item.icon}}")
+        | {{item.title}}
+
+    ul([class.hidden]="!expanded", *ngIf="item.children")
+        kpi-dashboard-menu-item(
+            [item]="child",
+            *ngFor="let child of item.children")

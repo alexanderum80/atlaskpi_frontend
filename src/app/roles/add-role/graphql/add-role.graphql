@@ -1,0 +1,6 @@
+mutation CreateRole($data: RoleDetailsInput) {
+    createRole(data: $data) {
+        _id
+        name
+    }
+}

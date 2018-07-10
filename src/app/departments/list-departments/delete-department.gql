@@ -1,0 +1,9 @@
+mutation DeleteDepartment($_id: String!){
+  deleteDepartment(_id: $_id){
+    errors {
+      field
+      errors
+    }
+    success
+  }
+}

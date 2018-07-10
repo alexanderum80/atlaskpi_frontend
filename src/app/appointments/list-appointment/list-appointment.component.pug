@@ -1,0 +1,135 @@
+.appointments-container.z-depth-1.bgm-white(layout="column", layout-padding)
+    .controls(flex)
+        .p-10(layout-xs="column", layout-gt-sm="row", layout-align-center-center, layout-padding)
+            bw-select-picker.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
+                                    [fg]="fg",
+                                    field="timezone",
+                                    label="Timezone:",
+                                    [items]="timeZonesList",
+                                    [liveSearch]="true",
+                                    liveSearchPlaceholder="...search...",
+                                    noneSelectedText="Select Timezone")
+            bw-select-picker.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
+                                    [fg]="fg", 
+                                    field="provider",
+                                    label="Providers:",
+                                    [multiple]="true",
+                                    [items]="providerList",
+                                    [liveSearch]="true",
+                                    noneSelectedText="All Providers",
+                                    #providerpicker,
+                                    #sideBarSelectProvider=""
+                                    )  
+
+            
+            .separator(flex)
+            //- actions
+            .calendar-actions(flex, flex-xs="100", flex-gt-sm="33")
+                div(layout="column", layout-align="center center", layout-margin)
+                    //- back, today, next
+                    div(flex)
+                        bw-button-group([options]="options", type="primary", [activeOption]="viewValue", (optionSelected)="onViewSelected($event)")
+                    
+                    .m-t-5(flex)
+                        .btn-group
+                            bw-button(
+                                mwlCalendarPreviousView="",
+                                [view]="view",
+                                [(viewDate)]="viewDate",
+                                (viewDateChange)="fetchEvents()",
+                                [preventEmitClick]="preventEmitClick",
+                                icon="arrow-left",
+                                [simple]="true",
+                                color="blue"
+                            )
+                            bw-button(
+                                mwlCalendarToday="",
+                                [(viewDate)]="viewDate",
+                                (viewDateChange)="fetchEvents()",
+                                [preventEmitClick]="preventEmitClick",
+                                [simple]="true",
+                                color="blue",
+                                title="Today"
+                            )
+                            bw-button(
+                                mwlCalendarNextView="",
+                                [view]="view",
+                                [(viewDate)]="viewDate",
+                                (viewDateChange)="fetchEvents()",
+                                [preventEmitClick]="preventEmitClick",
+                                icon="arrow-right",
+                                [simple]="true",
+                                color="blue"
+                            )
+                    .text-center.m-t-15(flex)
+                        h3 {{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}
+
+        .p-10(layout="row")
+            div(flex-none)
+                bw-checkbox(
+                    [fg]="fg",
+                    field="cancelled",
+                    label="Show cancellations"
+                )
+
+    //- calendar info
+    .calendar-info(flex)
+        div(*ngIf="events$ | async; let asyncEvents")
+        
+            div([ngSwitch]="view")
+                mwl-calendar-month-view(*ngSwitchCase="'month'", [viewDate]="viewDate", [events]="asyncEvents", [refresh]="refresh", [activeDayIsOpen]="activeDayIsOpen",
+                                        (dayClicked)="dayClicked($event.day)", (eventTimesChanged)="eventTimesChanged($event)", (eventClicked)="handleEvent('Clicked', $event.event)")
+                mwl-calendar-week-view(*ngSwitchCase="'week'", [viewDate]="viewDate", [events]="asyncEvents", [refresh]="refresh", (eventTimesChanged)="eventTimesChanged($event)",
+                                        (eventClicked)="handleEvent('Clicked', $event.event)")
+                mwl-calendar-day-view(*ngSwitchCase="'day'", [viewDate]="viewDate", [events]="asyncEvents", [refresh]="refresh", (eventTimesChanged)="eventTimesChanged($event)",
+                                        (eventClicked)="handleEvent('Clicked', $event.event)")
+
+bw-modal(#eventInfoModal='', animation="true", keyboard="true", backdrop="true", size="md",
+         (onClosed)="modalClose()", (onDismiss)="modalClose()")
+    bw-modal-header
+        h4.modal-title.c-black Event Info:
+    bw-modal-body
+        div(layout="column", layout-padding, layout-align="center start")
+            .m-b-15(*ngIf="eventModalData?.event.name")
+                h2 Name: 
+                span {{ eventModalData?.event.name }}
+
+            h2 Reason: 
+            span.m-b-15 {{ eventModalData?.event.title }}
+                
+            .m-b-15(*ngIf="eventModalData?.event.title")
+                h2(flex="20") Patient: 
+                span(flex) {{ eventModalData?.event.fullName }}
+
+            .m-b-15(*ngIf="eventModalData?.event.provider")
+                h2 Provider: 
+                span {{ eventModalData?.event.provider }}
+
+            //- .m-b-15(*ngIf="eventModalData?.event.provider")
+            //-     h2 Provider: 
+            //-     span {{ eventModalData?.event.provider }}
+
+            .m-b-15
+                h2 Start: 
+                span {{ eventModalData?.event.start | date:'short' }}
+
+            .m-b-15(*ngIf="eventModalData?.event.end")
+                h2 End: 
+                span {{ eventModalData?.event.end | date:'short' }}
+      
+    bw-modal-footer
+        bw-button(color="blue", title="Ok", class="normal", (clicked)="modalClose()")
+
+
+//- bw-modal(#removeEventModal='', animation="true", keyboard="true", backdrop="true", size="md",
+//-          (onClosed)="cancelRemove()", (onDismiss)="cancelRemove()")
+//-   bw-modal-header
+//-     h4.modal-title.c-black Remove Appointment
+//-   bw-modal-body
+//-     div(layout="row", layout-padding, layout-align="center center")
+//-         i.zmdi.zmdi-delete.c-red.big-icon(flex-none)
+//-         strong(flex) Are you sure you want to permanently remove this Appointment?
+      
+//-   bw-modal-footer
+//-     bw-button(color="blue", title="Confirm", class="normal", (clicked)="deleteEvent()")
+//-     bw-button(title="Cancel", [simple]="true", icon="close", (clicked)="cancelRemove()")

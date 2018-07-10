@@ -1,0 +1,15 @@
+mutation CreateKpi($input: CreateKpiInput!) {
+    createKpi(input: $input) {
+        entity {
+            name
+            description
+            frequency
+        }
+
+        errors {
+            field
+            errors
+        }
+        success
+    }
+}

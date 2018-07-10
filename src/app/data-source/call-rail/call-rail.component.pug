@@ -1,0 +1,47 @@
+bw-modal(#connectRails='')
+  bw-modal-header.callrail-tooltip-header
+    div(layout="row", layout-padding)
+      div(flex-initial)
+        i.zmdi.zmdi-settings
+      div(flex-initial)
+        span &nbsp;
+        span Connection wizard
+  bw-modal-body
+    div(layout="row", layout-align="center center", layout-padding)
+      div.p-t-10
+        //- image
+        img(src="{{callRailImagePath}}", alt="Call Rail Logo")
+    div(layout="row", layout-align="center center")
+      div
+        //- text i.e. CallRail
+        p CallRail
+    
+    div(layout="column")
+      //- accountId divs
+      div(layout="row", layout-align="center center")
+        //- input
+        div(flex="60")
+          bw-password([fg]="fg", field="accountId", label="Enter Account ID", [required]="true")
+      div(layout="row", layout-align="end center")
+        div(flex="50")
+          //- text for tooltips
+          span.c-blue Where can I find this?
+          bw-button(icon="info-outline", color="gray", [simple]="true", (clicked)="openAccountIdToolTip()")
+          .accountId-tooltip.b-r-5([class.hidden]="accountIdToolTip")
+            kpi-call-rail-accountid-tooltip((closeAccountIdToolTip)="closeAccountIdToolTip($event)")
+
+      //- apiKey divs
+      div(layout="row", layout-align="center center")
+        //- input
+        div(flex="60")
+          bw-password([fg]="fg", field="apiKey", label="Enter your API Key", [required]="true")
+      div(layout="row", layout-align="end center")
+        div(flex="50")
+          //- text for tooltip
+          span.c-blue Where can I find this?
+          bw-button(icon="info-outline", color="gray", [simple]="true", (clicked)="openApiKeyToolTip()")
+          .apiKey-tooltip.b-r-5([class.hidden]="apiKeyToolTip")
+            kpi-call-rail-apikey-tooltip((closeApiKeyToolTip)="closeApiKeyToolTip($event)")
+  bw-modal-footer
+    bw-button(icon="input-hdmi", title="CONNECT", color="blue", (clicked)="connect()", [disabled]="!isFormValid()")
+    bw-button(icon="close", title="Cancel", [simple]="true", (clicked)="cancel()")

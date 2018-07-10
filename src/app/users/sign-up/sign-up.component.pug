@@ -1,0 +1,93 @@
+form#signup-form(*ngIf="!leadCreated", flex, [formGroup]="fg", (ngSubmit)="signUp()")
+    .sign-up-container.h-100(
+        layout="column", layout-align="center center",
+        [class.mobile]="mobile",
+        [class.creating-account]="creatingAccount",
+        [class.account-ready]="accountReady")
+        //-logo
+        .m-b-15(flex-none)
+            img.logo(src='./assets/img/logos/white-logo.png')
+
+        //- spinner
+        .sk-fading-circle.spinner(*ngIf="creatingAccount")
+            .sk-circle.sk-circle1
+            .sk-circle.sk-circle2
+            .sk-circle.sk-circle3
+            .sk-circle.sk-circle4
+            .sk-circle.sk-circle5
+            .sk-circle.sk-circle6
+            .sk-circle.sk-circle7
+            .sk-circle.sk-circle8
+            .sk-circle.sk-circle9
+            .sk-circle.sk-circle10
+            .sk-circle.sk-circle11
+            .sk-circle.sk-circle12
+
+        //- account ready
+        .account-ready.animated.zoomIn(*ngIf="accountReady", flex-none)
+            i.zmdi.zmdi-check-all
+                    
+        //-company name
+        .form.m-t-15(*ngIf="!authorizationCode", layout="column", layout-align="center center", flex)
+            .m-15(flex-none)
+                div(layout="row")
+                    bw-text-box(flex,
+                        [fg]="fg",
+                        field="accountName",
+                        label="Company Name",
+                        leftIcon="store",
+                        [alt]="true",
+                        [required])
+
+                    .flex-10-nogrow.m-t-15(*ngIf="accountNameAvailable && signupModel.accountName != undefined")
+                        i.zmdi.zmdi-check.m-l-10.c-white
+                    .flex-10-nogrow.m-t-15(*ngIf="!accountNameAvailable && signupModel.accountName != undefined")
+                        i.zmdi.zmdi-close.m-l-10.m-r-10.c-white
+            //-example data
+            .m-15.text-center(flex-none)
+                div(layout="row")
+                    div(flex)
+                        bw-text-box([fg]="fg", leftIcon="account-circle", field="firstName", label="First Name", [required]="false", [alt]="true")
+                    div(flex)
+                        bw-text-box([fg]="fg", field="lastName", label="Last Name", [required]="false", [alt]="true") 
+            //-email
+            .m-15(flex-none)
+                bw-email.email([fg]="fg", [required], field="email", label="Email Address", [alt]="true")
+            //- error
+            div(flex-none)
+                p.lead.c-red(*ngIf="error !== undefined")
+                    | {{error}}
+            //-action
+            .m-b-15(flex-none)
+                bw-button(color="white", title="Sign Up", class="normal", [rounded]="true", (clicked)="signUp()",
+                        [disabled]="!formValid", type="submit")
+
+        .authorization-form(*ngIf="authorizationCode  && !creatingAccount", layout="column")
+            .m-t-25(flex)
+                bw-text-box([fg]="fg", field="authorizationCode", label="Code", [required]="false", [alt]="true") 
+            .m-b-15(flex)
+                bw-button(color="white", title="Authorize", class="normal", [rounded]="true", (clicked)="signUp()",
+                        [disabled]="!authorizedCodeEntered", type="submit")
+
+        //-link to signIn
+        .links(*ngIf="!creatingAccount && !accountReady")
+            div
+                a#have-an-account.c-white(href="#", (click)="goToSignin($event)") I already have an account
+            .m-t-5(*ngIf="!authorizationCode")
+                a.c-white(href="#", (click)="switchToAuthorize($event)") I have an authorization code
+            .m-t-5(*ngIf="authorizationCode")
+                a.c-white(href="#", (click)="backToSignUp($event)") Back to Sign Up
+
+.lead-created-container(*ngIf="leadCreated", layout="column")
+    .m-b-15.text-center(flex-none)
+        img.logo(src='./assets/img/logos/white-logo.png')
+    .p-30
+        h2.text-center.c-white 
+            | Thank you! 
+        p.m-t-15.lead.c-white
+            | At this point we received all the data we need to create the account for you. We will contact you shortly. 
+        p.m-t-35.lead.c-white
+            | If you have any question please contact us at support@atlaskpi.com
+        p.m-t-45.lead.c-white.text-center Have a great day!
+        .text-center.m-t-10
+            a(href="#", (click)="goToSignin($this)") Back to Login

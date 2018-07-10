@@ -1,0 +1,26 @@
+mutation CreateTarget($data: TargetInput) {
+    createTarget(data: $data) {
+        success
+        entity {
+            name
+            datepicker
+            vary
+            amount
+            amountBy
+            type
+            period
+            notify {
+                users
+                notification
+            }
+            visible
+            owner
+            chart
+            stackName
+        }
+        errors {
+            field
+            errors
+        }
+    }
+}

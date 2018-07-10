@@ -1,0 +1,11 @@
+.no-slideshow-container.h-100.p-15(layout="column", layout-align="center center")
+  .text-center(flex-initial)
+    i.icon.zmdi.zmdi-collection-case-play
+  .text-center(flex)
+    h2 Looks Like there are no slideshows defined yet
+    small You can use slideshows among other things to show useful information all over your office to your employees
+  .m-t-35(flex)
+    bw-button(color="blue", title="Add First Slideshow", icon="plus", [disabled]="!vm.authorizedTo('AddSlideshowActivity')",
+              [rounded]="true", size="lg", (clicked)="onAddSlideshow()")
+
+

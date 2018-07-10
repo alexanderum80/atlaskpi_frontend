@@ -1,0 +1,17 @@
+.chart-selector-container {
+    padding: 12px 4px 0 4px;
+    border-radius: 5px;
+    font-size: 12px;
+}
+.chart-selector-container.active {
+    background-color: #eee;
+}
+img {
+    cursor: pointer;
+}
+.name {
+    margin: 4px;
+}
+.hover {
+    background-color: #eee;
+}

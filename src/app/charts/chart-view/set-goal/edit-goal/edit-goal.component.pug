@@ -1,0 +1,16 @@
+div(layout="column", layout-padding)
+  bw-modal.modal-scroll(#targetModal='', (onClosed)="cancel()", (onDismiss)="cancel()")
+    bw-modal-header
+
+      div(layout="row", layout-padding)
+        .text-center(*ngIf="chartHelper", flex-xs="100", flex-gt-xs="100", flex-gt-sm="100", flex-gt-lg="20")
+          h2.target-title You are a setting a Target for {{chartHelper.title}}
+        bw-button(icon="info-outline", color="black", [simple]="true", (clicked)="showToolTip()")
+        .target-tooltip-parent([class.hidden]="!targetTooltip")
+          kpi-target-tooltip((closeToolTip)="closeToolTip($event)")
+    bw-modal-body
+        kpi-target-form([fg]="fg", [fgNotify]="fgNotify", [fgVisible]="fgVisible", [mode]="'edit'", [stackList]="stackList",
+            [nonStackList]="nonStackList")
+    bw-modal-footer
+      bw-button.flex-nogrow(icon="check", color="green", title="Set", (clicked)="set()", [disabled]="!valid")
+      bw-button.flex-nogrow(icon="close", title="Cancel", color="grey", [simple]="true", (clicked)="cancel()")

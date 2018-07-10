@@ -1,0 +1,107 @@
+//-  GENERAL INFO SECTION
+.m-20(*ngIf="vm.fg")
+    div(flex)
+        div(flex, layout="row", layout-xs="column")
+            div(flex)   
+                .mainHeading.top-16
+                    .zmdi.zmdi-file-text.m-r-10
+                    | GENERAL INFO
+    .m-l-40.m-r-10(flex)
+        div(flex)
+            bw-text-box.font(flex, [fg]="vm.fg", field="name", label="Location Name", [required]="true")
+            bw-text-area.font(flex,     
+                                [fg]="vm.fg", 
+                                field="description",
+                                placeholder="Some description...",
+                                [autosize]="false")
+        div(layout="row", layout-xs="column")
+            div.m-r-10(flex)
+                bw-select-picker.font(
+                                [fg]="vm.fg",
+                                field="businessunits", 
+                                [items]="vm.businessUnits", 
+                                [liveSearch]="true", 
+                                noneSelectedText="NOTHING SELECTED", 
+                                [multiple]="true", 
+                                label="Business Units",
+                                liveSearchPlaceholder="...search for Business Units...")
+            div.m-l-10(flex)
+                bw-select-picker.font(
+                                [fg]="vm.fg",
+                                field="timezone", 
+                                label="Timezone",
+                                [items]="vm.timeZonesList", 
+                                [liveSearch]="true", 
+                                noneSelectedText="NOTHING SELECTED", 
+                                [multiple]="false", 
+                                liveSearchPlaceholder="...search for Timezone...")
+    .m-l-40.m-r-10(flex)
+        kpi-tags.font([fg]="vm.fg", field="tags", [existingTags]="vm.existingTags", placeholder="Enter alias and press enter")
+//- ADDRESS SECTION
+.m-20
+    div(flex)
+        div(flex, layout="row", layout-xs="column")
+            div(flex)
+                .mainHeading.top-16
+                    .zmdi.zmdi-pin.m-r-10
+                    | ADDRESS
+    .m-l-40.m-r-10(flex)
+        div(flex, layout="row", layout-xs="column")
+            bw-text-box.m-r-10.font(flex-xs="100", flex-gt-xs="100", flex-gt-md="50", flex-gt-lg="50", [fg]="vm.fg", field="street", label="Street", [required]="true")
+            bw-text-box.m-l-5.font(flex-xs="100", flex-gt-xs="100", flex-gt-md="50", flex-gt-lg="50", [fg]="vm.fg", field="city", label="City", [required]="true")
+    .m-l-40.m-r-10(flex)
+        div(layout-gt-sm="row", layout-xs="column", layout-padding)
+            bw-select-picker.font.m-r-1.top-16(flex-xs="100", flex-gt-xs="100", flex-gt-md="50", flex-gt-lg="50",
+                                [fg]="vm.fg",
+                                field="country",
+                                label="Country", 
+                                [items]="vm.countries", 
+                                [liveSearch]="true", 
+                                noneSelectedText="NOTHING SELECTED", 
+                                [multiple]="false", 
+                                liveSearchPlaceholder="...search for Country...")
+            bw-text-box.font.m-l-1(flex-xs="100", flex-gt-xs="100", flex-gt-md="30", flex-gt-lg="30", [fg]="vm.fg", field="zip", label="Zip", [required]="true")
+            bw-select-picker.font.m-l-1.top-16(flex-xs="100", flex-gt-xs="100", flex-gt-md="50", flex-gt-lg="50",
+                                [fg]="vm.fg",
+                                field="state", 
+                                label="State",
+                                [items]="vm.states", 
+                                [liveSearch]="true", 
+                                noneSelectedText="NOTHING SELECTED", 
+                                [multiple]="false", 
+                                liveSearchPlaceholder="...search for State...")
+//- OPERATION HOURS SECTION
+.m-20
+    div(flex)
+        div(flex, layout="row", layout-xs="column")
+            div(flex)
+                .mainHeading.top-16
+                    .zmdi.zmdi-time-restore.m-r-10
+                    | OPERATION HOURS
+    .m-l-40.m-r-10(flex)
+        div(flex, layout="row", layout-xs="column")                
+            div(flex)
+                h4.m-b-20.marg-centerFrom FROM
+            div(flex)
+                h4.m-b-20.marg-centerTo TO
+    .m-l-40.m-r-10(flex)
+        div(flex, layout="row", layout-xs="column", *ngFor="let item of vm.operationHours.controls; let i=index")
+            h2.font.m-r-20.top-10.textcenter.daysWeek(flex-xs="100", flex-gt-xs="100",flex-gt-md="15", flex-gt-lg="10") {{ item.controls['day'].value }} 
+            bw-text-box.font.m-r-20.top-10.textcenter(flex-xs="100", flex-gt-xs="100",flex-gt-md="15", flex-gt-lg="10",[fg]="item", field="from")
+            bw-select-picker.font.m-r-20.top-10(flex-xs="100", flex-gt-xs="100",flex-gt-md="10", flex-gt-lg="10", 
+                                            [fg]="item",
+                                            field="fromAMPM",
+                                            [items]="vm.ampm")
+            div(flex="10")
+            bw-text-box.font.m-r-20.top-10.textcenter(flex-xs="100", flex-gt-xs="100",flex-gt-md="15", flex-gt-lg="10",[fg]="item", field="to")
+            bw-select-picker.font.m-r-20.top-10(flex-xs="100", flex-gt-xs="100",flex-gt-md="10", flex-gt-lg="10", 
+                                            [fg]="item",
+                                            field="toAMPM",
+                                            [items]="vm.ampm")
+            .m-r-10(flex-xs="100", flex-gt-xs="100",flex-gt-md="10", flex-gt-lg="10", layout="row")
+                div(flex)
+                    .show_row_reset(*ngIf="!vm.dataByDayValid(i)")
+                        i.zmdi.zmdi-long-arrow-down.m-b-20.cursor(*ngIf="isLastDay(i)", (click)="addData(i)")
+                div(flex)
+                    .show_row_reset(*ngIf="!vm.dataByDayValid(i)")
+                        i.zmdi.zmdi-close.m-b-20.cursor((click)="delData(i)")

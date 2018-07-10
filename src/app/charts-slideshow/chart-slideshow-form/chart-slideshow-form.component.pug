@@ -1,0 +1,54 @@
+div(layout-xs="column", layout-gt-sm="row")
+    //- left panel ( first panel if mobile)
+    .m-t-10(flex-xs="100", flex-sm="100", flex-md="30", flex-gt-md="20")
+        .m-b-20(layout="column", layout-padding)
+            div(flex)
+                bw-text-box([fg]="fg", field="name", label="Slideshow Name", [required]="true")
+                .duplicatedNameMsg.p-b-20(*ngIf="fg.get('name').errors && fg.get('name').errors.forbiddenName && (fg.get('name').dirty || fg.get('name').touched)") Duplicated name
+            div(flex)
+                bw-text-box([fg]="fg", field="description", label="Slideshow Description", [required]="true")
+
+        div(layout="column", layout-padding, hide-xs)
+            div(flex)
+                bw-button.flex(*ngIf="editMode", color="red", title="Delete", icon="delete", class="normal", [block]="true", (clicked)="delSlideshow()", [hidden]="false")
+            div(flex)
+                bw-button.flex(color="blue", title="Preview", icon="thumb-up", class="normal", [block]="true", [disabled]="!validForm", (clicked)="showItem()")
+            div(flex)
+                bw-button.flex(color="blue", title="Save", icon="floppy", class="normal", [block]="true", [disabled]="!validForm", (clicked)="saveSlideshow()")
+            div(flex)
+                bw-button.flex(color="gray", title="Cancel", icon="close", class="normal", [block]="true", [simple]="true", (clicked)="cancel()")
+
+    //- right panel
+    div(flex)
+        div(layout-xs="column", layout-gt-sm="row", layout-wrap, layout-padding)
+            div(flex-xs="100", flex-sm="100", flex-md="50", flex-gt-md="33", *ngFor="let chart of allCharts")
+                kpi-selectable-item-frame([item]="chart", (click)="toggleChartSelection(chart)")
+                    kpi-auto-rendereable-chart.pointer-cursor([item]="chart", [minHeight]="200")
+
+
+
+    div(layout="row", layout-padding, layout-align="center center", hide-gt-sm)
+        div(flex)
+            bw-button(color="blue", title="Preview", icon="thumb-up", class="normal", [disabled]="!validForm", (clicked)="showItem()")
+        div(flex)
+            bw-button(color="blue", title="Save", icon="floppy", class="normal", [disabled]="!validForm", (clicked)="saveSlideshow()")
+        div(flex)
+            bw-button(color="gray", title="Cancel", icon="close", class="normal", [simple]="true", (clicked)="cancel()")
+
+    div(*ngIf="editMode", layout="row", layout-padding, hide-gt-sm)
+        div(flex)
+            bw-button(color="red", title="Delete", icon="delete", class="normal", [block]="true", (clicked)="delSlideshow()", [hidden]="false")
+
+bw-modal(#removeConfirmationModal='', animation="true", keyboard="true", backdrop="true", size="md",
+    (onClosed)="cancelRemove()", (onDismiss)="cancelRemove()")
+    bw-modal-header
+        h4.modal-title.c-black Remove a Slideshow  
+    bw-modal-body
+
+        .layout-row.layout-padding.layout-align-center-center
+            i.zmdi.zmdi-delete.c-red.big-icon.flex-nogrow
+            strong.flex Are you sure you want to permanently remove this slideshow?
+
+    bw-modal-footer
+        bw-button(color="blue", title="Confirm", class="normal", (clicked)="confirmRemove()")
+        bw-button(title="Cancel", [simple]="true", icon="close", (clicked)="cancelRemove()")

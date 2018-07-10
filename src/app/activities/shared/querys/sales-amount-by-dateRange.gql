@@ -1,0 +1,12 @@
+query SalesAmountByDateRange($from: String!, $to: String!){
+  salesAmountByDateRange(from: $from, to: $to) {
+    _id 
+    revenueSources {
+      count
+      amount
+      source
+    }
+    total
+    totalCount
+  }
+}

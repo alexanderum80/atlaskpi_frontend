@@ -1,0 +1,23 @@
+@import "../../../../assets/styles/_declaration.scss";
+
+.selected {
+    border: solid 4px $lightBlueColor;
+}
+
+.selection-placeholder {
+    border: solid 6px transparent;
+}
+
+.check-icon {
+    color: $lightBlueColor;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: block;
+    text-align: right;
+    opacity: 0.8;
+    padding: 15px;
+    min-height: 40px;
+    z-index: 20;
+    font-size: 24px !important;
+}

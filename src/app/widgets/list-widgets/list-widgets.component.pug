@@ -1,0 +1,64 @@
+//- Widget Collection empty
+kpi-no-widgets(*ngIf="!loading && bigWidgetsCollectionEmpty && smallWidgetsCollectionEmpty")
+
+//- widget alerts
+kpi-widget-alert(#widgetAlert)
+
+//- Big widgets
+div(layout="column", layout-padding, *ngIf="!bigWidgetsCollectionEmpty")
+    h2(flex) Size: Big
+    div(layout="row", layout-wrap, layout-padding)
+        div(*ngFor="let bigWidget of bigWidgets", 
+            flex-xs="100",
+            flex-sm="50",
+            flex-lg="25")
+            kpi-widget-selection-frame([widget]="bigWidget")
+                kpi-widget-view.pointer-cursor([widget]="bigWidget", [widgetPreview]="false", (done)="onActionClicked($event)")
+
+//- Small widgets
+div(layout="column", layout-padding, *ngIf="!smallWidgetsCollectionEmpty")
+    h2.flex Size: Small
+    .h-auto(layout="row", layout-wrap, layout-padding)
+        div(*ngFor="let smallWidget of smallWidgets",
+            flex-xs="50",
+            flex-sm="25",
+            flex-lg="12-5")
+            kpi-widget-selection-frame([widget]="smallWidget")
+                kpi-widget-view.pointer-cursor([widget]="smallWidget", [widgetPreview]="false", (done)="onActionClicked($event)")
+
+kpi-add-item(*ngIf="ngIfAddItem", (onItemClicked)="addWidget()", [itemViewModel]="vm", [addItemActivityName]="'AddWidgetActivity'")
+
+//- confirm remove widget modal
+bw-modal(#removeConfirmationModal='', animation="true", keyboard="true", backdrop="true", size="md",
+         (onClosed)="cancelRemove()", (onDismiss)="cancelRemove()")
+  bw-modal-header
+    h4.modal-title.c-black Remove Widget
+  bw-modal-body
+    
+    div(layout="row", layout-padding, layout-align="center center")
+        i.zmdi.zmdi-delete.c-red.big-icon.m-r-20(flex-none)
+        strong(flex) Are you sure you want to permanently remove this widget?
+      
+  bw-modal-footer
+    bw-button(color="blue", title="Confirm", class="normal", (clicked)="confirmRemove()")
+    bw-button(title="Cancel", [simple]="true", icon="close", (clicked)="cancelRemove()")
+
+
+//- error modal
+bw-modal(#errorModal='', animation="true", keyboard="true", backdrop="true", size="md")
+  bw-modal-header
+    h4.modal-title.c-black {{lastError?.title}}
+  bw-modal-body
+    
+    div(layout="row", layout-padding, layout-align="center center")
+        i.zmdi.zmdi-alert-octagon.c-red.big-icon.m-r-20(flex-none)
+        div(layout="column", flex)
+            .m-b-10(flex) {{lastError?.msg}}
+            div(*ngFor="let item of lastError?.items", flex)
+                strong {{item}}
+      
+  bw-modal-footer
+    bw-button(color="blue", title="Ok", [simple]="true", icon="close", (clicked)="errorModal.close()")
+
+
+router-outlet

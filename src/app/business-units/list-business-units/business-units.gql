@@ -1,0 +1,7 @@
+query BusinessUnits {
+    businessUnits {
+        _id
+        name
+        serviceType
+    }
+}

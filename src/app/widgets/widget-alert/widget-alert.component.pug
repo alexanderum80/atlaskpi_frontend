@@ -1,0 +1,34 @@
+bw-modal(#modal='', size="lg", [backdrop]="backdrop")
+  //- ngIf showAlertForm or showAlertList
+  bw-modal-header
+    div(layout="row", layout-align="space-between center", layout-padding)
+      div(*ngIf="showWidgetName", flex)
+        p.text-center
+          | You are setting an alert for widget: 
+          strong.t-bold "{{widgetName}}"
+      
+      div.alert-close-btn.p-5(*ngIf="showSimpleCloseBtn", flex-initial)
+        bw-button(icon="close", color="gray", [simple]="true", (clicked)="cancel()")
+  bw-modal-body
+    //- alert form
+    //- ngIf showAlertForm
+    kpi-widget-alert-form(*ngIf="showAlertForm", #alertForm, [users]="users")
+    //- no alerts
+    kpi-widget-no-alerts(*ngIf="showNoAlert", (done)="alertActions($event)")
+    //- alert list
+    //- ngIf showAlertList
+    kpi-widgets-alert-list(*ngIf="showAlertList", [alerts]="alerts", [users]="users", (done)="alertActions($event)")
+  bw-modal-footer
+    //- ngIf showAlertForm
+    div.p-b-5(*ngIf="showAlertForm", layout="row", layout-align="end center", layout-padding)
+      div.p-r-20(*ngIf="alertForm", flex-initial)
+        bw-toggle([fg]="alertForm.vm.fg", field="active", color="green", label="Active")
+      div(flex-initial)
+        bw-button(color="blue", icon="floppy", title="Save", (clicked)="save()", [disabled]="!valid")
+      div(flex-initial)
+        bw-button([simple]="true", title="Cancel", icon="close", (clicked)="cancel()")
+
+    //- ngIf showAlertList
+    div(*ngIf="showAlertList", layout="row", layout-align="end end")
+      div(flex-initial)
+        bw-button(color="blue", icon="plus", size="sm", [circular]="true", (clicked)="add()")

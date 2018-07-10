@@ -1,0 +1,17 @@
+@import "../../../../assets/styles/themes/cosmetic-mixins";
+@import "../../../../assets/styles/declaration";
+
+
+.verify-enrollment-container {
+    @include border-radius(25px);
+}
+
+.invalidPwdMsg {
+  color: rgb(218, 73, 73);
+  margin-top: -12px;
+  margin-left: 38px;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+

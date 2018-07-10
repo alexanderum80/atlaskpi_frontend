@@ -1,0 +1,8 @@
+query SlideshowById( $_id: String! ) {
+   slideshowById( _id: $_id ){
+    _id
+    name 
+    description
+    charts
+  }
+}

@@ -1,0 +1,8 @@
+query Roles {
+  findAllRoles {
+    _id
+    name
+    permissions
+    timestamp
+  }
+}

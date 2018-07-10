@@ -1,0 +1,15 @@
+mutation CreateSlideshow($input: SlideshowInput!){
+    createSlideshow(input: $input ){
+      success
+    entity {
+      _id
+      name
+      description
+      charts
+    }
+    errors {
+      field
+      errors
+    }
+  }
+}

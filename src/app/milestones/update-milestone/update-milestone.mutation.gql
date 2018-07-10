@@ -1,0 +1,24 @@
+mutation UpdateMilestone($_id: String!, $input: MilestoneInput){
+  updateMilestone(_id: $_id, input: $input) {
+  	success,
+    entity {
+      _id
+      target
+      task
+      dueDate
+      status
+      responsible {
+        _id
+        profile {
+          firstName
+          lastName
+        }
+        username
+      } 
+    },
+    errors {
+      field
+      errors
+    }
+  }
+}

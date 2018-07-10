@@ -1,0 +1,6 @@
+query widgetKpisQuery {
+        kpis {
+        _id
+        name
+    }
+}

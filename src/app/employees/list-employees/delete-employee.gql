@@ -1,0 +1,9 @@
+mutation DeleteEmployee($id: String!) {
+    deleteEmployee(_id: $id) {
+        errors {
+            field
+            errors
+        }
+        success
+    }
+}

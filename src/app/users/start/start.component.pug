@@ -1,0 +1,26 @@
+kpi-overlay(*ngIf="!mobile", [active]="true", openEffect="none", [opacity]="0.7")
+
+.start-container.hv-100(
+    layout="column",
+    layout-align="center center",
+    style="position: relative; z-index: 11",
+    [class.creating-account]="accountCreationStarted",
+    [class.account-created]="accountCreated")
+    
+    div(*ngIf="!mobile", flex-none)
+        .sign-container.sign-up(class="{{signUpPosition}}",(click)="toggle('signUp')")
+            kpi-sign-up(
+                (signinClicked)="signinClicked($event)",
+                (accountCreationStarted)="accountCreationStarted = true",
+                (accountCreated)="accountCreated = true")
+        .sign-container.sign-in(class="{{signInPosition}}",(click)="toggle('signIn')")
+            kpi-sign-in((signupClicked)="signupClicked($event)", [requireCompanyName]="!subdomainPresent")
+    
+    .sign-mobile-container(*ngIf="mobile", flex)
+        #card([class.flipped]="flipped")
+            figure.front
+                kpi-sign-up((signinClicked)="signinClicked()")
+            figure.back
+                kpi-sign-in((signupClicked)="signupClicked()", [requireCompanyName]="!subdomainPresent")
+        
+            

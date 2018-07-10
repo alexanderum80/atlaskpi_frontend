@@ -1,0 +1,26 @@
+.activity-icon {
+    width: 70px;
+    height: 70px;
+    i.zmdi {
+        width: 60px;
+        height: 60px;
+        margin: 5px;
+        background-color: rgb(31, 177, 226);
+        color: white;
+        border-radius: 50%;
+        font-size: 35px !important;
+        padding: 12px 15px;
+    }
+}
+
+.activity-header {
+    font-weight: bold;
+}
+
+.activity-content {
+    height: 80px;
+}
+
+strong {
+    font-weight: bold;
+}

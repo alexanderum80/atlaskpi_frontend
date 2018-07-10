@@ -1,0 +1,13 @@
+kpi-item-list(
+    title="Departments",
+    [items]="vm.departmentItems",
+    [itemViewModel]="vm",
+    [itemListActivityName]="actionActivityNames",
+    [addItemActivityName]="'AddDepartmentActivity'",
+    itemType="standard",
+    (onAddActionClicked)="add()",
+    (onItemActionClicked)="actionClicked($event)",
+    (onItemClicked)="editClickedList($event)")
+
+//- outlet for add/edit and delete
+router-outlet

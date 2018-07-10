@@ -1,0 +1,9 @@
+bw-modal(#editRoleModal='',
+    [backdrop]="backdrop", (onClosed)="modalClose()", (onDismiss)="modalClose()", [cssClass]="cssClass")
+  bw-modal-header
+    h4.modal-title.text-center Edit Role
+  bw-modal-body
+    kpi-role-form([role]="role", [fg]="fg")
+  bw-modal-footer
+    bw-button(title="Save", [simple]="true", (clicked)="editRole()", [disabled]="!isFormValid()")
+    bw-button(title="Cancel", [simple]="true", (clicked)="cancel()")

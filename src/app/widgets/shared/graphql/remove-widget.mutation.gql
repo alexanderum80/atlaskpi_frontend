@@ -1,0 +1,15 @@
+mutation($id: String!) {
+  removeWidget(id: $id) {
+    entity {
+      _id
+      type
+      size
+      name
+    }
+    errors {
+      field
+      errors
+    }
+    success
+  }
+}

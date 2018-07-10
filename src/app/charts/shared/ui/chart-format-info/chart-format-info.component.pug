@@ -1,0 +1,186 @@
+.block-header
+    h2.m-t-10 Tooltip
+.m-10(flex, layout="column")
+    bw-checkbox.m-l-40(flex-none, [fg]="fg", field="tooltipEnabled", label="Enabled", value="true")
+    .layout-colum.m-l-40(*ngIf="fg.value.tooltipEnabled")
+        bw-select-picker(flex="50", [fg]="fg",
+            field="predefinedTooltipFormat",
+            [items]="toolTipFormatList",
+            leftIcon="collection-item",
+            label="Select Tooltip Format",
+            required="true",
+            value="default"
+        )
+
+        bw-checkbox(flex-none, [fg]="fg", field="tooltipCustomEnabled", label="CUSTOM", [value]="this.tooltip_state.enableCustom")
+        .layout-colum.m-l-10(*ngIf="fg.value.tooltipCustomEnabled")
+            .m-t-10
+            div(layout="row", layout-white) 
+                h2.m-l-5(flex-gt-md="20",flex-xs="20", flex-gt-xs="20") x value
+                div(flex, layout="row")
+                    bw-button.m-l-5(flex-none, [color]="(this.tooltip_state.xValue.black ? 'blue' : 'white')",  icon="format-bold", 
+                            class="normal", size="sm", (clicked)="this.tooltip_state.xValue.black=!this.tooltip_state.xValue.black")                  
+                    bw-button.m-l-5(flex-none, [color]="(this.tooltip_state.xValue.cursive ? 'blue' : 'white')", icon="format-italic", 
+                            class="normal", size="sm", (clicked)="this.tooltip_state.xValue.cursive=!this.tooltip_state.xValue.cursive")                 
+                    bw-button.m-l-5(flex-none, [color]="(this.tooltip_state.xValue.under ? 'blue' : 'white')", icon="format-underlined", 
+                            class="normal", size="sm", (clicked)="this.tooltip_state.xValue.under=!this.tooltip_state.xValue.under")
+                    bw-select-picker.m-l-10(flex="10", flex-gt-md="10", flex-gt-lg="10", [fg]="fg", [value]="this.tooltip_state.xValue.size",
+                    field="sizeX",
+                    [items]="sizeTypes",
+                    noneSelectedText="Sizes"
+                    )              
+                    bw-select-picker.m-l-10(flex="20", flex-gt-md="20", flex-gt-lg="15", [fg]="fg", [value]="this.tooltip_state.xValue.color"
+                    field="colorX",
+                    [items]="colorList",
+                    leftIcon="",
+                    noneSelectedText="Colors")                
+                    bw-checkbox.m-l-25(flex-gt-md="10", flex-gt-lg="10", [fg]="fg", field="includeX", label="include", [hidden]="isPie", [value]="this.tooltip_state.xValue.enable") 
+            .m-t-10
+            div(layout="row", layout-white) 
+                h2.m-l-5(flex-gt-md="20",flex-xs="20", flex-gt-xs="20") Series name
+                div(flex, layout="row")
+                    bw-button.m-l-5(flex-none, [color]="(this.tooltip_state.serieValue.black ? 'blue' : 'white')",  icon="format-bold", 
+                            class="normal", size="sm", (clicked)="this.tooltip_state.serieValue.black=!this.tooltip_state.serieValue.black")                  
+                    bw-button.m-l-5(flex-none, [color]="(this.tooltip_state.serieValue.cursive ? 'blue' : 'white')", icon="format-italic", 
+                            class="normal", size="sm", (clicked)="this.tooltip_state.serieValue.cursive=!this.tooltip_state.serieValue.cursive")                 
+                    bw-button.m-l-5(flex-none, [color]="(this.tooltip_state.serieValue.under ? 'blue' : 'white')", icon="format-underlined", 
+                            class="normal", size="sm", (clicked)="this.tooltip_state.serieValue.under=!this.tooltip_state.serieValue.under")                     
+                    bw-select-picker.m-l-10(flex="10", flex-gt-md="10", flex-gt-lg="10",  [fg]="fg", [value]="this.tooltip_state.serieValue.size",
+                    field="sizeSerie",
+                    [items]="sizeTypes",
+                    noneSelectedText="Sizes"
+                    )              
+                    bw-select-picker.m-l-10(flex="20", flex-gt-md="20", flex-gt-lg="15", [fg]="fg", [value]="this.tooltip_state.serieValue.color",
+                    field="colorSerie",
+                    [items]="colorList",
+                    leftIcon="",
+                    noneSelectedText="Colors")                
+                    bw-checkbox.m-l-25(flex-gt-md="10", flex-gt-lg="10", [fg]="fg", field="includeSerie", label="include", [hidden]="isPie", [value]="this.tooltip_state.serieValue.enable")                  
+            .m-t-10
+            div(layout="row", layout-white) 
+                h2.m-l-5(flex-gt-md="20",flex-xs="20", flex-gt-xs="20") Total
+                div(flex, layout="row")
+                    bw-button.m-l-5(flex-none, [color]="(this.tooltip_state.totalValue.black ? 'blue' : 'white')",  icon="format-bold", 
+                            class="normal", size="sm", (clicked)="this.tooltip_state.totalValue.black=!this.tooltip_state.totalValue.black")                  
+                    bw-button.m-l-5(flex-none, [color]="(this.tooltip_state.totalValue.cursive ? 'blue' : 'white')", icon="format-italic", 
+                            class="normal", size="sm", (clicked)="this.tooltip_state.totalValue.cursive=!this.tooltip_state.totalValue.cursive")                 
+                    bw-button.m-l-5(flex-none, [color]="(this.tooltip_state.totalValue.under ? 'blue' : 'white')", icon="format-underlined", 
+                            class="normal", size="sm", (clicked)="this.tooltip_state.totalValue.under=!this.tooltip_state.totalValue.under")                     
+                    bw-select-picker.m-l-10(flex="10", flex-gt-md="10", flex-gt-lg="10", [fg]="fg", [value]="this.tooltip_state.totalValue.size",
+                    field="sizeTotal",
+                    [items]="sizeTypes",
+                    noneSelectedText="Sizes"
+                    )              
+                    bw-select-picker.m-l-10(flex="20", flex-gt-md="20", flex-gt-lg="15",  [fg]="fg", [value]="this.tooltip_state.totalValue.color",
+                    field="colorTotal",
+                    [items]="colorList",
+                    leftIcon="",
+                    noneSelectedText="Colors")                
+                    bw-checkbox.m-l-25(flex-gt-md="10", flex-gt-lg="10", [fg]="fg", field="includeTotal", label="include", [hidden]="isPie", [value]="this.tooltip_state.totalValue.enable")                  
+            .m-t-10
+            div(layout="row", layout-white) 
+                h2.m-l-5(flex-none) y value
+                div(flex, layout="row")
+                    bw-button.m-l-5(flex-none, color="white", title=".0 <-", icon="", 
+                        class="normal", size="sm", (clicked)="reduceDecimals()")
+                    bw-button.m-l-5(flex-none, color="white", title=".00 ->", icon="", 
+                        class="normal", size="sm", (clicked)="extendedDecimals()")
+                    bw-button.m-l-5(flex-none, color="white", title=".00 X", icon="", 
+                        class="normal", size="sm", (clicked)="removeDecimals()")
+                    bw-button.m-l-5(flex-none, color="white", title="+ %", icon="",  
+                        class="normal", size="sm", (clicked)="pie_percent()", [disabled]="(this.tooltip_state.altas_definition_id === 'percentage' ? this.tooltip_state.altas_definition_id : false)")
+                    bw-button.m-l-5(flex-none, color="white", title="% X", icon="", 
+                        class="normal", size="sm", (clicked)="default()", [disabled]="(this.tooltip_state.altas_definition_id === 'simple' ? this.tooltip_state.altas_definition_id : false)")
+                    bw-button.m-l-5(flex-none, color="white", title="% only", icon="",
+                        class="normal", size="sm", (clicked)="percent_only()", [disabled]="(this.tooltip_state.altas_definition_id === 'percent_only' ? this.tooltip_state.altas_definition_id : false)")
+                    bw-select-picker.m-l-5(flex="20", flex-gt-md="20", flex-gt-lg="15", [fg]="fg", [value]="this.tooltip_state.yValueColor",
+                        field="colorY",
+                        [items]="colorList",
+                        leftIcon="",
+                        noneSelectedText="Colors")
+                .m-t-10
+            div(layout="row", layout-wrap) 
+                bw-text-box.m-l-5([fg]="fg", field="addPrefix", label="addPrefix", [value]="this.tooltip_state.prefix" )
+                bw-text-box.m-l-5([fg]="fg", field="addSuffix", label="addSuffix", [value]="this.tooltip_state.suffix")   
+                .flex-grow
+            .m-t-10
+            div(layout="row", layout-wrap) 
+                bw-toggle.m-l-5(flex-none, size="xs", [fg]="fg", field="crosshairs", color="blue", label="Enable crosshairs", [value] = "this.tooltip_state.crosshairs")                                
+                bw-toggle.m-l-10(flex-none, size="xs", [fg]="fg", field="shared", color="blue", label="Shared", [value] = "this.tooltip_state.shared")
+                .flex-grow           
+.block-header
+    h2.m-t-10 Series
+.m-10(layout="column")
+    bw-checkbox.m-l-40(flex-none, [fg]="fg", field="seriesDataLabels", label="Show data labels")  
+
+.block-header
+    h2.m-t-10 Colors
+.m-10(layout="column")
+    kpi-collapsable.m-l-30.m-b-30(headerText="Predefined Themes")
+        .flex.p-l-10.p-t-10(layout="row", layout-wrap, style="width: 100%;")
+            .theme-colors.p-relative([ngClass]="{'is-blank': color.id === 'blank' }", *ngFor="let color of predefinedColors", (click)="onSelectTheme(color.id)")
+                .label-slash(*ngIf="color.id === 'blank'")
+                .color-item(layout="row", *ngFor="let c of color.colors")
+                    .flex([ngStyle]="{ 'background-color': c }") 
+
+    kpi-collapsable.m-l-30.m-b-30(headerText="Custom Themes")
+        .p-15.m-l-5 Select colors for your labels
+        .p-l-10.flex(layout="row", layout-wrap)
+            .label-box.z-depth-1.p-relative(layout="row", *ngFor="let label of labelItems") {{ label.name }}
+                .label-slash
+                .label-color-box([ngStyle]="{ 'background-color': label.color }", [class.enabled]="label.enabled", 
+                            [class.disabled]="!label.enabled", (click)="onSelectColorTheme(label)")
+
+.m-10(layout="column")
+    kpi-collapsable.m-l-10([(collapsed)]="isCollapsedOtherOptions", headerText="Other options", [color]="'black'")
+        .block-header
+            h2.m-t-10 X Axis
+        .m-10(layout="column")
+            bw-text-box(flex-none, [fg]="fg", field="xAxisTitle", label="X axis title", leftIcon="long-arrow-right")
+
+        .block-header
+            h2.m-t-10 Y Axis
+        .m-10(layout="column")
+            bw-text-box(flex-none, [fg]="fg", field="yAxisTitle", label="Y axis title", leftIcon="long-arrow-up")
+        .block-header
+        .m-10(layout="column")
+            bw-checkbox.m-l-40([fg]="fg", field="invertedAxis", label="Invert axis", [hidden]="isPie", [value]="isInvertAxisEnabled")    
+        .block-header
+            h2.m-t-10 Legend
+        .m-10(layout="column")
+            bw-checkbox.m-l-40(flex, [fg]="fg", field="legendEnabled", label="Enabled", [value]="isLegendEnabled")
+            bw-radio-group.m-l-40(flex, [hidden]="!fg.value.legendEnabled", [fg]="fg", field="legendAlign", defaultValue="center")
+                div(layout="row", layout-wrap)
+                    bw-radio.m-l-20(flex="20", label="Left", value="left")
+                    bw-radio.m-l-20(flex="20", label="Center", value="center")
+                    bw-radio.m-l-20(flex="20", label="Right", value="right")
+            bw-radio-group.m-l-40(flex, [hidden]="!fg.value.legendEnabled", [fg]="fg", field="legendVerticalAlign", defaultValue="bottom")
+                div(layout="row", layout-wrap)
+                    bw-radio.m-l-20(flex="20", label="Top", value="top")
+                    bw-radio.m-l-20(flex="20", label="Middle", value="middle")
+                    bw-radio.m-l-20(flex="20", label="Bottom", value="bottom")
+            bw-radio-group.m-l-40(flex, [hidden]="!fg.value.legendEnabled", [fg]="fg", field="legendLayout", defaultValue="horizontal")
+                div(layout="row", layout-wrap)
+                    bw-radio.m-l-20(flex="20", label="Vertical", value="vertical")
+                    bw-radio.m-l-20(flex="20", label="Horizontal", value="horizontal")
+                    .flex-grow
+        
+
+
+//- Modal for select color
+bw-modal(#selectIntensityModal='', animation="true", keyboard="true", backdrop="true", size="md")
+    bw-modal-header
+        div(layout="row")
+            .p-t-10 INTENSITY
+            bw-select-picker.p-l-20(flex="30", flex-xs="50", 
+                [fg]="fg",
+                field="intensity",
+                [value]="intensityDefaultValue",
+                [items]="intensityList",
+                leftIcon="",
+                noneSelectedText="Colors")                
+    bw-modal-body
+        .p-20(layout="row", layout-wrap)
+            .theme-color-box(*ngFor="let color of themeColors[0].colors", 
+                    [ngStyle]="{ 'background-color': color.color }", (click)="onSelectColor(color.color)")
+

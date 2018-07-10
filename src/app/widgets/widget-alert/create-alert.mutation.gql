@@ -1,0 +1,20 @@
+mutation CreateAlert($input: AlertInput) {
+    createAlert(input: $input) {
+        entity {
+            notifyUsers
+            frequency
+            active
+            pushNotification
+            emailNotified
+            modelAlert {
+                name
+                id
+            }
+        }
+        success
+        errors {
+            field
+            errors
+        }
+    }
+}

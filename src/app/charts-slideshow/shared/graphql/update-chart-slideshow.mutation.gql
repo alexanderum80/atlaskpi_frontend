@@ -1,0 +1,15 @@
+mutation UpdateSlideshow($_id: String!,$input: SlideshowInput!){
+   updateSlideshow(_id:$_id, input: $input){
+    success
+    entity {
+      _id
+      name
+      description
+      charts
+    }
+    errors {
+      field
+      errors
+    }
+  }
+}

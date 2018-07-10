@@ -1,0 +1,5 @@
+query GetChartByTitle($title: String!) {
+  getChartByTitle(title: $title) {
+    _id
+  }
+}

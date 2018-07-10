@@ -1,0 +1,91 @@
+.add-button {
+    z-index: 1000;
+    position: absolute;
+    right: 20px;
+    transition: all .3s ease;
+}
+
+.inspector-margin {
+    margin-right: 305px;
+}
+
+.transition {
+    transition: all .3s ease;
+}
+
+.op-2 {
+    opacity: 0.2;
+}
+
+.op-5 {
+    opacity: 0.5;
+}
+
+.f-x-large {
+    font-size: x-large;
+}
+
+.zoom-icon-8 {
+    zoom: 8;
+}
+
+.zoom-icon-25 {
+    zoom: 25;
+}
+
+.slide-image {
+    background-size: 100% 80%;
+    background-repeat: no-repeat;
+}
+
+.align-center {
+    padding-left: 30%;
+}
+
+a {
+    color: #7a858d;
+    cursor: pointer;
+}
+
+a :hover {
+    color: blue;
+}
+
+.mobile-card-w {
+    @media only screen and (min-width: 1024px) and (max-width: 1366px) and (aspect-ratio: 512/683) and (orientation: portrait) {
+        min-width: 200px;
+    }
+    @media only screen and (min-width: 768px) and (max-width: 1024px) and (aspect-ratio: 4/3) and (orientation: landscape) {
+        min-width: 200px;
+    }
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 16/9) and (orientation: landscape) {
+        min-width: 200px;
+    }
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+        min-width: 200px;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+        min-width: 200px;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+        min-width: 200px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+        min-width: 200px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        min-width: 200px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+        min-width: 200px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        min-width: 200px;
+    }
+}
+
+.mobile-add-chart-slideshow-input {
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        min-width: 200px;
+    }
+}

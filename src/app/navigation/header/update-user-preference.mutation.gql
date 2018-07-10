@@ -1,0 +1,10 @@
+mutation updateUserPreference($id: String!, $input: ITourInput) {
+  updateUserPreference(id: $id, input: $input) {
+    success
+    entity {
+      preferences {
+        helpCenter
+      }
+    }
+  }
+}

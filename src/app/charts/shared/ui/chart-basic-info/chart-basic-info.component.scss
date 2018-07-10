@@ -1,0 +1,18 @@
+.is-disabled {
+    filter: alpha(opacity=50);
+    opacity: 0.5;
+    z-index: 1;
+    pointer-events: none;
+}
+
+h6 {
+    opacity: 0.6;
+    padding-left: 10px;
+}
+
+.duplicatedNameMsg {
+    color: rgb(218, 73, 73);
+    margin-left: 40px;
+    margin-top: -10px;
+    padding-bottom: 25px;
+}

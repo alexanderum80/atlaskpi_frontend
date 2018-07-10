@@ -1,0 +1,37 @@
+.h-100(layout="column", layout-padding)
+  bw-modal(#milestoneModal='', (onClosed)="modalClose()", (onDismiss)="modalClose()")
+    bw-modal-header
+      div(layout="row", layout-align="center center", layout-padding)
+        .text-center
+          h2.target-title Edit Milestone
+    bw-modal-body
+      div(layout="row", layout-padding)
+        //- image
+        div(flex-initial)
+          div(layout="column")
+            div(flex)
+              img(src="{{imgPath}}")
+
+        //-  data
+        div(flex)
+          div(layout="column")
+            div(flex)
+              div(layout="row", layout-padding, layout-align="start center")
+                bw-text-box([fg]="fg", leftIcon="assignment", [required]="true", 
+                  field="task", label="Milestone Task")
+
+              div(layout="row", layout-padding, layout-align="start center")
+                div(flex)
+                  bw-date-picker(flex="60", [fg]="fg", field="dueDate", label="Date", [required]="true", [config]="datePickerConfig")
+                div(flex)
+                  small.select-picker-placeholder.m-l-40(flex) Status
+                  bw-select-picker(*ngIf="statusList", leftIcon="hourglass-outline", [fg]="fg", 
+                    field="_status", [items]="statusList", noneSelectedText="status")
+
+              div(layout="column", layout-padding)
+                small.select-picker-placeholder.m-l-40(flex) Responsbile People
+                bw-select-picker([fg]="fg", leftIcon="account", noneSelectedText="select user",
+                  field="responsible", [multiple]="true", [items]="responsibleList")
+    bw-modal-footer
+      bw-button.flex-initial([disabled]="!fg.valid || !isResponsibleSelected || !isStatusSelected || !isDueDateValid", icon="check", title="DONE", color="green", (clicked)="save()")
+      bw-button.flex-initial(icon="close", title="CANCEL", color="white", (clicked)="cancel()")

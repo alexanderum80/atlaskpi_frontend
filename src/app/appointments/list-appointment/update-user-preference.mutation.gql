@@ -1,0 +1,18 @@
+mutation UpdateUserPreference($id: String!, $input: ITourInput) {
+    updateUserPreference(id: $id, input: $input) {
+        success
+        errors {
+            errors
+            field
+        }
+        entity {
+            preferences {
+                chart {
+                    showTour
+                }
+                showAppointmentCancelled
+                calendarTimeZone
+            }
+        }
+    }
+}

@@ -1,0 +1,14 @@
+query FindAllTargets {
+    findAllTargets {
+        _id
+        datepicker
+        amount
+        amountBy
+        period
+        owner
+        target
+        visible
+        notify
+        chart
+    }
+}

@@ -1,0 +1,13 @@
+mutation CreateUser($firstName: String!, $middleName: String, $lastName: String, $email: String!, $roles: [String]!) {
+    createUser(data: {firstName: $firstName, middleName: $middleName, lastName: $lastName, email: $email, roles: $roles}) {
+        user {
+            profile {
+                firstName
+            }
+        }
+        errors {
+            field
+            errors
+        }
+    }
+}

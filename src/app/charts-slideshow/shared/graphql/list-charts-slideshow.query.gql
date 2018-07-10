@@ -1,0 +1,8 @@
+query Slideshows {
+    slideshows{
+          _id
+          name 
+          description
+          charts
+    }
+}

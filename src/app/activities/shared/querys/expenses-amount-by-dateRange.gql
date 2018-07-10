@@ -1,0 +1,10 @@
+query ExpensesAmountByDateRange($from: String!, $to: String!){
+  expensesAmountByDateRange(from: $from, to: $to) {
+    expenses {
+      concept
+      amount
+    }
+    count
+    total
+  }
+}

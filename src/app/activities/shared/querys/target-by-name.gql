@@ -1,0 +1,21 @@
+query FindTargetByName($name: String) {
+    findTargetByName(name: $name) {
+        _id
+        name
+        datepicker
+        vary
+        amount
+        amountBy
+        period
+        owner
+        target
+        visible
+        notify {
+            users
+            notification
+        }
+        chart
+        stackName
+        nonStackName
+    }
+}

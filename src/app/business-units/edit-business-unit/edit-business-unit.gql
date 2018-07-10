@@ -1,0 +1,15 @@
+mutation UpdateBusinessUnit($input: UpdateBusinessUnitInput!) {
+    updateBusinessUnit(input: $input){
+
+        entity {
+            name
+            serviceType
+        }
+
+        errors{
+            field
+            errors
+        }
+        success
+    }
+} 

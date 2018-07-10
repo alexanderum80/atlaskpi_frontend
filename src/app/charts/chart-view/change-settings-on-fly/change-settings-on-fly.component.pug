@@ -1,0 +1,19 @@
+div(class="top-margin")
+    
+    .form-setting(layout="column", layout-align="center end")
+        div(flex)
+            kpi-kpi-daterange-picker([fg]="fg", [dateRange]="dateRange", [required]="true", [fromRequired]="true", [toRequired]="true")
+            
+        div.p-t-30(flex, *ngIf="chartData.chartDefinition.chart.type != 'pie'")
+            kpi-kpi-frequency-picker([fg]="fg", [frequencyType]="chart")
+        
+        div.p-t-30(flex)
+            kpi-kpi-grouping-picker([fg]="fg", *ngIf="groupingList", [groupingList]="groupingList")
+            
+        div.p-t-30(flex)
+            div(layout="row", layout-padding, layout-align="center center")
+                div(flex-none)
+                    bw-button(icon="check", color="blue", title="SET", (clicked)="updateChart()", [disabled]="!isChangedValue") 
+                div(flex-none)
+                    bw-button(icon="cancel", [simple]="true", color="black", title="CANCEL", (clicked)="back()")                        
+

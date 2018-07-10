@@ -1,0 +1,69 @@
+.filter-form-container
+    div(*ngIf="isLoading", layout="row")
+        div(#loading)
+    div(layout="row", layout-xs="column")
+        .field(flex-initial)
+            bw-select-picker([fg]="filter",
+                                field="field",
+                                #vmFields,
+                                [required]="true",
+                                [items]="vm.fields",
+                                [liveSearch]="true",
+                                liveSearchPlaceholder="...search...",
+                                noneSelectedText="Fields ({{vm.fields?.length}})")
+
+        .operator(flex-initial)
+            bw-select-picker([fg]="filter",
+                            field="operator",
+                            #vmOperators,
+                            [required]="true",
+                            dependOnField="field",
+                            [items]="vm.operators",
+                            [liveSearch]="true",
+                            liveSearchPlaceholder="...search...",
+                            noneSelectedText="Operators ({{vm.operators?.length}})")
+
+        //- textbox
+        .criteria(*ngIf="vm.isTextBox", flex)
+            bw-text-box(
+                            [fg]="filter",
+                            #vmCriteria,
+                            field="criteria",
+                            [required]="true",
+                            label="Value",
+                            [min]="1")
+        //- single selector
+        .criteria(*ngIf="vm.isSingleSelector", flex)
+            bw-select-picker(
+                            [fg]="filter",
+                            #vmCriteria,
+                            field="criteria",
+                            [required]="true",
+                            [multiple]="false",
+                            [liveSearch]="true",
+                            filterControl="criteria",
+                            liveSearchPlaceholder="...search...",
+                            [items]="vm.selectableCriteria",
+                            noneSelectedText="Criteria")
+        //- multi selector
+        .criteria(*ngIf="vm.isMultiSelector", flex)
+            bw-select-picker(
+                            [fg]="filter",
+                            #vmCriteria,
+                            field="criteria",
+                            [required]="true",
+                            [multiple]="true",
+                            [valueSeparator]="vm.multiSelectionSeparator",
+                            filterControl="criteria",
+                            [liveSearch]="true",
+                            liveSearchPlaceholder="...search...",
+                            [items]="vm.selectableCriteria",
+                            noneSelectedText="Criteria")
+        //- date picker
+        .criteria(*ngIf="vm.isDatePicker", flex)
+            bw-date-picker(
+                        [fg]="filter",
+                        field="criteria",
+                        label="date",
+                        [required]="toRequired",
+                        [config]="vm.datePickerConfig")

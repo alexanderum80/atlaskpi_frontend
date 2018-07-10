@@ -1,0 +1,128 @@
+.p-10(layout-xs="column", layout-gt-sm="row")
+    
+    .m-t-25(flex, layout="column", layout-padding)
+        //- basic info
+        div(flex)
+            bw-text-box(flex-none, [fg]="vm.formGroup", field="name", label="Name", [required]="true")
+        div(flex)
+            bw-text-box(flex-none, [fg]="vm.formGroup", field="description", label="Description")
+        div(flex)    
+            div(layout="row")
+                .m-r-10(flex="50", layout="column")
+                    small.select-picker-placeholder(flex) Size:
+                    bw-select-picker.m-r-10(flex, [fg]="vm.formGroup",
+                                                    field="size",
+                                                    [items]="vm.sizeSelectionList",
+                                                    noneSelectedText="Select Size")  
+                div(flex="50", layout="column")
+                    small.select-picker-placeholder(flex) Type:
+                    bw-select-picker(flex, [fg]="vm.formGroup",
+                                                    field="type",
+                                                    [items]="vm.typeSelectionList",
+                                                    noneSelectedText="Select Type")  
+        div(flex)
+            div(layout="row")
+                .m-r-10(layout="column", flex="50")
+                        small.select-picker-placeholder(flex) Order:
+                        bw-select-picker(flex, [fg]="vm.formGroup",
+                                        field="order",
+                                        [items]="vm.orderSelectionList",
+                                        noneSelectedText="Select Order") 
+                
+                div(layout="column", flex="50", *ngIf="vm.isNumericWidget")
+                        small.select-picker-placeholder(flex) Color:
+                        bw-select-picker(flex, [fg]="vm.formGroup",
+                                                field="color",
+                                                [items]="vm.colorSelectionList",
+                                                noneSelectedText="Select Color")   
+
+
+
+
+        //- numeric details
+        .m-t-10(flex, *ngIf="vm.isNumericWidget")
+        
+            //- numeric widget info
+            h2.m-b-20 Numeric Widget Settings:
+            
+            div(layout="column")
+                small.select-picker-placeholder(flex) Kpi:
+                bw-select-picker(flex, [fg]="vm.formGroup",
+                                        field="kpi",
+                                        [items]="vm.kpiSelectionList",
+                                        [liveSearch]="true",
+                                        liveSearchPlaceholder="... search kpis ...",
+                                        noneSelectedText="Select Kpi") 
+            
+            div(layout="row")
+                .m-r-10(layout-column, flex="50")
+                    small.select-picker-placeholder(flex) Daterange:
+                    bw-select-picker(flex, [fg]="vm.formGroup",
+                                            field="dateRange.predefined",
+                                            [items]="vm.dateRangeSelectionList",
+                                            [liveSearch]="true",
+                                            liveSearchPlaceholder="... search date ranges ...",
+                                            noneSelectedText="Select DateRange") 
+                    div(flex, [hidden]="vm.formGroup.value.predefinedDateRange !== 'custom'")
+                        bw-text-box(flex-none, [fg]="vm.formGroup", field="customFrom", label="From MM/DD/YYYY", [required]="true")
+                        bw-text-box(flex-none, [fg]="vm.formGroup", field="customTo", label="To MM/DD/YYYY", [required]="true") 
+
+                div(layout-colum, flex="50")
+                    small.select-picker-placeholder(flex) Comparison (Optional):
+                    bw-select-picker(flex, [fg]="vm.formGroup",
+                                                field="comparison",
+                                                [items]="vm.comparisonSelectionList",
+                                                noneSelectedText="Select Comparison")  
+            div(layout="row")
+                .m-r-10(flex="50", layout="column")
+                    small.select-picker-placeholder(flex) Format:
+                    bw-select-picker(flex, [fg]="vm.formGroup",
+                                                field="format",
+                                                [items]="vm.valueFormatList",
+                                                noneSelectedText="Select Format") 
+
+                div(*ngIf="vm.isComparison", flex="50", layout="column")
+                    small.select-picker-placeholder(flex) Comparison Positive Outcome:
+                    bw-select-picker(flex, [fg]="vm.formGroup",
+                                                field="comparisonArrowDirection",
+                                                [items]="vm.widgetArrowDirectionList",
+                                                noneSelectedText="Select Arrow Direction")  
+
+    
+        
+        
+        
+        
+        //- chart details
+        .m-10(flex, *ngIf="!vm.isNumericWidget")
+            //- numeric widget info
+            h2.m-b-10 Chart Widget Settings:
+
+            div(layout="row")
+                bw-select-picker(flex,  [fg]="vm.formGroup",
+                                        field="chart",
+                                        [items]="vm.chartSelectionList",
+                                        noneSelectedText="Select Chart") 
+        
+    //- widget preview
+    .widget-preview.p-15(flex)
+        .h-100(layout="column")
+            p.text-center.m-b-15(flex-initial) Widget Preview:
+
+            //- widget-preview
+            div(flex)
+                kpi-widget-preview([widgetData]="vm.widgetData")
+            
+            //- div(flex)
+            //-     div(layout="row", layout-align="center center")
+            //-         div(*ngIf="widgetSize === 'big'", flex-xs="100", flex-gt-sm="50", flex-gt-lg="25")
+            //-             kpi-widget-view.pointer-cursor([hidden]="!widgetModel", [widget]="widgetModel")
+            //-         div(*ngIf="widgetSize !== 'big'", flex-xs="50", flex-gt-sm="25", flex-gt-lg="12-5")
+            //-             kpi-widget-view.pointer-cursor([hidden]="!widgetModel", [widget]="widgetModel")
+
+            div(flex-initial)
+                .m-t-25.m-b-5(layout="row", layout-padding, layout-align="end end")
+                    bw-button(flex-initial, color="blue", title="Save", icon="floppy",
+                                            class="normal")
+                    bw-button(flex-initial, color="gray", [simple]="true", title="Cancel", icon="close",
+                                            class="normal")

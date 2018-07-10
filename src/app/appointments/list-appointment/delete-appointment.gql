@@ -1,0 +1,10 @@
+
+mutation DeleteAppointment($id: String!){
+  deleteAppointment(id: $id){
+    errors {
+      field
+      errors
+    }
+    success
+  }
+}

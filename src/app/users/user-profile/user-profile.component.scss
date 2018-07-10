@@ -1,0 +1,36 @@
+#user-profile-container {
+
+    .modal-header {
+        width: 100%;
+        height: 120px;
+        margin-bottom: 15px;
+        border-bottom: 3;
+        border-bottom-color: rgba(124, 109, 109, 0.363);
+        padding: 0px;
+        background-position: bottom;
+        background-repeat: repeat-x;
+        background-image: url("/assets/img/backgrounds/bottom-banel.png");
+
+        .profile-picture {
+            position: relative;
+            top: -20px;
+        }
+    }
+    .line-bottom {
+        width: 100%;
+        height: 20px;
+        position: absolute;
+        top: 50px;
+        
+        margin: 0px;
+        padding: 0px;
+        background-color: blue;
+    }
+
+
+    kpi-file-input {
+        position: relative;
+        top: -35px;
+        right: -50px;
+    }
+}

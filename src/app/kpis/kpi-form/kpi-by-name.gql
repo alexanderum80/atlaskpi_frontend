@@ -1,0 +1,5 @@
+query KpiByName($name: String!) {
+  kpiByName(name: $name) {
+    _id
+  }
+}

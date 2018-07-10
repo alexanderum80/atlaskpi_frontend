@@ -1,0 +1,19 @@
+.expression-parser-container
+    textarea.content(
+        #expressionControl,
+        type="text",
+        (keydown)="onKeyDown($event)",
+        (keyup)="onKeyUp($event)",
+        [formControl]="expression")
+
+    .suggestions-container.z-depth-1.bgm-white.animated.fadeInDown(*ngIf="vm.showSuggestions",
+        [style.max-height.px]="height",)
+        .suggestion-group(*ngFor="let g of vm.suggestionGroups")
+            .group-name {{ g.name }}
+            .suggestion.p-10(
+                    *ngFor="let s of g.suggestions",
+                    [class.selected]="s.selected",
+                    (click)="suggestionClicked($event, s)",
+                    (mouseenter)="hoverSuggestion($event, s)")
+                .name {{ s.title }}
+                .description {{ s.subtitle }}

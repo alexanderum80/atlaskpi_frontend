@@ -1,0 +1,39 @@
+.set-goal-container.h-100(layout="column", layout-padding)
+  div(flex)
+    .h-100(layout="column")
+      div(flex)
+        .h-100(layout="row", layout-padding, layout-align="center center")
+          div(flex="50")
+            div(layout="column")
+              div(flex-initial)
+                //- chart type
+                bw-select-picker([fg]="fg",
+                    field="target", label="Target", [liveSearch]="true", [items]="chartType", [alt]="true")
+                //- from date
+                div(flex-initial)
+                  bw-text-box([fg]="fg",
+                    field="date", label="Date From", [required]="true", [alt]="true")
+                //- to date
+                div(flex-initial)
+                  bw-text-box([fg]="fg",
+                    field="date", label="Date To", [required]="true", [alt]="true")
+                //- frequency
+                div(flex-initial)
+                  bw-select-picker([fg]="fg",
+                    field="frequency", label="Frequency", [liveSearch]="false", [items]="frequencies", [alt]="true")
+                //- grouping
+                div(flex-initial)
+                  bw-text-box([fg]="fg",
+                    field="grouping", label="Grouping", [required]="true", [alt]="true")
+                //- xAxis
+                div(flex-initial)
+                  bw-text-box([fg]="fg",
+                    field="xAxis", label="x-Axis", [required]="true", [alt]="true")
+  div(flex-initial)
+    div(layout="row", layout-align="end center", layout-padding)
+      div(flex-initial)
+        bw-button(icon="eye", color="blue", title="Preview", (clicked)="preview()")
+      div(flex-initial)
+        bw-button(icon="check", color="green", title="Save", (clicked)="save()")
+      div(flex-initial)
+        bw-button(icon="close", color="white", title="Cancel", (clicked)="cancel()")

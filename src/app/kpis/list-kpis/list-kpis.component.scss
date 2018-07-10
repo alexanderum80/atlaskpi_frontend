@@ -1,0 +1,22 @@
+.header-ribbon {
+    background-color: #EAF0F4;
+}
+
+.underlined {
+    border-bottom: #EAF0F4 1px solid;
+}
+
+.kpi-w-header {
+    @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+        width: 370px;
+    }
+    @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+        width: 335px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+        width: 277px;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+        width: 277px;
+    }
+}

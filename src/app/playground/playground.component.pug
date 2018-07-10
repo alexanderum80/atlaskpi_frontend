@@ -1,0 +1,133 @@
+//- .p-10.bgm-white(layout-xs="column", layout-gt-sm="row")
+
+//-     pre Numeric mode:  {{ numericMode }}
+
+//-     br
+
+//-     pre {{ vm.formGroup.value | json }}
+    
+    
+//-     .m-t-25(flex, layout="column", layout-padding)
+//-         //- basic info
+//-         div(flex)
+//-             bw-text-box(flex-initial, [fg]="vm.formGroup", field="name", label="Name")
+//-         div(flex)
+//-             bw-text-box(flex-initial, [fg]="vm.formGroup", field="description", label="Description")
+//-         div(flex)    
+//-             div(layout="row")
+//-                 .m-r-10(flex="50", layout="column")
+//-                     small.select-picker-placeholder(flex) Size:
+//-                     bw-select-picker.m-r-10(flex, [fg]="vm.formGroup",
+//-                                                     field="size",
+//-                                                     [items]="vm.widgetSizes",
+//-                                                     noneSelectedText="Select Size")  
+//-                 div(flex="50", layout="column")
+//-                     small.select-picker-placeholder(flex) Type:
+//-                     bw-select-picker(flex, [fg]="vm.formGroup",
+//-                                                     field="type",
+//-                                                     [items]="vm.widgetTypes",
+//-                                                     noneSelectedText="Select Type")  
+//-         div(flex)
+//-             div(layout="row")
+//-                 .m-r-10(layout="column", flex="50")
+//-                         small.select-picker-placeholder(flex) Order:
+//-                         bw-select-picker(flex, [fg]="vm.formGroup",
+//-                                         field="order",
+//-                                         [items]="vm.widgetOrders",
+//-                                         noneSelectedText="Select Order") 
+                
+//-                 div(layout="column", flex="50", *ngIf="vm.numericMode")
+//-                         small.select-picker-placeholder(flex) Color:
+//-                         bw-select-picker(flex, [fg]="vm.formGroup",
+//-                                                 field="color",
+//-                                                 [items]="vm.widgetColors",
+//-                                                 noneSelectedText="Select Color")   
+
+
+
+
+//-         //- numeric details
+//-         .m-t-10(flex, *ngIf="vm.numericMode")
+        
+//-             //- numeric widget info
+//-             h2.m-b-20 Numeric Widget Settings:
+            
+//-             div(layout="column")
+//-                 small.select-picker-placeholder(flex) Kpi:
+//-                 bw-select-picker(flex, [fg]="vm.formGroup",
+//-                                         field="kpi",
+//-                                         [items]="kpiSelectionList",
+//-                                         [liveSearch]="true",
+//-                                         liveSearchPlaceholder="... search kpis ...",
+//-                                         noneSelectedText="Select Kpi") 
+            
+//-             div(layout="row")
+//-                 .m-r-10(layout-column, flex="50")
+//-                     small.select-picker-placeholder(flex) Daterange:
+//-                     bw-select-picker(flex, [fg]="vm.formGroup",
+//-                                             field="predefinedDateRange",
+//-                                             [items]="dateRangeSelectionList",
+//-                                             [liveSearch]="true",
+//-                                             liveSearchPlaceholder="... search date ranges ...",
+//-                                             noneSelectedText="Select DateRange") 
+//-                     div(flex, *ngIf="vm.usingCustomDateRange")
+//-                         bw-text-box(flex-none, [fg]="vm.formGroup", field="customFrom", label="From MM/DD/YYYY", [required]="true")
+//-                         bw-text-box(flex-none, [fg]="vm. formGroup", field="customTo", label="To MM/DD/YYYY", [required]="true") 
+
+//-                 div(layout-colum, flex="50")
+//-                     small.select-picker-placeholder(flex) Comparison (Optional):
+//-                     bw-select-picker(flex, [fg]="vm.formGroup",
+//-                                                 field="comparison",
+//-                                                 dependOnField="predefinedDateRange",
+//-                                                 (dependantValueChanged)="updateComparisonItems($event)",
+//-                                                 [items]="comparisonSelectionList",
+//-                                                 noneSelectedText="Select Comparison")  
+//-             div(layout="row")
+//-                 .m-r-10(flex="50", layout="column")
+//-                     small.select-picker-placeholder(flex) Format:
+//-                     bw-select-picker(flex, [fg]="vm.formGroup",
+//-                                                 field="format",
+//-                                                 [items]="valueFormats",
+//-                                                 noneSelectedText="Select Arrow Direction") 
+
+//-                 div(flex="50", layout="column", [hidden]="!vm.comparison")
+//-                     small.select-picker-placeholder(flex) Comparison Positive Outcome:
+//-                     bw-select-picker(flex, [fg]="vm.formGroup",
+//-                                                 field="comparisonArrowDirection",
+//-                                                 [items]="vm.comparisonDirections",
+//-                                                 noneSelectedText="Select Arrow Direction")  
+
+    
+        
+        
+        
+        
+//-         //- chart details
+//-         .m-10(flex, *ngIf="!vm.numericMode")
+//-             //- numeric widget info
+//-             h2.m-b-10 Chart Widget Settings:
+
+//-             div(layout="row")
+//-                 bw-select-picker(flex,  [fg]="vm.formGroup",
+//-                                         field="chart",
+//-                                         [items]="chartSelectionList",
+//-                                         noneSelectedText="Select Chart") 
+        
+//-     //- widget preview
+//-     .widget-preview.p-15(flex)
+//-         div(layout="column")
+//-             p.text-center.m-b-15(flex) Widget Preview:
+            
+//-             div(flex)
+//-                 div(layout="row", layout-align="center center")
+//-                     div(*ngIf="showingBigWidget", flex-xs="100", flex-gt-sm="50", flex-gt-lg="25")
+//-                         kpi-widget-view.pointer-cursor([hidden]="!widgetModel", [widget]="widgetModel")
+//-                     div(*ngIf="!showingBigWidget", flex-xs="50", flex-gt-sm="25", flex-gt-lg="12-5")
+//-                         kpi-widget-view.pointer-cursor([hidden]="!vm.valid", [widget]="widgetModel")
+
+//-             div(flex)
+//-                 .m-t-25.m-b-5(layout="row", layout-padding, layout-align="end end")
+//-                     bw-button(flex-initial, color="blue", title="Save", icon="floppy",
+//-                                             class="normal", (clicked)="saveWidget()", [disabled]="!vm.valid")
+//-                     bw-button(flex-initial, color="gray", [simple]="true", title="Cancel", icon="close",
+//-                                             class="normal", (clicked)="cancel()")

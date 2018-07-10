@@ -1,0 +1,21 @@
+query AllUsers {
+    allUsers {
+        _id
+        username
+        roles {
+            _id
+            name
+        }
+        profile {
+            _id
+            firstName
+            lastName
+            timezone
+        }
+        profilePictureUrl
+        emails {
+            address
+        }
+        timestamps
+    }
+}

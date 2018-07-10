@@ -1,0 +1,87 @@
+bw-card.full-height {
+    .card {
+        margin-bottom: 0;
+    }
+    .card-body {
+        height: 96%;
+        min-height: 450px;
+        @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+            align-items: center;
+            justify-content: center;
+        }
+        label {
+            @media only screen and (min-width: 1024px) and (max-width: 1366px) and (aspect-ratio: 512/683) and (orientation: portrait) {
+                font-size: 12px;
+            }
+            @media only screen and (min-width: 768px) and (max-width: 1024px) and (aspect-ratio: 4/3) and (orientation: landscape) {
+                font-size: 12px;
+            }
+            @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 16/9) and (orientation: landscape) {
+                font-size: 12px;
+            }
+            @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
+                font-size: 12px;
+            }
+            @media only screen and (min-width: 375px) and (max-width: 669px) and (aspect-ratio: 667/375) and (orientation: landscape) {
+                font-size: 12px;
+            }
+            @media only screen and (min-width: 375px) and (max-width: 669px) and (aspect-ratio: 375/667) and (orientation: portrait) {
+                font-size: 12px;
+            }
+            @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
+                font-size: 12px;
+            }
+            @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
+                font-size: 12px;
+            }
+            @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+                font-size: 12px;
+            }
+            @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+                font-size: 12px;
+            }
+        }
+    }
+}
+
+bw-card.maximized {
+    .card {
+        position: fixed !important;
+        top: 64px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 5000;
+    }
+}
+
+bw-card {
+    &.m-b-10 {
+        .card {
+            margin-bottom: 10;
+        }
+    }
+    &.m-b-5 {
+        .card {
+            margin-bottom: 5;
+        }
+    }
+}
+
+bw-card {
+    &.smaller-header {
+        .card-header {
+            padding: 10px 12px !important;
+        }
+    }
+}
+
+.box {
+    @media screen and (min-width: 1200px) and (max-width: 1950px) {
+        -webkit-flex-grow: 1;
+        flex-grow: 1;
+        min-width: 300px;
+        max-width: 500px;
+        overflow: auto;
+    }
+}

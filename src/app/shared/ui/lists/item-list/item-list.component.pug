@@ -1,0 +1,46 @@
+.item-list-container(layout="column", layout-padding)
+    //- show the add button
+    kpi-add-item(*ngIf="allowAdd", [itemViewModel]="itemViewModel", [addItemActivityName]="addItemActivityName", (onItemClicked)="addClicked()")
+
+    .m-b-10(flex-initial)
+        div(layout="column", layout-gt-xs="row")
+            div(flex)
+                .list-title(*ngIf="title") {{ title }}
+            .m-t-10.m-r-10.text-center(flex-initial)
+                .search-box([formGroup]="fg")
+                    input.search-box(formControlName="search", placeholder="Type to filter...", type="text")
+            .m-t-15.m-r-10.text-center(flex-initial)
+                //- bw-button-group([options]="viewOptions", type="default", (optionSelected)="onOptionSelected($event)")
+                bw-actions(*ngIf="viewItems", [showBig]="true", [actionItems]="viewItems", (actionClicked)="onViewItem($event)")
+
+    .overflow-auto(flex)
+
+        //- standard items
+        div(*ngIf="showStandardItems", layout="row", layout-wrap, layout-padding)
+            kpi-list-item-standard(
+                [attr.flex-xs]="xsSize", [attr.flex-gt-sm]="smSize", [attr.flex-xl]="xlSize", [attr.flex-gt-xs]="gtxsSize",
+                *ngFor="let item of filteredItems",
+                [item]="item",
+                [actionItems]="actionItems",
+                [standardItemTemplate]="standardItemTemplate",
+                (click)="itemClicked($event, item)",
+                (actionClicked)="itemActionClicked($event)")
+
+        //- table view
+        .tabular-container.bgm-white.z-depth-1.p-20.m-l-10.m-r-10.margin-b-80(*ngIf="showTabularItems", layout="column", layout-gt-sm="row")
+            div(flex)
+                kpi-list-item-tabular(
+                    *ngFor="let item of filteredItems",
+                    [item]="item",
+                    [actionItems]="actionItems",
+                    [tableRowTemplate]="tableRowTemplate",
+                    (click)="itemClicked($event, item)",
+                    (actionClicked)="itemActionClicked($event)")
+    
+        //- future implementation
+        //- div(*ngIf="showSmallItems", layout="row", layout-wrap, layout-padding)
+        //-     kpi-list-item-small(*ngFor="let item of items", [item]="item")
+        
+        //- future implementation
+        //- div(*ngIf="showBigItems", layout="row", layout-wrap, layout-padding)
+        //-     kpi-list-item-big(*ngFor="let item of items", [item]="item")

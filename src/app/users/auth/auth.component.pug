@@ -1,0 +1,13 @@
+//- bw-card.animated#signin.flex-60.flex-sm-80.flex-90xs.animated(class="{{componentAnimation}}", depth="4" )
+//-     bw-card-body
+//-         div(layout="row")
+//-             bw-button.m-10(title="Back", [simple]="true", color="blue", icon="chevron-left", (clicked)="goBackClicked()")
+        
+//-         div(layout="row", layout-align="center center")
+//-             div(*ngIf="!forgotPassword", layout="row", class="{{componentAnimation}}")
+//-                  div(layout="row")
+//-                     kpi-login([fg]="fg", [authError]="authError", (signInClicked)="register($event)", 
+//-                           (switchToForgot)="resetPasswordMode()") 
+            
+//-             div(layout="row", [hidden]="!forgotPassword")
+//-                 kpi-forgot-password([fg]="fg")

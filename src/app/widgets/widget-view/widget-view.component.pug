@@ -1,0 +1,24 @@
+.widget.p-relative.z-depth-1(*ngIf="widget", class="w-{{widgetBackgroundColor}} {{widget.size}}")
+    bw-actions.description-button(*ngIf="description", [actionItems]="actionItems", (actionClicked)="onActionClicked($event)")
+
+    .p-10(layout="column")
+            div(layout="row", layout-align="start start", flex-none)
+                .widget-title  {{widget.name}}
+            div(*ngIf="widget.type==='numeric'", layout="column",  layout-align="center center" , flex)
+                div(layout="row")
+                    .text-center.widget-value(*ngIf="widgetValue", flex)  {{widgetValue}}
+                    .text-center.widget-value(*ngIf="!widgetValue && widget.preview", flex)  1000.00
+                    .text-center.i.zmdi.arrow-icon(*ngIf="widgetArrow", class="zmdi-caret-{{widgetArrow}} {{widgetArrowColor}} ")
+                .rigth(*ngIf="Porcent") {{Porcent}} %
+                .text-center.widget-comparison-value(*ngIf="widgetComparisonValue")  {{widgetComparisonPeriod}}: {{widgetComparisonValue}}
+                               
+            div(*ngIf="widget.type==='chart'", layout="column", layout-align="center center", flex)
+                div(flex, [chart]="chart", [style]="chartStyle")
+
+    div(*ngIf="showNotificationBell", layout="row", layout-align="end end")
+        div.notifications-bell(flex-initial)
+            i.zmdi.zmdi-notifications
+    
+    .widget-description.animated(*ngIf="showDescription", class="{{descriptionAnimation}}")
+        .h-100(layout="row", layout-align="center center", (click)="onActionClicked(actionInfoItem)")
+            div(flex) {{widget.description}}

@@ -1,0 +1,25 @@
+.chart-test.h-100(layout="column")
+    .h2.text-center Chart Playground
+    .charts(flex, layout="row", layout-wrap, layout-padding)
+            bw-card(flex, [depth]="1", class="chart-card p-relative")
+                bw-card-header([padded]="true", color="white")
+                    | {{title}}
+                bw-card-body([padded]="true")
+                    .text-center(layout="row")
+                            bw-text-box.p-r-5(flex, [fg]="fg", field="chartId", label="Chart Id", value="18")
+                            bw-text-box.p-r-5(flex, [fg]="fg", field="dateFrom", label="From MM/DD/YYYY", value="01/01/2016")
+                            bw-text-box.p-r-5(flex, [fg]="fg", field="dateTo", label="To MM/DD/YYYY", value="12/31/2016")
+                            bw-text-box.p-r-5(flex, [fg]="fg", field="xAxisSource", label="x Axis Source", value="frequency")
+                            bw-select-picker(flex, [fg]="fg",
+                                                field="frequency",
+                                                [items]="frequencies",
+                                                [liveSearch]="true",
+                                                liveSearchPlaceholder="... type to seach ...",
+                                            )
+                            bw-text-box.p-r-5(flex, [fg]="fg", field="grouping", label="Grouping...", value="location")
+                            bw-button(flex="10", color="blue", icon="refresh", (clicked)="refreshChart()", [simple]="true", class="normal")
+                    .p-relative(layout="row")
+                        
+                        div(flex, [chart]="chart")
+                        .chart-description.animated(*ngIf="showDescription", class="{{descriptionAnimation}}")
+                            | {{description}}

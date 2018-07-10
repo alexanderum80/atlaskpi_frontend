@@ -1,0 +1,18 @@
+.social-widget.p-relative.z-depth-1(*ngIf="socialWidget", class="w-white big")
+    .p-10(layout="column")
+        div(layout="row", layout-align="start start", flex-none)
+            .sw-title {{socialWidget.name}}
+        div(layout="row", layout-align="center center", flex)
+            .m-r-20(flex="25")
+                img.sw-icon([src]="socialWidget.icon", height='96px')
+            div(layout="column", layout-align="center center", flex="75")
+                div(*ngIf="hasValue()", layout="row", layout-align="center center")
+                    .text-center.sw-value(flex) {{mainValue()}}
+                    i.zmdi.sw-arrow(*ngIf="arrow()", class="zmdi-chevron-{{arrow()}}", flex)
+                div(*ngIf="!hasValue()", layout="row", layout-align="center center")
+                    .sw-value-not-available.p-t-10.p-b-10(flex) Data not available
+                .main-value-description(*ngIf="hasValue()", flex) {{socialWidget.valueDescription}}
+                .text-center.sw-historical-data(flex)
+                    .sw-historical-data 
+                        div(*ngIf="socialWidget.historicalData") {{socialWidget.historicalData.period }}: {{historicalValue()}}
+                        div(*ngIf="!socialWidget.historicalData") Historical data not available

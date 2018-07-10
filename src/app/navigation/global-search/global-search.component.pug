@@ -1,0 +1,23 @@
+form#searchlink.col.s12.search-box-container((click)="showGlobalSearch()")
+    input.search-box(type='text', placeholder='Search Anything...')
+    i.zmdi.zmdi-search
+
+#search([class.open]="showSearchPage", [ngStyle]="{ 'padding': searchPadding }")
+  button.close(type='button', (click)="hideGlobalSearch()")
+    i.zmdi.zmdi-close
+  form
+    .popup-search
+         bw-text-box([fg]="fg", field="query", label="Start typing here to search across the entire app", leftIcon="search", (keydown.enter)="$event.preventDefault()")
+
+  .example
+    p.lead.text-center In case you want to create chart using natural language, here is an example:
+    small.text-center "give me last year sales grouped by business unit with a monthly frequency on a bar chart"
+
+  #chart-container(*ngIf="chart", style="width: 70%")
+    kpi-chart-view([chartData]="chart")
+    .m-t-20(flex, layout="row", layout-align="end end")
+        bw-button.m-r-10(flex-nogrow, color="blue", title="Save", icon="floppy", [block]="true", (clicked)="saveChart()")
+        bw-button(flex-nogrow, color="blue", title="Edit", icon="edit", [block]="true", (clicked)="editChart()")
+
+  #search-result-container(*ngIf="vm.resultGroups?.length")
+    kpi-search-results([resultGroups]="vm.resultGroups")

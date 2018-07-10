@@ -1,0 +1,21 @@
+mutation RemoveAlert($id: String!) {
+    removeAlert(id: $id) {
+        success
+        errors {
+            field
+            errors
+        }
+
+        entity {
+            notifyUsers
+            frequency
+            active
+            pushNotification
+            emailNotified
+            modelAlert {
+                name
+                id
+            }
+        }
+    }
+}

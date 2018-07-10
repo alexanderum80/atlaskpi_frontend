@@ -1,0 +1,20 @@
+.activity-feed-content(layout="column")
+  .activity-feed-header(flex)
+    a ACTIVITY FEED
+
+  .activity-feed-body
+    div(*ngIf="vm.isThereYesterdayTarget")
+      kpi-targets-activity(*ngFor="let target of vm.yesterdayTarget", [target]="target")
+    div(*ngIf="vm.isThereUserActivity")
+      kpi-users-activity([activity]="activity", *ngFor="let activity of vm.usersActivity")
+    kpi-trends-sales-activity(*ngIf="vm.isThereLastMonthSales && vm.isThereMonthAvgSales", [lastMonthSales]="vm.lastMonthSales", [monthAvgSales]="vm.monthAvgSales")
+    kpi-trends-expenses-activity(*ngIf="vm.isThereLastMonthExpenses && vm.isThereMonthAvgExpenses", [lastMonthExpenses]="vm.lastMonthExpenses", [monthAvgExpenses]="vm.monthAvgExpenses")
+    kpi-counts-activity(*ngIf="vm.isThereYesterdaySales", [sales]="vm.yesterdaySales", [startDayDate]="startDayDate")
+    kpi-top-employee-activity(*ngIf="vm.isThereEmployeeSales", [sales]="vm.yesterdaySalesEmployee", [startDayDate]="startDayDate")
+    kpi-sales-activity(*ngIf="vm.isThereYesterdaySales", [sales]="vm.yesterdaySales", [startDayDate]="startDayDate")
+    kpi-expenses-activity(*ngIf="vm.isThereYesterdayExpenses", [expenses]="vm.yesterdayExpenses", [startDayDate]="startDayDate")
+
+  .activity-feed-footer
+    i.zmdi.zmdi-layers-off
+    h3 No more activities to show
+

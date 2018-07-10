@@ -1,0 +1,56 @@
+kpi-item-list(
+    title="Roles",
+    [items]="vm.roleItems",
+    [itemViewModel]="vm",
+    [addItemActivityName]="'AddRoleActivity'",
+    [itemListActivityName]="actionActivityNames",
+    itemType="standard",
+    [tableRowTemplate]="tableItem",
+    (onAddActionClicked)="add()",
+    (onItemActionClicked)="actionClicked($event)",
+    (onItemClicked)="editClickedList($event)")
+
+ng-template(#tableItem, let-item="item")
+    //- image
+    div(flex-initial)
+        img(*ngIf="item.imagePath", [src]="item.imagePath", [style.height.px]="55")
+    //- title & subtitle
+    div(flex)
+        .m-t-10.m-l-10 
+            h2.title {{ item.title }}
+
+bw-modal(#removeRoleModal='', animation="true", keyboard="true", backdrop="true", size="md",
+    (onClosed)="cancelRoleRemove()", (onDismiss)="cancelRoleRemove()")
+    bw-modal-header
+         h4.modal-title.c-black
+             i.zmdi.zmdi-delete.c-red.big-icon.m-r-5(flex-none)
+                span Remove Role
+    bw-modal-body
+        div(layout="row", layout-padding, layout-align="center center")
+            strong.flex Are you sure you want to permanently remove this role?
+
+    bw-modal-footer
+        bw-button(color="blue", title="Confirm", class="normal", (clicked)="confirmRoleRemove()")
+        bw-button(title="Cancel", [simple]="true", icon="close", (clicked)="cancelRoleRemove()")
+
+bw-modal(#roleUsedModal='', animation="true", keyboard="true", backdrop="true", size="md")
+    bw-modal-header
+        h4.modal-title.text-center
+            i.zmdi.zmdi-info-outline
+            span
+            span
+                |  Role Info
+    bw-modal-body(*ngIf="checkRole")
+        div(layout="row", layout-padding, layout-align="center center")
+            strong.flex {{checkRole.error}} :
+        div(layout="row", layout-padding)
+            div(layout="column")
+                div(flex)
+                    div(layout="row", layout-align="center center", *ngFor="let roleUser of checkRole.users")
+                        .flex.t-indent-10
+                            strong {{roleUser}}
+    bw-modal-footer
+        bw-button(color="blue", title="Close", [simple]="true", icon="close", (clicked)="closeRoleInfo()")
+
+kpi-edit-role
+kpi-add-role

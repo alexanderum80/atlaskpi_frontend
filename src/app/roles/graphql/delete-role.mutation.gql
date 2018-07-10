@@ -1,0 +1,6 @@
+mutation RemoveRole($id: String) {
+    removeRole(id: $id) {
+        name
+        permissions
+    }
+}

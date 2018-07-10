@@ -1,0 +1,6 @@
+body.light {
+    @import './variables';
+    @import './dashboard';
+    @import './highcharts.scss';
+    @import './calendar';
+}

@@ -1,0 +1,24 @@
+query AllUsers($filter: String) {
+    allUsers(filter: $filter) {
+        _id
+        username
+        roles {
+            _id
+            name
+            permissions {
+                _id
+                action
+                subject
+            }
+        }
+        profile {
+            _id
+            firstName
+            lastName
+        }
+        emails {
+            address
+        }
+        timestamps
+    }
+}

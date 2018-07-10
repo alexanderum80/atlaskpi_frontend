@@ -1,0 +1,143 @@
+.c-add,
+.c-error {
+    visibility: hidden;
+}
+
+.c-edit {
+    visibility: visible;
+}
+
+.c-left {
+    width: 1900px;
+}
+
+.body {
+    text-align: center;
+}
+
+.title {
+    font-size: 25px;
+}
+
+.opacity {
+    opacity: 0.4;
+}
+
+.underlined {
+    border-bottom: #e0e0e0 1px solid;
+}
+
+.section-header {
+    font-size: 18px;
+    margin: 10px 0;
+    height: 100% !important;
+}
+
+.access-header {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+}
+
+.info-box {
+    font-size: 32px;
+    color: #ccc;
+
+    .icon i { 
+        font-size: 200px;
+    }
+
+    .message {
+        font-size: 18px;
+    }
+}
+
+.right-panel {
+    background-color: #ebf0f4 ;
+}
+
+.access-levels {
+    background-color: white; 
+    font-size: 16px;
+}
+
+.is-disabled {
+    // filter: alpha(opacity=50);
+    opacity: 0.5;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.removeBtn {
+    margin-top: 20px !important;
+    font-weight: bold;
+    font-size: 25px;
+}
+
+.removeBtn > .zmdi:hover {
+    cursor: pointer;   
+}
+
+.moreFilterBtn {
+    text-align: right;
+    padding-right: 50px;
+    box-shadow: 1px solid black;
+}
+
+.btn-savePreview {
+    position: fixed;
+    right: 20px;
+    bottom: 70px;
+
+    z-index: 100;
+}
+
+.btn-cancelPreview {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+
+    z-index: 100;
+}
+
+.btn-addWidget, .btn-addChart {
+    position: fixed;
+    right: 20px;
+    bottom: 60px;
+
+    z-index: 100;
+
+    @media screen and (max-width: 600px) {
+        bottom: 100px;
+    }
+}
+
+.floating-btn-1 {
+    position: fixed;
+    right: 140px;
+    bottom: 20px;
+    z-index: 100;
+}
+
+.floating-btn-2 {
+    position: fixed;
+    right: 80px;
+    bottom: 20px;
+    z-index: 100;
+}
+
+.floating-btn-3 {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 100;
+}
+
+@media screen and (max-width: 600px) {
+    .dashboard-container {
+        height: auto !important;
+    }
+
+    .charts, .widgets, .access-levels {
+        overflow: unset !important;
+    }
+}

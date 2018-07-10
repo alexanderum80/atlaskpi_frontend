@@ -1,0 +1,23 @@
+query AppointmentsByDate($date: String!) {
+    appointmentsByDate(date: $date) {
+        _id
+        source
+        reason
+        comments
+        duration
+        cancelled
+        from
+        to
+        customer {
+            externalId
+            fullname
+        }
+        provider {
+            externalId
+            name
+        }
+        event {
+            color
+        }
+    }
+}

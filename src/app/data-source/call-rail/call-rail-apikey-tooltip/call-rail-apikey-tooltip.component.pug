@@ -1,0 +1,35 @@
+div(layout="row", layout-padding)
+  div.p-l-15(flex-initial)
+    i.zmdi.zmdi-key
+  div(flex-initial)
+    span &nbsp;
+    span.c-blue Where to find your API key
+div(layout="row", layout-padding)
+  div(flex)
+div(layout="row", layout-wrap, layout-padding)
+  div.p-l-15(flex)
+    p From your CallRail account:
+    p
+      | 1 - Click the account drop-down at the top of the page, then click 
+      strong.t-bold View Profile
+      | .
+    p
+      | 2 - Select 
+      strong.t-bold API Keys 
+      | from the 
+      strong.t-bold Security 
+      | section in the left menu.
+    p
+      | 3 - Select 
+      strong.t-bold Create API V2 Key 
+      | to create a new API key (if you haven't created a key before).
+    p
+    p Or follow this link for more info: 
+    p
+      a(href="https://support.callrail.com/hc/en-us/articles/201211143-CallRail-s-API-Documentation", target="_blank")
+        | https://support.callrail.com/hc/en-us/articles/201211143-CallRail-s-API-Documentation
+div(layout="row")
+  div(flex).bgm-gray
+    p
+  div(flex="10")
+    bw-button(title="OK", color="blue", (clicked)="closeToolTip()")

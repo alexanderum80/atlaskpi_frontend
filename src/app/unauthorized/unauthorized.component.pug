@@ -1,0 +1,19 @@
+#unauthoirzed-container.p-40(layout="column", layout-align="center center")
+    //- image
+    .p-35(flex)
+        img(src="./assets/img/stop1.png", alt="Unahotized")
+    
+    //- header
+    .m-t-20(flex)
+        h2 Unauthorized
+
+    //- error message
+    .m-t-20(flex)
+        p.lead You do not have access to perform this action
+
+    //- actions
+    div(flex)
+        bw-button(title="Go Back", color="blue", icon="undo", (clicked)="goBack()")
+
+
+

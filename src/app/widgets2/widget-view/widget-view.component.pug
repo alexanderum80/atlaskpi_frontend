@@ -1,0 +1,75 @@
+.widget(*ngIf="widgetViewData", layout="column")
+    .p-relative.z-depth-1(flex, class="w-{{vm.color}} {{vm.size}}")
+        //- description button
+        bw-actions.description-button([actionItems]="vm.widgetActionItems", (actionClicked)="onActionClicked($event)")
+
+        div.p-10(layout="column")
+            //- dummy data
+            div(*ngIf="vm.isDummy", flex)
+                div(layout="row", layout-align="start start")
+
+                    //- dummy name
+                    div(flex-none)
+                        .widget-title this is the dummy widget
+                div(layout="column", layout-align="center center")
+                    div(flex)
+                        div(layout="row")
+                            .text-center.widget-value 10.00
+                            i.zmdi.arrow-icon(class="zmdi-chevron-up")
+                //- .widget-description.animated(*ngIf="vm.showDescription", class="{{descriptionAnimation}}")
+                //-     .h-100(layout="row", layout-align="center center")
+                //-         div(flex) This is dummy data
+
+                //- widget icon
+
+            //- numeric widget
+            div(*ngIf="vm.numericWidgetData", flex)
+                div(layout="row", layout-align="start start")
+                    div(flex-none)
+                        //- widget name
+                        .widget-title Its a numeric widget
+                div(layout="column", layout-align="center center")
+                    div(flex)
+                        div(layout="row")
+                            .text-center.widget-value(*ngIf="vm.numericWidgetData.value")
+                                | {{vm.numericWidgetData.value}}
+                            .text-center.widget-comparison-value(*ngIf="vm.numericWidget.comparison")
+                                | {{vm.numericWidgetData.comparison.period}}: {{vm.numericWidgetData.comparison.value}}
+
+                //- widget description
+        .widget-description.animated(*ngIf="showDescription", class="{{descriptionAnimation}}")
+            .h-100(layout="row", layout-align="center center")
+                div(flex) {{vm.description}}
+
+            //- chart widgetxs
+            div(*ngIf="vm.chartWidgetData", flex)
+                div(layout="row", layout-align="start start")
+                    div(flex-none)
+                        .widget-title Its a chart widget
+                div(layout="column", layout-align="center center")
+                    div(flex)
+                        div(flex, [chart]="parsedChartData", [style]="chartStyle")
+        .widget-description.animated(*ngIf="vm.showDescription", class="{{vm.descriptionAnimation}}")
+            .h-100(layout="row", layout-align="center center")
+                div(flex) {{vm.description}}
+
+
+//- .p-relative.z-depth-1(*ngIf="widget", class="w-{{widgetBackgroundColor}} {{widget.size}}")
+//-     bw-actions.description-button(*ngIf="widget.description", [actionItems]="actionItems", (actionClicked)="onActionClicked($event)")
+
+//-     .p-10(layout="column")
+//-             div(layout="row", layout-align="start start", flex-none)
+//-                 .widget-title  {{widget.name}}
+//-             div(*ngIf="widget.type==='numeric'", layout="column", layout-align="center center", flex)
+//-                 div(layout="row")
+//-                     .text-center.widget-value(*ngIf="widgetValue", flex)  {{widgetValue}}
+//-                     .text-center.widget-value(*ngIf="!widgetValue && widget.preview", flex)  1000.00
+//-                     i.zmdi.arrow-icon(*ngIf="widgetArrow", class="zmdi-chevron-{{widgetArrow}}")
+//-                 .text-center.widget-comparison-value(*ngIf="widgetComparisonValue")  {{widgetComparisonPeriod}}: {{widgetComparisonValue}}
+            
+//-             div(*ngIf="widget.type==='chart'", layout="column", layout-align="center center", flex)
+//-                 div(flex, [chart]="chart", [style]="chartStyle")
+    
+//-     .widget-description.animated(*ngIf="showDescription", class="{{descriptionAnimation}}")
+//-         .h-100(layout="row", layout-align="center center")
+//-             div(flex) {{widget.description}}

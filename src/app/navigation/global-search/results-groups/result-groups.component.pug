@@ -1,0 +1,3 @@
+div(layout-xs="column", layout="row")
+    .p-5(flex, *ngFor="let g of resultGroups")
+        bw-button([color]="g.color", [block]="true", [class.disabled]="!g.enabled", title="{{ g.name }} ({{ g.data.length }})", [rounded]="true", (clicked)="toggle(g)")

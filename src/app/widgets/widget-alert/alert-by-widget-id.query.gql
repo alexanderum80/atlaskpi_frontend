@@ -1,0 +1,14 @@
+query AlertByWidgetId($id: String!) {
+    alertByWidgetId(id: $id) {
+        _id
+        notifyUsers
+        frequency
+        active
+        pushNotification
+        emailNotified
+        modelAlert {
+            name
+            id
+        }
+    }
+}

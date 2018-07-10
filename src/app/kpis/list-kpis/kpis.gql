@@ -1,0 +1,10 @@
+query Kpis {
+    kpis {
+        _id
+        name
+        description
+        frequency
+        type
+        tags
+    }
+}

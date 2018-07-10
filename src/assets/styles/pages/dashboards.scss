@@ -1,0 +1,63 @@
+$break-small: 375px;
+$break-large: 1024px;
+@mixin respond-to($media) {
+    @if $media==handhelds {
+        @media only screen and (max-width: $break-small) {
+            @content;
+        }
+    }
+    @else if $media==medium-screens {
+        @media only screen and (min-width: $break-small + 1) and (max-width: $break-large - 1) {
+            @content;
+        }
+    }
+    @else if $media==wide-screens {
+        @media only screen and (min-width: $break-large) {
+            @content;
+        }
+    }
+}
+
+.dashboard-tabs {
+    .tab-content {
+        display: none;
+    }
+}
+
+.dashboard-show {
+    .chart {
+        -webkit-overflow-scrolling: touch;
+        background-color: white;
+        @include respond-to(handhelds) {
+            padding: 10px 0;
+        }
+        @include respond-to(medium-screens) {
+            padding: 10px;
+        }
+        @include respond-to(wide-screens) {
+            padding: 10px;
+        }
+    }
+    ul.tab-nav {
+        li.nav-item.active {
+            background-color: #2196f3 !important; // aliceblue !important;
+            a.nav-link {
+                color: white;
+            }
+        }
+    }
+    .chart-card {
+        .card {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.chart-view {
+    .drillup-button, .go-back-button {
+        position: absolute;
+        top: 40px;
+        left: 25px;
+        z-index: 2;
+    }
+}

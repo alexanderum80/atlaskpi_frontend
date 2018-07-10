@@ -1,0 +1,11 @@
+.z-depth-1.bgm-orange.demo-options-container([class.toggled]="toggled")
+    .toggle-options.vertical-text.text-center((click)="toggleOptions()") Demo Options
+    .content.z-depth-1.bgm-white
+        .p-20(layout="column")
+            div(flex)
+                p You are still in demo mode, from here you can:
+            .m-t-20(flex)
+                bw-button(color="blue", icon="refresh-alt", title="Reload Data", [block]="true", (clicked)="refreshData()", [rotateIcon]="refreshigData")
+            .m-t-10(flex)
+                bw-button(color="green", icon="power", title="Go Real", [block]="true", (clicked)="goReal()")
+

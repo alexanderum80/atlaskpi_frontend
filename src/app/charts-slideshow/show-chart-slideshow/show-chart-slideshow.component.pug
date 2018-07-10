@@ -1,0 +1,7 @@
+.slideshow-container.animated(class="{{animation}}")
+    .close-button
+      span((click)="closeSlideshow()") X
+
+    .layout-chart(*ngFor="let chart of charts; let i = index", [class.hide]="i !== currentIndex")
+        kpi-chart-view-dashboard([selectable]="false", [item]="chart", [minHeight]="minHeight")
+

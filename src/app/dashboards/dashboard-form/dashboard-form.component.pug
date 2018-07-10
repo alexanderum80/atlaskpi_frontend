@@ -1,0 +1,135 @@
+.h-100([hidden]="dashboardFormHidden || loading")
+    //-.z-depth-1.h-100.bgm-white(*ngIf="!isAddChart && !isAddWidget && !loading && !isPreviewDashboard",
+    .dashboard-container.z-depth-1.bgm-white.h-100(*ngIf="!loading", layout="column", layout-gt-sm="row")
+        //- left panel ( first panel if mobile)
+        div(flex-initial, flex-gt-sm="40")
+            .m-20(layout="column")
+                h2 {{ formTitle }}
+                bw-text-box.m-b-10.m-t-10.p-r-10(flex, [fg]="fg", leftIcon="label", field="name", label="Name", [required]="true")
+                bw-text-area.m-b-10.p-r-10(flex, [fg]="fg", leftIcon="file-text", [required]="true",
+                                            label="Description",
+                                            field="description",
+                                            placeholder="Some description go here and this is another line.",
+                                            [autosize]="false")
+            //- filters
+            div.m-20([ngClass]="{'is-disabled': filterDisabled }")
+                bw-select-picker.text-ellip.m-l-20.p-r-10([fg]="fg", 
+                    label="Filter",
+                    leftIcon="filter-list",
+                    field="filter",
+                    [required]="false",
+                    [items]="filterList",
+                    [multiple]="true",
+                    [liveSearch]="true",
+                    noneSelectedText="NOTHING SELECTED",
+                    [disabled]="filterDisabled")  
+            
+            //- dashboard
+            #select-users.m-20(flex)
+                bw-select-picker.text-ellip.m-l-20.p-r-10(flex, [fg]="fg",
+                    label="Dashboard Users",
+                    leftIcon="account",
+                    field="users",
+                    [multiple]="true",
+                    [items]="allUsers",
+                    noneSelectedText="Select Users")
+            
+            .hide-xs(flex="100", layout="row", layout-padding, layout-align="end end")
+                bw-button.m-10(flex="30", color="green", title="PREVIEW",
+                                            icon="eye",  [block]="true",
+                                            [disabled]="selectedItems.length === 0", (clicked)="previewDashboard()")
+                bw-button.m-10(flex="30", color="blue", title="SAVE",
+                                            icon="floppy",  [block]="true",
+                                            [disabled]="!valid", (clicked)="save()")
+                bw-button.m-10(flex="30", color="gray", title="CANCEL", icon="close", [simple]="true", [block]="true", (clicked)="cancel()")
+
+        //- right panel
+        .right-panel.h-100(flex, flex-gt-sm="70")
+            bw-tab-set.w-100
+                    bwTab.m-10.section-header(heading="Widgets", icon="widgets", (select)="switchTab('widgets')")  
+                        div(*ngIf="widgetsLoading", layout="row", layout-align="center center")
+                            bw-preloader.text-center(color="gray")
+                        .info-box(*ngIf="!widgetsLoading && allWidgets.length === 0", layout="column", layout-align="center center")
+                            .icon(flex)
+                                i.zmdi.zmdi-widgets
+                            .message(flex)
+                                h2.p-b-40.c-gray.text-center Looks that there are no widgets defined yet
+                                
+                        .widgets.h-100.overflow-auto(*ngIf="!widgetsLoading")
+                            div(layout="column", layout-gt-sm="row", layout-wrap)
+                                div(*ngFor="let widget of visibleBigWidgets", flex="100", flex-gt-sm="50", flex-gt-lg="25")
+                                    kpi-selectable-item-frame([item]="widget", (click)="toggleWidgetSelection(widget)")
+                                        kpi-auto-renderable-widget([item]="widget", [autoRender]="false")
+                                
+                                div(*ngFor="let widget of visibleSmallWidgets", flex-xs="50", flex-gt-xs="50", flex-gt-sm="25", flex-gt-lg="12-5")
+                                    kpi-selectable-item-frame([item]="widget", (click)="toggleWidgetSelection(widget)")
+                                        kpi-auto-renderable-widget([item]="widget", [autoRender]="false")
+
+                                bw-button.btn-addWidget(flex-none, color="blue", icon="plus", [circular]="true", (clicked)="openAddWidget()")
+
+                    bwTab.m-10.section-header(heading="Charts", icon="chart", (select)="switchTab('charts')") 
+                        div(*ngIf="chartsLoading", layout="row", layout-align="center center")
+                            bw-preloader.text-center(color="gray")
+                        .info-box(*ngIf="!chartsLoading && allCharts.length === 0", layout="column", layout-align="center center")
+                            .icon(flex)
+                                i.zmdi.zmdi-chart
+                            .message(flex)
+                                h2.p-b-40.c-gray.text-center Looks that there are no charts defined yet
+                        
+                        .charts.h-100.overflow-auto(*ngIf="!chartsLoading")
+                            div(layout="column", layout-gt-sm="row", layout-wrap)
+                                .box(flex-xs="100", flex-gt-xs="100", flex-gt-sm="50", flex-gt-lg="33", *ngFor="let chart of visibleCharts")
+                                    kpi-selectable-item-frame([item]="chart", (click)="toggleChartSelection(chart)")
+                                        kpi-auto-rendereable-chart.pointer-cursor(
+                                                                                [hidden]="!displayChart",
+                                                                                [autoRender]="false",
+                                                                                [item]="chart", [minHeight]="200", style="width: 100%")
+
+                                bw-button.btn-addChart(flex-none, color="blue", icon="plus", [circular]="true", (clicked)="openAddChart()")
+
+//- mobile device button at the end
+.hide-gt-xs(*ngIf="!isAddChart && !isAddWidget && !loading && !isPreviewDashboard")
+        bw-button.floating-btn-1(color="green", icon="eye", [disabled]="selectedItems.length === 0",
+                                 [circular]="true", (clicked)="previewDashboard()")
+        bw-button.floating-btn-2(color="blue", icon="floppy", [disabled]="!valid",
+                                 [circular]="true", (clicked)="save()")
+        bw-button.floating-btn-3(color="gray", icon="close", [circular]="true", (clicked)="cancel()")
+
+//- preview dashboard
+div(layout="row", layout-align="center center", *ngIf="loading")
+    div(flex="45")
+    bw-preloader(flex, color="gray")
+div.hv-100(*ngIf="isPreviewDashboard && !loading")
+    kpi-dashboard-show([isFromDashboard]="true", [dashboardPayLoad]="dashboardPayload")
+    bw-button.btn-savePreview(flex-none, color="blue", icon="floppy", [disabled]="!valid", [circular]="true", (clicked)="save()")
+    bw-button.btn-cancelPreview(flex-none, color="green", icon="square-right", [circular]="true", (clicked)="exitPreview()")
+
+//- create new widget
+.hv-100(*ngIf="isAddWidget")
+    kpi-new-widget.h-100.animated.fadeIn([isFromDashboard]="'true'", (result)="onWidgetFormEvent($event)")
+
+//- create new chart
+.hv-100(*ngIf="isAddChart")
+    kpi-new-chart.animated.fadeIn([isFromDashboard]="'true'", (result)="onChartFormEvent($event)")
+
+//- Modal windows
+bw-modal((onClose)="closedModal()", (onDismiss)="dismissedModal()",
+    (onOpen)="openedModal()", #modal='')
+    bw-modal-header([show-close]="true")
+        h4(class="modal-title") {{ modalTitle}}
+    bw-modal-body
+        | {{ modalBody}}
+    bw-modal-footer
+        bw-button(*ngIf="!modalAlert", title="Confirm", color="blue", [rounded]="true", (clicked)="modal.close()")
+        bw-button([title]="modalButtonTitle", color="red", [rounded]="true", data-dismiss="modal", (clicked)="modal.dismiss()")
+
+
+bw-modal(#errorModal='', backdrop="true", (onClosed)="closeErrorModal()", (onDismiss)="closeErrorModal()")
+    bw-modal-header
+        h4.modal-title.c-black.text-center Dashboard Error
+    bw-modal-body
+        div(layout="row", layout-padding, layout-align="center center")
+            i.zmdi.zmdi-alert-octagon.c-red.big-icon.m-r-20
+            strong {{ errorMessage }}
+    bw-modal-footer
+        bw-button((clicked)="closeErrorModal()", color="blue" title="Ok", [simple]="true", icon="close")

@@ -1,0 +1,38 @@
+.m-20(*ngIf="!listEmpty", layout="row", layout-wrap, layout-padding)
+.layout-row.layout-wrap.layout-padding.m-20(*ngIf="!listEmpty")
+    .mobile-card-w(*ngFor = "let slideshow of slideShowList", flex-xs=100, flex-sm="100", flex="25")
+
+        bw-card.m-b-50.p-relative([depth]="1", flex)
+  
+          bw-card-body([padded]="true")
+            .text-center(layout="row", layout-align="center center")
+                  a(flex, (click)="runSlideShow(slideshow)", title="{{slideshow.description}}")
+                      i.zmdi.zmdi-play-circle-outline.zoom-icon-8
+          bw-card-header([padded]="true", color="white")
+              .slideshow-title {{slideshow.name}}
+              bw-actions([actionItems]="actionItems", (actionClicked)="actionClicked($event, slideshow)")
+
+kpi-add-item(*ngIf = "!listEmpty && !slideshowPlaying", [itemViewModel]="vm", [addItemActivityName]="'AddSlideshowActivity'", (onItemClicked)="addSlideshow()")
+
+//- Slideshow Empty
+.h-100(*ngIf = "listEmpty")
+  kpi-no-slideshows
+
+//- Slideshow Preview
+.preview-container(*ngIf="slideshowPlaying")
+    kpi-show-chart-slideshow([slideshow]="slideshowPlaying", (onPresentationStopped)="stopSlideshow()")
+
+//- Confirmation modal for removing slideshow
+bw-modal(#removeConfirmationModal='', animation="true", keyboard="true", backdrop="true", size="md",
+         (onClosed)="cancelRemove()", (onDismiss)="cancelRemove()")
+  bw-modal-header
+    h4.modal-title.c-black Remove a Slideshow
+  bw-modal-body
+    
+    div(layout="row", layout-padding, layout-align="center center")
+        i.zmdi.zmdi-delete.c-red.big-icon(flex-none)
+        strong.flex Are you sure you want to permanently remove this slideshow?
+      
+  bw-modal-footer
+    bw-button(color="blue", title="Confirm", class="normal", (clicked)="confirmRemove()")
+    bw-button(title="Cancel", [simple]="true", icon="close", (clicked)="cancelRemove()")

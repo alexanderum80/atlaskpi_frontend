@@ -1,0 +1,20 @@
+.user-avatar-slide(layout="row", layout-xs="column")
+  //- left panel
+  .overflow-auto(flex-initial)
+    .div(layout-column, layout-align="center center")
+      .m-20(flex)
+        bw-cropped-image([width]="82", image="{{avatarAddress}}", [border]="true", [borderWidth]="1")
+        kpi-file-input([uploadMetadata]="uploadMetadata", (onUploadComplete)="uploadCompleted($event)")
+  //- rigth panel
+  .m-10(flex)
+    div(layout-column)
+      .fullname.m-t-10(flex) {{fullName}}
+      .email.m-t-5(flex) {{email}}
+      .m-t-10(flex)
+        bw-button(title="MY ACCOUNT", color="blue", (clicked)="editUser()", [block]="true")
+      .m-10(flex) 
+        bw-button(title="LOG OUT", icon="power", [simple]="true", color="black", (clicked)="logout()", [block]="true")
+        
+        //- a(href='#', (click)="logout()") Log out
+
+kpi-user-profile(*ngIf="showModal", (onUserProfileClose)="profileClose()")

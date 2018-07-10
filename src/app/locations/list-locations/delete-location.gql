@@ -1,0 +1,9 @@
+mutation deleteLocation($id:String!){
+deleteLocation (_id: $id) {
+  errors {
+            field
+            errors
+        }
+        success
+  }
+}

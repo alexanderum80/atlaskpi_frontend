@@ -1,0 +1,11 @@
+mutation UpdateRole($id: String, $data: RoleDetailsInput) {
+    updateRole(id: $id, data: $data) {
+        _id
+        name
+        permissions {
+            _id
+            action
+            subject
+        }
+    }
+}

@@ -1,0 +1,19 @@
+query ListChartQuery {
+    listCharts {
+      data {
+        _id
+        title
+        group
+        frequency
+        groupings
+        xAxisSource
+        dateRange {
+          predefined
+            custom {
+              from
+              to
+            }
+          }
+        }
+    }
+}

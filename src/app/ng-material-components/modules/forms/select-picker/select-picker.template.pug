@@ -1,0 +1,62 @@
+
+label(*ngIf="label")
+        span.c-red {{requiredSymbol}}
+        | {{label}}
+
+.input-group.m-b-15.w-100(
+        #inputGroup
+        [class.fc-alt]='alt',
+        [ngClass]="{ 'has-error': !control.valid && (fg.submitted || control.dirty)}")
+    
+    span.input-group-addon(*ngIf='leftIcon')
+        i.zmdi(class='zmdi-{{leftIcon}}')
+    .btn-group.bootstrap-select([class.fc-alt]='alt', [class.open]='open')
+        button.btn.dropdown-toggle.btn-default(
+                #selectButton
+                type='button',
+                role='button',
+                title='{{selection}}',
+                aria-expanded='true', (click)='toggleOpen()')
+            span.filter-option.pull-left(#filterOption, [style.width.px]="selectionWidth") {{selection}}
+            span.bs-caret
+                span.caret
+        .dropdown-menu(
+                role='combobox',
+                style='max-height: 300px; overflow: auto; min-height: 0px',
+                detect-scroll,
+                (onScroll)="handleScroll($event)",
+                [bottomOffset]="100",
+                [topOffset]="100")
+            .bs-searchbox(*ngIf='liveSearch')
+                input.form-control.select-picker-filter-text(
+                    [formControl]='query',
+                    type='text',
+                    autocomplete='off',
+                    role='textbox',
+                    aria-label='Search',
+                    placeholder='{{liveSearchPlaceholder}}')
+            .clear-all(*ngIf="showClearAllButton")
+                a.pull-right.m-5(href="#", (click)="clearAll($event)") Clear All
+            ul.dropdown-menu.inner(
+                    role='listbox',
+                    aria-expanded='true',
+                    style='overflow-y: auto; min-height: 0px')
+                //- selected items
+                li(*ngFor='let itm of selectedItems; let i = index', [attr.data-original-index]='i',
+                        [class.selected]='itm.selected', (click)='toggleItem($event, itm)')
+                    a(tabindex='{{i}}', [attr.data-token]='null', role='option',
+                            [attr.aria-disabled]='itm.disabled', [attr.aria-selected]='itm.selected')
+                        span.text {{itm.title}}
+                        span.zmdi.check-mark(class='{{tickIcon}}')
+                //- filteritems/cloneitems
+                li(*ngFor='let item of filteredItems; let idx = index', [attr.data-original-index]='idx',
+                        (click)='toggleItem($event, item)')
+                    a(tabindex='{{idx}}', [attr.data-tokens]='null', role='option',
+                            [attr.aria-disabled]='item.disabled')
+                        span.text {{item.title}}
+                        span.zmdi.check-mark(class='{{tickIcon}}')
+                li.no-results(*ngIf='emptySearch') {{ noneResultsText }} "{{ query.valueChanges | async }}"
+        select.my-selectpicker(style='display: none', tabindex='-98', [class.mobile-device]='isMobile', [attr.multiple]='multiple')
+            option(*ngFor='let item of filteredItems', value='{{item.id}}', [attr.selected]='item.selected ? true : null') {{item.title}}
+    span.input-group-addon.last(*ngIf='rightIcon')
+        i.zmdi(class='zmdi-{{rightIcon}}')

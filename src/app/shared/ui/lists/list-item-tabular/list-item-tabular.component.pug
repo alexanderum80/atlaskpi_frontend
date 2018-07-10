@@ -1,0 +1,19 @@
+.list-item-tabular(layout="row")
+    ng-container(*ngTemplateOutlet="(tableRowTemplate ? tableRowTemplate : defaultTemplate);context:{ item: item }")
+
+    //- actions
+    .p-15(flex-initial)
+        bw-actions(*ngIf="actionItems", [actionItems]="actionItems", (actionClicked)="onActionClicked($event)")
+
+
+ng-template(#defaultTemplate)
+    //- image
+    div(flex-initial)
+        img(*ngIf="item.imagePath", [src]="item.imagePath")
+        i.zmdi(*ngIf="item.icon", class="zmdi-{{ item.icon }}")
+    //- title & subtitle
+    div(flex)
+        .m-t-10.m-l-10 
+            h2.title {{ item.title }}
+            small {{ item.subtitle }}
+    

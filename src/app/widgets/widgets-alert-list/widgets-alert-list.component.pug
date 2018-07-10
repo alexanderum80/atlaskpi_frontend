@@ -1,0 +1,56 @@
+div(layout="row", layout-wrap, layout-padding)
+  div.p-10(
+    *ngFor="let alert of alerts; let i = index",
+    flex-gt-sm="50",
+    flex-xs="100"
+  )
+    //- layout of widget alert
+    .alert-container
+      //- first row
+      div(layout="row", layout-align="space-between center")
+        //- user to notify
+        div
+          p.c-light-gray User to notify:
+        //- more vert
+        div(*ngIf="alert.active")
+          bw-actions([actionItems]="activeActionItem", (actionClicked)="actionClicked($event, alert)")
+        div(*ngIf="!alert.active")
+          bw-actions([actionItems]="inactiveActionItem", (actionClicked)="actionClicked($event, alert)")
+
+      //- second row
+      div(layout="row")
+        //- list users
+        div(flex)
+          p {{ listUsers(alert.notifyUsers) }}
+
+      //- space
+      .p-t-10.p-b-10
+
+
+      //- third row
+      div(layout="row", layout-align="start end")
+        //- text
+        div(flex-initial)
+          div.p-r-10(layout="row", layout-wrap)
+            //- frequency text
+            div(flex-initial)
+              p.text-small
+                span.c-light-gray Frequency:
+                br
+                | {{ capitalizeFirstLetter(alert.frequency) }}
+
+        div(flex-initial)
+          div(layout="row")
+            //- phone icon, blue
+            div.p-r-5(*ngIf="alert.pushNotification", flex-initial)
+              i.zmdi.zmdi-smartphone-iphone.c-atlas-dark-blue
+
+            //- email icon, blue
+            div(*ngIf="alert.emailNotified", flex-initial)
+              i.zmdi.zmdi-email.c-atlas-dark-blue
+
+        //- active, inactive icon
+        div(flex)
+          div(layout="row", layout-align="end end")
+            div(flex-initial)
+              i([ngClass]="{'c-green': alert.active, 'c-gray': !alert.active}").zmdi.zmdi-check-circle

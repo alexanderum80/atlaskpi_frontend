@@ -1,0 +1,11 @@
+query allDashboard {
+ dashboards{
+    _id
+    name
+    description
+    charts
+    widgets
+    owner
+    visible
+  }
+}

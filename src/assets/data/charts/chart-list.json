@@ -1,0 +1,87 @@
+{
+    "area": [{
+            "name": "Basic",
+            "img": "/assets/img/charts/area/basic.svg",
+            "configName": "basic"
+        },
+        {
+            "name": "Stacked",
+            "img": "/assets/img/charts/area/stacked.svg",
+            "configName": "stacked-area"
+        },
+        {
+            "name": "Stacked Percentage",
+            "img": "/assets/img/charts/area/stacked-percentage.svg",
+            "configName": "percentage-area"
+        }
+    ],
+    "bar": [{
+            "name": "Basic",
+            "img": "/assets/img/charts/bar/basic.svg",
+            "configName": "basic"
+        },
+        {
+            "name": "Stacked",
+            "img": "/assets/img/charts/bar/stacked.svg",
+            "configName": "stacked"
+        },
+        {
+            "name": "Stacked Percent",
+            "img": "/assets/img/charts/bar/stacked-percent.svg",
+            "configName": "stacked-percentage"
+        }
+    ],
+    "column": [{
+            "name": "Basic",
+            "img": "/assets/img/charts/column/basic.svg",
+            "configName": "basic"
+        },
+        {
+            "name": "Stacked",
+            "img": "/assets/img/charts/column/stacked.svg",
+            "configName": "stacked"
+        },
+        {
+            "name": "Stacked Percent",
+            "img": "/assets/img/charts/column/stacked-percent.svg",
+            "configName": "stacked-percent"
+        }
+    ],
+    "line": [{
+            "name": "Basic",
+            "img": "/assets/img/charts/line/basic.svg",
+            "configName": "basic"
+        },
+        {
+            "name": "Inverted",
+            "img": "/assets/img/charts/line/inverted.svg",
+            "configName": "inverted"
+        },
+        {
+            "name": "Spine",
+            "img": "/assets/img/charts/line/spline.svg",
+            "configName": "spline"
+        }
+    ],
+    "pie": [{
+            "name": "Pie",
+            "img": "/assets/img/charts/pie/pie.svg",
+            "configName": "pie"
+        },
+        {
+            "name": "Donut",
+            "img": "/assets/img/charts/pie/donut.svg",
+            "configName": "donut"
+        },
+        {
+            "name": "Pie 3D",
+            "img": "/assets/img/charts/pie/pie-3d.svg",
+            "configName": "pie-3d"
+        },
+        {
+            "name": "Donut 3D",
+            "img": "/assets/img/charts/pie/donut-3d.svg",
+            "configName": "donut-3d"
+        }
+    ]
+}

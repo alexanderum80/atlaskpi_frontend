@@ -1,0 +1,6 @@
+query {
+    kpis {
+        _id
+        name
+    }
+}

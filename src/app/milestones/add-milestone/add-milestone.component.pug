@@ -1,0 +1,31 @@
+.h-100(layout="column", layout-padding)
+  bw-modal(#milestoneModal='', (onClosed)="modalClose()", (onDismiss)="modalClose()")
+    bw-modal-header
+      div(layout="row", layout-align="center center", layout-padding)
+        .text-center
+          h2.target-title Add Milestone
+    bw-modal-body
+      div(layout="row", layout-padding)
+        div(flex-initial)
+          div(layout="column")
+            div(flex)
+              img(src="{{imgPath}}")
+        
+        div(flex)
+          div(layout="column")
+            div(flex)
+              div(layout="row" layout-padding, layout-align="start center")
+                bw-text-box([fg]="fg", leftIcon="assignment", [required]="true",
+                  field="task", label="Milestone Task")
+
+              div(layout="row" layout-padding, layout-align="start center")
+                bw-date-picker(flex="60", [fg]="fg", field="dueDate", label="Date", [required]="true", [config]="datePickerConfig")
+
+              div(layout="column" layout-padding)
+                small.select-picker-placeholder.m-l-15(flex) Responsible People
+                bw-select-picker([fg]="fg", leftIcon="accounts-alt", noneSelectedText="select user",
+                  field="responsible", [multiple]="true", [items]="responsibleList")
+    bw-modal-footer
+      bw-button(flex-initial, [disabled]="!fg.valid || !isResponsibleValid || !isDueDateValid", icon="plus", title="CONTINUE", color="blue", (clicked)="save('continue')")
+      bw-button(flex-initial, [disabled]="!fg.valid || !isResponsibleValid || !isDueDateValid", icon="check", title="DONE", color="green", (clicked)="save('done')")
+      bw-button(flex-initial, icon="close", title="CANCEL", color="white", (clicked)="cancel()")

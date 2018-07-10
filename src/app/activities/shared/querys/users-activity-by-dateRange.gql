@@ -1,0 +1,10 @@
+query UsersActivityByDateRange($from: String!, $to: String!) {
+  usersActivityByDateRange(from: $from, to: $to){
+    _id
+    timestamp
+    accessBy
+    event
+    eventType
+    payload
+  }
+}

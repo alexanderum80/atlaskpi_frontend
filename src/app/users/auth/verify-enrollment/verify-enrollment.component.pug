@@ -1,0 +1,43 @@
+.h-100(layout="row", layout-padding, layout-align="center center")
+    div(flex="45", flex-md="50", flex-sm="100", flex-xs="100")
+        .h-100(layout="column", layout-align="center center")
+            div(flex)
+                bw-card([depth]="2")
+                    //- card-header
+                    //-     h1.header Login
+                    bw-card-body
+                        .verify-enrollment-container(layout="row")
+                            div(hide-xs, flex-none)
+                                .h-100(layout="column", layout-padding, layout-align="center center")
+                                    img.signin.logo.p-20([style.height.px]="80", src="/assets/img/logos/logo.png")                        
+                            div(flex)
+                                div(*ngIf="!passwordResetted", layout="column", layout-padding)
+                                    .text-center.animated.fadeIn(*ngIf="!tokenValid", flex)
+                                        p.m-t-20.lead The token you provided is either invalid or expired
+                                        .m-b-10(flex)
+                                            .text-center(flex)
+                                            bw-button#home(color="blue", title="BACK TO SIGN IN", [simple]="true", [block]="true",
+                                                    class="normal", (clicked)="navigateLogin()")
+                                    .p-40(flex, [class.hide]="!tokenValid")
+                                        div(layout="column")
+                                            .m-b-10(flex, layout-gt-xs="row", layout-xs="column")
+                                                div(flex)
+                                                    bw-text-box([fg]="fg", [required]="true", leftIcon="account-circle", field="firstName", label="First Name")
+                                                div(flex)
+                                                    bw-text-box([fg]="fg", [required]="true", field="lastName", label="Last Name")
+                                            div(flex)
+                                                bw-password([fg]="fg", [required]="true", field="password", label="New Password", [enforceComplexity]="true")
+                                            .m-t-10(flex)
+                                                bw-password([fg]="fg", [required], field="confirmPassword", label="Confirm Password")
+                                                .invalidPwdMsg(*ngIf="!passwordsMatch") Passwords don't match. Please try again!
+                                            .text-center.m-t-20(flex)
+                                                bw-button#reset-password(color="blue", title="Set Password", icon="check",
+                                                    [rounded]= "true", class="normal", (clicked)="resetPassword()",
+                                                    [disabled]="!fg.valid || isPasswordsEmpty" )
+                                div(*ngIf="passwordResetted", layout="column", layout-padding)
+                                    div(flex)
+                                        p.lead.p-5.text-center(flex="100")
+                                            | Your password was successfully changed.
+                                    .text-center(flex)
+                                        bw-button#home(color="blue", title="Login", icon="key", [simple]="true",
+                                            class="normal", (clicked)="navigateLogin()")

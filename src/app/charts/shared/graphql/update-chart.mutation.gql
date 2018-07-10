@@ -1,0 +1,9 @@
+mutation ($id: String!, $input: ChartAttributesInput!) {
+    updateChart(id: $id, input: $input) {
+        success
+        errors {
+            field
+            errors
+        }
+    }
+}

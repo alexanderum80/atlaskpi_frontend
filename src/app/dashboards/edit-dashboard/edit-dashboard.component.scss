@@ -1,0 +1,9 @@
+.dashboard-form {
+    @media screen and (max-width: 965px) {
+        height: auto !important;
+    }
+
+    @media screen and (min-width: 965px) {
+        height: 94% !important; 
+    }
+}

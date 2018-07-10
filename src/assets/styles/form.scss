@@ -1,0 +1,19 @@
+@import './_declaration';
+
+body.light {
+
+    fieldset {
+        .section-header {
+            padding: 10px 0;
+            margin-bottom: 15px;
+            font-weight: normal;
+            color: $lightBlueColor !important;
+            text-transform: capitalize;
+            font-size: 14px;
+        }
+    }
+
+    tag {
+        padding: 0 0.8rem;
+    }
+}

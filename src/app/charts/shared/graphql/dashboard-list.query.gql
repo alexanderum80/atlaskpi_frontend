@@ -1,0 +1,6 @@
+query idNameDashboardList {
+ dashboards{
+    _id
+    name
+  }
+}

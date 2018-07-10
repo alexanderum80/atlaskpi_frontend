@@ -1,0 +1,17 @@
+bw-select-picker.p-20(*ngIf="dateRangeList.length", flex-none, [fg]="fg",
+    label="Date Range"
+    field="predefinedDateRange",
+    [items]="dateRangeList",
+    [leftIcon]="icon",
+    [liveSearch]="true",
+    liveSearchPlaceholder="... search date ranges ...",
+    noneSelectedText="NOTHING SELECTED",
+    [required]="required")
+
+.animated.fadeIn.m-l-15(*ngIf="showCustomDateRangeControls", flex)
+    div(layout="column")
+        div(flex)
+            bw-date-picker([fg]="fg", field="from", label="From", [required]="fromRequired", [config]="datePickerConfig")
+            
+        div(flex)
+            bw-date-picker([fg]="fg", field="to", label="to", [required]="toRequired", [config]="datePickerConfig")

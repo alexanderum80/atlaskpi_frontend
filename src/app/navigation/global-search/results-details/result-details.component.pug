@@ -1,0 +1,3 @@
+.result-details-container(layout-xs="column", layout="row")
+    .p-5(flex, *ngFor="let g of resultGroups")
+        kpi-result-details-item(*ngIf="g.enabled", [groupItem]="g")

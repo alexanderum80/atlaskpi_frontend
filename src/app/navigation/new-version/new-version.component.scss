@@ -1,0 +1,25 @@
+@import '../../../assets/styles/_declaration';
+// @import '../../../assets/styles/themes/_cosmetic-mixins';
+
+.new-version-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    background-color: $redColor;
+    z-index: 2000;
+
+    span.text {
+        color: $white-nav;
+        margin-right: 15px;
+    }
+
+    .close {
+        i {
+            font-size: 24px;
+            color: $white-nav;
+        }
+    }
+
+}

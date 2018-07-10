@@ -1,0 +1,11 @@
+form([formGroup]="fg")
+    div(class="row m-t-50")
+        div(class="col-md-10 col-md-offset-1")
+            div(class="m-r-30 m-l-30 m-t-25 col-md-12")
+                input([formControlName]="'date'", class="form-control input-md", placeholder="YYYY/MM/DD"  )
+            div(class="m-r-30 m-l-30 m-t-25 col-md-12")
+                input([formControlName]="'name'", class="form-control input-md", placeholder="Name"  )
+            div(class="m-r-30 m-l-30 m-t-25 col-md-12")
+                input([formControlName]="'description'", class="form-control input-md", placeholder="Description"  )
+    
+
