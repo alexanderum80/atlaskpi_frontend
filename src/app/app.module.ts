@@ -35,6 +35,7 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { UsersModule } from './users/users.module';
 import { WidgetsModule } from './widgets/widgets.module';
 import { Widgets2Module } from './widgets2/widgets2.module';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
     declarations: [
@@ -72,6 +73,7 @@ import { Widgets2Module } from './widgets2/widgets2.module';
         EmployeesModule,
         LocationsModule,
         ActivitiesModule,
+        ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
         // for upload image
         // SimpleImageUploadModule
     ],

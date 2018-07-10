@@ -17,7 +17,7 @@ export class AutoRendereableChartComponent implements OnInit {
   @Input() autoRender = true;
   @Input() placeholderImg;
 
-  chart: Chart;
+  chart: any; // Chart;
   loading = false;
 
   constructor(private _apollo: Apollo) { }

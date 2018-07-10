@@ -189,9 +189,24 @@
   dependencies:
     tslib "^1.9.0"
 
+"@angular/pwa@^0.6.8":
+  version "0.6.8"
+  resolved "http://npm.atlaskpi.com:9000/@angular%2fpwa/-/pwa-0.6.8.tgz#2bc0d8e64e997bdfb39bbd2301322c0d2163851a"
+  dependencies:
+    "@angular-devkit/core" "0.6.8"
+    "@angular-devkit/schematics" "0.6.8"
+    "@schematics/angular" "0.6.8"
+    typescript "~2.6.2"
+
 "@angular/router@^6.0.3":
   version "6.0.7"
   resolved "http://npm.atlaskpi.com:9000/@angular%2frouter/-/router-6.0.7.tgz#53ce5dba1bb0f033687caca1451a12489a615415"
+  dependencies:
+    tslib "^1.9.0"
+
+"@angular/service-worker@^6.0.3":
+  version "6.0.7"
+  resolved "http://npm.atlaskpi.com:9000/@angular%2fservice-worker/-/service-worker-6.0.7.tgz#33e61f8818dcfd1814deb346a2337962be0d88ef"
   dependencies:
     tslib "^1.9.0"
 
@@ -6505,6 +6520,10 @@ typedarray@^0.0.6:
 typescript@^2.5.2, typescript@~2.9.1:
   version "2.9.2"
   resolved "http://npm.atlaskpi.com:9000/typescript/-/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
+
+typescript@~2.6.2:
+  version "2.6.2"
+  resolved "http://npm.atlaskpi.com:9000/typescript/-/typescript-2.6.2.tgz#3c5b6fd7f6de0914269027f03c0946758f7673a4"
 
 uglify-es@^3.3.4:
   version "3.3.9"

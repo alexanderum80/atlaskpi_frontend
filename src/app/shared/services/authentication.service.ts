@@ -1,4 +1,3 @@
-import { StoreHelper } from './index';
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions, Response } from '@angular/http';
 import { Router } from '@angular/router';
@@ -13,6 +12,7 @@ import { IAuthCredentials, UserToken } from '../models';
 import { LocalStorageService } from './local-storage.service';
 import { NativeChannelService } from './native-channel.service';
 import { UserService } from './user.service';
+import { StoreHelper } from './store-helper.service';
 
 @Injectable()
 export class AuthenticationService {
