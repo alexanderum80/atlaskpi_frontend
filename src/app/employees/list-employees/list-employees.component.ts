@@ -20,8 +20,8 @@ import { ListEmployeesViewModel } from './list-employees.viewmodel';
 // App Code
 // Apollo Query/Mutations
 
-const employeesQuery = require('./employees.gql');
-const deleteEmployeeMutation = require('./delete-employee.gql');
+const employeesQuery = require('graphql-tag/loader!./employees.gql');
+const deleteEmployeeMutation = require('graphql-tag/loader!./delete-employee.gql');
 
 @Activity(ViewEmployeeActivity)
 @Component({

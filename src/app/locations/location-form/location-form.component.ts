@@ -10,7 +10,7 @@ import { ILocation } from '../shared/models/location.model';
 import { LocationFormViewModel } from './location-form.viewmodel';
 
 // App Code
-const tags = require('./tags.gql');
+const tags = require('graphql-tag/loader!./tags.gql');
 
 @Component({
     selector: 'kpi-location-form',

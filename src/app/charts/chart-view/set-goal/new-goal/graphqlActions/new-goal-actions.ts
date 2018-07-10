@@ -1,5 +1,5 @@
 
 
 export const targetApi = {
-    create: require('../graphql/create-target.mutation.gql')
+    create: require('graphql-tag/loader!../graphql/create-target.mutation.gql')
 };

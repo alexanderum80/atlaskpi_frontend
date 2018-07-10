@@ -22,7 +22,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 // Apollo Mutation
 
-const addMutation = require('./add-business-unit.gql');
+const addMutation = require('graphql-tag/loader!./add-business-unit.gql');
 
 @Activity(AddBusinessUnitActivity)
 @Component({

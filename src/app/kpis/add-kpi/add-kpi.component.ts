@@ -14,7 +14,7 @@ import { KPITypeEnum } from '../../shared/domain/kpis/kpi';
 // App Code
 // Apollo Mutation
 
-const addMutation = require('./add-kpi.gql');
+const addMutation = require('graphql-tag/loader!./add-kpi.gql');
 
 @Activity(AddKpiActivity)
 @Component({

@@ -12,8 +12,8 @@ import { IUserInfo, IUserAgreement, User } from '../models';
 import { Store } from './store.service';
 
 const usersApi = {
-    all: require('../../users/shared/graphql/get-all-users.gql'),
-    current: require('../../users/shared/graphql/current-user.gql')
+    all: require('graphql-tag/loader!../../users/shared/graphql/get-all-users.gql'),
+    current: require('graphql-tag/loader!../../users/shared/graphql/current-user.gql')
 };
 
 export interface IUserInfoResponse {

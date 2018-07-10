@@ -17,12 +17,12 @@ import {WidgetAlertFormComponent} from '../widget-alert-form/widget-alert-form.c
 import {IAlert} from '../widget-alert-form/widget-alert-form.viewmodel';
 import {widgetsGraphqlActions} from '../shared/graphql/widgets.graphql-actions';
 
-const createAlertMutationGql = require('./create-alert.mutation.gql');
-const updateAlertMutationGql = require('./update-alert.mutation.gql');
-const alertByWidgetIdQueryGql = require('./alert-by-widget-id.query.gql');
-const allUsersQueryGql = require('./all-users.query.gql');
-const updateAlertActiveGql = require('./update-alert-active.mutation.gql');
-const removeAlertGql = require('./remove-alert.mutation.gql');
+const createAlertMutationGql = require('graphql-tag/loader!./create-alert.mutation.gql');
+const updateAlertMutationGql = require('graphql-tag/loader!./update-alert.mutation.gql');
+const alertByWidgetIdQueryGql = require('graphql-tag/loader!./alert-by-widget-id.query.gql');
+const allUsersQueryGql = require('graphql-tag/loader!./all-users.query.gql');
+const updateAlertActiveGql = require('graphql-tag/loader!./update-alert-active.mutation.gql');
+const removeAlertGql = require('graphql-tag/loader!./remove-alert.mutation.gql');
 
 @Component({
   selector: 'kpi-widget-alert',

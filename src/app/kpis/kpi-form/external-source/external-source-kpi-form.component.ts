@@ -10,10 +10,10 @@ import { ExternalSourceKpiFormViewModel } from './external-source-kpi-form.viewm
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { IKPIPayload } from '../shared/simple-kpi-payload';
 
-const externalDataSourcesQuery = require('./external-data-sources.query.gql');
-const addExternalSourceKpiMutation = require('./add-external-source-kpi.mutation.gql');
-const updateExternalSourceKpiMutation = require('./update-external-source-kpi.mutation.gql');
-const getKPIByName = require('../kpi-by-name.gql');
+const externalDataSourcesQuery = require('graphql-tag/loader!./external-data-sources.query.gql');
+const addExternalSourceKpiMutation = require('graphql-tag/loader!./add-external-source-kpi.mutation.gql');
+const updateExternalSourceKpiMutation = require('graphql-tag/loader!./update-external-source-kpi.mutation.gql');
+const getKPIByName = require('graphql-tag/loader!../kpi-by-name.gql');
 
 @Component({
   selector: 'kpi-external-source-kpi-form',
@@ -115,7 +115,7 @@ export class ExternalSourceKpiFormComponent implements OnInit, AfterViewInit {
             showCancelButton: true
         })
         .then((res) => {
-            if (res.dismiss !== 'cancel') {
+            if (res.dismiss !== 'cancel' as any) {
                 that._goToListKpis();
             }
         });

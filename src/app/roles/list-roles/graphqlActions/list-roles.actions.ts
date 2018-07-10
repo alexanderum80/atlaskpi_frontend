@@ -1,5 +1,5 @@
 
 
 export const listRolesApi = {
-    all: require('../graphql/read-roles.graphql')
+    all: require('graphql-tag/loader!../graphql/read-roles.graphql')
 }

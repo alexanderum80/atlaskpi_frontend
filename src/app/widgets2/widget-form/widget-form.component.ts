@@ -16,9 +16,9 @@ import {
 } from './widgets-graphql.interfaces';
 
 declare var require;
-const listChartQuery = require('./list-widget-charts.query.gql');
-const dateRangeQuery = require('./date-ranges.query.gql');
-const listKpisQuery = require('./list-kpis.query.gql');
+const listChartQuery = require('graphql-tag/loader!./list-widget-charts.query.gql');
+const dateRangeQuery = require('graphql-tag/loader!./date-ranges.query.gql');
+const listKpisQuery = require('graphql-tag/loader!./list-kpis.query.gql');
 
 
 @Component({

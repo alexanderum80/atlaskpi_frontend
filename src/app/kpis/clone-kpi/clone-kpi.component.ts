@@ -9,8 +9,8 @@ import { ApolloService } from '../../shared/services/apollo.service';
 import { CommonService } from '../../shared/services/common.service';
 import { CloneKpiViewModel } from '../clone-kpi/clone-kpi.component.viewmodel';
 
-const kpiQuery = require('./kpi.gql');
-const editMutation = require('./edit-kpi.gql');
+const kpiQuery = require('graphql-tag/loader!./kpi.gql');
+const editMutation = require('graphql-tag/loader!./edit-kpi.gql');
 
 
 @Activity(UpdateKpiActivity)

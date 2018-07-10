@@ -6,7 +6,6 @@ import { Apollo } from 'apollo-angular';
 import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import { setTimeout } from 'timers';
 import { isBoolean } from 'lodash';
 
 import { environment } from '../../../environments/environment';

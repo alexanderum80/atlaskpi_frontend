@@ -8,7 +8,6 @@ import {
   IDatePickerConfig,
 } from '../../../ng-material-components/modules/forms/date-picker/date-picker/date-picker-config.model';
 import { PredefinedDateRanges, IChartDateRange } from '../../models';
-import { setTimeout } from 'timers';
 import * as moment from 'moment';
 
 @Component({

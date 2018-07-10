@@ -1,5 +1,5 @@
 
 
 export const editUserApi = {
-    update: require('../graphql/edit-user.graphql')
+    update: require('graphql-tag/loader!../graphql/edit-user.graphql')
 };

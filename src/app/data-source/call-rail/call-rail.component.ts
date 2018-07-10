@@ -12,7 +12,7 @@ import {
 } from 'rxjs/Subscription';
 
 
-const callRailMutation = require('./call-rail.connect.gql');
+const callRailMutation = require('graphql-tag/loader!./call-rail.connect.gql');
 
 
 interface CallRailMutationInput {

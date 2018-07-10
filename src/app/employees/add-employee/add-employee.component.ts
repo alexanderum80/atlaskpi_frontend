@@ -23,7 +23,7 @@ import {
 
 // Apollo Mutation
 
-const addMutation = require('./add-employee.gql');
+const addMutation = require('graphql-tag/loader!./add-employee.gql');
 
 @Activity(AddEmployeeActivity)
 @Component({

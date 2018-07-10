@@ -16,8 +16,8 @@ import { IDepartment } from '../shared/models/department.model';
 import { ListDepartmentsViewModel } from './list-departments.viewmodel';
 
 
-const departmentsQuery = require('./department.gql');
-const delDepartmentMutation = require('./delete-department.gql');
+const departmentsQuery = require('graphql-tag/loader!./department.gql');
+const delDepartmentMutation = require('graphql-tag/loader!./delete-department.gql');
 
 @Activity(ViewDepartmentActivity)
 @Component({

@@ -1,5 +1,5 @@
 
 export const chartsGraphqlActions = {
-    dateRanges: require('./date-ranges.query.gql'),
-    dashboardList: require('./dashboard-list.query.gql'),
+    dateRanges: require('graphql-tag/loader!./date-ranges.query.gql'),
+    dashboardList: require('graphql-tag/loader!./dashboard-list.query.gql'),
 };

@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@agm/core@^1.0.0-beta.3":
+  version "1.0.0-beta.3"
+  resolved "http://npm.atlaskpi.com:9000/@agm%2fcore/-/core-1.0.0-beta.3.tgz#6ec7fd8629134c040f68663b14de3b4a60a8a011"
+
 "@angular-devkit/architect@0.6.8":
   version "0.6.8"
   resolved "http://npm.atlaskpi.com:9000/@angular-devkit%2farchitect/-/architect-0.6.8.tgz#977acc605aba45d21b95ca704cc99492e14299dd"
@@ -4360,6 +4364,10 @@ ngx-chips@^1.9.2:
   dependencies:
     ng2-material-dropdown "0.10.0"
     tslib "^1.9.0"
+
+ngx-scroll-event@^1.0.8:
+  version "1.0.8"
+  resolved "http://npm.atlaskpi.com:9000/ngx-scroll-event/-/ngx-scroll-event-1.0.8.tgz#d481cab5d147da3f6799a4a58e4d6346de4783aa"
 
 no-case@^2.2.0, no-case@^2.3.2:
   version "2.3.2"

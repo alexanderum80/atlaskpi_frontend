@@ -25,8 +25,8 @@ import {
 
 // Apollo Query/Mutations
 
-const locationsQuery = require('./locations.gql');
-const deleteLocationMutation = require('./delete-location.gql');
+const locationsQuery = require('graphql-tag/loader!./locations.gql');
+const deleteLocationMutation = require('graphql-tag/loader!./delete-location.gql');
 
 @Activity(ViewLocationActivity)
 @Component({

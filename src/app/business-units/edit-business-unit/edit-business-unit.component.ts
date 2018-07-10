@@ -24,8 +24,8 @@ import { Subscription } from 'rxjs/Subscription';
 
 // Apollo Queries/Mutations
 
-const businessUnitByIdQuery = require('./business-unit-by-id.gql');
-const editMutation = require('./edit-business-unit.gql');
+const businessUnitByIdQuery = require('graphql-tag/loader!./business-unit-by-id.gql');
+const editMutation = require('graphql-tag/loader!./edit-business-unit.gql');
 
 @Activity(UpdateBusinessUnitActivity)
 @Component({

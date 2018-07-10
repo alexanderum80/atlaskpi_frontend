@@ -31,8 +31,8 @@ import {
 
 // Apollo Queries/Mutations
 
-const locationByIdQuery = require('./location-by-id.gql');
-const editLocationMutation = require('./edit-location.gql');
+const locationByIdQuery = require('graphql-tag/loader!./location-by-id.gql');
+const editLocationMutation = require('graphql-tag/loader!./edit-location.gql');
 
 @Activity(UpdateLocationActivity)
 @Component({

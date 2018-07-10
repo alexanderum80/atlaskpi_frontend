@@ -20,7 +20,7 @@ import { ApolloService } from '../../shared/services/apollo.service';
 
 
 const Highcharts = require('highcharts/js/highcharts');
-const getChartByTitle = require('../shared/graphql/get-chart-by-title.gql');
+const getChartByTitle = require('graphql-tag/loader!../shared/graphql/get-chart-by-title.gql');
 
 @Component({
   selector: 'kpi-edit-chart',

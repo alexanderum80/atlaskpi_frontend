@@ -13,7 +13,7 @@ import { Component, Input, OnInit, Output, EventEmitter, ViewChild, OnDestroy } 
 import { Apollo, QueryRef } from 'apollo-angular';
 
 
-const ListChartsQuery = require('../shared/graphql/list-charts.query.gql');
+const ListChartsQuery = require('graphql-tag/loader!../shared/graphql/list-charts.query.gql');
 
 @Component({
   selector: 'kpi-chart-slideshow-form',

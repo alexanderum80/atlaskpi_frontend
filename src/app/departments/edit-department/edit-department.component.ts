@@ -20,8 +20,8 @@ import {
 } from 'rxjs/Subscription';
 
 
-const departmentByIdQuery = require('./department-by-id.gql');
-const editMutation = require('./update-department.gql');
+const departmentByIdQuery = require('graphql-tag/loader!./department-by-id.gql');
+const editMutation = require('graphql-tag/loader!./update-department.gql');
 
 @Activity(UpdateDepartmentActivity)
 @Component({

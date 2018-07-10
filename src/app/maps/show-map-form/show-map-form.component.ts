@@ -10,7 +10,7 @@ import {
 import {ApolloService} from '../../shared/services/apollo.service';
 import { IDataSource } from '../../shared/domain/kpis/data-source';
 
-const dataSources = require('./data-sources.gql');
+const dataSources = require('graphql-tag/loader!./data-sources.gql');
 
 @Component({
   selector: 'kpi-show-map-form',

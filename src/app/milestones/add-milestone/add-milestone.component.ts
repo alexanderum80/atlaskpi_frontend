@@ -23,8 +23,8 @@ import {
 } from '../../ng-material-components/modules/forms/date-picker/date-picker/date-picker-config.model';
 
 
-const usersQueryGql = require('./users.query.gql');
-const createMilestoneGql = require('./create-milestone.mutation.gql');
+const usersQueryGql = require('graphql-tag/loader!./users.query.gql');
+const createMilestoneGql = require('graphql-tag/loader!./create-milestone.mutation.gql');
 
 @Component({
   selector: 'kpi-add-milestone',

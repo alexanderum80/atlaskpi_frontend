@@ -1,4 +1,4 @@
-import { NgControl } from '@angular/forms/src/directives';
+import { NgControl } from '@angular/forms';
 import {
     AfterViewInit,
     ChangeDetectorRef,
@@ -21,7 +21,6 @@ import { SubmitableFormGroup } from '../../../models';
 import { SelectionItem } from '../../../models/selection-item';
 import { InputBase } from '../input-base/input-base.component';
 import { processPolyfills } from './polyfills';
-import { setTimeout } from 'timers';
 import { MouseEvent } from '@agm/core/services/google-maps-types';
 import { ISelectableItem } from '../../../../shared/models/index';
 import { ScrollEvent } from 'ngx-scroll-event';

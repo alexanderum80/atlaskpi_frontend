@@ -13,7 +13,7 @@ import { IRole } from '../../users/shared/index';
 import { ApolloService } from '../../shared/services/apollo.service';
 import Sweetalert from 'sweetalert2';
 
-const roleByNameQuery = require('../shared/graphql/role-by-name.gql');
+const roleByNameQuery = require('graphql-tag/loader!../shared/graphql/role-by-name.gql');
 
 @Component({
   selector: 'kpi-add-role',

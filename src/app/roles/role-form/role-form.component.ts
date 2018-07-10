@@ -10,7 +10,7 @@ import { ApolloService } from '../../shared/services/apollo.service';
 import { IRole } from '../../users/shared/index';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 
-const roleByNameQuery = require('../shared/graphql/role-by-name.gql');
+const roleByNameQuery = require('graphql-tag/loader!../shared/graphql/role-by-name.gql');
 
 @Component({
   selector: 'kpi-role-form',

@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
 
-const CreateAppointment = require('./create-appointment.gql');
+const CreateAppointment = require('graphql-tag/loader!./create-appointment.gql');
 
 @Component({
     selector: 'kpi-add-appointment',

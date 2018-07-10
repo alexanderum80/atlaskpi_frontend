@@ -18,7 +18,7 @@ import { IWidget } from '../shared/models';
 import { widgetsGraphqlActions } from './../shared/graphql/widgets.graphql-actions';
 import { WidgetsFormService } from './../widget-form/widgets-form.service';
 
-const getWidgetByTitle = require('../shared/graphql/get-widget-by-name.gql');
+const getWidgetByTitle = require('graphql-tag/loader!../shared/graphql/get-widget-by-name.gql');
 
 @Activity(UpdateWidgetActivity)
 @Component({

@@ -14,7 +14,7 @@ import {
 } from 'rxjs/Subscription';
 
 
-const usersLog = require('./graphql/users-log/userslogquery.gql');
+const usersLog = require('graphql-tag/loader!./graphql/users-log/userslogquery.gql');
 
 @Activity(ViewSecurityLogActivity)
 @Component({

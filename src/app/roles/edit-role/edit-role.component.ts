@@ -13,7 +13,7 @@ import { editRoleApi } from './graphqlActions/edit-role.actions';
 import { ApolloService } from '../../shared/services/apollo.service';
 import Sweetalert from 'sweetalert2';
 
-const roleByNameQuery = require('../shared/graphql/role-by-name.gql');
+const roleByNameQuery = require('graphql-tag/loader!../shared/graphql/role-by-name.gql');
 
 @Component({
   selector: 'kpi-edit-role',

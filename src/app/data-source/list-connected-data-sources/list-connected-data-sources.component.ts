@@ -28,8 +28,8 @@ import { CallRailComponent } from '../call-rail/call-rail.component';
 import { environment } from './../../../environments/environment';
 import { Subscription } from 'rxjs/Subscription';
 
-const ServerSideConnectorsQuery = require('./list-server-side-connectors.query.gql');
-const RemoveServerSideConnectorQuery = require('./remove-server-side-connector.mutation.gql');
+const ServerSideConnectorsQuery = require('graphql-tag/loader!./list-server-side-connectors.query.gql');
+const RemoveServerSideConnectorQuery = require('graphql-tag/loader!./remove-server-side-connector.mutation.gql');
 
 export interface IConnectorDetail {
   _id: string;

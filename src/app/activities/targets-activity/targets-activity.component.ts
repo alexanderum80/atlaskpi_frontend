@@ -4,7 +4,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ITarget } from '../../charts/chart-view/set-goal/shared/targets.interface';
 import { ApolloService } from '../../shared/services/apollo.service';
 
-const salesAmountByDateRangeQuery = require('../shared/querys/sales-amount-by-dateRange.gql');
+const salesAmountByDateRangeQuery = require('graphql-tag/loader!../shared/querys/sales-amount-by-dateRange.gql');
 
 @Component({
   selector: 'kpi-targets-activity',

@@ -12,7 +12,7 @@ import SweetAlert from 'sweetalert2';
 import { UserAgreementService } from './user-agreement.service';
 import { Subscription } from 'rxjs/Subscription';
 
-const updateUserAgreementGql = require('./update-user-agreement.mutation.gql');
+const updateUserAgreementGql = require('graphql-tag/loader!./update-user-agreement.mutation.gql');
 
 export enum EmunUserTerms {
   AGREE = 'agree',

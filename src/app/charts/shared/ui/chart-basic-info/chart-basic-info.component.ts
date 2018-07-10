@@ -50,7 +50,7 @@ const ExpensesGroupingList = [
     { id: 'concept', title: 'concept', selected: false, disabled: false }
 ];
 
-const kpiGroupingsQuery = require('./kpi-groupings.query.gql');
+const kpiGroupingsQuery = require('graphql-tag/loader!./kpi-groupings.query.gql');
 
 @Component({
     selector: 'kpi-chart-basic-info',

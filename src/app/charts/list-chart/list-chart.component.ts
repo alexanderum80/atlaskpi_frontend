@@ -19,7 +19,7 @@ import { BrowserService } from '../../shared/services/browser.service';
 
 const Highcharts = require('highcharts/js/highcharts');
 
-const ListChartsQuery = require('../shared/graphql/list-charts.query.gql');
+const ListChartsQuery = require('graphql-tag/loader!../shared/graphql/list-charts.query.gql');
 
 @Activity(ViewChartActivity)
 @Component({

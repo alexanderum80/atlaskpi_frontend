@@ -14,8 +14,8 @@ import { IChartSlideshow } from '../shared/model/chartslideshow.model';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
-const ListChartSlideShowQuery = require('../shared/graphql/list-charts-slideshow.query.gql');
-const RemoveSlideshow = require('../shared/graphql/del-slideshow.mutation.gql');
+const ListChartSlideShowQuery = require('graphql-tag/loader!../shared/graphql/list-charts-slideshow.query.gql');
+const RemoveSlideshow = require('graphql-tag/loader!../shared/graphql/del-slideshow.mutation.gql');
 
 
 @Activity(ViewSlideShowActivity)

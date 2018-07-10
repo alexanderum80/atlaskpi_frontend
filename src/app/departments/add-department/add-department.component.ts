@@ -19,7 +19,7 @@ import {
 } from 'rxjs/Subscription';
 
 
-const addMutation = require('./create-department.gql');
+const addMutation = require('graphql-tag/loader!./create-department.gql');
 
 @Activity(AddDepartmentActivity)
 @Component({

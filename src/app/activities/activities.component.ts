@@ -11,14 +11,14 @@ import { Subscription } from 'rxjs/Subscription';
 import { ActivitiesViewModel } from './activities.viewmodel';
 import {IRole} from '../roles/shared/role';
 
-const salesAmountByDateRangeQuery = require('./shared/querys/sales-amount-by-dateRange.gql');
-const salesEmployeeByDateRangeQuery = require('./shared/querys/sales-employee-by-dateRange.gql');
-const monthAvgSalesQuery = require('./shared/querys/month-avg-sales.gql');
-const expensesAmountByDateRangeQuery = require('./shared/querys/expenses-amount-by-dateRange.gql');
-const monthAvgExpensesQuery = require('./shared/querys/month-avg-expenses.gql');
-const employeeByIdQuery = require('../employees/edit-employee/employee-by-id.gql');
-const targetByDateQuery = require('./shared/querys/target-by-date.gql');
-const usersActivityByDateRangeQuery = require('./shared/querys/users-activity-by-dateRange.gql');
+const salesAmountByDateRangeQuery = require('graphql-tag/loader!./shared/querys/sales-amount-by-dateRange.gql');
+const salesEmployeeByDateRangeQuery = require('graphql-tag/loader!./shared/querys/sales-employee-by-dateRange.gql');
+const monthAvgSalesQuery = require('graphql-tag/loader!./shared/querys/month-avg-sales.gql');
+const expensesAmountByDateRangeQuery = require('graphql-tag/loader!./shared/querys/expenses-amount-by-dateRange.gql');
+const monthAvgExpensesQuery = require('graphql-tag/loader!./shared/querys/month-avg-expenses.gql');
+const employeeByIdQuery = require('graphql-tag/loader!../employees/edit-employee/employee-by-id.gql');
+const targetByDateQuery = require('graphql-tag/loader!./shared/querys/target-by-date.gql');
+const usersActivityByDateRangeQuery = require('graphql-tag/loader!./shared/querys/users-activity-by-dateRange.gql');
 
 
 @Component({

@@ -13,10 +13,10 @@ import { IActionItemClickedArgs } from '../../shared/ui/lists/item-clicked-args'
 import { IDashboard } from '../shared/models';
 import { ListDashboardViewModel } from './list-dashboard.viewmodel';
 
-const dashboardsQuery = require('../shared/graphql/all-dashboard.query.gql');
-const dashboardQuery = require('../shared/graphql/dashboard.gql');
-const deleteDashboardMutation = require('../shared/graphql/delete-dashboard.gql');
-const updateVisibleDashboardMutation = require('../shared/graphql/updatevisible-dashboard.gql');
+const dashboardsQuery = require('graphql-tag/loader!../shared/graphql/all-dashboard.query.gql');
+const dashboardQuery = require('graphql-tag/loader!../shared/graphql/dashboard.gql');
+const deleteDashboardMutation = require('graphql-tag/loader!../shared/graphql/delete-dashboard.gql');
+const updateVisibleDashboardMutation = require('graphql-tag/loader!../shared/graphql/updatevisible-dashboard.gql');
 
 @Activity(ViewDashboardActivity)
 @Component({

@@ -16,7 +16,7 @@ import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs/Subscription';
 
 const Highcharts = require('highcharts/js/highcharts');
-const alertByWidgetIdGql = require('./alert-by-widget-id.query.gql');
+const alertByWidgetIdGql = require('graphql-tag/loader!./alert-by-widget-id.query.gql');
 
 @Component({
     selector: 'kpi-widget-view',

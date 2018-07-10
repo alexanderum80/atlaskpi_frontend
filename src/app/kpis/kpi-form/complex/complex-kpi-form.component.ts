@@ -9,11 +9,11 @@ import { ApolloService } from '../../../shared/services/apollo.service';
 import { IKPIPayload } from '../shared/simple-kpi-payload';
 import { ComplexKpiFormViewModel } from './complex-kpi-form.viewmodel';
 
-const kpisQuery = require('../kpis.gql');
-const kpiByName = require('../kpi-by-name.gql');
-const datasourcesQuery = require('../data-sources.gql');
-const addKpiMutation = require('../add-kpi.mutation.gql');
-const updateKpiMutation = require('../update-kpi.mutation.gql');
+const kpisQuery = require('graphql-tag/loader!../kpis.gql');
+const kpiByName = require('graphql-tag/loader!../kpi-by-name.gql');
+const datasourcesQuery = require('graphql-tag/loader!../data-sources.gql');
+const addKpiMutation = require('graphql-tag/loader!../add-kpi.mutation.gql');
+const updateKpiMutation = require('graphql-tag/loader!../update-kpi.mutation.gql');
 
 // App Code
 @Component({
@@ -136,7 +136,7 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
             showCancelButton: true
         })
         .then((res) => {
-            if (res.dismiss !== 'cancel') {
+            if (res.dismiss !== 'cancel' as any) {
                 that._goToListKpis();
             }
         });

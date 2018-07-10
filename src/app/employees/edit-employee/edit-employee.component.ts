@@ -31,8 +31,8 @@ import {
 
 // Apollo Queries/Mutations
 
-const employeeByIdQuery = require('./employee-by-id.gql');
-const editMutation = require('./edit-employee.gql');
+const employeeByIdQuery = require('graphql-tag/loader!./employee-by-id.gql');
+const editMutation = require('graphql-tag/loader!./edit-employee.gql');
 
 @Activity(UpdateEmployeeActivity)
 @Component({

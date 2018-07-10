@@ -41,9 +41,9 @@ import { ChartFormatInfoComponent } from '../chart-format-info/chart-format-info
 
 
 const Highcharts = require('highcharts/js/highcharts');
-const getChartByTitle = require('../../graphql/get-chart-by-title.gql');
+const getChartByTitle = require('graphql-tag/loader!../../graphql/get-chart-by-title.gql');
 
-const initialDefinition = this.options = {
+const initialDefinition = {
     chart: {
         type: 'pie'
     },

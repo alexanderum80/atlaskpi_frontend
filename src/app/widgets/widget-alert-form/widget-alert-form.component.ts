@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs/Subscription';
 import {CommonService} from '../../shared/services/common.service';
 import { isEmpty, isNumber } from 'lodash';
 
-const usersQuery = require('./users.query.gql');
+const usersQuery = require('graphql-tag/loader!./users.query.gql');
 
 @Component({
   selector: 'kpi-widget-alert-form',

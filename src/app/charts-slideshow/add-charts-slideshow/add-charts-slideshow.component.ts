@@ -19,9 +19,9 @@ import { ChartSlideshowService } from '../shared/service/chartslideshow.service'
 import Sweetalert from 'sweetalert2';
 
 
-const ListChartsQuery = require('../shared/graphql/list-charts.query.gql');
-const AddSlideShowMutation = require('../shared/graphql/add-chart-slideshow.mutation.gql');
-const slideshowByName = require('../shared/graphql/chart-slideshow-by-name.query.gql');
+const ListChartsQuery = require('graphql-tag/loader!../shared/graphql/list-charts.query.gql');
+const AddSlideShowMutation = require('graphql-tag/loader!../shared/graphql/add-chart-slideshow.mutation.gql');
+const slideshowByName = require('graphql-tag/loader!../shared/graphql/chart-slideshow-by-name.query.gql');
 
 @Activity(AddSlideshowActivity)
 @Component({

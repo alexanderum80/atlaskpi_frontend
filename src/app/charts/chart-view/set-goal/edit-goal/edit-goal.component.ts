@@ -11,7 +11,7 @@ import { ApolloService } from '../../../../shared/services/apollo.service';
 import Sweetalert from 'sweetalert2';
 import { isEmpty } from 'lodash';
 
-const targetByNameQuery = require('../graphql/get-target-by-name.query.gql');
+const targetByNameQuery = require('graphql-tag/loader!../graphql/get-target-by-name.query.gql');
 
 @Component({
   selector: 'kpi-edit-goal',

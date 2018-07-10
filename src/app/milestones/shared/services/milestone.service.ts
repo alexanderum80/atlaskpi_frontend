@@ -10,7 +10,7 @@ import * as moment from 'moment';
 import { split, isEmpty } from 'lodash';
 import {IUserInfo} from '../../../shared/models/user';
 
-const userMilestoneNotificationMutation = require('./user-milestone-notification.mutation.gql');
+const userMilestoneNotificationMutation = require('graphql-tag/loader!./user-milestone-notification.mutation.gql');
 
 @Injectable()
 export class MilestoneService {

@@ -26,7 +26,7 @@ import { LocationFormViewModel, OperationHoursViewModel } from '../location-form
 
 // Apollo Mutation
 
-const addLocationMutation = require('./create-location.gql');
+const addLocationMutation = require('graphql-tag/loader!./create-location.gql');
 
 @Activity(AddLocationActivity)
 @Component({

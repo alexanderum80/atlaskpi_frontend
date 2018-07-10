@@ -9,8 +9,8 @@ import { CommonService } from '../../shared/services/common.service';
 import { IChartSlideshow } from '../shared/model/chartslideshow.model';
 
 
-const SlideshowById = require('../shared/graphql/chart-slideshow-by-id.query.gql');
-const ListChartsQuery = require('../shared/graphql/list-charts.query.gql');
+const SlideshowById = require('graphql-tag/loader!../shared/graphql/chart-slideshow-by-id.query.gql');
+const ListChartsQuery = require('graphql-tag/loader!../shared/graphql/list-charts.query.gql');
 const SLIDESHOW_INTERVAL = 10000;
 
 @Component({

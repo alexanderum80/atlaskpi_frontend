@@ -13,7 +13,7 @@ import { UserProfileViewModel } from './user-profile.viewmodel';
 
 
 
-const EditUserProfileMutation = require('./edit-user-profile.gql');
+const EditUserProfileMutation = require('graphql-tag/loader!./edit-user-profile.gql');
 
 @Component({
     selector: 'kpi-user-profile',

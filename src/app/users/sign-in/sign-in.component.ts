@@ -33,7 +33,7 @@ import { isBoolean } from 'lodash';
 import SweetAlert from 'sweetalert2';
 import {environment} from '../../../environments/environment';
 
-const findByUserNameQuery = require('./find-by-username.query.gql');
+const findByUserNameQuery = require('graphql-tag/loader!./find-by-username.query.gql');
 
 
 export interface IAuthErrorMessage {

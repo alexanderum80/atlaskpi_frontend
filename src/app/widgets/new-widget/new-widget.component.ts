@@ -16,7 +16,7 @@ import Sweetalert from 'sweetalert2';
 import { Subscription } from 'rxjs/Subscription';
 import { Input, Output, EventEmitter } from '@angular/core';
 
-const getWidgetByTitle = require('../shared/graphql/get-widget-by-name.gql');
+const getWidgetByTitle = require('graphql-tag/loader!../shared/graphql/get-widget-by-name.gql');
 
 @Activity(AddWidgetActivity)
 @Component({

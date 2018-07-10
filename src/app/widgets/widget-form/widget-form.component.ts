@@ -110,7 +110,7 @@ const comparisonDirectionArrowList: SelectionItem[] = [{
     },
 ];
 
-const widgetByTitleQuery = require('../shared/graphql/get-widget-by-name.gql');
+const widgetByTitleQuery = require('graphql-tag/loader!../shared/graphql/get-widget-by-name.gql');
 
 @Component({
     selector: 'kpi-widget-form',

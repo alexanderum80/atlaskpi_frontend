@@ -22,7 +22,7 @@ import { Input, Output, EventEmitter } from '@angular/core';
 
 
 const Highcharts = require('highcharts/js/highcharts');
-const getChartByTitle = require('../shared/graphql/get-chart-by-title.gql');
+const getChartByTitle = require('graphql-tag/loader!../shared/graphql/get-chart-by-title.gql');
 
 @Activity(AddChartActivity)
 @Component({

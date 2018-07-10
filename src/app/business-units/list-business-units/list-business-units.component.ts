@@ -21,8 +21,8 @@ import { ListBusinessUnitsViewModel } from './list-business-units.viewmodel';
 import { IActionItemClickedArgs } from '../../shared/ui/lists/item-clicked-args';
 import { Subscription } from 'rxjs/Subscription';
 
-const businessUnitsQuery = require('./business-units.gql');
-const deleteBusinessUnitMutation = require('./delete-business-unit.gql');
+const businessUnitsQuery = require('graphql-tag/loader!./business-units.gql');
+const deleteBusinessUnitMutation = require('graphql-tag/loader!./delete-business-unit.gql');
 
 @Activity(ViewBusinessUnitActivity)
 @Component({

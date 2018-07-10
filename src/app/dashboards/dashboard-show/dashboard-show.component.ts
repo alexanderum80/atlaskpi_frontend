@@ -78,7 +78,7 @@ import SweetAlert from 'sweetalert2';
 
 const Highcharts = require('highcharts/js/highcharts');
 
-const removeWidgetFromDashboardGql = require('./remove-widget-from-dashboard.mutation.gql');
+const removeWidgetFromDashboardGql = require('graphql-tag/loader!./remove-widget-from-dashboard.mutation.gql');
 const DashboardQuery = gql`
     query Dashboard($id: String!) {
         dashboard(id: $id) {
@@ -110,8 +110,8 @@ export interface DashboardResponse {
 }
 
 
-const mapMarkersQuery = require('./map-markers.gql');
-const socialWidgetQuery = require('./social-widgets.query.gql');
+const mapMarkersQuery = require('graphql-tag/loader!./map-markers.gql');
+const socialWidgetQuery = require('graphql-tag/loader!./social-widgets.query.gql');
 
 @Component({
     selector: 'kpi-dashboard-show',

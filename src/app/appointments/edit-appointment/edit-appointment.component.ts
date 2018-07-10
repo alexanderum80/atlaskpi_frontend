@@ -21,8 +21,8 @@ import { Subscription } from 'rxjs/Subscription';
 
 // Apollo Queries/Mutations
 
-const appointmentByIdQuery = require('./appointment-by-id.gql');
-const editMutation = require('./edit-appointment.gql');
+const appointmentByIdQuery = require('graphql-tag/loader!./appointment-by-id.gql');
+const editMutation = require('graphql-tag/loader!./edit-appointment.gql');
 
 @Component({
     selector: 'kpi-edit-appointment',

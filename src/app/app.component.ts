@@ -87,7 +87,7 @@ Highcharts.Chart.prototype.callbacks.push(function (chart) {
 //     HIGHCHARTS
 // ******************************************************************
 
-const inDemoMode = require('./in-demo-mode.query.gql');
+const inDemoMode = require('graphql-tag/loader!./in-demo-mode.query.gql');
 
 @Component({
     selector: 'kpi-root',

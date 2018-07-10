@@ -19,7 +19,7 @@ import {
 import { clone } from 'lodash';
 
 declare var require;
-const previewWidgetQuery = require('./preview-widget.query.gql');
+const previewWidgetQuery = require('graphql-tag/loader!./preview-widget.query.gql');
 
 interface IMaterializedComparison {
     period: string;

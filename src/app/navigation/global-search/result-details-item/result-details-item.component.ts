@@ -9,8 +9,8 @@ import { IManageUsers } from '../../../users/shared/index';
 import { IRole } from '../../../roles/shared/role';
 import { EditRoleComponent } from '../../../roles/edit-role/edit-role.component';
 
-const userQuery = require('../../../users/shared/graphql/get-all-users.gql');
-const rolesQuery = require('../../../roles/graphql/get-roles.query.gql');
+const userQuery = require('graphql-tag/loader!../../../users/shared/graphql/get-all-users.gql');
+const rolesQuery = require('graphql-tag/loader!../../../roles/graphql/get-roles.query.gql');
 
 @Component({
   selector: 'kpi-result-details-item',

@@ -19,7 +19,7 @@ import { uniq, isEmpty, isString } from 'lodash';
 import { Apollo } from 'apollo-angular';
 
 export const KPINAMEREGULAREXPRESSION = /^([a-zA-Z0-9\*\-\(\)\$\&\:#%] *){5,}$/;
-const expressionNumericFieldQuery = require('./get-expression-fields.query.gql');
+const expressionNumericFieldQuery = require('graphql-tag/loader!./get-expression-fields.query.gql');
 
 @Injectable()
 export class SimpleKpiFormViewModel extends ViewModel<IKPI> {

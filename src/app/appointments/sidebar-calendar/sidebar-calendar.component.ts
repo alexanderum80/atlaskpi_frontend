@@ -22,10 +22,10 @@ import { IAppointment } from '../shared/models/appointment.model';
 import { cleanAppointemntsProviderId } from './../../shared/helpers/appointments.helper';
 import { Store } from './../../shared/services/store.service';
 
-const appointmentsByDate = require('./appointments-by-date.gql');
-const AppointmentProvidersListQuery = require('./appointment-providers-list.query.gql');
-const SearchAppointmentsQuery = require('./search-appointments.query.gql');
-const updateUserPreferenceMutation = require('./update-user-preference.mutation.gql');
+const appointmentsByDate = require('graphql-tag/loader!./appointments-by-date.gql');
+const AppointmentProvidersListQuery = require('graphql-tag/loader!./appointment-providers-list.query.gql');
+const SearchAppointmentsQuery = require('graphql-tag/loader!./search-appointments.query.gql');
+const updateUserPreferenceMutation = require('graphql-tag/loader!./update-user-preference.mutation.gql');
 
 @Component({
     selector: 'kpi-sidebar-calendar',

@@ -27,7 +27,7 @@ import { GenericSelectionItem, IGenericSelectionItem } from './../../shared/serv
 import { UserService } from './../../shared/services/user.service';
 import { IWidget, WidgetSizeEnum, WidgetSizeMap } from './../../widgets/shared/models/widget.models';
 
-const dashboardByNameQuery = require('../shared/graphql/dashboard-by-name.gql');
+const dashboardByNameQuery = require('graphql-tag/loader!../shared/graphql/dashboard-by-name.gql');
 
 @Component({
   selector: 'kpi-dashboard-form',

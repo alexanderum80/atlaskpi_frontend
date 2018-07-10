@@ -5,8 +5,8 @@ import { ITarget } from '../../charts/chart-view/set-goal/shared/targets.interfa
 import * as moment from 'moment';
 import { isEmpty, isNumber, pick } from 'lodash';
 
-const targetById = require('../shared/querys/target-by-id.gql');
-const targetAmountQuery = require('./target-amount.query.gql');
+const targetById = require('graphql-tag/loader!../shared/querys/target-by-id.gql');
+const targetAmountQuery = require('graphql-tag/loader!./target-amount.query.gql');
 
 enum EnumActivityAction {
   CREATE = 'created',

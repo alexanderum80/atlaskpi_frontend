@@ -20,7 +20,7 @@ import { IRole } from '../shared/role';
 import { RolesService } from '../shared/services/roles.service';
 import { ListRolesViewModel } from './list-roles.viewmodel';
 
-const rolesQuery = require('./graphql/read-roles.graphql');
+const rolesQuery = require('graphql-tag/loader!./graphql/read-roles.graphql');
 
 @Activity(ModifyRoleActivity)
 @Component({

@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
 import { DashboardService } from '../../index';
 import { SelectionItem } from '../../../ng-material-components/index';
 
-const usersQuery = require('../../../users/shared/graphql/get-all-users.gql');
+const usersQuery = require('graphql-tag/loader!../../../users/shared/graphql/get-all-users.gql');
 
 @Component({
   selector: 'kpi-dashboard-filter-form',

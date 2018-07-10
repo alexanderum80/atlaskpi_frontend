@@ -35,11 +35,11 @@ import { UpdateMilestoneComponent } from './update-milestone/update-milestone.co
 
 
 
-const usersQueryGql = require('./users.query.gql');
-const milestoneById = require('./get-milestone-by-id.query.gql');
+const usersQueryGql = require('graphql-tag/loader!./users.query.gql');
+const milestoneById = require('graphql-tag/loader!./get-milestone-by-id.query.gql');
 
-const allMilestonesGql = require('./get-milestones-by-target.query.gql');
-const removeMilestoneGql = require('./remove-milestone.mutation.gql');
+const allMilestonesGql = require('graphql-tag/loader!./get-milestones-by-target.query.gql');
+const removeMilestoneGql = require('graphql-tag/loader!./remove-milestone.mutation.gql');
 
 @Activity(ViewMilestoneActivity)
 @Component({

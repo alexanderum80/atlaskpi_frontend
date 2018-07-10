@@ -25,8 +25,8 @@ import { Observable } from 'rxjs/Observable';
 import { isEmpty } from 'lodash';
 import {objectWithoutProperties} from '../../../../shared/helpers/object.helpers';
 
-const criteriaQuery = require('./kpi-criteria.gql');
-const kpiFilterFieldsQuery = require('./kpi-filter-fields.query.gql');
+const criteriaQuery = require('graphql-tag/loader!./kpi-criteria.gql');
+const kpiFilterFieldsQuery = require('graphql-tag/loader!./kpi-filter-fields.query.gql');
 
 @Component({
     selector: 'kpi-filter-form',

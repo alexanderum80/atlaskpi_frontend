@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs/Subscription';
 import {objectWithoutProperties} from '../../shared/helpers/object.helpers';
 import {CommonService} from '../../shared/services/common.service';
 
-const mapMarkerQuery = require('./map-markers.query.gql');
+const mapMarkerQuery = require('graphql-tag/loader!./map-markers.query.gql');
 
 export interface ILegendColorConfig {
     color: string;

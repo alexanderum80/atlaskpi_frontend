@@ -29,13 +29,13 @@ import { IKPIPayload } from '../shared/simple-kpi-payload';
 import {CommonService} from '../../../shared/services/common.service';
 import { Apollo } from 'apollo-angular';
 
-const dataSources = require('../data-sources.gql');
-const tags = require('./tags.gql');
-const addKpiMutation = require('../add-kpi.mutation.gql');
-const updateKpiMutation = require('../update-kpi.mutation.gql');
+const dataSources = require('graphql-tag/loader!../data-sources.gql');
+const tags = require('graphql-tag/loader!./tags.gql');
+const addKpiMutation = require('graphql-tag/loader!../add-kpi.mutation.gql');
+const updateKpiMutation = require('graphql-tag/loader!../update-kpi.mutation.gql');
 
-const getKPIByName = require('../kpi-by-name.gql');
-const sourceQuery = require('./get-source-Query.gql');
+const getKPIByName = require('graphql-tag/loader!../kpi-by-name.gql');
+const sourceQuery = require('graphql-tag/loader!./get-source-Query.gql');
 
 // App Code
 @Component({
@@ -151,7 +151,7 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
             showCancelButton: true
         })
         .then((res) => {
-            if (res.dismiss !== 'cancel') {
+            if (res.dismiss !== 'cancel' as any) {
                 that._goToListKpis();
             }
         });

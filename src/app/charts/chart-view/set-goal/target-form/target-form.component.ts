@@ -17,9 +17,9 @@ import {
 import { ITarget } from '../shared/targets.interface';
 import { ApolloService } from '../../../../shared/services/apollo.service';
 
-const notificationGql = require('./target-notification.query.gql');
-const targetAmountGql = require('./target-amount.query.gql');
-const targetByNameQuery = require('../graphql/get-target-by-name.query.gql');
+const notificationGql = require('graphql-tag/loader!./target-notification.query.gql');
+const targetAmountGql = require('graphql-tag/loader!./target-amount.query.gql');
+const targetByNameQuery = require('graphql-tag/loader!../graphql/get-target-by-name.query.gql');
 
 
 interface INotificationData {

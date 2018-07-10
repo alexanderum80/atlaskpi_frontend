@@ -5,7 +5,7 @@ import { UserService } from '../../../../shared/services/user.service';
 import { Injectable } from '@angular/core';
 import introJs from 'intro.js/intro.js';
 
-const userPreferenceMutationGql = require('./update-user-preference.mutation.gql');
+const userPreferenceMutationGql = require('graphql-tag/loader!./update-user-preference.mutation.gql');
 
 @Injectable()
 export class ChartBasicInfoViewModel extends ViewModel<any> {

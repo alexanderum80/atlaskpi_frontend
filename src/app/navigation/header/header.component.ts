@@ -30,8 +30,8 @@ import { ApolloService } from '../../shared/services/apollo.service';
 import {Apollo} from 'apollo-angular';
 import {objectWithoutProperties} from '../../shared/helpers/object.helpers';
 
-const helpCenterQueryGql = require('./help-center.query.gql');
-const updateUserPreference = require('./update-user-preference.mutation.gql');
+const helpCenterQueryGql = require('graphql-tag/loader!./help-center.query.gql');
+const updateUserPreference = require('graphql-tag/loader!./update-user-preference.mutation.gql');
 const visibleToRoles = ['owner', 'admin', 'semi-admin'];
 
 @Component({

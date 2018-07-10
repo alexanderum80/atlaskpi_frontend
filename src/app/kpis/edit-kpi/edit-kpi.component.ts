@@ -12,8 +12,8 @@ import { SimpleKpiFormComponent } from '../kpi-form/simple/simple-kpi-form.compo
 import { ExternalSourceKpiFormComponent } from './../kpi-form/external-source/external-source-kpi-form.component';
 import { EditKpiViewModel } from './edit-kpi.component.viewmodel';
 
-const kpiQuery = require('./kpi.gql');
-const editMutation = require('./edit-kpi.gql');
+const kpiQuery = require('graphql-tag/loader!./kpi.gql');
+const editMutation = require('graphql-tag/loader!./edit-kpi.gql');
 
 @Activity(UpdateKpiActivity)
 @Component({

@@ -10,7 +10,7 @@ import SweetAlert from 'sweetalert2';
 import { Router } from '@angular/router';
 
 
-const refreshMutation = require('./refresh-demo-data.gql');
+const refreshMutation = require('graphql-tag/loader!./refresh-demo-data.gql');
 
 @Component({
     selector: 'kpi-demo-options',

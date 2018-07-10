@@ -18,8 +18,8 @@ import { EditUserComponent } from '../edit-user';
 import { IManageUsers } from '../shared/models';
 import { ListUsersViewModel } from './list-users.viewmodel';
 
-const usersQuery = require('../shared/graphql/get-all-users.gql');
-const deleteUserMutation = require('../shared/graphql/remove-user.gql');
+const usersQuery = require('graphql-tag/loader!../shared/graphql/get-all-users.gql');
+const deleteUserMutation = require('graphql-tag/loader!../shared/graphql/remove-user.gql');
 
 @Activity(ViewUserActivity)
 @Component({

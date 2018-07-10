@@ -27,10 +27,10 @@ import {
 } from './../../shared/services/generic-selection.service';
 
 
-const SlideshowById = require('../shared/graphql/chart-slideshow-by-id.query.gql');
-const UpdateSlideshow = require('../shared/graphql/update-chart-slideshow.mutation.gql');
-const RemoveSlideshow = require('../shared/graphql/del-slideshow.mutation.gql');
-const slideshowByName = require('../shared/graphql/chart-slideshow-by-name.query.gql');
+const SlideshowById = require('graphql-tag/loader!../shared/graphql/chart-slideshow-by-id.query.gql');
+const UpdateSlideshow = require('graphql-tag/loader!../shared/graphql/update-chart-slideshow.mutation.gql');
+const RemoveSlideshow = require('graphql-tag/loader!../shared/graphql/del-slideshow.mutation.gql');
+const slideshowByName = require('graphql-tag/loader!../shared/graphql/chart-slideshow-by-name.query.gql');
 
 @Activity(UpdateSlideshowActivity)
 @Component({

@@ -1,9 +1,9 @@
 
 
 export const permissionsApi = {
-    all: require('../graphql/read-permissions.graphql')
+    all: require('graphql-tag/loader!../graphql/read-permissions.graphql')
 };
 
 export const roleSharedApi = {
-    delete: require('../graphql/remove-role.graphql')
+    delete: require('graphql-tag/loader!../graphql/remove-role.graphql')
 };

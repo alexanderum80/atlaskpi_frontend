@@ -1,5 +1,5 @@
 
 
 export const editRoleApi = {
-    update: require('../graphql/update-role.graphql')
+    update: require('graphql-tag/loader!../graphql/update-role.graphql')
 };

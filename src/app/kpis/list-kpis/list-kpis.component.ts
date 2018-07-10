@@ -25,8 +25,8 @@ import { IListItem } from '../../shared/ui/lists/list-item';
 // App Code
 // Apollo Query/Mutations
 
-const kpisQuery = require('./kpis.gql');
-const deleteKpiMutation = require('./delete-kpi.gql');
+const kpisQuery = require('graphql-tag/loader!./kpis.gql');
+const deleteKpiMutation = require('graphql-tag/loader!./delete-kpi.gql');
 
 @Activity(ViewKpiActivity)
 @Component({

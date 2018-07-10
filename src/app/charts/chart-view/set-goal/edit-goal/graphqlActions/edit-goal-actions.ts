@@ -1,5 +1,5 @@
 
 
 export const targetApi = {
-    update: require('../graphql/update-target.mutation.gql')
+    update: require('graphql-tag/loader!../graphql/update-target.mutation.gql')
 };
