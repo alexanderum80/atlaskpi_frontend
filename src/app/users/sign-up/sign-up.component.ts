@@ -8,6 +8,7 @@ import { SignupService } from '../shared/services';
 import { Observable } from 'rxjs/Observable';
 import * as changeCase from 'change-case';
 import { Subscription } from 'rxjs/Subscription';
+import * as moment from 'moment-timezone';
 
 @Component({
     selector: 'kpi-sign-up',
@@ -33,6 +34,8 @@ export class SignUpComponent implements AfterViewInit, OnDestroy {
     mobile: boolean;
     formValid: boolean;
     formInfo = false;
+
+    private _timezone = moment.tz.guess();
 
     private _subscription: Subscription[] = [];
 
@@ -164,6 +167,7 @@ export class SignUpComponent implements AfterViewInit, OnDestroy {
             }
 
             this.signupModel.authorizationCode = form.authorizationCode;
+            this.signupModel.timezone = this._timezone;
         }));
     }
 }
