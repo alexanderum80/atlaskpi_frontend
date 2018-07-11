@@ -1,7 +1,7 @@
 import { CommonService } from '../../shared/services/index';
 import { DeleteWidgetActivity } from '../../shared/authorization/activities/widgets/delete-widget.activity';
 import { UpdateWidgetActivity } from '../../shared/authorization/activities/widgets/update-widget.activity';
-import { Component, EventEmitter, Input, OnInit, OnChanges, Output, SimpleChanges, OnDestroy, AfterContentInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnChanges, Output, SimpleChanges, OnDestroy } from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import { Chart } from 'angular-highcharts';
 import { isEmpty } from 'lodash';
@@ -25,7 +25,7 @@ const alertByWidgetIdGql = require('graphql-tag/loader!./alert-by-widget-id.quer
     providers: [WidgetViewViewModel,
                 UpdateWidgetActivity, DeleteWidgetActivity]
 })
-export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy, AfterContentInit {
+export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
     @Input() widget: IWidget;
     @Input() widgetPreview: boolean;
     @Output() done = new EventEmitter<any>();
@@ -127,7 +127,7 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy, AfterC
         // by waiting for the container to be ready before displaying the chart
         setTimeout(() => {
             this.chart = new Chart(chartDefinition);
-        }, 100);
+        });
     }
 
     private _removeInfoItem(): void {

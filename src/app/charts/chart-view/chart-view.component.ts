@@ -272,7 +272,7 @@ export class ChartViewComponent implements OnInit, OnDestroy {
                 };
                 this._updateChartInfoFromDefinition();
                 this.enableDrillDown();
-            }, 100);
+            });
         }
 
         if (this.chart instanceof Chart) {
@@ -1321,7 +1321,7 @@ export class ChartViewComponent implements OnInit, OnDestroy {
     }
 
     private _hasSeries(): boolean {
-        return this.chart.options.series.length > 0;
+        return (this.chart.options.series || []).length > 0;
     }
 
     private _hasFrequency(): boolean {
