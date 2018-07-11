@@ -12,7 +12,7 @@
                 .rigth(*ngIf="Porcent") {{Porcent}} %
                 .text-center.widget-comparison-value(*ngIf="widgetComparisonValue")  {{widgetComparisonPeriod}}: {{widgetComparisonValue}}
                                
-            div(*ngIf="widget.type==='chart'", layout="column", layout-align="center center", flex)
+            .highcharts-container(*ngIf="widget.type==='chart'", layout="column", layout-align="center center", flex)
                 div(flex, [chart]="chart", [style]="chartStyle")
 
     div(*ngIf="showNotificationBell", layout="row", layout-align="end end")

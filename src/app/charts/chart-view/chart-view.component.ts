@@ -12,12 +12,12 @@ import { ToSelectionItemList } from '../../shared/extentions';
 import { parseComparisonDateRange } from '../../shared/models';
 import { MilestoneService } from '../../milestones/shared/services/milestone.service';
 import { TargetService } from './set-goal/shared/target.service';
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild, AfterContentInit } from '@angular/core';
 import { Chart } from 'angular-highcharts';
 import { Apollo, QueryRef } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { Options } from 'highcharts';
-import { pick, isNull, isUndefined, isEmpty, isString } from 'lodash';
+import { get as _get, pick, isNull, isUndefined, isEmpty, isString } from 'lodash';
 import * as moment from 'moment';
 
 import { FormatterFactory, yAxisFormatterProcess } from '../../dashboards/shared/extentions/chart-formatter.extention';
@@ -109,7 +109,7 @@ export interface ChartResponse {
         SeeInfoActivity, DownloadChartActivity
     ]
 })
-export class ChartViewComponent implements OnInit, OnDestroy {
+export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     @Input() chartData: ChartData;
     @Input() dateRanges: IDateRangeItem[] = [];
     @Input() isFromDashboard = false;
@@ -224,6 +224,9 @@ export class ChartViewComponent implements OnInit, OnDestroy {
             this.seeChartInfoActivity, this.compareOnFlyActivity,
             this.downloadChartActivity
         ]);
+    }
+
+    ngAfterContentInit() {
         if (!this.chartData) {
             return;
         }
@@ -265,7 +268,7 @@ export class ChartViewComponent implements OnInit, OnDestroy {
             // this fixes the issue of charts outside the container
             // by waiting for the container to be ready before displaying the chart
             // https://www.e-learn.cn/content/wangluowenzhang/133147
-            setTimeout(() => {
+            // setTimeout(() => {
                 this.chart = new Chart(this.chartData.chartDefinition);
                 this.chart.options.exporting = {
                     enabled: false,
@@ -273,7 +276,7 @@ export class ChartViewComponent implements OnInit, OnDestroy {
                 };
                 this._updateChartInfoFromDefinition();
                 this.enableDrillDown();
-            });
+            // });
         }
 
         if (this.chart instanceof Chart) {
@@ -903,6 +906,10 @@ export class ChartViewComponent implements OnInit, OnDestroy {
         });
     }
 
+    chartIsEmpty(): boolean {
+        return _get(this.chartData, 'chartDefinition.series', 0) === 0;
+    }
+
     get drilledDown(): boolean {
         if (!this.currentNode) {
             return false;
@@ -912,7 +919,7 @@ export class ChartViewComponent implements OnInit, OnDestroy {
                !this.chartData.futureTarget;
     }
 
-     get tableMode() {
+    get tableMode() {
         return this.actionItemsTarget === 'table-mode';
     }
 
