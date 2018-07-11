@@ -48,7 +48,8 @@ export class ListWidgetsComponent implements OnInit, OnDestroy {
     this.vm.addActivities([this.addWidgetActivity]);
 
     this.listWidgetsSubscription.push(this._apollo.watchQuery<{listWidgets: IWidget[]}>({
-      query: widgetsGraphqlActions.listWidgets,
+      query: widgetsGraphqlActions.listWidgetsNoData,
+      variables: { materialize: false },
       fetchPolicy: 'network-only'
     })
     .valueChanges.subscribe(res => {
