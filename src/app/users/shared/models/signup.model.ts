@@ -9,6 +9,7 @@ export class SignupModel {
   accountName: string;
   fullname: string;
   authorizationCode: string;
+  timezone: string;
 
   // seed data?
   seedData = false;
@@ -17,7 +18,8 @@ export class SignupModel {
       return {  name: this.accountName,
                 personalInfo: {
                     email: this.email,
-                    fullname: this.fullname
+                    fullname: this.fullname,
+                    timezone: this.timezone
                 },
                 authorizationCode: this.authorizationCode
 

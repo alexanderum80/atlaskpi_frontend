@@ -10,6 +10,7 @@ export const accountGraphQl = {
                     personalInfo {
                         fullname
                         email
+                        timezone
                     }
                     initialToken {
                         issued

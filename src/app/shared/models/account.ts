@@ -4,6 +4,7 @@ import { IUserToken } from './user-token';
 export interface IPersonalInfo {
     fullname?: string;
     email: string;
+    timezone: string;
 }
 
 export interface IBusinessInfo {
