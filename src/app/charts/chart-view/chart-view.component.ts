@@ -261,14 +261,18 @@ export class ChartViewComponent implements OnInit, OnDestroy {
         }
 
         if (this.chartData && this.chartData.chartDefinition) {
-            this.chart = new Chart(this.chartData.chartDefinition);
-            this.chart.options.exporting = {
-                enabled: false,
-                filename: this.title
-            };
-
-            this._updateChartInfoFromDefinition();
-            this.enableDrillDown();
+            // TODO: Improve this
+            // this fixes the issue of charts outside the container
+            // by waiting for the container to be ready before displaying the chart
+            setTimeout(() => {
+                this.chart = new Chart(this.chartData.chartDefinition);
+                this.chart.options.exporting = {
+                    enabled: false,
+                    filename: this.title
+                };
+                this._updateChartInfoFromDefinition();
+                this.enableDrillDown();
+            }, 100);
         }
 
         if (this.chart instanceof Chart) {
