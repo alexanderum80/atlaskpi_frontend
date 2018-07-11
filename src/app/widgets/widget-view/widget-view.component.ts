@@ -125,6 +125,7 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         // TODO: Improve this
         // this fixes the issue of charts outside the container
         // by waiting for the container to be ready before displaying the chart
+        // https://www.e-learn.cn/content/wangluowenzhang/133147
         setTimeout(() => {
             this.chart = new Chart(chartDefinition);
         });
