@@ -7,8 +7,7 @@ import { Router } from '@angular/router';
 import { CalendarDateFormatter, CalendarEvent, CalendarEventAction } from 'angular-calendar';
 import { Apollo } from 'apollo-angular';
 import { isSameDay, isSameMonth } from 'date-fns';
-import * as moment from 'moment';
-import * as moment_timezone from 'moment-timezone';
+import * as moment from 'moment-timezone';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
@@ -158,7 +157,7 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
   ngOnInit() {
     const that = this;
 
-    this.localTimeZone = moment_timezone.tz.guess();
+    this.localTimeZone = moment.tz.guess();
     this.timeZonesList = generateTimeZoneOptions();
 
     this.selectedProvider = this._store.getState().selectedAppointmentsProvider;
@@ -188,11 +187,6 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
 
     this.fg.controls['cancelled'].setValue(this.apptCancelledPreference);
 
-    this._setTimeZone(this.user);
-    const timezoneObservable = this.fg.controls['timezone'].valueChanges;
-
-    this._updateCalendarTimeZone(timezoneObservable);
-
     this.subscriptions.push(this.fg.get('cancelled').valueChanges.subscribe(cancelled => {
       // check if cancelled is true or false
       if (!isBoolean(cancelled)) {
@@ -203,9 +197,6 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
       that.updateApptPreference(cancelled);
       that.apptCancelledPreference = cancelled;
     }));
-
-
-    this.fg.get('timezone').valueChanges.subscribe(v => that.fetchEvents());
 
     this.subscriptions.push(this.fg.get('provider').valueChanges
       .distinctUntilChanged()
@@ -239,23 +230,27 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
           })
           .subscribe(result => {
           that.events = (<any>result.data).searchAppointments.map(a => {
-            const timeZone = this.fg.value.timezone;
-            const offset = moment_timezone.tz(timeZone).utcOffset() - moment_timezone.tz(this.localTimeZone).utcOffset();
+            const timeZone = this.user.profile.timezone;
+            const offset = moment.tz(timeZone).utcOffset() - moment.tz(this.localTimeZone).utcOffset();
 
             // fix end date if it is not valid
             const momentTo = moment(a.to);
             const endDate = momentTo.isValid() ? a.to : a.from;
 
+            const provider = a.provider || [];
+            const customer = a.customer || {};
+            const event = a.event || {};
+
             const appointmentCalendar: ExtendedCalendarEvent = {
                 id: a._id,
                 start: moment(a.from).add(offset, 'minutes').toDate(),
                 end:  moment(endDate).add(offset, 'minutes').toDate(),
-                title: a.reason,
-                color: { primary: a.event.color, secondary: a.event.color },
-                name: a.event.name || 'Not provided',
+                title: a.reason || a.appointmentType,
+                color: { primary: event.color, secondary: event.color },
+                name: event.name || 'Not provided',
                 actions: this.actions,
-                fullName: a.customer.fullname,
-                provider: a.provider.map(p => p.name).join('; '),
+                fullName: customer.fullname,
+                provider: provider.map(p => p.name).join('; '),
                 state: a.state
               };
             return appointmentCalendar;
@@ -463,23 +458,23 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
     }
   }
 
-  private _setTimeZone(user: IUserInfo): void {
-    let timezone: string;
+  // private _setTimeZone(user: IUserInfo): void {
+  //   let timezone: string;
 
-    if (this.fg && !isEmpty(this.fg.controls) && this.fg.controls['timezone']) {
-      if (user && user.preferences.calendarTimeZone) {
-        timezone = user.preferences.calendarTimeZone;
-      } else if (user && user.profile && user.profile.timezone) {
-        timezone = user.profile.timezone;
-      } else {
-        timezone = this.localTimeZone;
-      }
-    } else {
-      timezone = this.localTimeZone;
-    }
+  //   if (this.fg && !isEmpty(this.fg.controls) && this.fg.controls['timezone']) {
+  //     if (user && user.preferences.calendarTimeZone) {
+  //       timezone = user.preferences.calendarTimeZone;
+  //     } else if (user && user.profile && user.profile.timezone) {
+  //       timezone = user.profile.timezone;
+  //     } else {
+  //       timezone = this.localTimeZone;
+  //     }
+  //   } else {
+  //     timezone = this.localTimeZone;
+  //   }
 
-    this.fg.controls['timezone'].setValue(timezone);
-  }
+  //   this.fg.controls['timezone'].setValue(timezone);
+  // }
 
   private _setAppointmentCancelled(user: IUserInfo): void {
     if (user.preferences && isBoolean(user.preferences.showAppointmentCancelled)) {
@@ -489,30 +484,32 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
     }
   }
 
-  private _updateCalendarTimeZone(timezoneChanges: Observable<any>): void {
-    if (!timezoneChanges || !this.user || !this.user._id) {
-      return;
-    }
+//   private _updateCalendarTimeZone(timezoneChanges: Observable<any>): void {
+//     if (!timezoneChanges || !this.user || !this.user._id) {
+//       return;
+//     }
 
-    const that = this;
+//     const that = this;
 
-    this.subscriptions.push(
-      timezoneChanges
-        .debounceTime(1000)
-        .subscribe(timezone => {
-            if (timezone) {
-              that._apollo.mutate({
-                mutation: updateUserPreference,
-                variables: {
-                  id: this.user._id,
-                  input: {
-                    calendarTimeZone: timezone
-                  }
-                },
-              }).subscribe(({ data }) => {});
-            }
-        })
-    );
-  }
+//     this.subscriptions.push(
+//       timezoneChanges
+//         .debounceTime(1000)
+//         .subscribe(timezone => {
+//             if (timezone) {
+//               that._apollo.mutate({
+//                 mutation: updateUserPreference,
+//                 variables: {
+//                   id: this.user._id,
+//                   input: {
+//                     calendarTimeZone: timezone
+//                   }
+//                 },
+//               }).subscribe(({ data }) => {});
+//             }
+//         })
+//     );
+//   }
+// }
+
 }
 

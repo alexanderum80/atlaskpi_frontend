@@ -8,6 +8,7 @@ query SearchAppointments($criteria: SearchAppointmentCriteriaInput) {
      to
      duration
      cancelled
+     appointmentType
      customer {
        externalId
        fullname
