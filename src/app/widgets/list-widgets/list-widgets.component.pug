@@ -13,7 +13,7 @@ div(layout="column", layout-padding, *ngIf="!bigWidgetsCollectionEmpty")
             flex-sm="50",
             flex-lg="25")
             kpi-widget-selection-frame([widget]="bigWidget")
-                kpi-widget-view.pointer-cursor([widget]="bigWidget", [widgetPreview]="false", (done)="onActionClicked($event)")
+                kpi-auto-renderable-widget.pointer-cursor([item]="bigWidget", (done)="onActionClicked($event)")
 
 //- Small widgets
 div(layout="column", layout-padding, *ngIf="!smallWidgetsCollectionEmpty")
@@ -24,7 +24,7 @@ div(layout="column", layout-padding, *ngIf="!smallWidgetsCollectionEmpty")
             flex-sm="25",
             flex-lg="12-5")
             kpi-widget-selection-frame([widget]="smallWidget")
-                kpi-widget-view.pointer-cursor([widget]="smallWidget", [widgetPreview]="false", (done)="onActionClicked($event)")
+                 kpi-auto-renderable-widget.pointer-cursor([item]="smallWidget", (done)="onActionClicked($event)")
 
 kpi-add-item(*ngIf="ngIfAddItem", (onItemClicked)="addWidget()", [itemViewModel]="vm", [addItemActivityName]="'AddWidgetActivity'")
 

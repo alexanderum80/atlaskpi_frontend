@@ -59,11 +59,11 @@
                             div(layout="column", layout-gt-sm="row", layout-wrap)
                                 div(*ngFor="let widget of visibleBigWidgets", flex="100", flex-gt-sm="50", flex-gt-lg="25")
                                     kpi-selectable-item-frame([item]="widget", (click)="toggleWidgetSelection(widget)")
-                                        kpi-auto-renderable-widget([item]="widget", [autoRender]="false")
+                                        kpi-auto-renderable-widget([item]="widget", [autoRender]="false", [widgetPreview]="true")
                                 
                                 div(*ngFor="let widget of visibleSmallWidgets", flex-xs="50", flex-gt-xs="50", flex-gt-sm="25", flex-gt-lg="12-5")
                                     kpi-selectable-item-frame([item]="widget", (click)="toggleWidgetSelection(widget)")
-                                        kpi-auto-renderable-widget([item]="widget", [autoRender]="false")
+                                        kpi-auto-renderable-widget([item]="widget", [autoRender]="false", , [widgetPreview]="true")
 
                                 bw-button.btn-addWidget(flex-none, color="blue", icon="plus", [circular]="true", (clicked)="openAddWidget()")
 

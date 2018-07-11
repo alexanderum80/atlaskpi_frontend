@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { IWidget } from '../shared/models/index';
 import { Apollo } from 'apollo-angular';
 import { widgetsGraphqlActions } from '../shared/graphql/widgets.graphql-actions';
@@ -13,6 +13,8 @@ export class AutoRenderableWidgetComponent implements OnInit {
   @Input() item: IWidget;
   @Input() autoRender = true;
   @Input() placeholderImg;
+  @Input() widgetPreview = false;
+  @Output() done = new EventEmitter<any>();
 
   widget: IWidget;
   loading = false;
@@ -40,6 +42,10 @@ export class AutoRenderableWidgetComponent implements OnInit {
       that.loading = false;
       that.widget = res.data.widget;
     });
+  }
+
+  onActionClicked($event) {
+     this.done.emit($event);
   }
 
   get widgetBackgroundColor() {

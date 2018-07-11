@@ -1,4 +1,4 @@
-kpi-widget-view(*ngIf="widget", [widget]="widget", [widgetPreview]="true")
+kpi-widget-view(*ngIf="widget", [widget]="widget", [widgetPreview]="widgetPreview", (done)="onActionClicked($event)")
 
 .widget.z-depth-1(*ngIf="!widget", class="w-{{widgetBackgroundColor}} {{item.size}}",
                   layout="column")
