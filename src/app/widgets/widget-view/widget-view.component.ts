@@ -126,9 +126,16 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         // this fixes the issue of charts outside the container
         // https://www.e-learn.cn/content/wangluowenzhang/133147
         // this forces the chart to get the container height
-        setTimeout(() => {
-            this.chart.ref.reflow();
-        }, 0);
+        // setTimeout(() => {
+        //     this.chart.ref.reflow();
+        // }, 0);
+
+        // Highcarts 6 offers and Observable of the ChartObject
+        this.chart.ref$.subscribe(ref => {
+            setTimeout(() => {
+                ref.reflow();
+            }, 0);
+        });
     }
 
     private _removeInfoItem(): void {

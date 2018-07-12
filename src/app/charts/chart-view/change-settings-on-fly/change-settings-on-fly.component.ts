@@ -38,7 +38,7 @@ export class ChangeSettingsOnFlyComponent implements OnInit, AfterViewInit {
     dateRange: any;
     frequency: any;
     grouping: string[];
-    isChangedValue: boolean;
+    // isChangedValue: boolean;
     chartType: string;
 
     constructor(private _chartViewComponent: ChartViewComponent,
@@ -57,9 +57,9 @@ export class ChangeSettingsOnFlyComponent implements OnInit, AfterViewInit {
     }
 
     private _subscribeToFormValueChanges() {
-        this.fg.valueChanges.subscribe(() => {
-            this.isChangedValue = this.changedValue() && this.fg.valid;
-        });
+        // this.fg.valueChanges.subscribe(() => {
+        //     this.isChangedValue = this.changedValue() && this.fg.valid;
+        // });
     }
 
     updateChart() {
@@ -113,15 +113,15 @@ export class ChangeSettingsOnFlyComponent implements OnInit, AfterViewInit {
      * is the same values in the formgroup(predefinedDateRange, frequency, grouping).
      * used to disable/enable 'set' button
      */
-    changedValue() {
-        const hasDateRangeChanged: boolean = this._hasDateRangeChanged();
+    // changedValue() {
+    //     const hasDateRangeChanged: boolean = this._hasDateRangeChanged();
 
-        const hasFrequencyValueChanged: boolean = this._hasFrequencyChanged();
-        const changeFrequency = this.chartType !== 'pie' ? hasFrequencyValueChanged : false;
+    //     const hasFrequencyValueChanged: boolean = this._hasFrequencyChanged();
+    //     const changeFrequency = this.chartType !== 'pie' ? hasFrequencyValueChanged : false;
 
-        const hasGroupingChanged: boolean = this._hasGroupingChanged();
-        return hasDateRangeChanged || changeFrequency || hasGroupingChanged;
-    }
+    //     const hasGroupingChanged: boolean = this._hasGroupingChanged();
+    //     return hasDateRangeChanged || changeFrequency || hasGroupingChanged;
+    // }
 
     private _hasGroupingChanged(): boolean {
         return this._getFormControlValue('grouping') !== this._getChartDataGrouping();
