@@ -1,8 +1,3 @@
-.highcharts-container {
-    width:100% !important;
-    height:100% !important;
-}
-
 .chart-view {
     transition: 1s all ease-in-out;
 }
@@ -145,8 +140,8 @@ div.chart-title {
 }
 
 .chart-normal {
-    height: 90%;
-    width: 90%;
+    height: 90% !important;
+    width: 90% !important;
 }
 
 .change-settings {
@@ -157,4 +152,9 @@ div.chart-title {
     right: 0;
     z-index: 15;
     background-color: white;
+}
+
+.highcharts-container {
+    width:100% !important;
+    height:100% !important;
 }
