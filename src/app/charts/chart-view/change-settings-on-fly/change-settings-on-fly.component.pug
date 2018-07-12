@@ -13,7 +13,7 @@ div(class="top-margin")
         div.p-t-30(flex)
             div(layout="row", layout-padding, layout-align="center center")
                 div(flex-none)
-                    bw-button(icon="check", color="blue", title="SET", (clicked)="updateChart()", [disabled]="!isChangedValue") 
+                    bw-button(icon="check", color="blue", title="SET", (clicked)="updateChart()", [disabled]="!fg.valid") 
                 div(flex-none)
                     bw-button(icon="cancel", [simple]="true", color="black", title="CANCEL", (clicked)="back()")                        
 

@@ -13,7 +13,7 @@
                 .text-center.widget-comparison-value(*ngIf="widgetComparisonValue")  {{widgetComparisonPeriod}}: {{widgetComparisonValue}}
                                
             div(*ngIf="widget.type==='chart'", layout="column", layout-align="center center", flex)
-                div(flex, [chart]="chart", [style]="chartStyle")
+                .highcharts-container(flex, [chart]="chart", [style]="chartStyle", (load)="chart.ref.reflow()")
 
     div(*ngIf="showNotificationBell", layout="row", layout-align="end end")
         div.notifications-bell(flex-initial)

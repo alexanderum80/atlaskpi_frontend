@@ -339,7 +339,6 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
          }
 
          this.loading = false;
-
     }
 
     ngOnDestroy() {

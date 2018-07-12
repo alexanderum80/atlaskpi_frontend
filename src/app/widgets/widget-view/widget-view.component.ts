@@ -89,7 +89,7 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         const widgetChange = changes['widget'];
         if (widgetChange.previousValue && widgetChange.previousValue.size !== widgetChange.currentValue.size &&
             widgetChange.currentValue.type === 'chart') {
-            this._resizeChart();
+            this._renderChart();
         }
 
         const widgetPreviewChanges = changes['widgetPreview'];
@@ -122,6 +122,20 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         const chart = < IChart > JSON.parse(this.widget.materialized.chart);
         const chartDefinition = this._minifyChart(chart);
         this.chart = new Chart(chartDefinition);
+        // TODO: Improve this
+        // this fixes the issue of charts outside the container
+        // https://www.e-learn.cn/content/wangluowenzhang/133147
+        // this forces the chart to get the container height
+        // setTimeout(() => {
+        //     this.chart.ref.reflow();
+        // }, 0);
+
+        // Highcarts 6 offers and Observable of the ChartObject
+        this.chart.ref$.subscribe(ref => {
+            setTimeout(() => {
+                ref.reflow();
+            }, 0);
+        });
     }
 
     private _removeInfoItem(): void {
@@ -169,11 +183,11 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         }
     }
 
-    private _resizeChart() {
-        const chart = < IChart > JSON.parse(this.widget.materialized.chart);
-        chart.chartDefinition = this._minifyChart(chart.chartDefinition);
-        this.chart = new Chart(chart.chartDefinition);
-    }
+    // private _resizeChart() {
+    //     const chart = < IChart > JSON.parse(this.widget.materialized.chart);
+    //     chart.chartDefinition = this._minifyChart(chart.chartDefinition);
+    //     this.chart = new Chart(chart.chartDefinition);
+    // }
 
   // find the object in the array of actionItems
   // set disabled to boolean value
