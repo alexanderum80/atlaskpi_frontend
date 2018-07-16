@@ -1,22 +1,23 @@
-import { Subject } from 'rxjs/Subject';
-import { SelectPickerComponent } from '../../../ng-material-components/modules/forms/select-picker/select-picker.component';
-import {Validators, FormGroup} from '@angular/forms';
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
+import { FormGroup, Validators } from '@angular/forms';
 import { FormArray } from '@angular/forms/src/model';
+import { Apollo } from 'apollo-angular';
+import { isEmpty, isString, uniq } from 'lodash';
 import * as moment from 'moment';
+import { Subject } from 'rxjs/Subject';
+
 import { SelectionItem } from '../../../ng-material-components/models';
+import { SelectPickerComponent } from '../../../ng-material-components/modules/forms/select-picker/select-picker.component';
 import { ArrayField, ComplexField, Field, OnFieldChanges, ViewModel } from '../../../ng-material-components/viewModels';
 import { IDataSource, IDataSourceField } from '../../../shared/domain/kpis/data-source';
-import { IKPI, KPI } from '../../../shared/domain/kpis/kpi';
+import { IKPI } from '../../../shared/domain/kpis/kpi';
 import { getArithmeticOperatorItems } from '../../../shared/domain/kpis/operators';
 import { ITag, ITagItem } from '../../../shared/domain/shared/tag';
 import { TagsViewModel } from '../../../shared/view-models/tags.viewmodel';
 import { FilterViewModel } from '../shared/filter.viewmodel';
 import { SimpleKpiExpressionViewModel } from '../shared/simple-kpi-expression.viewmodel';
-import { getAggregateFunctions } from './../../../shared/domain/kpis/functions';
 import { IKPIPayload } from '../shared/simple-kpi-payload';
-import { uniq, isEmpty, isString } from 'lodash';
-import { Apollo } from 'apollo-angular';
+import { getAggregateFunctions } from './../../../shared/domain/kpis/functions';
 
 export const KPINAMEREGULAREXPRESSION = /^([a-zA-Z0-9\*\-\(\)\$\&\:#%] *){5,}$/;
 const expressionNumericFieldQuery = require('graphql-tag/loader!./get-expression-fields.query.gql');
@@ -261,23 +262,26 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         }
     }
 
-    updateExpressionNumericFields(expressionFieldsList: IDataSourceField[]): void {
-        let availableExpressionFieldsList = expressionFieldsList;
+    updateExpressionNumericFields(fieldList: IDataSourceField[]): void {
+        if (!fieldList) {
+            this.numericFields = [];
+            return;
+        }
+
         // filter out fields that does not exist in collection
         // return field that does not exist in collection, but does for edit kpi
-        availableExpressionFieldsList = availableExpressionFieldsList.filter(f => {
-            if (f.available) {
-                return f;
-            }
-
-            if (!f.available && (this.expression.field === f.path)) {
-                return f;
-            }
+        const exp = this.expression;
+        const isCountExp = exp && exp.function && exp.function.toLowerCase() === 'count';
+        const availableFields = fieldList.filter(f => {
+            return f.available ?
+                // if is a count exp return all fields other wise return only numeric ones
+                (isCountExp ? true : f.type === 'Number')
+                :
+                // return true if the expression is already using this field
+                (exp.field === f.path);
         });
-        if (this.expression && this.expression.function && this.expression.function !== 'count') {
-            availableExpressionFieldsList = availableExpressionFieldsList.filter(f => f.type === 'Number');
-        }
-        this.numericFields = availableExpressionFieldsList.map(field => new SelectionItem(field.path, field.name.toUpperCase()));
+
+        this.numericFields = availableFields.map(f => new SelectionItem(f.path, f.name.toUpperCase()));
     }
 
     getDataSourceList(item: any): void {
@@ -371,10 +375,6 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
                     }
                 }
             }).valueChanges.subscribe(({ data }) => {
-                if (!data || !data.kpiExpressionFields) {
-                    return;
-                }
-
                 that.updateExpressionNumericFields(data.kpiExpressionFields);
             });
         }

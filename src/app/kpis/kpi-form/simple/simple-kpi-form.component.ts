@@ -81,9 +81,7 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
         this._getDataSources();
     }
 
-    ngAfterViewInit() {
-        this._subscribeToNameChanges();
-    }
+    ngAfterViewInit() { }
 
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
@@ -251,6 +249,8 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
                 that.vm.initialize(that.model);
                 that.vm.updateDataSources(res.dataSources);
+                this._subscribeToNameChanges();
+                this._subscribeToDataSourceChanges();
             });
     }
 
@@ -260,5 +260,11 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
             .then(res => {
                 that.vm.updateTags(res.tags);
             });
+    }
+
+    private _subscribeToDataSourceChanges() {
+        this.vm.fg.controls['expression'].get('dataSource').valueChanges.subscribe(value => {
+            console.log('data source changed: ' + value);
+        });
     }
 }
