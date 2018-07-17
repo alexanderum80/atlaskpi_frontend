@@ -5,7 +5,7 @@ import { SelectionItem } from '../../ng-material-components/models/selection-ite
 import { Field } from '../../ng-material-components/viewModels/field.decorator';
 import { ViewModel } from '../../ng-material-components/viewModels/view-model';
 import { PredefinedDateRanges } from '../../shared/models/date-range';
-import {IDataSource, IDataSourceField} from '../../shared/domain/kpis/data-source';
+import { IDataSourceField } from '../../shared/domain/kpis/data-source';
 
 
 export interface IShowMapPayload {
@@ -20,9 +20,7 @@ export class ShowMapFormViewModel extends ViewModel<IShowMapPayload> {
     groupingItems: SelectionItem[] = [];
     dataSources: SelectionItem[];
 
-    sourceFields: IDataSourceField[] = [];
-
-    private _dataSources: IDataSource[];
+    private groupings: IDataSourceField[];
 
     constructor() {
         super(null);
@@ -40,29 +38,19 @@ export class ShowMapFormViewModel extends ViewModel<IShowMapPayload> {
     }
 
     get payload(): IShowMapPayload {
-        const dataSourceField = this.sourceFields.find(f => f.path === this.grouping);
-        const groupingName = dataSourceField ? dataSourceField.name : '';
+        const groupField = this.groupings.find(f => f.path === this.grouping);
+        // const groupingName = groupField ? groupField.name : '';
         return {
             dateRange: this.dateRange,
-            grouping: groupingName,
+            grouping: groupField.name,
         };
     }
 
-    updateDataSources(dataSources: IDataSource[]) {
-        if (!dataSources || this._dataSources === dataSources) {
-            return;
-        }
-
-        // This is not needed now but it will be used in the future
-        // this._dataSources = dataSources;
-        // this.dataSources = dataSources.map(s => new SelectionItem(s.name, s.description.toUpperCase()));
-
-        // const blackList = ['zip', 'city', 'state'];
-        const source = dataSources.find(s => s.name === 'revenue_by_referrals');
-        this.sourceFields = source.fields;
-
-        this.groupingItems = source.fields
-            .filter(f => f.allowGrouping && f.available && !f.path.toLocaleLowerCase().match(/zip|city|state|externalId/))
+    updateAvailableGroupings(groupings: IDataSourceField[]) {
+        this.groupings = groupings;
+        this.groupingItems = groupings.filter(f =>
+            f.allowGrouping
+            && f.available && !f.path.toLocaleLowerCase().match(/zip|city|state|externalId/))
             .map(g => new SelectionItem(g.path, g.name));
 
         // this.groupingItems = RevenueGroupingList.filter(list => list.id !== 'customerZip');

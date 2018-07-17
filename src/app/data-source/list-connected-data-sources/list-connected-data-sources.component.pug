@@ -5,8 +5,17 @@ div(layout="row", layout-align="center center", *ngIf="loading")
     div(flex="45")
     bw-preloader(flex, color="gray")
 
+//-  .h-100.p-20.text-center(layout="column", layout-align="center center", layout-margin)
+//-         div(flex)
+//-             img(*ngIf="item.imagePath", [src]="item.imagePath", [style.height]="'120px'")
+//-             i.zmdi(*ngIf="item.icon", class="zmdi-{{ item.icon }}")
+//-         .m-t-20(flex)
+//-             h2.title 
+//-                 | {{ item.title }}
+//-             .m-t-10.subtitle(*ngIf="item.subtitle") {{ item.subtitle }}
+
 div(layout="row", layout-wrap, layout-padding, layout-align="start start")
-    .box(flex-xs="100", flex-gt-xs="33", flex-gt-md="33", flex-gt-lg="33", *ngFor="let dataSource of listConnectedDataSources")
+    .box(flex-xs="100", flex-gt-xs="50", flex-gt-md="25", flex-gt-lg="20", *ngFor="let dataSource of listConnectedDataSources")
         bw-card.m-b-5.p-relative([depth]="1")
             bw-card-body.box([padded]="true")
                 div(layout="column")
