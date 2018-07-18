@@ -1,0 +1,9 @@
+query DataSources($source: String!) {
+	fieldsWithData(source: $source) {
+        name
+        path
+        type
+        allowGrouping
+        available
+	} 
+}

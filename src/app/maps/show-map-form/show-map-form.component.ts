@@ -10,7 +10,7 @@ import {
 import {ApolloService} from '../../shared/services/apollo.service';
 import { IDataSource } from '../../shared/domain/kpis/data-source';
 
-const dataSources = require('graphql-tag/loader!./data-sources.gql');
+const fieldsWithData = require('graphql-tag/loader!./fields-with-data.gql');
 
 @Component({
   selector: 'kpi-show-map-form',
@@ -72,10 +72,13 @@ export class ShowMapFormComponent implements OnInit, AfterViewInit {
   private _getDataSources() {
     const that = this;
 
-    this._apolloService.networkQuery<{ dataSources: IDataSource[] }>(dataSources)
+    this._apolloService.networkQuery<{ dataSources: IDataSource[] }>(
+        fieldsWithData,
+        { source: 'sales' }
+    )
         .then(res => {
             that.isLoading = false;
-            that.vm.updateDataSources(res.dataSources);
+            that.vm.updateAvailableGroupings(res.fieldsWithData);
         });
   }
 

@@ -1,79 +1,29 @@
-import { WidgetAlertComponent } from '../../widgets/widget-alert/widget-alert.component';
-import {
-    Component,
-    OnDestroy,
-OnInit,
-ViewChild
-} from '@angular/core';
-import {
-    ActivatedRoute,
-    Router
-} from '@angular/router';
-import {
-    Apollo,
-    QueryRef
-} from 'apollo-angular';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Apollo, QueryRef } from 'apollo-angular';
 import gql from 'graphql-tag';
-import {
-    toArray
-} from 'lodash';
-import {
-    Subject
-} from 'rxjs/Subject';
-import {
-    Subscription
-} from 'rxjs/Subscription';
-
-import {
-    LegendService
-} from '../../maps/shared/legend.service';
-import {
-    IMapMarker
-} from '../../maps/shared/models/map-marker';
-import {
-    ILegendColorConfig
-} from '../../maps/show-map/show-map.component';
-import {
-    objectWithoutProperties
-} from '../../shared/helpers/object.helpers';
-import {
-    ApolloService
-} from '../../shared/services/apollo.service';
-import {
-    AuthenticationService
-} from '../../shared/services/authentication.service';
-import {
-    BrowserService
-} from '../../shared/services/browser.service';
-import {
-    CommonService
-} from '../../shared/services/common.service';
-import {
-    UserService
-} from '../../shared/services/user.service';
-import {
-    IWidget,
-    WidgetSizeEnum
-} from '../../widgets/shared/models';
-import {
-    FormatterFactory,
-    yAxisFormatterProcess
-} from '../shared/extentions/chart-formatter.extention';
-import {
-    chartsGraphqlActions
-} from './../../charts/shared/graphql/charts.graphql-actions';
-import {
-    IDateRangeItem
-} from './../../shared/models/date-range';
-import {
-    SocialWidgetBase
-} from './../../social-widgets/models/social-widget-base';
-import {
-    WidgetSizeMap
-} from './../../widgets/shared/models/widget.models';
-import { Input } from '@angular/core';
-import { IDashboard } from '../shared/models/index';
+import { toArray } from 'lodash';
+import { Subject } from 'rxjs/Subject';
+import { Subscription } from 'rxjs/Subscription';
 import SweetAlert from 'sweetalert2';
+
+import { LegendService } from '../../maps/shared/legend.service';
+import { IMapMarker } from '../../maps/shared/models/map-marker';
+import { ILegendColorConfig } from '../../maps/show-map/show-map.component';
+import { objectWithoutProperties } from '../../shared/helpers/object.helpers';
+import { ApolloService } from '../../shared/services/apollo.service';
+import { AuthenticationService } from '../../shared/services/authentication.service';
+import { BrowserService } from '../../shared/services/browser.service';
+import { CommonService } from '../../shared/services/common.service';
+import { UserService } from '../../shared/services/user.service';
+import { IWidget, WidgetSizeEnum } from '../../widgets/shared/models';
+import { WidgetAlertComponent } from '../../widgets/widget-alert/widget-alert.component';
+import { FormatterFactory, yAxisFormatterProcess } from '../shared/extentions/chart-formatter.extention';
+import { IDashboard } from '../shared/models';
+import { chartsGraphqlActions } from './../../charts/shared/graphql/charts.graphql-actions';
+import { IDateRangeItem } from './../../shared/models/date-range';
+import { SocialWidgetBase } from './../../social-widgets/models/social-widget-base';
+import { WidgetSizeMap } from './../../widgets/shared/models/widget.models';
 
 
 const Highcharts = require('highcharts/js/highcharts');
