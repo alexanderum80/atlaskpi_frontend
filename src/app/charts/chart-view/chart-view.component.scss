@@ -11,7 +11,12 @@
     height: 100%;
     background-color: white;
     z-index: 1200;
-    overflow: auto;
+    overflow: scroll;
+    .chart-container {
+        width: 100%;
+        height: 460px;
+        overflow-y: scroll;
+    }
     .chart-description-title {
         height: 40px;
         width: 100%;
@@ -32,6 +37,9 @@
             color: black;
             .bold {
                 font-weight: bold;
+            }
+            .size {
+                text-transform: capitalize;
             }
         }
     }

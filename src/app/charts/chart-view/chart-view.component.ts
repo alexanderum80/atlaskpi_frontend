@@ -17,7 +17,7 @@ import { Chart } from 'angular-highcharts';
 import { Apollo, QueryRef } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { Options } from 'highcharts';
-import { get as _get, pick, isNull, isUndefined, isEmpty, isString } from 'lodash';
+import { get as _get, pick, isNull, isUndefined, isEmpty, isString, toLowerCase } from 'lodash';
 import * as moment from 'moment';
 
 import { FormatterFactory, yAxisFormatterProcess } from '../../dashboards/shared/extentions/chart-formatter.extention';
@@ -34,6 +34,7 @@ import { ChartViewViewModel } from './chart-view.viewmodel';
 import SweetAlert from 'sweetalert2';
 import { ApolloService } from '../../shared/services/apollo.service';
 import {SeeInfoActivity} from '../../shared/authorization/activities/charts/see-info-chart.activity';
+import {IChartTop} from '../../shared/models/top-n-records';
 
 const Highcharts = require('highcharts/js/highcharts');
 
@@ -69,6 +70,9 @@ export interface ChartData {
     description: string;
     group: string;
     kpis: any[];
+    top: IChartTop;
+    sortingCriteria: string;
+    sortingOrder: string;
     chartDefinition: Options;
     targetList?: any[];
     futureTarget?: boolean;
@@ -140,6 +144,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     filterData: any[];
     isDataOnFly = false;
     chartOnFly: Chart;
+    N_Result: any;
+    formatSortingCrit: string;
 
     rootNode: IChartTreeNode;
     currentNode: IChartTreeNode;
@@ -257,6 +263,29 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         if (this.chartData.comparison && this.chartData.comparison.length > 0) {
             this.getComparisonValue();
             this.getComparisonDateRange();
+        }
+
+        if (this.chartData.top) {
+            if (this.chartData.top.predefined === null ) {
+                return;
+            }
+            if (this.chartData.top.predefined === 'other') {
+                this.N_Result = this.chartData.top.custom;
+            } else {
+                this.N_Result = this.chartData.top.predefined.substr(4,3);
+            }
+        }
+
+        if (this.chartData.sortingCriteria && this.chartData.sortingOrder ) {
+
+            let scValue = this.chartData.sortingCriteria;
+
+            for (let i = 0;  i < scValue.length; i++) {
+                
+                if (scValue[i] === scValue[i].toUpperCase()) {
+                    this.formatSortingCrit = this.chartData.sortingCriteria.replace(scValue[i], ' ' + scValue[i].toLocaleLowerCase())
+                }
+            }
         }
 
         if (this.chartData && this.chartData.chartDefinition && this.chartData.chartDefinition.chart) {
