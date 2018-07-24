@@ -420,7 +420,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
           this.selectedCharts.map((c: IChart) => c._id),
           this.selectedWidgets.map((w: IWidget) => w._id),
           that.dashboardModel && that.dashboardModel.owner || that.currentUser._id,
-          dashboard.users && dashboard.users.split('|') || []
+          (dashboard.users.length > 0) && dashboard.users.split('|') || []
       );
     }));
   }
