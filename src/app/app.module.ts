@@ -5,8 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { Apollo, ApolloModule } from 'apollo-angular';
-// import { HttpLink, HttpLinkModule } from 'apollo-angular-link-http';
-import { HttpBatchLinkModule, HttpBatchLink } from 'apollo-angular-link-http-batch';
+import { HttpLink, HttpLinkModule } from 'apollo-angular-link-http';
+// import { HttpBatchLinkModule, HttpBatchLink } from 'apollo-angular-link-http-batch';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloLink, concat, from } from 'apollo-link';
 // import { onError } from 'apollo-link-error';
@@ -55,8 +55,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
         // Apollo
         HttpClientModule, // provides HttpClient for HttpLink
         ApolloModule,
-        // HttpLinkModule,
-        HttpBatchLinkModule,
+        HttpLinkModule,
+        // HttpBatchLinkModule,
 
         // App Modules
         NavigationModule,
@@ -94,8 +94,9 @@ export class AppModule {
 
     constructor(
         apollo: Apollo,
-        // httpLink: HttpLink,
-        batchLink: HttpBatchLink) {
+        httpLink: HttpLink,
+        // batchLink: HttpBatchLink
+    ) {
 
         const cache = new InMemoryCache({
             dataIdFromObject: o => {
@@ -106,15 +107,15 @@ export class AppModule {
             },
         });
 
-        // const appLink = httpLink.create({
-        //     uri: environment.graphQlServer
-        // });
-
-        const appLink = batchLink.create({
-            uri: environment.graphQlServer,
-            batchMax: 6,
-            batchInterval: 20
+        const appLink = httpLink.create({
+            uri: environment.graphQlServer
         });
+
+        // const appLink = batchLink.create({
+        //     uri: environment.graphQlServer,
+        //     batchMax: 6,
+        //     batchInterval: 20
+        // });
 
         const authMiddleware = this._getAuthMiddleWare();
 
