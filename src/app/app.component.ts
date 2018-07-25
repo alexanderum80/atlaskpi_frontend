@@ -101,13 +101,11 @@ export class AppComponent implements OnDestroy {
     header: HeaderComponent;
     showAgreement = false;
 
-    // @ViewChild('userAgreementModal') userAgreementModal: ModalComponent;
     @ViewChild('userAgreement') set content(content: any) {
         if (content) {
             this.userAgreement = content;
         }
     }
-
 
     restServer = environment.restServer;
 
@@ -174,7 +172,6 @@ export class AppComponent implements OnDestroy {
     cancel(): void  {
         const that = this;
         this.showAgreement = false;
-        // this.userAgreementModal.close();
         this._store.changes$.subscribe(state => {
             that.showHelpCenter = true;
         });
@@ -187,9 +184,7 @@ export class AppComponent implements OnDestroy {
         if (user) {
             this._checkIfDemoMode();
             this.username = user.username;
-            // if (this.userAgreementModal) {
-                this._checkUserAgreement(user.roles, user.ownerAgreed, user.profile.agreement);
-            // }
+            this._checkUserAgreement(user.roles, user.ownerAgreed, user.profile.agreement);
         }
     }
 
@@ -288,7 +283,6 @@ export class AppComponent implements OnDestroy {
         // if the user is an owner show the agreement
         if (isOwner) {
             this.showAgreement = true;
-            // this.userAgreementModal.open();
             return;
         }
 
