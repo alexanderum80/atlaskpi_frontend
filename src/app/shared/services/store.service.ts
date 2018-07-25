@@ -15,6 +15,7 @@ export interface State {
   previousRoute?: string;
   selectedAppointmentsProvider?: string;
   showAppointmentCancelled?: boolean;
+  showHelpCenter: boolean;
 }
 
 const defaultState = {
@@ -22,7 +23,8 @@ const defaultState = {
   sideBarOpen: false,
   headerActions: [],
   theme: 'light',
-  selectedAppointmentsProvider: ''
+  selectedAppointmentsProvider: '',
+  showHelpCenter: false
 };
 
 
