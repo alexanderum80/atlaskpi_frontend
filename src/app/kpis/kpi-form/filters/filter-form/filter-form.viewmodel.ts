@@ -43,6 +43,7 @@ export class FilterFormViewModel {
     private _criteriaItems: SelectionItem[] = [];
     private _criterias: string[];
     private _collectionSource: string;
+    private _formTouched = false;
 
     public dataSourceValuesTracker: any = {};
 
@@ -68,15 +69,17 @@ export class FilterFormViewModel {
             this._filterFg.get('field').valueChanges
                 .distinctUntilChanged().subscribe(fieldId => {
                     that._onFieldChange(fieldId);
+                    that._formTouched = true;
                 })
         );
 
         this._subscription.push(
             this._filterFg.get('operator').valueChanges
                 .distinctUntilChanged()
-                .subscribe(operatorId =>
-                    that._onOperatorChange(operatorId)
-                )
+                .subscribe(operatorId => {
+                    that._onOperatorChange(operatorId);
+                    that._formTouched = true;
+                })
         );
 
         this.datePickerConfig = {
@@ -134,6 +137,11 @@ export class FilterFormViewModel {
             const criteriaExists = this._criteriaItems.find(item => item.id === value);
 
             if (!criteriaExists && isString(value) && value) {
+
+                // if the form was already touched we do nothing.
+                if (this._formTouched) { return; }
+
+                // case when the filter model is just loaded and the criterias doesnt contain the original definition
                 // edit kpi, may havee multi selection separated by |
                 const hasMultiValues = value.indexOf('|');
                 if (hasMultiValues !== -1) {
