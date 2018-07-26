@@ -22,6 +22,12 @@ export function getConnectorId(type: ConnectorTypeEnum): string {
             return 'facebook';
         case ConnectorTypeEnum.GoogleAnalyticsServerSide:
             return 'googleanalytics';
+        case ConnectorTypeEnum.CustomExcel:
+            return 'customexcel';
+        case ConnectorTypeEnum.CustomCSV:
+            return ;
+        case ConnectorTypeEnum.CustomTable:
+            return 'customtable';
 
 
         case ConnectorTypeEnum.TwitterServerSide:
@@ -50,6 +56,12 @@ export function getConnectorType(type: string): ConnectorTypeEnum {
             return ConnectorTypeEnum.GoogleAnalyticsServerSide;
         case 'callrail':
             return ConnectorTypeEnum.CallRail;
+        case 'customexcel':
+            return ConnectorTypeEnum.CustomExcel;
+        case 'customcsv':
+            return ConnectorTypeEnum.CustomCSV;
+        case 'customtable':
+            return ConnectorTypeEnum.CustomTable;
         default:
             return;
     }

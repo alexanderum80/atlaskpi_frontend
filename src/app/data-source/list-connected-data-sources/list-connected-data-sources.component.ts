@@ -1,3 +1,4 @@
+import { CustomComponent } from './../custom/custom.component';
 import { CommonService } from '../../shared/services/common.service';
 import { AddConnectorActivity } from '../../shared/authorization/activities/data-sources/add-connector.activity';
 import { ViewConnectorActivity } from '../../shared/authorization/activities/data-sources/view-connector.activity';
@@ -47,7 +48,7 @@ export interface IConnectorDetail {
 })
 export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
   @ViewChild(CallRailComponent) callRailComponent: CallRailComponent;
-
+  @ViewChild(CustomComponent) customComponent: CustomComponent;
 
   public loading = true;
   public listConnectedDataSources: IOAuthConnector[];
@@ -78,6 +79,9 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
 
   public addDataSource() {                                 // Redirect to component to select new DataSource
     this._router.navigateByUrl('/datasource/listAllDataSourcesComponent');
+  }
+
+  editDataSource(dataSource) {
   }
 
   public deleteDataSource(dataSource: IOAuthConnector) {         // Delete from list and from service
@@ -156,6 +160,12 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
         return;
     }
 
+    if ((<any>dataSource)._name === 'Custom') {
+        // open custom ui
+        this.customComponent.open();
+        return;
+    }
+
     const url = dataSource.getAuthorizeUri();
 
     this._registerServerSideConnectorHook();
@@ -163,7 +173,7 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
     const win = window.open(url, 'auth', windowOptions);
     try {
         this._lsn();
-    } catch (e) {;
+    } catch (e) {
     }
     return true;
 }

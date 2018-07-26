@@ -1,0 +1,31 @@
+.enter-data-form-container.h-100(layout="row", layout-padding)
+    .flex(layout="column", [class.fullscreen]="fullScreen")
+        .custom-tooltip-header(*ngIf="fullScreen", layout="row", layout-padding)
+          div(flex-initial)
+            i.zmdi.zmdi-storage
+          div(flex-initial)
+            .p-l-15 Enter or import your data
+        .title.p-b-10(*ngIf="!fullScreen") Enter data
+        .table.h-100
+            .table-header.bgm-blue(layout="row")
+                .flex(*ngFor="let header of headerData")
+                    .columns {{ header }}
+            .table-body(layout="column")
+                .flex(layout="row", *ngFor="let controls of vm.fg.get('data').controls, let j = index")
+                    .flex(*ngFor="let fieldName of controls.controls, let i = index")
+                        div(*ngIf="getInputType(j, i) === 'checkbox'")
+                            bw-checkbox(
+                                    [fg]="controls",
+                                    [field]="i")
+                        div(*ngIf="getInputType(j, i) !== 'checkbox'")
+                            bw-text-box(
+                                    [fg]="controls",
+                                    [field]="i",
+                                    [placeholder]="getPlaceholder(j, i)",
+                                    [required]="true")
+                        .flex.err-message(*ngIf="fieldName.errors && fieldName.errors.required") This field is required.
+                        .flex.err-message(*ngIf="fieldName.errors && fieldName.errors.invalidDataType") Incorrect data type.
+
+        .full-screen-buttons(layout="row", layout-align="end") 
+            i.zmdi.zmdi-fullscreen.p-r-10(*ngIf="!fullScreen", (click)="toggleFullScreen(true)")   Full Screen
+            i.zmdi.zmdi-fullscreen-exit.p-r-10(*ngIf="fullScreen", (click)="toggleFullScreen(false)")   Exit Full Screen

@@ -1,3 +1,4 @@
+import { CustomExcelConnector } from './../shared/models/data-sources/custom-excel-connector';
 import { AddConnectorActivity } from '../../shared/authorization/activities/data-sources/add-connector.activity';
 import { Activity } from '../../shared/authorization/decorators/component-activity.decorator';
 import { GoogleAnalyticsServerSideConnector } from './../shared/models/data-sources/google-analytics-server-side-connector';
@@ -28,6 +29,7 @@ import {
 import { InstagramServerSideConnector } from '../shared/models/data-sources/instagram-server-side-connector';
 import { LinkedInServerSideConnector } from '../shared/models/data-sources/linkedin-server-side-connector';
 import { FacebookServerSideConnector } from '../shared/models/data-sources/facebook-server-side-connector';
+import { CustomComponent } from '../custom/custom.component';
 
 @Activity(AddConnectorActivity)
 @Component({
@@ -42,6 +44,7 @@ export class ListAllDataSourcesComponent implements OnInit, OnDestroy {
     public allServerSideDataSources: IServerSideOAuthConnector[] = [];
 
     @ViewChild(CallRailComponent) callRailComponent: CallRailComponent;
+    @ViewChild(CustomComponent) customComponent: CustomComponent;
 
     private _lsn: any;
 
@@ -56,6 +59,7 @@ export class ListAllDataSourcesComponent implements OnInit, OnDestroy {
         this.allServerSideDataSources.push(new InstagramServerSideConnector());
         this.allServerSideDataSources.push(new LinkedInServerSideConnector());
         this.allServerSideDataSources.push(new CallRailsConnector());
+        this.allServerSideDataSources.push(new CustomExcelConnector());
 
         this.allServerSideDataSources.push(new GoogleAnalyticsServerSideConnector());
     }
@@ -97,6 +101,12 @@ export class ListAllDataSourcesComponent implements OnInit, OnDestroy {
             return;
         }
 
+        if ((<any>dataSource)._name === 'Custom') {
+            // open custom ui
+            this.customComponent.open();
+            return;
+        }
+
         if (dataSource instanceof OAuthConnector) {
             url = dataSource.setUrlForAuthorize(this._getCurrentUrlHostname());
         }
@@ -108,7 +118,7 @@ export class ListAllDataSourcesComponent implements OnInit, OnDestroy {
         const win = window.open(url, 'auth', windowOptions);
         try {
             this._lsn();
-        } catch (e) {;
+        } catch (e) {
         }
 
         if (dataSource instanceof OAuthConnector) {

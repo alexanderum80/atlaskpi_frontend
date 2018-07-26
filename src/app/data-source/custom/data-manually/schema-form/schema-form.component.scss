@@ -1,0 +1,43 @@
+.title {
+    font-weight: bold;
+    padding-left: 15px;
+    padding-bottom: 10px;
+}
+
+.schema-form-container {
+    font-size: 15px;
+    position: relative;
+
+    .zmdi.zmdi-view-headline {
+        padding-top: 15px;
+        padding-right: 15px;
+        font-size: 25px;
+    }
+
+    .columnName {
+        .zmdi {
+            font-weight: bold;
+            color: black;
+        }
+    }
+
+    .dataType {
+        .zmdi {
+            font-weight: bold;
+            color: black;
+        }
+    }
+
+    .zmdi.zmdi-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        color: red;
+        font-size: 25px;
+        font-weight: bold;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
