@@ -1,3 +1,4 @@
+import { FormArray } from '@angular/forms/src/model';
 import { SelectPickerComponent } from '../../../ng-material-components/modules/forms/select-picker/select-picker.component';
 import { Subject } from 'rxjs/Subject';
 import { isEmpty } from 'lodash';
@@ -111,6 +112,14 @@ export class ExternalSourceKpiFormViewModel extends ViewModel<IKPI> {
         return this._selectedDataSource;
     }
 
+    get shouldCollapseFilters(): boolean {
+        return (this.fg.get('filter') as FormArray).controls.length === 0;
+    }
+
+    get shouldCollapseArithmeticOperation(): boolean {
+        return this.fg.value.expression.value === null;
+    }
+    
     updateDataSources(dataSources: IExternalDataSource[]) {
         if (!dataSources || this._dataSources === dataSources) {
             return;

@@ -47,23 +47,25 @@ export class FilterFormComponent implements AfterViewInit, OnChanges, OnDestroy 
     loading: ElementRef;
     isLoading = true;
 
-    @ViewChild('vmOperators') set operators(content: SelectPickerComponent) {
-        if (content) {
-            this.vm.vmOperators = content;
-        }
-    }
+    // @ViewChild('vmOperators') set operators(content: SelectPickerComponent) {
+    //     if (content) {
+    //         this.vm.vmOperators = content;
+    //     }
+    // }
 
-    @ViewChild('vmFields') set fields(content: SelectPickerComponent) {
-        if (content) {
-            this.vm.vmFields = content;
-        }
-    }
+    // @ViewChild('vmFields') set fields(content: SelectPickerComponent) {
+    //     if (content) {
+    //         this.vm.vmFields = content;
+    //     }
+    // }
 
-    @ViewChild('vmCriteria') set criterias(content: SelectPickerComponent) {
-        if (content) {
-            this.vm.vmCriteria = content;
-        }
-    }
+    // @ViewChild('vmCriteria') set criterias(content: SelectPickerComponent) {
+    //     if (content) {
+    //         this.vm.vmCriteria = content;
+    //     }
+    // }
+
+    // @ViewChild('vmCriteria') criteriaSelectPicker: SelectPickerComponent;
 
     @ViewChild('loading') set loadingId(content: ElementRef) {
         if (content) {
@@ -86,6 +88,7 @@ export class FilterFormComponent implements AfterViewInit, OnChanges, OnDestroy 
 
         this.vm.initialize(this.filter);
         this._loadingSources();
+
         this.subs.push(this.vm.criteriaPayloadSubject.subscribe(payload => {
             that._getCriteriaList(payload);
         }));

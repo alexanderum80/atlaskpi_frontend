@@ -295,7 +295,6 @@ export class FilterFormViewModel {
     private _updateCriteriaPayload() {
         const collectionSource = (isString(this._collectionSource) && !isEmpty(this._collectionSource))
                                   ? this._collectionSource.split('|') : null;
-
         this.criteriaPayloadSubject.next({
             name: this._dataSource.name,
             source: this._dataSource.dataSource,
@@ -307,6 +306,7 @@ export class FilterFormViewModel {
     }
 
     private _resetCriteria() {
+
         // may not have formgroup at this time
         if (!this._filterFg) {
             return;
