@@ -13,11 +13,15 @@
             .table-body(layout="column")
                 .flex(layout="row", *ngFor="let controls of vm.fg.get('data').controls, let j = index")
                     .flex(*ngFor="let fieldName of controls.controls, let i = index")
+                        div(*ngIf="getInputType(j, i) === 'date'")
+                            bw-date-picker(
+                                    [fg]="controls",
+                                    [field]="i")
                         div(*ngIf="getInputType(j, i) === 'checkbox'")
                             bw-checkbox(
                                     [fg]="controls",
                                     [field]="i")
-                        div(*ngIf="getInputType(j, i) !== 'checkbox'")
+                        div(*ngIf="getInputType(j, i) !== 'checkbox' && getInputType(j, i) !== 'date'")
                             bw-text-box(
                                     [fg]="controls",
                                     [field]="i",

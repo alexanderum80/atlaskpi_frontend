@@ -136,6 +136,10 @@ export class ImportFileComponent implements OnInit {
       this.csvFileData.records = this._getDataRecordsArrayFromCSVFile(csvRecordsArray,
         headerLength, this.csvTokenDelimeter);
 
+      if (this.csvFileData.records.length === 0) {
+        return;
+      }
+
       this.csvFileData.fields = this._getFieldsArrayFromCSVFile(csvRecordsArray, this.csvTokenDelimeter);
 
       if (!this.vm.isRequiredDataTypePresent(this.csvFileData.fields)) {
@@ -183,27 +187,31 @@ export class ImportFileComponent implements OnInit {
             const dataArray = [];
             this.vm.Alphabet.map(alph => {
               const cell = alph + i;
+              let cellValue = '';
               if (worksheet[cell]) {
-                const cellValue = <any>worksheet[cell].w.trimEnd();
+                cellValue = <any>worksheet[cell].w.trimEnd();
+              }
 
-                if (j === 1) {
+              if (j === 1) {
+                if (cellValue !== '') {
                   const newfield: ICustomSchemaInfo = {
                     columnName: cellValue,
                     dataType: ''
                   };
 
                   this.excelFileData.fields.push(newfield);
-                } else {
-                  dataArray.push(cellValue);
                 }
+              } else if (dataArray.length < this.excelFileData.fields.length) {
+                dataArray.push(cellValue);
               }
             });
 
-            j += 1;
-
-            if (dataArray.length > 0) {
+            const dataArrayValueNotNull = dataArray.filter(d => d !== '');
+            if (dataArray.length > 0 && dataArrayValueNotNull.length > 0) {
               this.excelFileData.records.push(dataArray);
             }
+
+            j += 1;
           }
 
           if (this.excelFileData.records.length > 0) {
@@ -259,13 +267,25 @@ export class ImportFileComponent implements OnInit {
         const data = csvRecordsArray[i].split(tokenDelimeter);
 
         if (data.length !== headerLength) {
-            if (data === '') {
-                alert('Extra blank line is present at line number "+i+", please remove it.');
-                return null;
+            if (csvRecordsArray[i] === '') {
+              Sweetalert({
+                title: 'Invalid file',
+                text: 'Extra blank line is present at line number  ' + i + ', please remove it.',
+                type: 'error',
+                showConfirmButton: true,
+                confirmButtonText: 'Ok'
+              });
+              return [];
             } else {
-                alert('Record at line number ' + i + ' contain ' + data.length + ' tokens, ' +
-                    'and is not matching with header length of :' + headerLength);
-                return null;
+              Sweetalert({
+                title: 'Invalid file',
+                text: 'Record at line number ' + i + ' contain ' + data.length + ' tokens, ' +
+                'and is not matching with header length of ' + headerLength,
+                type: 'error',
+                showConfirmButton: true,
+                confirmButtonText: 'Ok'
+              });
+              return [];
             }
         }
 

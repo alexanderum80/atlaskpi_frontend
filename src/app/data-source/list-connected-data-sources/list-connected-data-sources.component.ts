@@ -1,3 +1,4 @@
+import { forEach } from 'lodash';
 import { CustomComponent } from './../custom/custom.component';
 import { CommonService } from '../../shared/services/common.service';
 import { AddConnectorActivity } from '../../shared/authorization/activities/data-sources/add-connector.activity';
@@ -28,10 +29,13 @@ import SweetAlert from 'sweetalert2';
 import { CallRailComponent } from '../call-rail/call-rail.component';
 import { environment } from './../../../environments/environment';
 import { Subscription } from 'rxjs/Subscription';
+import { CustomFormViewModel } from '../custom/custom.viewmodel';
+import { FormArray, FormGroup, FormControl } from '../../../../node_modules/@angular/forms';
+import { ApolloService } from '../../shared/services/apollo.service';
 
 const ServerSideConnectorsQuery = require('graphql-tag/loader!./list-server-side-connectors.query.gql');
 const RemoveServerSideConnectorQuery = require('graphql-tag/loader!./remove-server-side-connector.mutation.gql');
-
+const dataSourceCollectionQuery = require('graphql-tag/loader!./data-source-collection.query.gql');
 export interface IConnectorDetail {
   _id: string;
   name: string;
@@ -61,6 +65,8 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _renderer: Renderer2,
     private _apollo: Apollo,
+    private _apolloService: ApolloService,
+    private _vm: CustomFormViewModel,
     public vm: ListConnectedDataSourcesViewModel,
     public deleteConnectorActivity: DeleteConnectorActivity,
     public addConnectorActivity: AddConnectorActivity
@@ -82,6 +88,50 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
   }
 
   editDataSource(dataSource) {
+      this._apolloService.networkQuery(dataSourceCollectionQuery, {name: dataSource._name})
+      .then(res => {
+        const dataSourceCollection = JSON.parse(res['dataSourceCollection']);
+        const schemaCollection = dataSourceCollection.schema;
+        const dataCollection = dataSourceCollection.data;
+
+        const fields = [];
+        forEach(schemaCollection, (value, key) => {
+          if (key !== 'Source') {
+            fields.push({
+              'columnName': key,
+              'dataType': value.dataType
+            });
+          }
+        });
+
+        const data = [];
+        dataCollection.map(d => {
+          const dataElement = [];
+          forEach(schemaCollection, (value, key) => {
+            if (key !== 'Source') {
+              dataElement.push(d[value.path]);
+            }
+          });
+          data.push(dataElement);
+        });
+
+        const schema = {
+          'schema': fields,
+          'data': []
+        };
+
+        this._vm.initialize(schema);
+
+        this._vm.updateSelectedInputType('manually');
+        this._vm.updateIsEdit(true);
+
+        for (let i = 0; i < data.length; i++) {
+          const element = data[i];
+          this._addNewRow(element);
+        }
+
+        this.customComponent.open();
+      });
   }
 
   public deleteDataSource(dataSource: IOAuthConnector) {         // Delete from list and from service
@@ -196,6 +246,16 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
               return;
           }
       });
+  }
+
+  private _addNewRow(data) {
+    const dataFormGroup = this._vm.fg.get('data') as FormArray;
+
+    dataFormGroup.push(new FormGroup(
+      data.map(d => {
+        return new FormControl(d);
+      })
+    ));
   }
 
   get serverSideDataSourcesEmpty(): boolean {

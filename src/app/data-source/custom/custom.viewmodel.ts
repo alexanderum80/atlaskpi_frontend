@@ -4,6 +4,7 @@ import { ICustomSchema, ICustomSchemaInfo } from '../shared/models/data-sources/
 import { ViewModel, Field, ArrayField } from '../../ng-material-components/viewModels';
 import { Injectable } from '@angular/core';
 import { SelectionItem } from '../../ng-material-components';
+import { BehaviorSubject, Observable } from '../../../../node_modules/rxjs';
 
 
 export class CustomSchemaViewModel extends ViewModel<ICustomSchemaInfo> {
@@ -32,13 +33,19 @@ export class CustomDataViewModel extends ViewModel<ICustomDataInfo> {
 @Injectable()
 export class CustomFormViewModel extends ViewModel<ICustomSchema> {
     private _dataType: IDataType = {
-        numeric: 'Numeric',
+        number: 'Number',
         string: 'String' ,
         date: 'Date' ,
         boolean: 'Boolean'
     };
 
-    private _requiredDataType = ['Numeric', 'String', 'Date'];
+    private _selectedInputType = 'import';
+
+    private _currentStep = 1;
+
+    private _isEditSubject = new BehaviorSubject<boolean>(false);
+
+    private _requiredDataType = ['Number', 'String', 'Date'];
 
     private _selectedTableOption: string;
 
@@ -57,7 +64,7 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
 
         this._defaultSchema = {
             schema: [
-                { columnName: 'Amount', dataType: this._dataType.numeric },
+                { columnName: 'Amount', dataType: this._dataType.number },
                 { columnName: 'Transaction Date', dataType: this._dataType.date },
                 { columnName: 'Description', dataType: this._dataType.string },
             ],
@@ -66,7 +73,7 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
 
         this._defaultInputSchema = {
             schema : [
-                { columnName: '', dataType: this._dataType.numeric },
+                { columnName: '', dataType: this._dataType.number },
                 { columnName: '', dataType: this._dataType.date },
                 { columnName: '', dataType: this._dataType.string },
             ],
@@ -74,11 +81,19 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
         };
 
         this._dataTypeList = [
-            { id: 'Numeric', title: 'Numeric', selected: false },
+            { id: 'Number', title: 'Numeric', selected: false },
             { id: 'String', title: 'String', selected: false },
             { id: 'Date', title: 'Date', selected: false },
             { id: 'Boolean', title: 'Boolean', selected: false },
         ];
+
+        this._isEditSubject.subscribe(value => {
+            if (!value) {
+                this._currentStep = 1;
+            } else {
+                this._currentStep = 3;
+            }
+        });
     }
 
     @ArrayField({ type: CustomSchemaViewModel })
@@ -118,7 +133,7 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
     isCorrectValue(dataType, value) {
         let isCorrectValue = true;
         switch (dataType) {
-          case 'Numeric':
+          case 'Number':
             if (isNaN(+value)) {
               isCorrectValue = false;
             }
@@ -141,7 +156,7 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
         let dataType: string;
 
         if (!isNaN(+value)) {
-            dataType = 'Numeric';
+            dataType = 'Number';
         } else if (!isNaN(Date.parse(value))) {
             dataType = 'Date';
         } else if (isBoolean(value)) {
@@ -162,6 +177,30 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
         });
 
         return dataTypePresent;
+    }
+
+    updateSelectedInputType(inputType) {
+        this._selectedInputType = inputType;
+    }
+
+    get selectedInputType() {
+        return this._selectedInputType;
+    }
+
+    updateCurrentStep(step) {
+        this._currentStep = step;
+    }
+
+    get currentStep() {
+        return this._currentStep;
+    }
+
+    get isEdit$(): Observable<boolean> {
+        return this._isEditSubject;
+    }
+
+    updateIsEdit(value) {
+        this._isEditSubject.next(value);
     }
 }
 

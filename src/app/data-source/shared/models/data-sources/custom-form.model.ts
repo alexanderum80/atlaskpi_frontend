@@ -13,7 +13,7 @@ export interface ICustomDataInfo {
 }
 
 export interface IDataType {
-    numeric: string;
+    number: string;
     string: string;
     date: string;
     boolean: string;

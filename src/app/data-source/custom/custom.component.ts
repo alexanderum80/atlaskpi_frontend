@@ -1,3 +1,4 @@
+import { CustomFormViewModel } from './custom.viewmodel';
 import { DialogResult } from './../../shared/models/dialog-result';
 import { ModalComponent } from './../../ng-material-components/modules/user-interface/modal/modal.component';
 import { Component, OnInit, ViewChild } from '@angular/core';
@@ -13,9 +14,8 @@ export class CustomComponent implements OnInit {
   importFilePath: string;
   enterDataPath: string;
 
-  selectedInputType = 'import';
-
   constructor(
+    private vm: CustomFormViewModel
   ) {
     this.importFilePath = '../../../assets/img/datasources/folder.png';
     this.enterDataPath = '../../../assets/img/datasources/data.png';
@@ -39,7 +39,7 @@ export class CustomComponent implements OnInit {
   }
 
   toogleSelectedInputType(inputType: string) {
-    this.selectedInputType = inputType;
+    this.vm.updateSelectedInputType(inputType);
   }
 
 }

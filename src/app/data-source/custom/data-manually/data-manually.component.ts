@@ -16,7 +16,6 @@ const addCustomMutation = require('graphql-tag/loader!../custom.connect.gql');
 export class DataManuallyComponent implements OnInit {
   @Output() dialogResult = new EventEmitter<DialogResult>();
 
-  currentStep = 1;
   blankTablePath: string;
   tablePath: string;
 
@@ -43,18 +42,20 @@ export class DataManuallyComponent implements OnInit {
   }
 
   goBack() {
-    if (this.currentStep === 3 && this.vm.getSelectedTableOption() === 'table') {
-      this.currentStep -= 2;
+    let currentStep = this.vm.currentStep;
+    if (currentStep === 3 && this.vm.getSelectedTableOption() === 'table') {
+      this.vm.updateCurrentStep(currentStep -= 2);
     } else {
-      this.currentStep -= 1;
+      this.vm.updateCurrentStep(currentStep -= 1);
     }
   }
 
   goNext() {
-    if (this.currentStep === 1 && this.vm.getSelectedTableOption() === 'table') {
-      this.currentStep += 2;
+    let currentStep = this.vm.currentStep;
+    if (currentStep === 1 && this.vm.getSelectedTableOption() === 'table') {
+      this.vm.updateCurrentStep(currentStep += 2);
     } else {
-      this.currentStep += 1;
+      this.vm.updateCurrentStep(currentStep += 1);
     }
   }
 
@@ -91,17 +92,23 @@ export class DataManuallyComponent implements OnInit {
     };
 
     this._apolloService.mutation < ICustomData > (addCustomMutation, { input: tableData }, ['ServerSideConnectors'])
-    .then(this._router.navigateByUrl('/datasource/listConnectedDataSourcesComponent'))
-    .catch(err => console.log('Server errors: ' + JSON.stringify(err)));
+      .then(res => {
+        this._resetFormGroupData();
+        this.dialogResult.emit(DialogResult.CANCEL);
+        this._router.navigateByUrl('/datasource/listConnectedDataSourcesComponent');
+      })
+      .catch(err => console.log('Server errors: ' + JSON.stringify(err)));
   }
 
   isValidForm(): boolean {
     let returnValue = true;
-    returnValue = this.vm.fg.valid;
+    if (!this.vm.fg.valid) {
+      return false;
+    }
 
     const schema = this.vm.fg.controls['schema'].value;
 
-    switch (this.currentStep) {
+    switch (this.vm.currentStep) {
       case 2:
 
         if (schema.length < 3) {
@@ -153,11 +160,15 @@ export class DataManuallyComponent implements OnInit {
   }
 
   cancel() {
-    if (this.vm.fg) {
-      this.vm.fg.reset();
-    }
-    this.currentStep = 1;
+    this._resetFormGroupData();
     this.dialogResult.emit(DialogResult.CANCEL);
+  }
+
+  private _resetFormGroupData() {
+    if (this.vm.fg) {
+      this.vm.fg.get('data').reset();
+    }
+    this.vm.updateIsEdit(false);
   }
 
 }

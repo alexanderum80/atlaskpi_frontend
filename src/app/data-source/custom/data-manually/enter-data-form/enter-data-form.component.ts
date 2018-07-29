@@ -1,3 +1,4 @@
+import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { FormArray, FormGroup, FormControl } from '@angular/forms';
 import { CustomFormViewModel } from './../../custom.viewmodel';
 import { Component, OnInit, Input } from '@angular/core';
@@ -7,7 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
   templateUrl: './enter-data-form.component.pug',
   styleUrls: ['./enter-data-form.component.scss']
 })
-export class EnterDataFormComponent implements OnInit {
+export class EnterDataFormComponent implements OnInit, AfterViewInit {
   @Input() dataField: FormArray;
 
   headerData: string[] = [];
@@ -22,6 +23,9 @@ export class EnterDataFormComponent implements OnInit {
     const schema = this.vm.fg.controls['schema'].value;
     this._setHeaderData(schema);
     this._setBodyData(schema);
+  }
+
+  ngAfterViewInit() {
     this._subscribeToFormChanges();
   }
 
@@ -50,21 +54,23 @@ export class EnterDataFormComponent implements OnInit {
   }
 
   private _subscribeToFormChanges() {
-    const schemaFormGroup = <any>this.vm.fg.controls['schema'];
-    const dataFormGroup = this.vm.fg.get('data') as FormArray;
-    const totalFields = schemaFormGroup.controls.length;
-    dataFormGroup.controls.map(d => {
-      const controls = <any>d;
-      for (let i = 0; i < totalFields; i++) {
-        controls.controls[i].valueChanges.subscribe(controlValue => {
-          if (controlValue !== null && controlValue !== '') {
-            if (this.vm.isCorrectValue(schemaFormGroup.controls[i].controls.dataType.value, controlValue) === false) {
-              controls.controls[i].setErrors({invalidDataType: true});
+    this.vm.fg.controls['data'].valueChanges.subscribe(value => {
+      const schemaFormGroup = this.vm.fg.controls['schema'].value;
+      const totalFields = schemaFormGroup.length;
+      const totalData = value.length;
+      for (let d = 0; d < totalData; d++) {
+        const data = value[d];
+
+        for (let i = 0; i < totalFields; i++) {
+          if (data[i] !== null && data[i] !== '') {
+            const fieldData = <any>this.vm.fg.controls['data'];
+            if (this.vm.isCorrectValue(schemaFormGroup[i].dataType, data[i]) === false) {
+              fieldData.controls[d].controls[i].setErrors({invalidDataType: true});
             } else {
-              controls.controls[i].setErrors(null);
+              fieldData.controls[d].controls[i].setErrors(null);
             }
           }
-        });
+        }
       }
     });
   }

@@ -9,15 +9,15 @@ bw-modal(size="lg",#connectCustom='')
           div(flex-initial)
             .p-t-5.p-l-15 Enter or import your data
         .custom-tooltip-body(layout="column")
-          .import-file-button(layout="row", [ngClass]="{'selected-input-type': selectedInputType === 'import'}", (click)="toogleSelectedInputType('import')")
+          .import-file-button(layout="row", [ngClass]="{'selected-input-type': vm.selectedInputType === 'import'}", (click)="toogleSelectedInputType('import')")
             img(src="{{ importFilePath }}", alt="Import file image")
             .f-15.p-t-30 Import your file
 
-          .input-data-button(layout="row", [ngClass]="{'selected-input-type': selectedInputType === 'manually'}", (click)="toogleSelectedInputType('manually')")
+          .input-data-button(layout="row", [ngClass]="{'selected-input-type': vm.selectedInputType === 'manually'}", (click)="toogleSelectedInputType('manually')")
             img(src="{{ enterDataPath }}", alt="Enter data image")
             .f-15.p-t-30 Enter your data manually
 
       .right-panel(flex="60", flex-xs="100", layout="column", layout-padding)
-        kpi-import-file(*ngIf="selectedInputType === 'import'", (dialogResult)="processDialogResult($event)")
-        kpi-data-manually.overflow-auto(*ngIf="selectedInputType === 'manually'", (dialogResult)="processDialogResult($event)",
+        kpi-import-file(*ngIf="vm.selectedInputType === 'import'", (dialogResult)="processDialogResult($event)")
+        kpi-data-manually.overflow-auto(*ngIf="vm.selectedInputType === 'manually'", (dialogResult)="processDialogResult($event)",
                           style="height: 85%")
