@@ -24,6 +24,7 @@ import { processPolyfills } from './polyfills';
 import { MouseEvent } from '@agm/core/services/google-maps-types';
 import { ISelectableItem } from '../../../../shared/models/index';
 import { ScrollEvent } from 'ngx-scroll-event';
+import SweetAlert from 'sweetalert2';
 
 /* tslint:disable */
 declare var $: any;
@@ -187,12 +188,21 @@ export class SelectPickerComponent extends InputBase implements OnChanges, OnDes
         // watch value changes
         this._valueChangeSubscription = this.control.valueChanges.subscribe(data => {
             let newValue = data;
-
-            if (data && that.rememberLastValue) {
-                this._lastValue = data;
-            }
-            if (!data && that.rememberLastValue && !that._valueChangedFromInside) {
+            if (this.selectedItems.length > this.maxOptions) {
+                SweetAlert({
+                    title: 'Selected options limit reached',
+                    text: 'only up to ' + this.maxOptions + ' selected options',
+                    type: 'warning'
+                });
                 newValue = this._lastValue;
+            } else {
+                if (data && that.rememberLastValue) {
+                    this._lastValue = data;
+                }
+                
+                if (!data && that.rememberLastValue && !that._valueChangedFromInside) {
+                    newValue = this._lastValue;
+                }
             }
 
             that._updateSelection(newValue);

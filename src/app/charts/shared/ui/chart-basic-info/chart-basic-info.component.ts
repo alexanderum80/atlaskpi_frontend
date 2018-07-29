@@ -1,3 +1,5 @@
+
+import { ApolloService } from './../../../../shared/services/apollo.service';
 import { OnFieldChanges } from '../../../../ng-material-components/viewModels';
 import 'rxjs/add/operator/debounceTime';
 
@@ -11,7 +13,7 @@ import { Observable } from 'rxjs/Observable';
 
 import {FormGroup} from '@angular/forms';
 import { Apollo } from 'apollo-angular';
-import { clone, isEmpty, toArray, find, pick } from 'lodash';
+import { clone, isEmpty, toArray, find, pick, includes, split, map } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 
 import { SelectionItem } from '../../../../ng-material-components';
@@ -31,6 +33,8 @@ import {
 import {PredefinedTopNRecords} from '../../../../shared/models/top-n-records';
 import { title, camelCase } from 'change-case';
 import * as moment from 'moment';
+
+const kpiOldestDateQuery = require('graphql-tag/loader!./kpi-get-oldestDate.gql');
 
 export const RevenueGroupingList: SelectionItem[] = [
     { id: 'location', title: 'Location', selected: false, disabled: false },
@@ -124,6 +128,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
 
     constructor(private _chartGalleryService: ChartGalleryService,
                 private _apollo: Apollo,
+                private _apolloService: ApolloService,
                 private _browser: BrowserService,
                 private vm: ChartBasicInfoViewModel) {
         this._dateRangesQuery();
@@ -204,6 +209,12 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         this.fg.valueChanges.distinctUntilChanged().subscribe((item) => {
             if (item.kpi && item.predefinedDateRange) {
                 that._getGroupingInfo(item);
+                // query to determine the year
+                const kpi_id = this.fg.value.kpi;
+                this._apolloService.networkQuery < SelectionItem > (kpiOldestDateQuery, {id: kpi_id })
+                .then(kpis => {
+                    this._updateComparisonData(kpis.getKpiOldestDate);
+                });
             }
         });
     }
@@ -361,6 +372,39 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         this.comparisonList = ToSelectionItemList(dateRange.comparisonItems, 'key', 'value');
     }
 
+    private _updateComparisonData(yearOldestDate: number) {
+        this.comparisonList = [];
+        const thisYear = moment().year();
+
+        if (!yearOldestDate || yearOldestDate.toString() === thisYear.toString()) { return; }
+
+        this.comparisonList.push(new SelectionItem('previousPeriod', 'previous period', false, false));
+        let newItem: SelectionItem = {};
+        const actualYear = moment().year();
+
+        if (yearOldestDate === actualYear) { return; }
+
+        if (actualYear - yearOldestDate >= 1) {
+            for (let i = actualYear - 1; i >= yearOldestDate; i--) {
+                if (i === actualYear - 1) {
+                    newItem = {
+                        id: 'lastYear',
+                        title: 'last year (' + i + ')',
+                        selected: false,
+                        disabled: false
+                    };
+                } else {
+                    newItem = {
+                        id: actualYear - i + 'YearsAgo',
+                        title: actualYear -  i + ' years ago (' + i + ')',
+                        selected: false,
+                        disabled: false
+                    };
+                }
+                this.comparisonList.push(newItem);
+            }
+        }
+    }
   private _dateRangesQuery() {
     const that = this;
     this._subscription.push(this._apollo.watchQuery <{ dateRanges: IDateRangeItem[]}> ({
