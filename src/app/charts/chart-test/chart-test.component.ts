@@ -98,6 +98,7 @@ export class ChartTestComponent implements OnInit, OnDestroy {
   }
 
   private _processChartTooltipFormatter(definition: any) {
+    debugger;
      if (definition.tooltip && definition.tooltip.formatter) {
       const formatterFactory = new FormatterFactory();
       definition.tooltip.formatter = formatterFactory.getFormatter(definition.tooltip.formatter).exec;
@@ -116,6 +117,7 @@ export class ChartTestComponent implements OnInit, OnDestroy {
 
   refreshChart() {
     const that = this;
+    debugger;
     this._subscription.push(this._apollo.watchQuery<ChartResponse>({
       query: ChartQuery,
       variables: { id: this.fg.value.chartId,
@@ -127,6 +129,7 @@ export class ChartTestComponent implements OnInit, OnDestroy {
       fetchPolicy: 'network-only'
     })
     .valueChanges.subscribe(({data}) => {
+      debugger;
           const rawChart: ChartData = JSON.parse(data.chart);
           let definition = this._processChartTooltipFormatter(rawChart.chartDefinition);
           yAxisFormatterProcess(definition);

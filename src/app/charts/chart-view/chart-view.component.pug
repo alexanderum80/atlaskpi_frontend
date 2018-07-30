@@ -23,7 +23,7 @@ bw-card.chart-view.full-height.chart-card.p-relative([depth]="1", [class.maximiz
                     div(layout="row", layout-align="end center")
                         bw-button(icon="chevron-right", title="show future targets", color="gray", (clicked)="showFutureTargets()")
 
-            .highcharts-container(flex, [chart]="chart", *ngIf="chartMaximized", [class.chart-normal]="!maximized")
+            .highcharts-container(flex, [chart]="chart", [class.chart-normal]="!maximized", *ngIf="!chartIsEmpty()")
             div(flex, *ngIf="chartIsEmpty()")
                 .h-100.height-level(layout="row", layout-padding, layout-align="center center")
                         div.text-center(flex)

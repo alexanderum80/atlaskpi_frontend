@@ -797,7 +797,14 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     processChartUpdate(chart: string): void {
+        
         const rawChart: ChartData = JSON.parse(chart);
+        this.chartData = rawChart;
+
+        if(!rawChart.chartDefinition.series) {
+            return;
+        }
+
         let definition = this._processChartTooltipFormatter(rawChart.chartDefinition);
         definition = this._processPieChartPercent(rawChart.chartDefinition);
         yAxisFormatterProcess(definition);
@@ -822,6 +829,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             this.goalComponent.updateTarget(( < any > this.chartData).targetList);
         }
         this.enableDrillDown();
+        this.chartIsEmpty();
     }
 
     processChartNode(rawChart: ChartData, chart: any, chartData: ChartData): void {
@@ -916,7 +924,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     chartIsEmpty(): boolean {
-        return _get(this.chartData, 'chartDefinition.series', 0) === 0;
+        const value =_get(this.chartData, 'chartDefinition.series', 0) === 0;
+        return value;
     }
 
     get drilledDown(): boolean {
