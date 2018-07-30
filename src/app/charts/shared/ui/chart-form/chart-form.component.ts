@@ -193,6 +193,9 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             });
         this._selectChartService.updateExistDuplicatedName(false);
         this._subscribeToNameChanges();
+
+        const loadingGroupings = new FormControl(false);
+        this.fg.addControl('loadingGroupings', loadingGroupings);
     }
 
     ngOnDestroy() {
@@ -515,7 +518,9 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         }
         this.processFormatChanges(this.fg.value);
         const model = ChartModel.fromFormGroup(this.fg, this.chartDefinition);
-        if (this._previewValid(model)) {
+        const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
+        if (this._previewValid(model)
+            && !loadingGroupings)  {
             this._previewQuery.refetch({ input: model }).then(res => this._processChartPreview(res.data));
         }
     }

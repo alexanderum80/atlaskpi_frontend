@@ -119,7 +119,7 @@ export class ExternalSourceKpiFormViewModel extends ViewModel<IKPI> {
     get shouldCollapseArithmeticOperation(): boolean {
         return this.fg.value.expression.value === null;
     }
-    
+
     updateDataSources(dataSources: IExternalDataSource[]) {
         if (!dataSources || this._dataSources === dataSources) {
             return;

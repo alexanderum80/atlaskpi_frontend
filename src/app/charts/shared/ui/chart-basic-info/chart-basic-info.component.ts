@@ -9,7 +9,7 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/observable/combineLatest';
 import { Observable } from 'rxjs/Observable';
 
-import {FormGroup} from '@angular/forms';
+import {FormGroup, FormControl} from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { clone, isEmpty, toArray, find, pick } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
@@ -216,6 +216,8 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
             return;
         }
 
+        this.fg.controls['loadingGroupings'].patchValue(true, { emitEvent: false });
+
         this._apollo.watchQuery({
             query: kpiGroupingsQuery,
             fetchPolicy: 'network-only',
@@ -223,6 +225,8 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
                 input: input
             }
         }).valueChanges.subscribe(({ data }: any) => {
+            this.fg.controls['loadingGroupings'].patchValue(false, { emitEvent: false });
+            this.fg.controls['grouping'].patchValue('', { emitEvent: false });
             if (!data || isEmpty(data.kpiGroupings)) {
                 that.groupingList = [];
                 return;
