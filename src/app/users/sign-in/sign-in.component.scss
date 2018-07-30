@@ -11,12 +11,6 @@
         font-weight: bold;
         color: $white-nav;
     }
-    button {
-        width: 120px;
-        height: 40px;
-        color: #2fb6fc;
-        font-weight: bold;
-    }
     &.mobile {
         .email,
         .password,
@@ -60,4 +54,8 @@
         width: 280px;
         margin: 0 !important;
     }
+}
+
+.size-150 {
+    width: 200px;
 }

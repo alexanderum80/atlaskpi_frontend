@@ -89,7 +89,6 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     goToSignup(e: Event) {
-        e.preventDefault();
         this.signupClicked.emit('signUp');
     }
 
@@ -103,7 +102,6 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
 
     forgotPassword(e) {
         e.preventDefault();
-
         this._router.navigate(['/users', 'forgot-password']);
     }
 
