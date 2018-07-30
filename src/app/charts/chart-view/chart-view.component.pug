@@ -105,7 +105,8 @@ bw-card.chart-view.full-height.chart-card.p-relative([depth]="1", [class.maximiz
                         div(layout="row") label " 
                             .bold Others
                             | "
-            .chart-info.zmdi.zmdi-sort-amount-asc(*ngIf="chartData.sortingCriteria && chartData.sortingOrder")
+            .chart-info.zmdi(*ngIf="chartData.sortingCriteria && chartData.sortingOrder")
+                .rotate.zmdi.zmdi-sort-amount-asc
                 |   Sorting
                 .chart-detail(flex)
                     .m-10(layout="column", layout-padding) 

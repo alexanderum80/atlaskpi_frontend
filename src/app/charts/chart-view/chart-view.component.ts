@@ -145,7 +145,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     isDataOnFly = false;
     chartOnFly: Chart;
     N_Result: any;
-    formatSortingCrit: string;
+    formatSortingCrit: any;
 
     rootNode: IChartTreeNode;
     currentNode: IChartTreeNode;
@@ -266,13 +266,14 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         }
 
         if (this.chartData.top) {
-            if (this.chartData.top.predefined === null ) {
-                return;
-            }
-            if (this.chartData.top.predefined === 'other') {
-                this.N_Result = this.chartData.top.custom;
-            } else {
-                this.N_Result = this.chartData.top.predefined.substr(4,3);
+            
+            if (this.chartData.top.predefined ) {
+                
+                if (this.chartData.top.predefined === 'other') {
+                    this.N_Result = this.chartData.top.custom;
+                } else {
+                    this.N_Result = this.chartData.top.predefined.substr(4,3);
+                }
             }
         }
 
