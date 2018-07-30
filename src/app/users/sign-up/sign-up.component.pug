@@ -73,7 +73,7 @@ form#signup-form(*ngIf="!leadCreated", flex, [formGroup]="fg", (ngSubmit)="signU
         .links(*ngIf="!creatingAccount && !accountReady")
             .text-center(flex)
                 //- a#have-an-account.c-white(href="#", (click)="goToSignin($event)") I already have an account
-                a#have-an-account.c-white(href="#", (click)="goToSignin($event)") Go to login
+                a#have-an-account.c-white(href="#", (click)="goToSignin($event)") Go to Log In
             .m-t-5(*ngIf="!authorizationCode")
                 a.c-white(href="#", (click)="switchToAuthorize($event)") I have an authorization code
             .m-t-5(*ngIf="authorizationCode")
