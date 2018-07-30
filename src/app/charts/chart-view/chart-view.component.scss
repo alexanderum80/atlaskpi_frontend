@@ -59,12 +59,12 @@
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-@mixin chart-title-media($width, $lineHeight, $top) {
+@mixin chart-title-media($width, $lineHeight, $top, $fontSize: 10px) {
     width: $width;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 10px;
+    font-size: $fontSize;
     line-height: $lineHeight;
     word-wrap: break-word;
     position: relative;
@@ -77,46 +77,70 @@ div.chart-title {
         font-size: 14px;
         margin-right: 100px;
     }
-    @media screen and (min-width: 1200px) and (max-width: 1600px) {
-        width: 410px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        line-height: 15px;
-        word-wrap: break-word;
-        position: relative;
-        top: -2px;
+   // browser resize
+   @media only screen and (min-width: 1237px) and (max-width: 1439px) {
+    @include chart-title-media(400px, 15px, -2px, 16px);
     }
+    @media only screen and (min-width: 1000px) and (max-width: 1236px) {
+        @include chart-title-media(365px, 15px, -2px, 16px);
+    }
+    @media screen and (min-width: 1440px) and (max-width: 1600px) {
+        @include chart-title-media(480px, 15px, -2px, 16px);
+    }
+    @media only screen and (min-width: 1305px) and (max-width: 710px) {
+        @include chart-title-media(405px, 15px, -2px, 16px);
+    }
+    @media only screen and (min-width: 266px) and (max-width: 542px) {
+        @include chart-title-media(inherit, 15px, 1px, 12px);
+    }
+    // end browser resize
+    // ipad pro
     @media only screen and (min-width: 1024px) and (max-width: 1366px) and (aspect-ratio: 512/683) and (orientation: portrait) {
         @include chart-title-media(295px, 15px, -3px);
     }
+    // end ipad pro
+    // ipad
     @media only screen and (min-width: 768px) and (max-width: 1024px) and (aspect-ratio: 4/3) and (orientation: landscape) {
         @include chart-title-media(350px, 15px, -3px);
     }
+    // end ipad
+    // iphone 8 plus
     @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 16/9) and (orientation: landscape) {
         @include chart-title-media(350px, 15px, 3px);
     }
     @media only screen and (min-width: 414px) and (max-width: 736px) and (aspect-ratio: 9/16) and (orientation: portrait) {
-        @include chart-title-media(245px, 15px, 1px);
+        @include chart-title-media(275px, 15px, 2px);
     }
+    // end iphone 8 plus
+    // iphone 6/7/8
     @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 667/375) and (orientation: landscape) {
         @include chart-title-media(350px, 15px, 3px);
     }
     @media only screen and (min-width: 375px) and (max-width: 667px) and (aspect-ratio: 375/667) and (orientation: portrait) {
-        @include chart-title-media(150px, 15px, 3px);
+        @include chart-title-media(250px, 15px, 3px);
     }
+    // end iphone 6/7/8
+    // iphone x
+    @media only screen and (min-width: 375px) and (max-width: 812px) and (aspect-ratio: 375/812) and (orientation: portrait) {
+        @include chart-title-media(240px, 23px, -2px);
+    }
+    // end iphone x
+    // iphone 5/SE
     @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 71/40) and (orientation: landscape) {
         @include chart-title-media(325px, 13px, 3px);
     }
     @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
         @include chart-title-media(150px, 15px, 3px);
     }
+    // end iphone 5/SE
+    // iphone 4
     @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
         @include chart-title-media(320px, 8px, 6px);
     }
     @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
         @include chart-title-media(150px, 15px, 3px);
     }
+    // end iphone 4
 }
 
 .op-2 {
