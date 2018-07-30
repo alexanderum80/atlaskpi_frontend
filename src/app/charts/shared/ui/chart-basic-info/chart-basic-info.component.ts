@@ -226,12 +226,16 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
             }
         }).valueChanges.subscribe(({ data }: any) => {
             this.fg.controls['loadingGroupings'].patchValue(false, { emitEvent: false });
-            this.fg.controls['grouping'].patchValue('', { emitEvent: false });
-            if (!data || isEmpty(data.kpiGroupings)) {
-                that.groupingList = [];
-                return;
+            let groupingList = [];
+            if (data || !isEmpty(data.kpiGroupings)) {
+                groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
             }
-            that.groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
+
+            if (!groupingList.map(g => g.id).includes(this.fg.get('grouping').value)) {
+                that.fg.controls['grouping'].patchValue('', { emitEvent: false });
+            }
+
+            that.groupingList = groupingList;
         });
     }
 
