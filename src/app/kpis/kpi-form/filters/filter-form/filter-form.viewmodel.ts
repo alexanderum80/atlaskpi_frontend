@@ -45,7 +45,7 @@ export class FilterFormViewModel {
     private _collectionSource: string;
     private _formTouched = false;
 
-    public dataSourceValuesTracker: any = {};
+    // public dataSourceValuesTracker: any = {};
 
     public kpiSubject: Subject<string>;
     public criteriaPayloadSubject: Subject<IFilterCriteria>;
@@ -104,16 +104,16 @@ export class FilterFormViewModel {
         if (dataSource && dataSource !== this._dataSource) {
             this._dataSource = dataSource;
 
-            const { currentValue, previousValue } = this.dataSourceValuesTracker;
-            if ((previousValue !== undefined) && (previousValue !== currentValue)) {
-                if (this.vmFields) {
-                    this.vmFields.resetSelectedItems();
-                }
-                if (this.vmCriteria && this.vmCriteria['resetSelectedItems']) {
-                    this.vmCriteria.resetSelectedItems();
-                }
-                this._operator = undefined;
-            }
+            // const { currentValue, previousValue } = this.dataSourceValuesTracker;
+            // if ((previousValue !== undefined) && (previousValue !== currentValue)) {
+            //     if (this.vmFields) {
+            //         this.vmFields.resetSelectedItems();
+            //     }
+            //     if (this.vmCriteria && this.vmCriteria['resetSelectedItems']) {
+            //         this.vmCriteria.resetSelectedItems();
+            //     }
+            //     this._operator = undefined;
+            // }
 
             // when creating a new filter this method may fire before the form group gets created
             if (this._filterFg) {
@@ -127,9 +127,8 @@ export class FilterFormViewModel {
     }
 
     public updateSelectableCriteria(criterias: string[]) {
-        if (!isEmpty(criterias)) {
-            this._criteriaItems = criterias.map(c => new SelectionItem(c, c));
-        }
+        this._criteriaItems = criterias.map(c => new SelectionItem(c, c));
+
         const criteriaControl = this._filterFg.get('criteria');
 
         if (criteriaControl) {
@@ -268,7 +267,7 @@ export class FilterFormViewModel {
             }
         }
 
-        this._updateCriteriaPayload();
+        this.updateCriteriaPayload();
     }
 
     private _onOperatorChange(operatorSymbol: string, resetCriteria?: boolean) {
@@ -300,16 +299,23 @@ export class FilterFormViewModel {
         }
     }
 
-    private _updateCriteriaPayload() {
-        const collectionSource = (isString(this._collectionSource) && !isEmpty(this._collectionSource))
-                                  ? this._collectionSource.split('|') : null;
+    public updateCriteriaPayload() {
+        const dSource = this._dataSource;
+        const cSource = !isEmpty(this._collectionSource)
+                        ? (Array.isArray(this._collectionSource)
+                                ? this._collectionSource
+                                : this._collectionSource.split('|'))
+                        : null;
+
+        if (!this._selectedField) { return; }
+
         this.criteriaPayloadSubject.next({
-            name: this._dataSource.name,
-            source: this._dataSource.dataSource,
+            name: dSource.name,
+            source: dSource.name,
             field: this._selectedField.path,
             filter: '',
             limit: 25000,
-            collectionSource: collectionSource
+            collectionSource: cSource
         });
     }
 

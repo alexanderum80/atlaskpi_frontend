@@ -30,7 +30,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     private _expressionFieldValuesTracker: any = {};
     private existDuplicatedName: boolean;
 
-    public expressionFieldSubject: Subject<string>;
+    public expressionFieldSubject: Subject<string> = new Subject<string>();
 
     aggregateFunctions: SelectionItem[] = getAggregateFunctions();
     dataSources: SelectionItem[];
@@ -42,7 +42,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     disabledSource = false;
     sourceItems: SelectionItem[];
     consSourceValue: string;
-    consSourceValues: string[]= [];
+    consSourceValues: string[] = [];
 
     constructor(private _apollo: Apollo) {
         super(null);
@@ -183,11 +183,13 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     }
 
     get selectedDataSource(): IDataSource {
-        return this._selectedDataSource;
+        // return this._selectedDataSource;
+        return this._dataSources.find(d => d.name === this.expression.dataSource);
     }
 
     get shouldCollapseFilters(): boolean {
-        return (this.fg.get('filter') as FormArray).controls.length === 0;
+       return !this.fg.touched && (this.fg.get('filter') as FormArray).controls.length === 0;
+       // return this.filter.length === 0;
     }
 
     get shouldCollapseArithmeticOperation(): boolean {
@@ -200,7 +202,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
 
     get sourceValue() {
         return this.fg.controls['source'].setValue(this.consSourceValue);
-     }
+    }
 
     resetItemSource() {
         if (this.sourceItems) {
@@ -262,7 +264,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         }
     }
 
-    updateExpressionNumericFields(fieldList: IDataSourceField[]): void {
+    updateExpressionFields(fieldList: IDataSourceField[]): void {
         if (!fieldList) {
             this.numericFields = [];
             return;
@@ -326,6 +328,22 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         return this.existDuplicatedName;
     }
 
+    private _queryFields(dataSource: string, collectionSource?: string[]): void {
+        const that = this;
+        this._apollo.query<{ kpiExpressionFields: IDataSourceField[]}>({
+            query: expressionNumericFieldQuery,
+            fetchPolicy: 'network-only',
+            variables: {
+                input: {
+                    collectionSource: collectionSource,
+                    dataSource: dataSource
+                }
+            }
+        }).subscribe(({ data }) => {
+            that.updateExpressionFields(data.kpiExpressionFields);
+        });
+    }
+
     private _getCleanDataSources(dataSources: IDataSource[]): IDataSource[] {
         return dataSources.map((dSource: IDataSource) => {
             const temp = {};
@@ -341,48 +359,113 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         }) as IDataSource[];
     }
 
-    @OnFieldChanges([{ name: 'expression.dataSource' }, { name: 'source' }])
-    private _updateExpressionNumericFields(value: { 'expression.dataSource': string, 'source': string}) {
-        this.expressionFieldSubject.next(value['expression.dataSource']);
-        const dSource = this._dataSources.find(d => d.name === value['expression.dataSource']);
+    // @OnFieldChanges([{ name: 'expression.dataSource' }, { name: 'source' }])
+    // private _updateExpressionNumericFields(value: { 'expression.dataSource': string, 'source': string}) {
+    //     // this.expressionFieldSubject.next(value['expression.dataSource']);
+        // const dSource = this._dataSources.find(d => d.name === value['expression.dataSource']);
 
         // reset selected items for expression.field
-        const { currentValue, previousValue } = this._expressionFieldValuesTracker;
-        if ((previousValue !== undefined) && (previousValue !== currentValue)) {
-            this.numericFieldSelector.resetSelectedItems();
-        }
+        // const { currentValue, previousValue } = this._expressionFieldValuesTracker;
+        // if ((previousValue !== undefined) && (previousValue !== currentValue)) {
+        //     this.numericFieldSelector.resetSelectedItems();
+        // }
 
-        if (dSource) {
-            this._selectedDataSource = dSource;
-        }
+        // if (dSource) {
+        //     this._selectedDataSource = dSource;
+        // }
 
-        const dataSource: string = value['expression.dataSource'] || (this.expression ? this.expression.dataSource : '');
-        const source: string = value['source'] || this.source;
+        // const dataSource: string = value['expression.dataSource'] || (this.expression ? this.expression.dataSource : '');
+        // const source: string = value['source'] || this.source;
 
 
-        if (dataSource) {
-            const that = this;
+        // if (dataSource) {
+        //     const that = this;
 
-            const collectionSource = source ? source.split(/\|/) : [];
+        //     const collectionSource = source ? source.split(/\|/) : [];
 
-            this._apollo.watchQuery<{ kpiExpressionFields: IDataSourceField[]}>({
-                query: expressionNumericFieldQuery,
-                fetchPolicy: 'network-only',
-                variables: {
-                    input: {
-                        collectionSource: collectionSource,
-                        dataSource: dataSource
-                    }
+        //     this._apollo.watchQuery<{ kpiExpressionFields: IDataSourceField[]}>({
+        //         query: expressionNumericFieldQuery,
+        //         fetchPolicy: 'network-only',
+        //         variables: {
+        //             input: {
+        //                 collectionSource: collectionSource,
+        //                 dataSource: dataSource
+        //             }
+        //         }
+        //     }).valueChanges.subscribe(({ data }) => {
+        //         that.updateExpressionNumericFields(data.kpiExpressionFields);
+        //     });
+        // }
+
+    //     const ds = this.expression.dataSource;
+    //     if (ds) {
+    //         this._selectedDataSource = this._dataSources.find(d => d.name === ds);
+    //         const sourceFilter = this.source && this.source.split(/\|/) || [];
+    //         this._apollo.query<{ kpiExpressionFields: IDataSourceField[]}>({
+    //                     query: expressionNumericFieldQuery,
+    //                     fetchPolicy: 'network-only',
+    //                     variables: {
+    //                         input: {
+    //                             collectionSource: sourceFilter,
+    //                             dataSource: ds
+    //                         }
+    //                     }
+    //                 }).subscribe(({ data }) => {
+    //                     this.updateExpressionNumericFields(data.kpiExpressionFields);
+    //                 });
+    //     } else {
+    //         this._selectedDataSource = null;
+    //         this.numericFields = [];
+    //         this.filter.length = 0;
+    //     }
+    // }
+
+    @OnFieldChanges([{ name: 'expression.dataSource' }, { name: 'source' }])
+    private _updateExpressionNumericFields(value: { 'expression.dataSource': string, 'source': string }) {
+        const { 'expression.dataSource': dataSourceValue = null, source: sourceValue = null } = value;
+
+        let dataSource: IDataSource;
+        let collectionSourceVar = [];
+        let dataSourceVar: string;
+
+        if (dataSourceValue) {
+            this.expressionFieldSubject.next(value['expression.dataSource']);
+            dataSource = this._dataSources.find(d => d.name === value['expression.dataSource']);
+
+            if (!dataSource) { return; }
+
+            this._selectedDataSource = dataSource;
+
+            // reset selected items for expression.field
+            const { currentValue, previousValue } = this._expressionFieldValuesTracker;
+            if ((previousValue !== undefined) && (previousValue !== currentValue)) {
+                this.numericFieldSelector.resetSelectedItems();
+
+                // filter = [] doesn't do the job
+                while (this.filter.length !== 0) {
+                    this.filter.pop();
                 }
-            }).valueChanges.subscribe(({ data }) => {
-                that.updateExpressionNumericFields(data.kpiExpressionFields);
-            });
+            }
+
+            this.numericFields =
+                dataSource.fields   .filter(f => f.type === 'Number')
+                                    .map(f => new SelectionItem(f.path, f.name.toUpperCase()));
         }
+
+        const source: string = sourceValue || this.source;
+
+        collectionSourceVar = source ? source.split(/\|/) : [];
+        dataSourceVar = dataSourceValue || this.expression.dataSource;
+
+        // const dataSource: string = value['expression.dataSource'] || (this.expression ? this.expression.dataSource : '');
+        this._queryFields(dataSourceVar, collectionSourceVar);
     }
 
     @OnFieldChanges({ name: 'expression.function' })
     private _updateExpressionFieldsForCountFunction(value: { 'epxression.function': string}) {
-        if (this._selectedDataSource && value['expression.function'] && value['expression.function'].toLowerCase() === 'count' ) {
+        if (!this._selectedDataSource) { return; }
+
+        if (value['expression.function'] && value['expression.function'].toLowerCase() === 'count' ) {
             return this.numericFields = this._selectedDataSource.fields.map(f =>
                 new SelectionItem(f.path, f.name.toUpperCase()));
         } else {
