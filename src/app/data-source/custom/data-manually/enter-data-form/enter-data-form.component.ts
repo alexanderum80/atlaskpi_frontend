@@ -65,7 +65,9 @@ export class EnterDataFormComponent implements OnInit, AfterViewInit {
           if (data[i] !== null && data[i] !== '') {
             const fieldData = <any>this.vm.fg.controls['data'];
             if (this.vm.isCorrectValue(schemaFormGroup[i].dataType, data[i]) === false) {
-              fieldData.controls[d].controls[i].setErrors({invalidDataType: true});
+              if (fieldData.controls[d].controls[i]) {
+                fieldData.controls[d].controls[i].setErrors({invalidDataType: true});
+              }
             } else {
               fieldData.controls[d].controls[i].setErrors(null);
             }
