@@ -289,7 +289,8 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     getDataSourceList(item: any): void {
         const reg: RegExp = /\|/;
         if (!item) {
-            this.dataSources = this._dataSources.map(s => new SelectionItem(s.name, s.description.toUpperCase()));
+            this.dataSources = this._dataSources.filter(s => !s.externalSource)
+                                                .map(s => new SelectionItem(s.name, s.description.toUpperCase()));
             return;
         }
 
