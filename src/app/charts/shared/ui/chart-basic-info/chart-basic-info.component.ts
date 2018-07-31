@@ -200,21 +200,48 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
 
     private _subscribeToKpiAndDateRange(): void {
         const that = this;
+        const watchFields = [
+            'kpi',
+            'predefinedDateRange',
+        ];
 
-        this.fg.valueChanges.distinctUntilChanged().subscribe((item) => {
-            if (item.kpi && item.predefinedDateRange) {
-                that._getGroupingInfo(item);
-            }
+        watchFields.forEach(f => {
+            const ctrl = that.fg.get(f)
+                   .valueChanges
+                   .debounceTime(500)
+                   .distinctUntilChanged()
+                   .subscribe(v => {
+                        that._getGroupingInfo();
+                    });
         });
+
+
+        // this.fg .valueChanges
+        //         .debounceTime(400)
+        //         .distinctUntilChanged()
+        //         .subscribe((item) => {
+        //     const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
+        //     if (item.kpi && item.predefinedDateRange && !loadingGroupings) {
+        //         that._getGroupingInfo(item);
+        //     }
+        // });
     }
 
-    private _getGroupingInfo(item: any): void {
+    private _getGroupingInfo(): void {
         const that = this;
-        const input = this._getGroupingInfoInput(item);
+        const item = this.fg.value;
 
+        // basic payload check
+        if (!item.kpi || !item.predefinedDateRange) {
+            return;
+        }
+
+        // custom daterange payload check
         if (item.predefinedDateRange === 'custom' && (!item.customFrom || !item.customTo)) {
             return;
         }
+
+        const input = this._getGroupingInfoInput(item);
 
         this.fg.controls['loadingGroupings'].patchValue(true, { emitEvent: false });
 
@@ -225,21 +252,27 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
                 input: input
             }
         }).valueChanges.subscribe(({ data }: any) => {
-            this.fg.controls['loadingGroupings'].patchValue(false, { emitEvent: false });
             let groupingList = [];
             if (data || !isEmpty(data.kpiGroupings)) {
                 groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
             }
 
-            if (!groupingList.map(g => g.id).includes(this.fg.get('grouping').value)) {
-                that.fg.controls['grouping'].patchValue('', { emitEvent: false });
-            }
-
             that.groupingList = groupingList;
+            this.fg.controls['loadingGroupings'].patchValue(false, { emitEvent: false });
+
+            const currentGroupingValue = this.fg.get('grouping').value || '';
+            let nextGropingValue;
+            if (!groupingList.map(g => g.id).includes(currentGroupingValue)) {
+                nextGropingValue = '';
+            } else {
+                nextGropingValue = currentGroupingValue;
+            }
+            that.fg.controls['grouping'].patchValue(nextGropingValue, { emitEvent: true });
         });
     }
 
     private _getGroupingInfoInput(item: any): any {
+        item = this.fg.value;
         const dateRange = { predefined: item.predefinedDateRange, custom: null};
 
         // process custom dateRange
