@@ -1,3 +1,4 @@
+import { Subject } from 'rxjs/Subject';
 import {
     AfterViewInit,
     ChangeDetectorRef,
@@ -47,23 +48,27 @@ export class FilterFormComponent implements AfterViewInit, OnChanges, OnDestroy 
     loading: ElementRef;
     isLoading = true;
 
-    @ViewChild('vmOperators') set operators(content: SelectPickerComponent) {
-        if (content) {
-            this.vm.vmOperators = content;
-        }
-    }
+    public sourcesAndCollectionPairSubject: Subject<any> = new Subject();
 
-    @ViewChild('vmFields') set fields(content: SelectPickerComponent) {
-        if (content) {
-            this.vm.vmFields = content;
-        }
-    }
+    // @ViewChild('vmOperators') set operators(content: SelectPickerComponent) {
+    //     if (content) {
+    //         this.vm.vmOperators = content;
+    //     }
+    // }
 
-    @ViewChild('vmCriteria') set criterias(content: SelectPickerComponent) {
-        if (content) {
-            this.vm.vmCriteria = content;
-        }
-    }
+    // @ViewChild('vmFields') set fields(content: SelectPickerComponent) {
+    //     if (content) {
+    //         this.vm.vmFields = content;
+    //     }
+    // }
+
+    // @ViewChild('vmCriteria') set criterias(content: SelectPickerComponent) {
+    //     if (content) {
+    //         this.vm.vmCriteria = content;
+    //     }
+    // }
+
+    // @ViewChild('vmCriteria') criteriaSelectPicker: SelectPickerComponent;
 
     @ViewChild('loading') set loadingId(content: ElementRef) {
         if (content) {
@@ -86,41 +91,72 @@ export class FilterFormComponent implements AfterViewInit, OnChanges, OnDestroy 
 
         this.vm.initialize(this.filter);
         this._loadingSources();
+
         this.subs.push(this.vm.criteriaPayloadSubject.subscribe(payload => {
             that._getCriteriaList(payload);
         }));
 
         this._cdr.detectChanges();
+
+        this.sourcesAndCollectionPairSubject
+            .debounceTime(500)
+            .distinctUntilChanged()
+            .subscribe(value => {
+                const a = value;
+                if (value.dataSource) {
+                    // this.vm.dataSourceValuesTracker = changes.dataSource;
+                    this.vm.updateDataSource(value.dataSource as any);
+                    this.vm.updateCollectionSource(value.collectionSource);
+
+                    this._kpiFilterFieldsQuery(
+                        value.dataSource,
+                        value.CollectionSource
+                    );
+                }
+
+                // this.vm.updateCriteriaPayload(value);
+            });
+
+        this.sourcesAndCollectionPairSubject.next({
+            dataSource: this.dataSource,
+            collectionSource: this.collectionSource
+        });
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.dataSource) {
-            this.vm.dataSourceValuesTracker = changes.dataSource;
-            this.vm.updateDataSource(changes.dataSource.currentValue as any);
-        }
-        if (changes.collectionSource) {
-            this.vm.updateCollectionSource(changes.collectionSource.currentValue);
-        }
+        // if (changes.dataSource) {
+        //     // this.vm.dataSourceValuesTracker = changes.dataSource;
+        //     this.vm.updateDataSource(changes.dataSource.currentValue as any);
+        // }
+        // if (changes.collectionSource) {
+        //     this.vm.updateCollectionSource(changes.collectionSource.currentValue);
+        // }
 
-        const that = this;
-        Observable.of(changes.dataSource)
-        .debounceTime(300)
-        .distinctUntilChanged()
-        .subscribe(() => {
-            if (changes.dataSource || changes.collectionSource) {
-                let dataSource: IDataSource;
-                let collectionSource: string;
-
-                if (changes.dataSource) {
-                    dataSource = changes.dataSource.currentValue;
-                }
-                if (changes.collectionSource) {
-                    collectionSource = changes.collectionSource.currentValue;
-                }
-
-                that._kpiFilterFieldsQuery(dataSource, collectionSource);
-            }
+        this.sourcesAndCollectionPairSubject.next({
+            dataSource: this.dataSource,
+            collectionSource: this.collectionSource
         });
+
+        // const that = this;
+        // Observable.of(changes.dataSource)
+        // .debounceTime(300)
+        // .distinctUntilChanged()
+        // .subscribe(() => {
+        //     if (changes.dataSource || changes.collectionSource) {
+        //         let dataSource: IDataSource;
+        //         let collectionSource: string;
+
+        //         if (changes.dataSource) {
+        //             dataSource = changes.dataSource.currentValue;
+        //         }
+        //         if (changes.collectionSource) {
+        //             collectionSource = changes.collectionSource.currentValue;
+        //         }
+
+        //         that._kpiFilterFieldsQuery(dataSource, collectionSource);
+        //     }
+        // });
+
     }
 
     ngOnDestroy() {
@@ -132,15 +168,19 @@ export class FilterFormComponent implements AfterViewInit, OnChanges, OnDestroy 
         if (payload) {
             const that = this;
 
-            this.subs.push(this._apollo.watchQuery({
+            this.subs.push(this._apollo.query<any>({
                 query: criteriaQuery,
                 fetchPolicy: 'network-only',
                 variables: {
                     input: payload
                 }
-            }).valueChanges.subscribe(result => {
+            }).subscribe(result => {
                 that.isLoading = false;
-                that.vm.updateSelectableCriteria((<any>result.data).kpiCriteria.criteriaValue);
+                let criteriaValues = [];
+                if (result && result.data) {
+                    criteriaValues = result.data.kpiCriteria.criteriaValue;
+                }
+                that.vm.updateSelectableCriteria(criteriaValues);
             }));
         }
     }
@@ -159,6 +199,7 @@ export class FilterFormComponent implements AfterViewInit, OnChanges, OnDestroy 
         const fields: IDataSourceField[] = dataSource.fields
                         .map((field: IDataSourceField) => objectWithoutProperties(field, ['__typename'])) as IDataSourceField[];
         const source: string[] = collectionSource ? collectionSource.split('|') : [];
+
         const input: IDataSourceFilterFields = {
             collectionSource: source,
             dataSource: dataSource.name,
@@ -166,7 +207,7 @@ export class FilterFormComponent implements AfterViewInit, OnChanges, OnDestroy 
         };
 
         this.subs.push(
-            that._apollo.watchQuery<{
+            that._apollo.query<{
                 kpiFilterFields: IDataSourceField[]
             }>({
                 query: kpiFilterFieldsQuery,
@@ -174,7 +215,7 @@ export class FilterFormComponent implements AfterViewInit, OnChanges, OnDestroy 
                     input: input
                 },
                 fetchPolicy: 'network-only'
-            }).valueChanges.subscribe(({ data }) => {
+            }).subscribe(({ data }) => {
                 that.isLoading = false;
                 if (!data || isEmpty(data.kpiFilterFields)) {
                     return;

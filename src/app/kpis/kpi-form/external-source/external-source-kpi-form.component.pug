@@ -60,7 +60,7 @@
                         
                         //- arithmetic operation
                         .m-b-20
-                            kpi-collapsable([collapsed]="isCollapsedAritmeticOperation", headerText="Arithmetic Operation (Optional):", [color]="'black'")
+                            kpi-collapsable([collapsed]="vm.shouldCollapseArithmeticOperation", headerText="Arithmetic Operation (Optional):", [color]="'black'")
                                 .m-t-20(layout="row", flex, layout-xs="column", layout-sm="column")
                                     bw-select-picker.m-r-10(flex, [fg]="vm.fg",
                                                         field="expression.operator",
@@ -70,7 +70,7 @@
                                                 [ngClass]="{'is-disabled': !vm.fg.expression?.operator }")
                                 
                         .m-b-20
-                            kpi-collapsable([collapsed]="isCollapsedFilters", headerText="Filters (Optional):", [color]="'black'")
+                            kpi-collapsable([collapsed]="vm.shouldCollapseFilters", headerText="Filters (Optional):", [color]="'black'")
                                 .m-t-20
                                     kpi-filter-list(
                                         [filters]="vm.fg.get('filter')",
