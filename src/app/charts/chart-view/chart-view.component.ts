@@ -691,7 +691,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         this.actionItemsTarget = undefined;
         this.overlay.hide();
         this._refreshTarget(result);
-        // this._isSettingsOnFly();
     }
 
     targetOverlay(options: any) {
@@ -809,10 +808,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         
         const rawChart: ChartData = JSON.parse(chart);
         this.chartData = rawChart;
-
-        if(!rawChart.chartDefinition.series) {
-            return;
-        }
 
         let definition = this._processChartTooltipFormatter(rawChart.chartDefinition);
         definition = this._processPieChartPercent(rawChart.chartDefinition);
@@ -1027,7 +1022,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                this.chartData.chartDefinition.chart) ? true : false;
     }
 
-    _isSettingsOnFly() {
+    private _isSettingsOnFly() {
         return   this.currentNode && this.currentNode.isDataOnFly && !this.drilledDown;
     }
 
@@ -1067,7 +1062,11 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             const formatterFactory = new FormatterFactory();
             definition.tooltip.formatter = formatterFactory.getFormatter(definition.tooltip.formatter, stack).exec;
         } else {
-            const targetExists = definition.series.find(s => s.targetId);
+            var targetExists = null;
+            if(definition.series == !undefined) {
+                targetExists =  definition.series.find(s => s.targetId);
+            }
+            
             if (definition.tooltip && definition.tooltip.altas_definition_id === 'default' && targetExists) {
                 const formatterFactory = new FormatterFactory();
                 const formatter = formatterFactory.getFormatter('percentage_target_default').exec;
