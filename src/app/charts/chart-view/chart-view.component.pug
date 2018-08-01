@@ -12,7 +12,7 @@ bw-card.chart-view.full-height.chart-card.p-relative([depth]="1", [class.maximiz
     bw-card-body([padded]="true")
         bw-button.drillup-button.animated(*ngIf="drilledDown", class="{{drillUpAnimation}}", icon="arrow-left", color="white", (clicked)="drillup()")
 
-        bw-button.go-back-button.animated(*ngIf="isSettingsOnFly()", class="{{drillUpAnimation}}", icon="arrow-left", color="white", (clicked)="closeSettingOnFly()")
+        bw-button.go-back-button.animated(*ngIf="_isSettingsOnFly()", class="{{drillUpAnimation}}", icon="arrow-left", color="white", (clicked)="closeSettingOnFly()")
 
         .h-100.p-relative(layout="column", layout-align="center justify")
             .targets-button

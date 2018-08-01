@@ -34,6 +34,7 @@ import { ChartViewViewModel } from './chart-view.viewmodel';
 import SweetAlert from 'sweetalert2';
 import { ApolloService } from '../../shared/services/apollo.service';
 import {SeeInfoActivity} from '../../shared/authorization/activities/charts/see-info-chart.activity';
+import { debug } from 'util';
 
 const Highcharts = require('highcharts/js/highcharts');
 
@@ -140,7 +141,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     filterData: any[];
     isDataOnFly = false;
     chartOnFly: Chart;
-
+    isSettingsOnFly = false;
+    
     rootNode: IChartTreeNode;
     currentNode: IChartTreeNode;
 
@@ -190,6 +192,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             }
         ]
     }];
+
 
     constructor(private _apollo: Apollo,
         private _broserService: BrowserService,
@@ -418,6 +421,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     closeSettingOnFly() {
+        this.isSettingsOnFly = !this.isSettingsOnFly;
+        this._isSettingsOnFly();
         const that = this;
         const predefined = this.currentNode.parent.dateRange[0].predefined || null;
         const groupings = this.currentNode.parent.groupings;
@@ -447,6 +452,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             that.isDataOnFly = false;
             that.processChartUpdate(data.chart);
         });
+
     }
 
     isDrillDownAvailable(): boolean {
@@ -680,9 +686,12 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     closeOverlay(result: DialogResult) {
+        this.isSettingsOnFly = !this.isSettingsOnFly;
+        this._isSettingsOnFly();
         this.actionItemsTarget = undefined;
         this.overlay.hide();
         this._refreshTarget(result);
+        // this._isSettingsOnFly();
     }
 
     targetOverlay(options: any) {
@@ -893,9 +902,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         this.currentNode = this.rootNode;
     }
 
-    isSettingsOnFly() {
-        return this.currentNode && this.currentNode.isDataOnFly && !this.drilledDown;
-    }
+    
 
     getDateRange(custom: any) {
         if (custom.from && custom.to) {
@@ -1018,6 +1025,10 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         return (this.chartData &&
                this.chartData.chartDefinition &&
                this.chartData.chartDefinition.chart) ? true : false;
+    }
+
+    _isSettingsOnFly() {
+        return   this.currentNode && this.currentNode.isDataOnFly && !this.drilledDown;
     }
 
     private _updateChartInfoFromDefinition() {
