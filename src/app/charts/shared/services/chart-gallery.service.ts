@@ -85,7 +85,7 @@ export class ChartGalleryService {
      const daterangeValue = fgValues.predefinedDateRange;
 
      if (!groupingValue && frequencyValue && frequencyValue.length > 0) {
-         // not Grouping & frecuency
+         // not Grouping & frequency
         this._sortingCriteriaList = [
             {
                 id: 'frequency',

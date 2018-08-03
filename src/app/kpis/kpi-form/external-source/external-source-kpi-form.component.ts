@@ -30,8 +30,6 @@ export class ExternalSourceKpiFormComponent implements OnInit, AfterViewInit {
         }
     }
 
-    isCollapsedAritmeticOperation = true;
-    isCollapsedFilters = true;
     payload: IKPIPayload;
     mutation: string;
     resultName: string;
