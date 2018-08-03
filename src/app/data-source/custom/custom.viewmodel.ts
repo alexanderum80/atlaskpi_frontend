@@ -45,7 +45,7 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
 
     private _isEditSubject = new BehaviorSubject<boolean>(false);
 
-    private _requiredDataType = ['Number', 'String', 'Date'];
+    private _requiredDataType = ['String', 'Date'];
 
     private _selectedTableOption: string;
 
@@ -64,20 +64,20 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
 
         this._defaultSchema = {
             schema: [
-                { columnName: 'Amount', dataType: this._dataType.number },
-                { columnName: 'Transaction Date', dataType: this._dataType.date },
                 { columnName: 'Description', dataType: this._dataType.string },
+                { columnName: 'Transaction Date', dataType: this._dataType.date },
             ],
             data: [],
+            dataName: ''
         };
 
         this._defaultInputSchema = {
             schema : [
-                { columnName: '', dataType: this._dataType.number },
-                { columnName: '', dataType: this._dataType.date },
                 { columnName: '', dataType: this._dataType.string },
+                { columnName: '', dataType: this._dataType.date },
             ],
-            data: []
+            data: [],
+            dataName: ''
         };
 
         this._dataTypeList = [
@@ -101,6 +101,9 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
 
     @ArrayField({ type: CustomDataViewModel })
     data: CustomDataViewModel[];
+
+    @Field({ type: String })
+    dataName: string;
 
     initialize(model: ICustomSchema): void {
         this.onInit(model);
@@ -154,13 +157,14 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
 
     getDataTypeFromValue(value) {
         let dataType: string;
-
-        if (!isNaN(+value)) {
+        if (value === null || value === '') {
+            dataType = 'String';
+        } else if (isBoolean(value) || value === '0' || value === '1') {
+            dataType = 'Boolean';
+        } else if (!isNaN(+value)) {
             dataType = 'Number';
         } else if (!isNaN(Date.parse(value))) {
             dataType = 'Date';
-        } else if (isBoolean(value)) {
-            dataType = 'Boolean';
         } else {
             dataType = 'String';
         }

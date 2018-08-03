@@ -1,6 +1,7 @@
 export interface ICustomSchema {
     schema: ICustomSchemaInfo[];
     data: ICustomDataInfo[];
+    dataName: string;
 }
 
 export interface ICustomSchemaInfo {

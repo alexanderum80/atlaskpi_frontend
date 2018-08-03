@@ -5,13 +5,19 @@
             i.zmdi.zmdi-storage
           div(flex-initial)
             .p-l-15 Enter or import your data
-        .title.p-b-10(*ngIf="!fullScreen") Enter data
+        bw-text-box.title(*ngIf="!fullScreen",
+                    flex-none, 
+                    [fg]="vm.fg",
+                    field="dataName",
+                    label="Data name",
+                    [required]="true")
+        //- .title.p-b-10(*ngIf="!fullScreen") Enter data
         .table.h-100
             .table-header.bgm-blue(layout="row")
                 .flex(*ngFor="let header of headerData")
                     .columns {{ header }}
             .table-body(layout="column")
-                .flex(layout="row", *ngFor="let controls of vm.fg.get('data').controls, let j = index")
+                .data-row(flex, layout="row", *ngFor="let controls of vm.fg.get('data').controls, let j = index")
                     .flex(*ngFor="let fieldName of controls.controls, let i = index")
                         div(*ngIf="getInputType(j, i) === 'date'")
                             bw-date-picker(
@@ -25,11 +31,13 @@
                             bw-text-box(
                                     [fg]="controls",
                                     [field]="i",
-                                    [placeholder]="getPlaceholder(j, i)",
-                                    [required]="true")
+                                    [placeholder]="getPlaceholder(j, i)")
                         .flex.err-message(*ngIf="fieldName.errors && fieldName.errors.required") This field is required.
                         .flex.err-message(*ngIf="fieldName.errors && fieldName.errors.invalidDataType") Incorrect data type.
 
+                .m-t-10.m-r-40(layout="row", layout-align="end")
+                    bw-button(icon="plus", title="ADD NEW ROW", color="blue", (clicked)="addNewRow()")
+                    
         .full-screen-buttons(layout="row", layout-align="end") 
             i.zmdi.zmdi-fullscreen.p-r-10(*ngIf="!fullScreen", (click)="toggleFullScreen(true)")   Full Screen
             i.zmdi.zmdi-fullscreen-exit.p-r-10(*ngIf="fullScreen", (click)="toggleFullScreen(false)")   Exit Full Screen

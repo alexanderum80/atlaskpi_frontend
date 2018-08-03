@@ -32,6 +32,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { CustomFormViewModel } from '../custom/custom.viewmodel';
 import { FormArray, FormGroup, FormControl } from '../../../../node_modules/@angular/forms';
 import { ApolloService } from '../../shared/services/apollo.service';
+import * as moment from 'moment';
 
 const ServerSideConnectorsQuery = require('graphql-tag/loader!./list-server-side-connectors.query.gql');
 const RemoveServerSideConnectorQuery = require('graphql-tag/loader!./remove-server-side-connector.mutation.gql');
@@ -93,6 +94,7 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
         const dataSourceCollection = JSON.parse(res['dataSourceCollection']);
         const schemaCollection = dataSourceCollection.schema;
         const dataCollection = dataSourceCollection.data;
+        const dataName = dataSourceCollection.dataName;
 
         const fields = [];
         forEach(schemaCollection, (value, key) => {
@@ -109,7 +111,11 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
           const dataElement = [];
           forEach(schemaCollection, (value, key) => {
             if (key !== 'Source') {
-              dataElement.push(d[value.path]);
+              let dataValue = d[value.path];
+              if (value.dataType === 'Date') {
+                dataValue = moment.utc(d[value.path]).format('MM/DD/YYYY');
+              }
+              dataElement.push(dataValue);
             }
           });
           data.push(dataElement);
@@ -117,7 +123,8 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
 
         const schema = {
           'schema': fields,
-          'data': []
+          'data': [],
+          'dataName': dataName
         };
 
         this._vm.initialize(schema);

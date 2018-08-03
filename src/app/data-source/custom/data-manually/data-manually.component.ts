@@ -74,19 +74,19 @@ export class DataManuallyComponent implements OnInit {
       const controlGroup = <any>d;
       const data = [];
       controlGroup.controls.map(c => {
-        if (c.value !== null && c.value !== '') {
-          data.push(c.value);
-        }
+        data.push(c.value);
+        // if (c.value !== null && c.value !== '') {
+        // }
       });
 
-      if (data.length === schemaFormGroup.length) {
-        tableRecords.push(data);
-      }
+      tableRecords.push(data);
+      // if (data.length === schemaFormGroup.length) {
+      // }
 
     });
 
     const tableData: ICustomData = {
-      inputName: 'test',
+      inputName: this.vm.fg.controls['dataName'].value,
       fields: tableFields,
       records: JSON.stringify(tableRecords)
     };
@@ -110,10 +110,6 @@ export class DataManuallyComponent implements OnInit {
 
     switch (this.vm.currentStep) {
       case 2:
-
-        if (schema.length < 3) {
-          returnValue = false;
-        }
         schema.map(s => {
           if (s.columnName === '' || s.columnName === undefined) {
             returnValue = false;
@@ -125,35 +121,10 @@ export class DataManuallyComponent implements OnInit {
         }
         break;
       case 3:
-        const data = <FormArray>this.vm.fg.controls['data'];
-        const totalData = data.controls.length;
-
-        const isEmptyValueArray: boolean[] = [];
-        for (let i = 0; i < totalData; i++) {
-          const controls = data.controls[i];
-          let isRowEmptyValue = false;
-          for (let j = 0; j < schema.length; j++) {
-            if (controls.value[j] === null || controls.value[j] === '') {
-              isRowEmptyValue = true;
-            }
-          }
-          isEmptyValueArray[i] = isRowEmptyValue;
+        const dataName = this.vm.fg.controls['dataName'].value;
+        if (dataName === null || dataName === '') {
+          returnValue = false;
         }
-
-        let isEmptyValue = false;
-        for (let row = 0; row < isEmptyValueArray.length; row++) {
-          if (isEmptyValueArray[row] === true) {
-            isEmptyValue = true;
-          }
-        }
-        if (!isEmptyValue) {
-          data.push(new FormGroup(
-            schema.map(() => {
-              return new FormControl();
-            })
-          ));
-        }
-        returnValue = true;
         break;
     }
     return returnValue;

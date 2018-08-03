@@ -25,14 +25,11 @@ export function getConnectorId(type: ConnectorTypeEnum): string {
         case ConnectorTypeEnum.CustomExcel:
             return 'customexcel';
         case ConnectorTypeEnum.CustomCSV:
-            return ;
+            return 'customcsv';
         case ConnectorTypeEnum.CustomTable:
             return 'customtable';
-
-
         case ConnectorTypeEnum.TwitterServerSide:
             return 'twitter';
-
         default:
             return;
     }

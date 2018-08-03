@@ -9,11 +9,11 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./enter-data-form.component.scss']
 })
 export class EnterDataFormComponent implements OnInit, AfterViewInit {
-  @Input() dataField: FormArray;
 
   headerData: string[] = [];
   bodyData: string[] = [];
   fullScreen = false;
+  dataField: FormArray;
 
   constructor(
     private vm: CustomFormViewModel
@@ -26,6 +26,7 @@ export class EnterDataFormComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.dataField = this.vm.fg.get('data') as FormArray;
     this._subscribeToFormChanges();
   }
 
@@ -38,11 +39,11 @@ export class EnterDataFormComponent implements OnInit, AfterViewInit {
   private _setBodyData(schema) {
     const dataFormGroup = this.vm.fg.get('data') as FormArray;
     if (dataFormGroup.controls.length === 0) {
-      this._addNewRow();
+      this.addNewRow();
     }
   }
 
-  private _addNewRow() {
+  addNewRow() {
     const dataFormGroup = this.vm.fg.get('data') as FormArray;
     const schema = this.vm.fg.controls['schema'].value;
 

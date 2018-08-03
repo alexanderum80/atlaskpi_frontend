@@ -1,3 +1,4 @@
+import { escapeRegExp, map } from 'lodash';
 import { ApolloService } from './../../../shared/services/apollo.service';
 import { CustomFormViewModel } from './../custom.viewmodel';
 import { ICustomData, ICustomSchemaInfo } from './../../shared/models/data-sources/custom-form.model';
@@ -264,7 +265,28 @@ export class ImportFileComponent implements OnInit {
     const dataArr = [];
 
     for (let i = 1; i < csvRecordsArray.length; i++) {
-        const data = csvRecordsArray[i].split(tokenDelimeter);
+        const dataRow = csvRecordsArray[i].split(tokenDelimeter);
+
+        const data = [];
+        let compositeField = '';
+        let concatData = false;
+        for (let j = 0; j < dataRow.length; j++) {
+          const value = dataRow[j];
+          if (value.startsWith('"') && value.endsWith('"')) {
+            data.push(value.replace(/"/g, ''));
+          } else if (value.startsWith('"')) {
+            compositeField = value;
+            concatData = true;
+          } else if (value.endsWith('"')) {
+            compositeField += ',' + value;
+            concatData = false;
+            data.push(compositeField.replace(/"/g, ''));
+          } else if (concatData) {
+            compositeField += ',' + value;
+          } else {
+            data.push(value);
+          }
+        }
 
         if (data.length !== headerLength) {
             if (csvRecordsArray[i] === '') {
@@ -288,12 +310,7 @@ export class ImportFileComponent implements OnInit {
               return [];
             }
         }
-
-        const col = [];
-        for (let j = 0; j < data.length; j++) {
-            col.push(data[j]);
-        }
-        dataArr.push(col);
+        dataArr.push(data);
     }
     return dataArr;
   }
