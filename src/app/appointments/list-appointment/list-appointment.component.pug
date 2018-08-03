@@ -72,7 +72,7 @@
                 mwl-calendar-week-view(*ngSwitchCase="'week'", [viewDate]="viewDate", [events]="asyncEvents", [refresh]="refresh", (eventTimesChanged)="eventTimesChanged($event)",
                                         (eventClicked)="handleEvent('Clicked', $event.event)")
                 mwl-calendar-day-view(*ngSwitchCase="'day'", [viewDate]="viewDate", [events]="asyncEvents", [refresh]="refresh", (eventTimesChanged)="eventTimesChanged($event)",
-                                        (eventClicked)="handleEvent('Clicked', $event.event)")
+                                        (eventClicked)="handleEvent('Clicked', $event.event)", [dayStartHour]="7", [dayEndHour]="19" )
 
 bw-modal(#eventInfoModal='', animation="true", keyboard="true", backdrop="true", size="md",
          (onClosed)="modalClose()", (onDismiss)="modalClose()")
