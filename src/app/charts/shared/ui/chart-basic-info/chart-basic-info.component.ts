@@ -360,16 +360,19 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     private _updateComparisonPicker(dateRangeString: string) {
+
         if (IsNullOrWhiteSpace(dateRangeString)) { return; }
 
         const dateRange = this.dateRanges.find(d => d.dateRange.predefined === dateRangeString);
 
         if (!dateRange) {
             this.comparisonList = [];
+            this.vm.comparisonList = this.comparisonList;
             return [];
         }
 
         this.comparisonList = ToSelectionItemList(dateRange.comparisonItems, 'key', 'value');
+        this.vm.comparisonList = this.comparisonList;
     }
 
     private _updateComparisonData(yearOldestDate: number) {
@@ -377,16 +380,12 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         const thisYear = moment().year();
 
         if (!yearOldestDate || yearOldestDate.toString() === thisYear.toString()) { return; }
-
         this.comparisonList.push(new SelectionItem('previousPeriod', 'previous period', false, false));
         let newItem: SelectionItem = {};
-        const actualYear = moment().year();
 
-        if (yearOldestDate === actualYear) { return; }
-
-        if (actualYear - yearOldestDate >= 1) {
-            for (let i = actualYear - 1; i >= yearOldestDate; i--) {
-                if (i === actualYear - 1) {
+        if (thisYear - yearOldestDate >= 1) {
+            for (let i = thisYear - 1; i >= yearOldestDate; i--) {
+                if (i === thisYear - 1) {
                     newItem = {
                         id: 'lastYear',
                         title: 'last year (' + i + ')',
@@ -395,14 +394,15 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
                     };
                 } else {
                     newItem = {
-                        id: actualYear - i + 'YearsAgo',
-                        title: actualYear -  i + ' years ago (' + i + ')',
+                        id: thisYear - i + 'YearsAgo',
+                        title: thisYear -  i + ' years ago (' + i + ')',
                         selected: false,
                         disabled: false
                     };
                 }
                 this.comparisonList.push(newItem);
             }
+            this.vm.comparisonList = this.comparisonList;
         }
     }
   private _dateRangesQuery() {

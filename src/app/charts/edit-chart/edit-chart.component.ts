@@ -149,7 +149,6 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
 
     private _processChartResponse(response: ApolloQueryResult<any>) {
         this.loading = false;
-
         if (!response.data.chart) {
             return this.id = null;
         }

@@ -279,6 +279,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     }
 
     updateFormFields() {
+        debugger;
         const that = this;
         const values = this.chartModel.toChartFormValues();
 

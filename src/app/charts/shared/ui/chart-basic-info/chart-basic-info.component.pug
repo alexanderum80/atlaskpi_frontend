@@ -94,11 +94,9 @@
             .m-t-15.m-l-25(layout="row")
                 bw-select-picker(flex, [fg]="fg",
                     field="comparison",
-                    [items]="comparisonList",
+                    [items]="vm.comparisonList",
                     [multiple]="true",
                     [maxOptions]="4",
-                    dependOnField="predefinedDateRange",
-                    (dependantValueChanged)="updateComparisonList($event)",
                     noneSelectedText="Select Date Range")
 
     //- Sorting
