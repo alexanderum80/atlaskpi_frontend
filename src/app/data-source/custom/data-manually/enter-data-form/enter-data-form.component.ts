@@ -2,6 +2,7 @@ import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { FormArray, FormGroup, FormControl } from '@angular/forms';
 import { CustomFormViewModel } from './../../custom.viewmodel';
 import { Component, OnInit, Input } from '@angular/core';
+import { IDatePickerConfig } from '../../../../ng-material-components/modules/forms/date-picker/date-picker/date-picker-config.model';
 
 @Component({
   selector: 'kpi-enter-data-form',
@@ -14,12 +15,14 @@ export class EnterDataFormComponent implements OnInit, AfterViewInit {
   bodyData: string[] = [];
   fullScreen = false;
   dataField: FormArray;
+  datePickerConfig: IDatePickerConfig;
 
   constructor(
     private vm: CustomFormViewModel
   ) { }
 
   ngOnInit() {
+    this._setConfigDatePicker();
     const schema = this.vm.fg.controls['schema'].value;
     this._setHeaderData(schema);
     this._setBodyData(schema);
@@ -28,6 +31,13 @@ export class EnterDataFormComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.dataField = this.vm.fg.get('data') as FormArray;
     this._subscribeToFormChanges();
+  }
+
+  private _setConfigDatePicker() {
+    this.datePickerConfig = {
+      showGoToCurrent: false,
+      format: 'MM/DD/YYYY'
+    };
   }
 
   private _setHeaderData(schema) {
