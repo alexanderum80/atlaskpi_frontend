@@ -337,9 +337,8 @@ export function parseComparisonDateRange(value: string, customDateRange?: IDateR
     if (!firstDateRange) {
         firstDateRange = {};
     }
-
+    debugger;
     switch (comparisonTokens[1]) {
-
         // today cases
         case 'yesterday':
             return backInTime(firstDateRange, 1, 'day');
@@ -371,10 +370,14 @@ export function parseComparisonDateRange(value: string, customDateRange?: IDateR
 
         case 'previousPeriod':
             return previousPeriod(firstDateRange);
-
+        default :
+            if (comparisonTokens[1].endsWith('YearsAgo')) {
+                const timeBack = comparisonTokens[1].substr(0, comparisonTokens[1].indexOf('YearsAgo'));
+                return backInTime(firstDateRange, <any>timeBack, 'year');
+            } else {
+                return null;
+            }
     }
-
-    return null;
 }
 
 export function backInTime(dateRange: IDateRange, amount: any, timespan: string): IDateRange {

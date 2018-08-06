@@ -85,12 +85,12 @@ bw-card.chart-view.full-height.chart-card.p-relative([depth]="1", [class.maximiz
                     | "
         .chart-info.zmdi.zmdi-swap(*ngIf="chartData.comparison && chartData.comparison.length > 0")
             |   Comparison
-            .chart-detail(flex, *ngFor="let comparison of chartData.comparison")
+            .chart-detail(flex, *ngFor="let comparison of chartData.comparison; index as i")
                 .m-5(layout="row", layout-padding) 
-                    div(flex) Your data it's being compared with values from {{comparisonValue}}
+                    div(flex) Your data it's being compared with values from {{comparisonValue[i]}}
                 .m-5(layout="row", layout-padding) 
                     div.bold(flex-xs="100", flex-sm="50", flex-md="50", flex-gt-md="40", layout="column") Previous Date Range:
-                    div(flex, layout="column") {{ comparisonDateRange.from | date: "MM/dd/yyyy" }} to {{ comparisonDateRange.to | date: "MM/dd/yyyy" }}
+                    div(flex, layout="column") {{ comparisonDateRange[i].from | date: "MM/dd/yyyy" }} to {{ comparisonDateRange[i].to | date: "MM/dd/yyyy" }}
 
     bw-button.closeDescription(*ngIf="showDescription", flex-none, color="blue", icon="arrow-left", title="BACK", class="normal", (clicked)="closeDescription()" )
 

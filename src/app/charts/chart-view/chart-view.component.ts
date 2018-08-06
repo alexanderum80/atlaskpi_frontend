@@ -145,7 +145,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     currentNode: IChartTreeNode;
 
     comparisonDateRange: any[] = [];
-    comparisonValue: string;
+    comparisonValue: string[] = [];
 
     compareActions: MenuItem[] = [{
         id: 'comparison',
@@ -364,19 +364,28 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     getComparisonValue() {
         const dateRange = this.dateRanges.find(d => d.dateRange.predefined === this.chartData.dateRange[0].predefined);
         if (!dateRange) { return; }
-        const comparison = dateRange.comparisonItems.find(c => c.key === this.chartData.comparison[0]);
-        this.comparisonValue = comparison.value;
+        this.chartData.comparison.map( comp => {
+            const comparison = dateRange.comparisonItems.find(c => c.key === comp);
+            if (!comparison) {
+                this.comparisonValue.push(comp.substr(0, comp.indexOf('YearsAgo')) + ' years ago');
+            } else {
+                this.comparisonValue.push(comparison.value);
+            }
+        });
     }
 
     getComparisonDateRange() {
-        const comparison: string[] = [];
-        comparison.push(this.chartData.dateRange[0].predefined);
-        comparison.push(this.chartData.comparison[0]);
+        let comparison: string[] = [];
         let customDateRange;
         if (this.chartData.dateRange[0].predefined === 'custom') {
             customDateRange = this.chartData.dateRange[0].custom;
         }
-        this.comparisonDateRange = <any>parseComparisonDateRange(<any>comparison, customDateRange);
+        this.chartData.comparison.map(comp => {
+            comparison = [];
+            comparison.push(this.chartData.dateRange[0].predefined);
+            comparison.push(comp);
+            this.comparisonDateRange.push(<any>parseComparisonDateRange(<any>comparison, customDateRange));
+        });
     }
 
     setSettingsOnFly(predefinedDateRange: string, dateRange: DateRange, frequency: string, groupings: string) {
