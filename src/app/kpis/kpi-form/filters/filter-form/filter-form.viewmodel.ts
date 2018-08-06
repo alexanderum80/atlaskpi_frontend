@@ -43,8 +43,9 @@ export class FilterFormViewModel {
     private _criteriaItems: SelectionItem[] = [];
     private _criterias: string[];
     private _collectionSource: string;
+    private _formTouched = false;
 
-    public dataSourceValuesTracker: any = {};
+    // public dataSourceValuesTracker: any = {};
 
     public kpiSubject: Subject<string>;
     public criteriaPayloadSubject: Subject<IFilterCriteria>;
@@ -68,15 +69,17 @@ export class FilterFormViewModel {
             this._filterFg.get('field').valueChanges
                 .distinctUntilChanged().subscribe(fieldId => {
                     that._onFieldChange(fieldId);
+                    that._formTouched = true;
                 })
         );
 
         this._subscription.push(
             this._filterFg.get('operator').valueChanges
                 .distinctUntilChanged()
-                .subscribe(operatorId =>
-                    that._onOperatorChange(operatorId)
-                )
+                .subscribe(operatorId => {
+                    that._onOperatorChange(operatorId);
+                    that._formTouched = true;
+                })
         );
 
         this.datePickerConfig = {
@@ -101,16 +104,16 @@ export class FilterFormViewModel {
         if (dataSource && dataSource !== this._dataSource) {
             this._dataSource = dataSource;
 
-            const { currentValue, previousValue } = this.dataSourceValuesTracker;
-            if ((previousValue !== undefined) && (previousValue !== currentValue)) {
-                if (this.vmFields) {
-                    this.vmFields.resetSelectedItems();
-                }
-                if (this.vmCriteria && this.vmCriteria['resetSelectedItems']) {
-                    this.vmCriteria.resetSelectedItems();
-                }
-                this._operator = undefined;
-            }
+            // const { currentValue, previousValue } = this.dataSourceValuesTracker;
+            // if ((previousValue !== undefined) && (previousValue !== currentValue)) {
+            //     if (this.vmFields) {
+            //         this.vmFields.resetSelectedItems();
+            //     }
+            //     if (this.vmCriteria && this.vmCriteria['resetSelectedItems']) {
+            //         this.vmCriteria.resetSelectedItems();
+            //     }
+            //     this._operator = undefined;
+            // }
 
             // when creating a new filter this method may fire before the form group gets created
             if (this._filterFg) {
@@ -124,9 +127,8 @@ export class FilterFormViewModel {
     }
 
     public updateSelectableCriteria(criterias: string[]) {
-        if (!isEmpty(criterias)) {
-            this._criteriaItems = criterias.map(c => new SelectionItem(c, c));
-        }
+        this._criteriaItems = criterias.map(c => new SelectionItem(c, c));
+
         const criteriaControl = this._filterFg.get('criteria');
 
         if (criteriaControl) {
@@ -134,6 +136,11 @@ export class FilterFormViewModel {
             const criteriaExists = this._criteriaItems.find(item => item.id === value);
 
             if (!criteriaExists && isString(value) && value) {
+
+                // if the form was already touched we do nothing.
+                if (this._formTouched) { return; }
+
+                // case when the filter model is just loaded and the criterias doesnt contain the original definition
                 // edit kpi, may havee multi selection separated by |
                 const hasMultiValues = value.indexOf('|');
                 if (hasMultiValues !== -1) {
@@ -260,7 +267,7 @@ export class FilterFormViewModel {
             }
         }
 
-        this._updateCriteriaPayload();
+        this.updateCriteriaPayload();
     }
 
     private _onOperatorChange(operatorSymbol: string, resetCriteria?: boolean) {
@@ -292,21 +299,28 @@ export class FilterFormViewModel {
         }
     }
 
-    private _updateCriteriaPayload() {
-        const collectionSource = (isString(this._collectionSource) && !isEmpty(this._collectionSource))
-                                  ? this._collectionSource.split('|') : null;
+    public updateCriteriaPayload() {
+        const dSource = this._dataSource;
+        const cSource = !isEmpty(this._collectionSource)
+                        ? (Array.isArray(this._collectionSource)
+                                ? this._collectionSource
+                                : this._collectionSource.split('|'))
+                        : null;
+
+        if (!this._selectedField) { return; }
 
         this.criteriaPayloadSubject.next({
-            name: this._dataSource.name,
-            source: this._dataSource.dataSource,
+            name: dSource.name,
+            source: dSource.name,
             field: this._selectedField.path,
             filter: '',
             limit: 25000,
-            collectionSource: collectionSource
+            collectionSource: cSource
         });
     }
 
     private _resetCriteria() {
+
         // may not have formgroup at this time
         if (!this._filterFg) {
             return;

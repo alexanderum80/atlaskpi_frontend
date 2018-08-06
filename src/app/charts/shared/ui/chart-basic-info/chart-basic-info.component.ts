@@ -11,7 +11,7 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/observable/combineLatest';
 import { Observable } from 'rxjs/Observable';
 
-import {FormGroup} from '@angular/forms';
+import {FormGroup, FormControl} from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { clone, isEmpty, toArray, find, pick, includes, split, map } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
@@ -205,27 +205,55 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
 
     private _subscribeToKpiAndDateRange(): void {
         const that = this;
+        const watchFields = [
+            'kpi',
+            'predefinedDateRange',
+        ];
 
-        this.fg.valueChanges.distinctUntilChanged().subscribe((item) => {
-            if (item.kpi && item.predefinedDateRange) {
-                that._getGroupingInfo(item);
-                // query to determine the year
-                const kpi_id = this.fg.value.kpi;
-                this._apolloService.networkQuery < SelectionItem > (kpiOldestDateQuery, {id: kpi_id })
-                .then(kpis => {
-                    this._updateComparisonData(kpis.getKpiOldestDate);
-                });
-            }
+        watchFields.forEach(f => {
+            const ctrl = that.fg.get(f)
+                   .valueChanges
+                   .debounceTime(500)
+                   .distinctUntilChanged()
+                   .subscribe(v => {
+                        that._getGroupingInfo();
+                        const kpi_id = this.fg.value.kpi;
+                        this._apolloService.networkQuery < SelectionItem > (kpiOldestDateQuery, {id: kpi_id })
+                        .then(kpis => {
+                            this._updateComparisonData(kpis.getKpiOldestDate);
+                        });
+                    });
         });
+
+
+        // this.fg .valueChanges
+        //         .debounceTime(400)
+        //         .distinctUntilChanged()
+        //         .subscribe((item) => {
+        //     const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
+        //     if (item.kpi && item.predefinedDateRange && !loadingGroupings) {
+        //         that._getGroupingInfo(item);
+        //     }
+        // });
     }
 
-    private _getGroupingInfo(item: any): void {
+    private _getGroupingInfo(): void {
         const that = this;
-        const input = this._getGroupingInfoInput(item);
+        const item = this.fg.value;
 
+        // basic payload check
+        if (!item.kpi || !item.predefinedDateRange) {
+            return;
+        }
+
+        // custom daterange payload check
         if (item.predefinedDateRange === 'custom' && (!item.customFrom || !item.customTo)) {
             return;
         }
+
+        const input = this._getGroupingInfoInput(item);
+
+        this.fg.controls['loadingGroupings'].patchValue(true, { emitEvent: false });
 
         this._apollo.watchQuery({
             query: kpiGroupingsQuery,
@@ -234,15 +262,27 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
                 input: input
             }
         }).valueChanges.subscribe(({ data }: any) => {
-            if (!data || isEmpty(data.kpiGroupings)) {
-                that.groupingList = [];
-                return;
+            let groupingList = [];
+            if (data || !isEmpty(data.kpiGroupings)) {
+                groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
             }
-            that.groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
+
+            that.groupingList = groupingList;
+            this.fg.controls['loadingGroupings'].patchValue(false, { emitEvent: false });
+
+            const currentGroupingValue = this.fg.get('grouping').value || '';
+            let nextGropingValue;
+            if (!groupingList.map(g => g.id).includes(currentGroupingValue)) {
+                nextGropingValue = '';
+            } else {
+                nextGropingValue = currentGroupingValue;
+            }
+            that.fg.controls['grouping'].patchValue(nextGropingValue, { emitEvent: true });
         });
     }
 
     private _getGroupingInfoInput(item: any): any {
+        item = this.fg.value;
         const dateRange = { predefined: item.predefinedDateRange, custom: null};
 
         // process custom dateRange

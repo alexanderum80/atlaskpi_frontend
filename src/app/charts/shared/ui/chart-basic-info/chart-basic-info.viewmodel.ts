@@ -29,7 +29,7 @@ export class ChartBasicInfoViewModel extends ViewModel<any> {
     }, {
         element: '#select-frequency',
         intro: `Select a frequency (E.g \'Monthly\', \'daily\').
-            Note that pie charts don\'t suport frecuency, so that\'s why is disabled`,
+            Note that pie charts don\'t suport frequency, so that\'s why is disabled`,
         position: 'bottom'
     }, {
         element: '#select-grouping',
