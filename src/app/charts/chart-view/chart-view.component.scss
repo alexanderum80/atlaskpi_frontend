@@ -182,3 +182,18 @@ div.chart-title {
     width:100% !important;
     height:100% !important;
 }
+
+.rr-div {
+    background-color: gray;
+}
+.rr-text {
+    background-color: gray;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.rr-value {
+    background-color: gray;
+    color: white;
+}
