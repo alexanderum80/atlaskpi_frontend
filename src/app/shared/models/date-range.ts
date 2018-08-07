@@ -81,6 +81,31 @@ export const PredefinedDateRanges = {
     last3Years: 'last 3 years',
     last4Years: 'last 4 years',
     last5Years: 'last 5 years',
+    last6Years: 'last 6 years',
+    last7Years: 'last 7 years',
+    last8Years: 'last 8 years',
+    last9Years: 'last 9 years',
+    last10Years: 'last 10 years',
+    last11Years: 'last 11 years',
+    last12Years: 'last 12 years',
+    last13Years: 'last 13 years',
+    last14Years: 'last 14 years',
+    last15Years: 'last 15 years',
+    last16Years: 'last 16 years',
+    last17Years: 'last 17 years',
+    last18Years: 'last 18 years',
+    last19Years: 'last 19 years',
+    last20Years: 'last 20 years',
+    last21Years: 'last 21 years',
+    last22Years: 'last 22 years',
+    last23Years: 'last 23 years',
+    last24Years: 'last 24 years',
+    last25Years: 'last 25 years',
+    last26Years: 'last 26 years',
+    last27Years: 'last 27 years',
+    last28Years: 'last 28 years',
+    last29Years: 'last 29 years',
+    last30Years: 'last 30 years',
     last7Days: 'last 7 days',
     last14Days: 'last 14 days',
     last30Days: 'last 30 days',
@@ -142,7 +167,35 @@ export const PredefinedComparisonDateRanges = {
     customTwoYearsAgo: 'two years ago',
     customThreeYearsAgo: 'three years ago',
     customFourYearsAgo: 'four years ago',
-    customFiveYearsAgo: 'five years ago'
+    customFiveYearsAgo: 'five years ago',
+
+    fourYearsAgo: '4 years ago',
+    fiveYearsAgo: '5 years ago',
+    sixYearsAgo: '6 years ago',
+    sevenYearsAgo: '7 years ago',
+    eightYearsAgo: '8 years ago',
+    nineYearsAgo: '9 years ago',
+    tenYearsAgo: '10 years ago',
+    elevenYearsAgo: '11 years ago',
+    twelveYearsAgo: '12 years ago',
+    thirteenYearsAgo: '13 years ago',
+    fourteenYearsAgo: '14 years ago',
+    fifteenYearsAgo: '15 years ago',
+    sixteenYearsAgo: '16 years ago',
+    seventeenYearsAgo: '17 years ago',
+    eighteenYearsAgo: '18 years ago',
+    nineteenYearsAgo: '19 years ago',
+    twentyYearsAgo: '20 years ago',
+    twentyoneYearsAgo: '21 years ago',
+    twentytwoYearsAgo: '22 years ago',
+    twentythreeYearsAgo: '23 years ago',
+    twentyfourYearsAgo: '24 years ago',
+    twentyfiveYearsAgo: '25 years ago',
+    twentysixYearsAgo: '26 years ago',
+    twentysevenYearsAgo: '27 years ago',
+    twentyeightYearsAgo: '28 years ago',
+    twentynineYearsAgo: '29 years ago',
+    thirtyYearsAgo: '30 years ago',
 };
 
 export const quarterMonths = {
@@ -337,7 +390,6 @@ export function parseComparisonDateRange(value: string, customDateRange?: IDateR
     if (!firstDateRange) {
         firstDateRange = {};
     }
-    debugger;
     switch (comparisonTokens[1]) {
         // today cases
         case 'yesterday':

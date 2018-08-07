@@ -483,7 +483,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         if (!this.chart.options.plotOptions.series) {
             this.chart.options.plotOptions.series = {};
         }
-
         this.chart.options.plotOptions.series = Object.assign(this.chart.options.plotOptions.series, {
             point: {
                 events: {
@@ -493,7 +492,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                             const isYear: boolean = moment(this.category, 'YYYY', true).isValid();
                             const checkYear = isYear ? this.category : null;
                             const year = that.currentNode.year || checkYear;
-
                             const dateRange = that._drillDownSvc.getDateRangeForDrillDown(that.currentNode);
                             const customDateRange = that._drillDownSvc.getDrillDownDateRange(
                                 this.category, dateRange, year, that.chartData.frequency
@@ -505,7 +503,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
 
                             let frequency = that._drillDownSvc.getFrequencyType(this.category);
                             frequency = frequency ? (frequency === 'quarterly' ? 'monthly' : frequency) : null;
-
                             const chartQueryVariables = {
                                 id: that.chartData._id,
                                 input: {
@@ -527,7 +524,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                                 data
                             }) => {
                                 const rawChart: ChartData = JSON.parse((<any>data).chart);
-
                                 // show message when the chart has no data
                                 if (rawChart.chartDefinition) {
                                     const noData = that._noChartDataMessage(rawChart.chartDefinition.series);

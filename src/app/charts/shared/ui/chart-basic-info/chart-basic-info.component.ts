@@ -416,34 +416,28 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     private _updateComparisonData(yearOldestDate: number) {
-        this.comparisonList = [];
+
+        if (this.fg.value.predefinedDateRange === '') { return; }
         const thisYear = moment().year();
-
         if (!yearOldestDate || yearOldestDate.toString() === thisYear.toString()) { return; }
-        this.comparisonList.push(new SelectionItem('previousPeriod', 'previous period', false, false));
-        let newItem: SelectionItem = {};
 
-        if (thisYear - yearOldestDate >= 1) {
-            for (let i = thisYear - 1; i >= yearOldestDate; i--) {
-                if (i === thisYear - 1) {
-                    newItem = {
-                        id: 'lastYear',
-                        title: 'last year (' + i + ')',
-                        selected: false,
-                        disabled: false
-                    };
-                } else {
-                    newItem = {
-                        id: thisYear - i + 'YearsAgo',
-                        title: thisYear -  i + ' years ago (' + i + ')',
-                        selected: false,
-                        disabled: false
-                    };
-                }
-                this.comparisonList.push(newItem);
-            }
-            this.vm.comparisonList = this.comparisonList;
+        this.comparisonList = [];
+        const dateRange = this.dateRanges.find(d => d.dateRange.predefined === this.fg.value.predefinedDateRange);
+
+        const yearsBack = thisYear - yearOldestDate;
+        let newItem: SelectionItem = {};
+        for (let i = 0; i <= yearsBack ; i++) {
+            newItem = {
+                id: dateRange.comparisonItems[i].key,
+                title: dateRange.comparisonItems[i].key === 'previousPeriod'
+                ? dateRange.comparisonItems[i].value
+                : dateRange.comparisonItems[i].value + ' (' + (thisYear - i) + ')',
+                selected: false,
+                disabled: false
+            };
+            this.comparisonList.push(newItem);
         }
+        this.vm.comparisonList = this.comparisonList;
     }
   private _dateRangesQuery() {
     const that = this;

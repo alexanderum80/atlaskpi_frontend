@@ -757,7 +757,6 @@ export class DrillDownService {
         if (!Array.isArray(chartDateRange)) {
             return [];
         }
-
         const isPredefined: boolean = chartDateRange[0].predefined !== 'custom';
         if (!isPredefined) {
             return [];
@@ -789,7 +788,7 @@ export class DrillDownService {
                     predefinedDate.push(this._threeYearsAgoComparisonDateRange(predefinedDateString));
                     break;
                 default:
-                predefinedDate.push(this._MorethreeYearsAgoComparisonDateRange(predefinedDateString));
+                predefinedDate.push(this._MorethreeYearsAgoComparisonDateRange(cv));
                     break;
             }
         });
@@ -933,8 +932,11 @@ export class DrillDownService {
         return threeYearPredefinedDateRange;
     }
     private _MorethreeYearsAgoComparisonDateRange(predefinedDateString: string): string {
-
-        return predefinedDateString.substr(0, predefinedDateString.indexOf('YearsAgo')) + ' years ago'
+        if (predefinedDateString.includes('YearsAgo')) {
+            return predefinedDateString.substr(0, predefinedDateString.indexOf('YearsAgo')) + ' years ago';
+        } else if (predefinedDateString.includes('years ago')) {
+            return predefinedDateString;
+        }
     }
     private _yearOfMonth(minusMonth: number) {
         return moment().subtract(minusMonth, 'months').format('YYYY');
