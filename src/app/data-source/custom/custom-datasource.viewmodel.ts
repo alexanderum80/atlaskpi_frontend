@@ -1,10 +1,10 @@
 import { isBoolean, find } from 'lodash';
-import { IDataType, ICustomDataInfo } from './../shared/models/data-sources/custom-form.model';
+import { IDataType, ICustomDataInfo } from '../shared/models/data-sources/custom-form.model';
 import { ICustomSchema, ICustomSchemaInfo } from '../shared/models/data-sources/custom-form.model';
 import { ViewModel, Field, ArrayField } from '../../ng-material-components/viewModels';
 import { Injectable } from '@angular/core';
 import { SelectionItem } from '../../ng-material-components';
-import { BehaviorSubject, Observable } from '../../../../node_modules/rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 
 export class CustomSchemaViewModel extends ViewModel<ICustomSchemaInfo> {

@@ -1,6 +1,6 @@
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { FormArray, FormGroup, FormControl } from '@angular/forms';
-import { CustomFormViewModel } from './../../custom.viewmodel';
+import { CustomFormViewModel } from '../../custom-datasource.viewmodel';
 import { Component, OnInit, Input } from '@angular/core';
 import { IDatePickerConfig } from '../../../../ng-material-components/modules/forms/date-picker/date-picker/date-picker-config.model';
 

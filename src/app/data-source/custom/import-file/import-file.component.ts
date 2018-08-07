@@ -1,14 +1,13 @@
-import { escapeRegExp, map } from 'lodash';
-import { ApolloService } from './../../../shared/services/apollo.service';
-import { CustomFormViewModel } from './../custom.viewmodel';
-import { ICustomData, ICustomSchemaInfo } from './../../shared/models/data-sources/custom-form.model';
+import { ApolloService } from '../../../shared/services/apollo.service';
+import { CustomFormViewModel } from '../custom-datasource.viewmodel';
+import { ICustomData, ICustomSchemaInfo } from '../../shared/models/data-sources/custom-form.model';
 import Sweetalert from 'sweetalert2';
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { DialogResult } from '../../../shared/models/dialog-result';
 import * as XLSX from 'ts-xlsx';
-import { Router } from '../../../../../node_modules/@angular/router';
+import { Router } from '@angular/router';
 
-const addCustomMutation = require('graphql-tag/loader!../custom.connect.gql');
+const addCustomMutation = require('graphql-tag/loader!../custom-datasource.connect.gql');
 
 @Component({
   selector: 'kpi-import-file',

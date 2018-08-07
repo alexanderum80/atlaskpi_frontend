@@ -1,12 +1,12 @@
 import { Router } from '@angular/router';
-import { ApolloService } from './../../../shared/services/apollo.service';
-import { ICustomData } from './../../shared/models/data-sources/custom-form.model';
-import { CustomFormViewModel } from './../custom.viewmodel';
+import { ApolloService } from '../../../shared/services/apollo.service';
+import { ICustomData } from '../../shared/models/data-sources/custom-form.model';
+import { CustomFormViewModel } from '../custom-datasource.viewmodel';
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { DialogResult } from '../../../shared/models/dialog-result';
-import { FormArray, FormGroup, FormControl } from '../../../../../node_modules/@angular/forms';
+import { FormArray, FormGroup, FormControl } from '@angular/forms';
 
-const addCustomMutation = require('graphql-tag/loader!../custom.connect.gql');
+const addCustomMutation = require('graphql-tag/loader!../custom-datasource.connect.gql');
 
 @Component({
   selector: 'kpi-data-manually',
@@ -75,14 +75,9 @@ export class DataManuallyComponent implements OnInit {
       const data = [];
       controlGroup.controls.map(c => {
         data.push(c.value);
-        // if (c.value !== null && c.value !== '') {
-        // }
       });
 
       tableRecords.push(data);
-      // if (data.length === schemaFormGroup.length) {
-      // }
-
     });
 
     const tableData: ICustomData = {

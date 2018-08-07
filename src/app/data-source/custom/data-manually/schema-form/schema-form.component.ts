@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { CustomFormViewModel } from '../../custom.viewmodel';
+import { CustomFormViewModel } from '../../custom-datasource.viewmodel';
 
 @Component({
   selector: 'kpi-schema-form',

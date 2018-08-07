@@ -1,5 +1,5 @@
 import { forEach } from 'lodash';
-import { CustomComponent } from './../custom/custom.component';
+import { CustomComponent } from '../custom/custom-datasource.component';
 import { CommonService } from '../../shared/services/common.service';
 import { AddConnectorActivity } from '../../shared/authorization/activities/data-sources/add-connector.activity';
 import { ViewConnectorActivity } from '../../shared/authorization/activities/data-sources/view-connector.activity';
@@ -7,8 +7,8 @@ import { Activity } from '../../shared/authorization/decorators/component-activi
 import { DeleteConnectorActivity } from '../../shared/authorization/activities/data-sources/delete-connector.activity';
 import { ListConnectedDataSourcesViewModel } from './list-connected-data-sources.viewmodel';
 import { ServerSideConnectorFactory } from '../shared/models/data-sources/server-side-connector.factory';
-import { ServerSideDataSourceService } from './../shared/services/data-source.service/server-side-data-sources.service';
-import { IServerSideOAuthConnector, getConnectorType } from './../shared/models/data-sources/server-side-oauth-connector.base';
+import { ServerSideDataSourceService } from '../shared/services/data-source.service/server-side-data-sources.service';
+import { IServerSideOAuthConnector, getConnectorType } from '../shared/models/data-sources/server-side-oauth-connector.base';
 import {
   Component,
   OnInit,
@@ -27,10 +27,10 @@ import { AutoUnsubscribe } from '../shared/auto-unsubscribe';
 import { Apollo } from 'apollo-angular';
 import SweetAlert from 'sweetalert2';
 import { CallRailComponent } from '../call-rail/call-rail.component';
-import { environment } from './../../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { Subscription } from 'rxjs/Subscription';
-import { CustomFormViewModel } from '../custom/custom.viewmodel';
-import { FormArray, FormGroup, FormControl } from '../../../../node_modules/@angular/forms';
+import { CustomFormViewModel } from '../custom/custom-datasource.viewmodel';
+import { FormArray, FormGroup, FormControl } from '@angular/forms';
 import { ApolloService } from '../../shared/services/apollo.service';
 import * as moment from 'moment';
 

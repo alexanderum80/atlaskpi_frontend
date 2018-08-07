@@ -1,6 +1,4 @@
 bw-modal(size="lg",#connectCustom='')
-    //- bw-modal-header.custom-tooltip-header
-    //- bw-modal-body.custom-tooltip-body
     .h-100.p-relative(layout="row", layout-xs="column")
       .left-panel(flex="40", flex-xs="100", layout="column")
         .custom-tooltip-header(layout="row", layout-padding)
@@ -19,5 +17,4 @@ bw-modal(size="lg",#connectCustom='')
 
       .right-panel(flex="60", flex-xs="100", layout="column", layout-padding)
         kpi-import-file(*ngIf="vm.selectedInputType === 'import'", (dialogResult)="processDialogResult($event)")
-        kpi-data-manually.overflow-auto(*ngIf="vm.selectedInputType === 'manually'", (dialogResult)="processDialogResult($event)",
-                          style="height: 85%")
+        kpi-data-manually.data-manually.overflow-auto(*ngIf="vm.selectedInputType === 'manually'", (dialogResult)="processDialogResult($event)")

@@ -1,12 +1,12 @@
-import { CustomFormViewModel } from './custom.viewmodel';
-import { DialogResult } from './../../shared/models/dialog-result';
-import { ModalComponent } from './../../ng-material-components/modules/user-interface/modal/modal.component';
+import { CustomFormViewModel } from './custom-datasource.viewmodel';
+import { DialogResult } from '../../shared/models/dialog-result';
+import { ModalComponent } from '../../ng-material-components/modules/user-interface/modal/modal.component';
 import { Component, OnInit, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'kpi-custom',
-  templateUrl: './custom.component.pug',
-  styleUrls: ['./custom.component.scss']
+  selector: 'kpi-custom-datasource',
+  templateUrl: './custom-datasource.component.pug',
+  styleUrls: ['./custom-datasource.component.scss']
 })
 export class CustomComponent implements OnInit {
   @ViewChild('connectCustom') modal: ModalComponent;
