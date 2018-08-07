@@ -5,23 +5,25 @@ form#login-form(flex, [formGroup]="fg", (ngSubmit)="signIn($event)")
             img.m-25.logo(src='/assets/img/logos/logo.png')
         
         //-company
-        .m-15(*ngIf="requireCompanyName", flex-none)
+        .m-r-15.m-l-15.m-t-15(*ngIf="requireCompanyName", flex)
             bw-text-box([fg]="fg", required, field="host", label="Company Name", leftIcon="home", [value]="companyInfo.subdomain")
         //-email
-        .m-15(flex-none)
+        .m-r-15.m-l-15.m-t-15(flex)
             bw-email([fg]="fg", required, field="username", label="Email Address", [value]="companyInfo.email")
         //-password
-        .m-15(flex-none)
+        .m-r-15.m-l-15.m-t-15(flex)
             bw-password([fg]="fg", field="password", label="Password")
-        //-action
-        .m-t-15(flex-none)
-            bw-button#sign-in(color="blue", title="SIGN IN", class="normal", [rounded]="true", (clicked)="signIn($event)",
-                        [disabled]="!canSignIn", type="submit" )
-        //-link to signup
-        .m-t-15(flex-none)
-            a(href="#", (click)="goToSignup($event)") I do not have an account
-        .m-t-15(flex-none)
-            a(href="#", (click)="forgotPassword($event)") Forgot Password
         //-auth error message
-        .m-t-15.text-center(flex-none, [hidden]="!authError")
-            #invalid-credentials.error-message.c-red.animated([ngClass]="{'shake': authError}") {{authErrorMessage}}
+        .w-100.text-left(flex, [hidden]="!authError")
+            #invalid-credentials.error-message.c-red.animated([ngClass]="{'shake': authError}") {{authErrorMessage}}    
+        //-Forgot
+        .w-100.m-t-10.m-r-15.text-right(flex)
+            a(href="#", (click)="forgotPassword($event)") Forgot Password
+        //-action
+        .w-100.m-t-15.m-r-15.m-l-15.text-center(flex)
+            bw-button#sign-in(color="blue", title="SIGN IN", class="normal", [rounded]="true", (clicked)="signIn($event)",
+                        [disabled]="!canSignIn", type="submit", [block]="true" )
+        //-link to signup
+        .w-100.m-t-15.m-r-15.m-l-15.text-center(flex)
+            bw-button#sign-in(color="white", title="CREATE ECCOUNT", class="normal", [rounded]="true", (clicked)="goToSignup($event)", [block]="true" )
+               

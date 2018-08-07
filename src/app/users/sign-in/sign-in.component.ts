@@ -64,8 +64,6 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
     mobile: boolean;
     companyInfo: ICompanyInfo;
 
-    // backdrop = 'false';
-
     private _subscription: Subscription[] = [];
 
     constructor(browser: BrowserService,
@@ -88,8 +86,7 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
         CommonService.unsubscribe(this._subscription);
     }
 
-    goToSignup(e: Event) {
-        e.preventDefault();
+    goToSignup(e: Event): void {
         this.signupClicked.emit('signUp');
     }
 

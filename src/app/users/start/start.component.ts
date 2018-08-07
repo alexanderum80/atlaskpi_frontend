@@ -26,7 +26,7 @@ export class StartComponent implements OnInit {
     accountCreationStarted = false;
     accountCreated = false;
 
-    private _activeView = ViewsMap.Signup;
+    private _activeView = ViewsMap.Signin;
 
     constructor(browser: BrowserService,
                 private _authSvc: AuthenticationService,
@@ -37,17 +37,14 @@ export class StartComponent implements OnInit {
 
     ngOnInit() {
         this._authSvc.logout();
-        const previousCredentials = this._localStorageSvc.getCompanyInfo() !== null;
         const hostname = this._window.nativeWindow.location.hostname;
 
         this.subdomainPresent = hostname.split('.').length > 3 && isNaN(hostname[0] as any);
 
-        if (this.subdomainPresent || previousCredentials) {
-            this.signUpPosition = 'back';
-            this.signInPosition = 'front';
-            this._activeView = ViewsMap.Signin;
-            this.flipped = true;
-        }
+        this.signUpPosition = 'back';
+        this.signInPosition = 'front';
+        this._activeView = ViewsMap.Signin;
+        this.flipped = true;
     }
 
     signupClicked(item?: any) {
