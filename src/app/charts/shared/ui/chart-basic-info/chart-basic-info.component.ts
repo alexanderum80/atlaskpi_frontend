@@ -23,7 +23,7 @@ import { FrequencyTable } from '../../../../shared/models/frequency';
 import { BrowserService } from '../../../../shared/services/browser.service';
 import { ChartModel } from '../../models';
 import { ChartGalleryService } from '../../services/';
-import { IDateRangeItem } from './../../../../shared/models/date-range';
+import { IDateRangeItem, parseComparisonDateRange } from './../../../../shared/models/date-range';
 import { chartsGraphqlActions } from './../../graphql/charts.graphql-actions';
 import { IKPI } from '../../../../shared/domain/kpis/kpi';
 import { ChartBasicInfoViewModel } from './chart-basic-info.viewmodel';
@@ -218,7 +218,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
                    .subscribe(v => {
                         that._getGroupingInfo();
                         const kpi_id = this.fg.value.kpi;
-                        this._apolloService.networkQuery < SelectionItem > (kpiOldestDateQuery, {id: kpi_id })
+                        this._apolloService.networkQuery < string > (kpiOldestDateQuery, {id: kpi_id })
                         .then(kpis => {
                             this._updateComparisonData(kpis.getKpiOldestDate);
                         });
@@ -415,27 +415,30 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         this.vm.comparisonList = this.comparisonList;
     }
 
-    private _updateComparisonData(yearOldestDate: number) {
+    private _updateComparisonData(yearOldestDate: string) {
 
         if (this.fg.value.predefinedDateRange === '') { return; }
-        const thisYear = moment().year();
-        if (!yearOldestDate || yearOldestDate.toString() === thisYear.toString()) { return; }
+        if (!yearOldestDate || yearOldestDate === moment().year().toString()) { return; }
 
         this.comparisonList = [];
         const dateRange = this.dateRanges.find(d => d.dateRange.predefined === this.fg.value.predefinedDateRange);
-
-        const yearsBack = thisYear - yearOldestDate;
+        const itemsComparison = [this.fg.value.predefinedDateRange, ''];
         let newItem: SelectionItem = {};
-        for (let i = 0; i <= yearsBack ; i++) {
-            newItem = {
-                id: dateRange.comparisonItems[i].key,
-                title: dateRange.comparisonItems[i].key === 'previousPeriod'
-                ? dateRange.comparisonItems[i].value
-                : dateRange.comparisonItems[i].value + ' (' + (thisYear - i) + ')',
-                selected: false,
-                disabled: false
-            };
-            this.comparisonList.push(newItem);
+        for (let i = 0; i < dateRange.comparisonItems.length ; i++) {
+            itemsComparison[1] = dateRange.comparisonItems[i].key;
+            const yearofDateFrom = parseComparisonDateRange(<any>itemsComparison, itemsComparison[0]).from.getFullYear();
+            if (yearofDateFrom >= parseInt(yearOldestDate, 0)) {
+                const thisTitle = dateRange.comparisonItems[i].value.includes('year')
+                ? dateRange.comparisonItems[i].value + ' (' + yearofDateFrom + ')'
+                : dateRange.comparisonItems[i].value;
+                newItem = {
+                    id: dateRange.comparisonItems[i].key,
+                    title: thisTitle,
+                    selected: false,
+                    disabled: false
+                };
+                this.comparisonList.push(newItem);
+            }
         }
         this.vm.comparisonList = this.comparisonList;
     }
