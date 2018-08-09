@@ -24,6 +24,6 @@ form#login-form(flex, [formGroup]="fg", (ngSubmit)="signIn($event)")
             bw-button#sign-in(color="blue", title="SIGN IN", class="normal", [rounded]="true", (clicked)="signIn($event)",
                         [disabled]="!canSignIn", type="submit", [block]="true" )
         //-link to signup
-        .w-100.m-t-15.m-r-15.m-l-15.text-center(flex)
-            bw-button#sign-in(color="white", title="CREATE ECCOUNT", class="normal", [rounded]="true", (clicked)="goToSignup($event)", [block]="true" )
+        .w-100.m-t-10.m-r-15.m-l-15.text-center(flex)
+            bw-button#sign-up(color="white", title="CREATE ACCOUNT", class="normal", [rounded]="true", (clicked)="goToSignup($event)", [block]="true" )
                

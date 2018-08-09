@@ -19,12 +19,16 @@
         .email,
         .password,
         button {
-            margin-top: 35px !important;
+            margin-top: 5px !important;
             @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
                 margin-top: 0 !important;
             }
         }
+        #sign-in button{
+            margin-top: 35px !important;
+        }
     }
+    
     @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
         padding: 0;
     }
