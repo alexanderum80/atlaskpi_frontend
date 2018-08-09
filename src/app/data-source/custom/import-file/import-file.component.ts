@@ -14,7 +14,7 @@ const addCustomMutation = require('graphql-tag/loader!../custom-datasource.conne
   templateUrl: './import-file.component.pug',
   styleUrls: ['./import-file.component.scss']
 })
-export class ImportFileComponent implements OnInit {
+export class ImportFileComponent {
   @Output() dialogResult = new EventEmitter<DialogResult>();
 
   // csv
@@ -42,9 +42,6 @@ export class ImportFileComponent implements OnInit {
   ) {
     this.excelImagePath = '../../../assets/img/datasources/CustomExcel.DataSource.MainImage.png';
     this.csvImagePath = '../../../assets/img/datasources/csv.png';
-  }
-
-  ngOnInit() {
   }
 
   connect() {
