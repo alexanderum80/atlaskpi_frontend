@@ -7,17 +7,14 @@ import { CustomFormViewModel } from '../../custom-datasource.viewmodel';
   templateUrl: './schema-form.component.pug',
   styleUrls: ['./schema-form.component.scss']
 })
-export class SchemaFormComponent implements OnInit {
+export class SchemaFormComponent {
   @Input() schema: FormArray;
 
   constructor(
     private vm: CustomFormViewModel
   ) { }
 
-  ngOnInit() {
-  }
-
-  addSchema(): void {
+   addSchema(): void {
     const that = this;
     that.schema.push(new FormGroup({}) as any);
   }

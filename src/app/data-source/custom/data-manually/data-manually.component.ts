@@ -13,7 +13,7 @@ const addCustomMutation = require('graphql-tag/loader!../custom-datasource.conne
   templateUrl: './data-manually.component.pug',
   styleUrls: ['./data-manually.component.scss']
 })
-export class DataManuallyComponent implements OnInit {
+export class DataManuallyComponent {
   @Output() dialogResult = new EventEmitter<DialogResult>();
 
   blankTablePath: string;
@@ -28,10 +28,7 @@ export class DataManuallyComponent implements OnInit {
     this.tablePath = '../../../../assets/img/datasources/table.png';
   }
 
-  ngOnInit() {
-  }
-
-  selectTableType(tableOption) {
+   selectTableType(tableOption) {
     this.vm.setSelectedTableOption(tableOption);
     if (tableOption === 'blank_table') {
       this.vm.initialize(this.vm.getDefaultInputSchema());
