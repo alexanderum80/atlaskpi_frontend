@@ -6,7 +6,7 @@ bw-card.chart-view.full-height.chart-card.p-relative([depth]="1", [class.maximiz
         kpi-table-mode(*ngIf="tableMode", (done)="closeOverlay($event)")
     bw-card-header([padded]="true", color="white")
         .m-b-10.chart-title([attr.title]="title") {{title}}
-        bw-actions.m-r-30([actionItems]="compareActions", (actionClicked)="actionClicked($event)")
+        bw-actions.m-r-30(*ngIf="loadedComparisonData", [actionItems]="compareActions", (actionClicked)="actionClicked($event)")
         bw-actions([actionItems]="actionItems", (actionClicked)="actionClicked($event)")
         
     bw-card-body([padded]="true")

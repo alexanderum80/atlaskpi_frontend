@@ -43,6 +43,8 @@ const ChartQuery = gql`
      }
 `;
 
+const kpiOldestDateQuery = require('graphql-tag/loader!../shared/ui/chart-basic-info/kpi-get-oldestDate.gql');
+
 export interface IChartTreeNode {
     id: string;
     parent: IChartTreeNode;
@@ -146,7 +148,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
 
     comparisonDateRange: any[] = [];
     comparisonValue: string[] = [];
-
+    loadedComparisonData = false;
     compareActions: MenuItem[] = [{
         id: 'comparison',
         icon: 'swap',
@@ -1211,21 +1213,29 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 }
                 return;
             }
-
-            const childrens = dateRange.comparisonItems.map(item => {
-                return {
+            const kpi_id = this.chartData.kpis[0]._id;
+            this._apolloService.networkQuery < string > (kpiOldestDateQuery, {id: kpi_id })
+            .then(kpis => {
+                compareAction.children = this.updateComparisonData(dateRange , kpis.getKpiOldestDate);
+                this.loadedComparisonData = true;
+            });
+        }
+    }
+    private updateComparisonData(dateRange: any, yearOldestDate: string): any[] {
+        const itemsComparison = [dateRange, ''];
+        const childrens = [];
+        dateRange.comparisonItems.map(item => {
+            itemsComparison[1] = item.key;
+            const yearofDateFrom = parseComparisonDateRange(<any>itemsComparison, itemsComparison[0]).from.getFullYear();
+            if (yearofDateFrom >= parseInt(yearOldestDate, 0)) {
+                childrens.push({
                     id: 'comparison',
                     title: item.value,
                     payload: item.key
-                };
-            });
-
-            if (compareAction) {
-                compareAction.children = childrens.length > 0 ?
-                childrens :
-                emptyChildrens;
+                });
             }
-        }
+        });
+        return childrens.length > 0 ? childrens : undefined;
     }
 
     private _handleComparisonAction(item: any) {
