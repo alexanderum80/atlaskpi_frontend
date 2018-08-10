@@ -175,5 +175,10 @@ $logoHeight: 60px;
                 opacity: 0;
             }
         }
+        //To fix controllers going outside sign cards when on landscape
+        @media only screen and (min-width: 565px) and (max-width: 815px) and (orientation: landscape) {
+            margin-top: 0 !important;
+            height: 150vh !important;
+        }
     }
 }
