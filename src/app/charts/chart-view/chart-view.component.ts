@@ -287,6 +287,11 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                     this.formatSortingCrit = this.chartData.sortingCriteria.replace(scValue[i], ' ' + scValue[i].toLocaleLowerCase())
                 }
             }
+
+            if (!this.formatSortingCrit) {
+
+                this.formatSortingCrit = scValue;
+            }
         }
 
         if (this.chartData && this.chartData.chartDefinition && this.chartData.chartDefinition.chart) {

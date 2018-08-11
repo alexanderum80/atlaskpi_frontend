@@ -32,7 +32,7 @@ bw-card.chart-view.full-height.chart-card.p-relative([depth]="1", [class.maximiz
                     | THERE IS NO DATA AVAILABLE   
 
     .chart-description.animated(flex, *ngIf="showDescription", class="{{descriptionAnimation}}")
-        .chart-container(flex) 
+        .chart-container(flex, [class.chart-container-max]="maximized") 
             .chart-description-title.text-center.m-t-10.c-black
                 |   Details of chart and data modifications
             .chart-info.zmdi.zmdi-chart
