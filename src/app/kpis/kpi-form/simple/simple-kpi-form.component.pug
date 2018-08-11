@@ -113,7 +113,7 @@
                 div(layout="row", layout-align="end center")
                     //- save
                     div(flex-initial)
-                        bw-button(title="Save", icon="check", color="blue", (clicked)="save()", [disabled]="disableSave")
+                        bw-button(title="Save", icon="check", color="blue", (clicked)="save()", [disabled]="!valid")
 
                     //- cancel
                     div(flex-intial)

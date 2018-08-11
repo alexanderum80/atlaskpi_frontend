@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
@@ -13,6 +14,29 @@
             "outFiles": [
                 "${workspaceFolder}/dist/out-tsc/**/*.js"
             ]
+=======
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Launch Chrome",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:4200/",
+            "sourceMaps": true,
+            "webRoot": "${workspaceFolder}",
+            "runtimeArgs": [
+                "--remote-debugging-port=9222"
+            ],
+            "port": 9222
+        },
+        {
+            "type": "chrome",
+            "request": "attach",
+            "name": "Attach to Chrome",
+            "port": 9222,
+            "webRoot": "${workspaceFolder}"
+>>>>>>> e05f2e44f6eb1591de07e2cf86e702cf7919b3cf
         }
     ]
 }
