@@ -1,8 +1,10 @@
 form#login-form(flex, [formGroup]="fg", (ngSubmit)="signIn($event)")
-    .sign-in-container.h-100(layout="column", [class.mobile]="mobile")
+    .sign-in-container.h-100(
+        layout="column", layout-align="center center",
+        [class.mobile]="mobile")
         //-logo
-        div(flex)
-            img.m-25.logo(src='/assets/img/logos/logo.png')
+        .m-b-20(flex)
+            img.logo(src='/assets/img/logos/logo.png')
         
         //-company
         .m-r-15.m-l-15.m-t-15(*ngIf="requireCompanyName", flex)
