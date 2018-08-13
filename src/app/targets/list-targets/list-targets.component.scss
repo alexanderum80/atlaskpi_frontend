@@ -1,3 +1,9 @@
+.target-list {
+    .target-item {
+        cursor: pointer;
+        &.selected { background-color: white; }
+    }
+}
 
 
 button {
@@ -13,5 +19,5 @@ button {
 
 .list-item-tabular {
         margin-left: 20px;
-        margin-left:-10px;
+        // margin-left:-10px;
 }

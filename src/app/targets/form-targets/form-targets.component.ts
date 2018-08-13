@@ -1,7 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+
+import { ITarget } from '../shared/models/targets.model';
 import { FormTargetsViewModel } from './form-targets.viewmodel';
-import { ITargets } from '../shared/models/targets.model';
-import { SelectionItem } from '../../ng-material-components';
 
 @Component({
   selector: 'kpi-form-targets',
@@ -10,60 +10,55 @@ import { SelectionItem } from '../../ng-material-components';
   providers: [FormTargetsViewModel]
 })
 export class FormTargetsComponent implements OnInit {
-  @Input() model: ITargets;
+  @Input() model: ITarget;
   @Input() chart: any;
-  
-  basic: boolean = true;
-  milestone: boolean = false;
-  relatedUsers: boolean = false;
- 
+
+  tabIndex = 1;
+  private totalTabs = 3;
+
   constructor(public vm: FormTargetsViewModel) {
 
   }
 
   ngOnInit(): void {
-      this.vm.initialize(this.model);
-      this.vm.fg.controls['name'].setValue('test');
+    this.vm.initialize(this.model);
+    this.vm.fg.controls['name'].setValue('test');
   }
 
-  update(model: ITargets): void {
-      this.vm.update(model);
+  update(model: ITarget): void {
+    this.vm.update(model);
   }
 
-  toggleActive() {
-  }
-
-  switchTab(tab: any) {
-    switch(tab) {
-      case 'relatedUsers':
-        this.relatedUsers = true;
-        this.basic = false;
-        this.milestone = false;
-        break;
-      case 'milestone':
-        this.relatedUsers = false;
-        this.basic = false;
-        this.milestone = true;
-        break;
-      case 'basic':
-        this.relatedUsers = false;
-        this.basic = true;
-        this.milestone = false;
-        break;
+  setIndex(index: number) {
+    if (index < 1 && index > this.totalTabs) {
+      return;
     }
-  } 
 
-  moveTab(action: string) {
-    action === 'next' ?  this.actionNext() :  this.actionBack() ;  
+    this.tabIndex = index;
   }
 
-  private actionNext() {
-    this.basic ? this.relatedUsers = true : this.milestone = true;
+   activeIndex(index: number): boolean {
+    return this.tabIndex === index;
   }
 
-  private actionBack() {
-    this.milestone ? this.relatedUsers = true: this.basic = true;
+  goNext() {
+    if (this.tabIndex < this.totalTabs) {
+      this.tabIndex += 1;
+    }
   }
 
+  goBack() {
+    if (this.tabIndex > 1) {
+      this.tabIndex -= 1;
+    }
+  }
+
+  canGoBack() {
+    return this.tabIndex > 1;
+  }
+
+  canGoNext() {
+    return this.tabIndex < this.totalTabs;
+  }
 
 }

@@ -1,4 +1,4 @@
-export interface ITargets {
+export interface ITarget {
     _id: string;
     name: string;
     objetive: string;
@@ -10,6 +10,7 @@ export interface ITargets {
     nextDueDate: string;
     relatedUser: IRelatedUser;
     milestone: IMilestone;
+    selected?: boolean;
 }
 
 export interface IRelatedUser {

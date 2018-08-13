@@ -1,17 +1,28 @@
-div(flex, layout="row")
-    .m-t-40.m-r-10(flex="10")
-        i.zmdi.zmdi-gps 
-    .m-t-40(flex="80") TARGETS MANAGER
+.target-list.h-100(layout="column")
+    .m-20(flex-initial, layout="row")
+        .m-r-10(flex="10")
+            i.zmdi.zmdi-gps 
+        div(flex="80") TARGETS MANAGER
 
-div(layout="row", layout-wrap, layout-padding, *ngIf="vm.targetItems")
-    kpi-list-item-tabular.w-100(
-        *ngFor="let item of vm.targetItems",
-        [item]="item",
-        [actionItems]="vm.menuItems",
-        [tableRowTemplate]="tableRowTemplate",
-        (click)="itemClicked($event, item)",
-        (actionClicked)="actionClicked($event)")
+    .m-t-10(*ngIf="vm.targetItems", flex)
+        .target-item(*ngFor="let item of vm.targetItems", [class.selected]="item.selected")
+            kpi-list-item-tabular.w-100(
+                [item]="item",
+                [actionItems]="vm.menuItems",
+                [tableRowTemplate]="tableItem",
+                (click)="itemClicked($event, item)",
+                (actionClicked)="actionClicked($event)")
 
-button.btn.btn-float.waves-effect.bgm-blue((click)="add()")
-                    i.zmdi.zmdi-plus
+    button.btn.btn-float.waves-effect.bgm-blue((click)="add()")
+        i.zmdi.zmdi-plus
 
+ng-template(#tableItem, let-item="item")
+    //- image
+    .m-l-10(flex-initial)
+        img.m-t-10(*ngIf="item.imagePath", [src]="item.imagePath", [style.height.px]="35")
+    //- title & subtitle
+    div(flex)
+        .m-t-10.m-l-10 
+            h2.title {{ item.title }}
+            small {{ item.subtitle }}
+    

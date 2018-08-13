@@ -1,20 +1,14 @@
 // Angular Imports
+import { Injectable } from '@angular/core';
+
+import { MenuItem } from '../../ng-material-components';
+import { Field, ViewModel } from '../../ng-material-components/viewModels';
 import { IUserInfo } from '../../shared/models/user';
 import { UserService } from '../../shared/services/user.service';
-import {
-    Injectable
-} from '@angular/core';
+import { IListItem } from '../../shared/ui/lists/list-item';
+import { ITarget } from '../shared/models/targets.model';
 
 // App Code
-import {
-    Field,
-    ViewModel
-} from '../../ng-material-components/viewModels';
-import { IListItem } from '../../shared/ui/lists/list-item';
-import { ITargets } from '../shared/models/targets.model';
-import { MenuItem } from '../../ng-material-components';
-// import { MenuItem } from '../../dashboards/shared/models';
-
 
 interface IFilter {
     search: string;
@@ -22,7 +16,7 @@ interface IFilter {
 
 @Injectable()
 export class ListTargetsViewModel extends ViewModel<IFilter> {
-    private _targets: ITargets[] = [];
+    private _targets: ITarget[] = [];
     private _targetsItemList: IListItem[];
     protected _user: IUserInfo;
 
@@ -45,22 +39,17 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
         super(userService);
     }
 
-    get targets(): ITargets[] {
+    get targets(): ITarget[] {
         return this._targets;
     }
 
-    set targets(list: ITargets[]) {
+    set targets(list: ITarget[]) {
         if (list === this._targets) {
             return;
         }
 
         this._targets = list;
-        this._targetsItemList = this._targets.map(d => ({
-            id: d._id ,
-            imagePath: this.getImagen(d.active || true) || '',
-            title: d.name || 'Target Name',
-            subtitle: d.nextDueDate || Date.now.toString(),
-        }));
+        this._prepareTargetListItems();
     }
 
     @Field({ type: String })
@@ -74,11 +63,24 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
         return this._targetsItemList;
     }
 
-    getImagen(active) : string {
+    getImage(active): string {
         let img = './assets/img/targets/target_t.png';
         active ? img = './assets/img/targets/target_t.png' : img = './assets/img/targets/targe_g_t.png';
         return img;
     }
 
-   
+    selectTarget(item: IListItem) {
+        this._targetsItemList.forEach(t => t.selected = false);
+        item.selected = true;
+    }
+
+    private _prepareTargetListItems() {
+        this._targetsItemList = this._targets.map(d => ({
+            id: d._id ,
+            imagePath: this.getImage(d.active || true) || '',
+            title: d.name || 'Target Name',
+            subtitle: d.nextDueDate || Date.now.toString(),
+        }));
+    }
+
 }

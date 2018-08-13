@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ViewModel } from '../../ng-material-components/viewModels/view-model';
 import { Field } from '../../ng-material-components/viewModels';
-import { ITargets, IRelatedUser, IMilestone } from '../shared/models/targets.model';
+import { ITarget, IRelatedUser, IMilestone } from '../shared/models/targets.model';
 import { SelectionItem } from '../../ng-material-components';
 import { MilestonesViewModel } from '../../milestones/milestones.viewmodel';
 
 
-export class relatedUseViewModel extends ViewModel<IRelatedUser> {
+export class RelatedUseViewModel extends ViewModel<IRelatedUser> {
 
     @Field({ type: String })
     user: string;
@@ -22,7 +22,7 @@ export class relatedUseViewModel extends ViewModel<IRelatedUser> {
     }
 }
 
-export class  misteloneViewModel extends ViewModel<IMilestone> {
+export class  MilestoneViewModel extends ViewModel<IMilestone> {
     @Field({ type: String })
     description: string;
 
@@ -41,7 +41,7 @@ export class  misteloneViewModel extends ViewModel<IMilestone> {
 }
 
 @Injectable()
-export class FormTargetsViewModel extends ViewModel<ITargets> {
+export class FormTargetsViewModel extends ViewModel<ITarget> {
 
     constructor() {
         super(null);
@@ -108,7 +108,7 @@ export class FormTargetsViewModel extends ViewModel<ITargets> {
     @Field({ type: String })
     nextDueDate: string;
     
-    @Field({ type: relatedUseViewModel })
+    @Field({ type: RelatedUseViewModel })
     relatedUse: IRelatedUser;
 
     @Field({ type: MilestonesViewModel })
