@@ -502,7 +502,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                             const comparisonForDrillDown: string[] = that._drillDownSvc.getComparisonForDrillDown(
                                 that.comparisonValue, that.currentNode.dateRange
                             );
-
                             let frequency = that._drillDownSvc.getFrequencyType(this.category);
                             frequency = frequency ? (frequency === 'quarterly' ? 'monthly' : frequency) : null;
                             const chartQueryVariables = {
@@ -729,7 +728,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 that.drillUpAnimation = 'fadeInLeft';
             }, 500);
         }
-
+        this.comparisonValue = [];
         this._updateComparisonOptions();
     }
 

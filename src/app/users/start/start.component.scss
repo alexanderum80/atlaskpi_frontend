@@ -25,6 +25,7 @@ $logoHeight: 60px;
         }
     }
 
+   
 }
 
 .sign-container {
@@ -173,6 +174,11 @@ $logoHeight: 60px;
                 @include transition(all 1.2s ease-in-out 0s);
                 opacity: 0;
             }
+        }
+        //To fix controllers going outside sign cards when on landscape
+        @media only screen and (min-width: 565px) and (max-width: 815px) and (orientation: landscape) {
+            margin-top: 0 !important;
+            height: 150vh !important;
         }
     }
 }

@@ -49,6 +49,10 @@ export class DrillDownService {
 
     getDrillDownDateRange(category: any, dateRange: any, year?: any, frequency?: string) {
         const frequencyType = this.getFrequencyType(category);
+        
+        if (year == null) {
+            year = moment(new(Date)).format('YYYY')
+        }
 
         if (!frequencyType) {
             return [];

@@ -315,6 +315,10 @@
   dependencies:
     validate.js "*"
 
+"@types/xlsx@0.0.34":
+  version "0.0.34"
+  resolved "https://registry.yarnpkg.com/@types/xlsx/-/xlsx-0.0.34.tgz#2b49e60dcbd3553a6bf211a3af1a6f4c7cb2c8b9"
+
 "@types/zen-observable@^0.8.0":
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.8.0.tgz#8b63ab7f1aa5321248aad5ac890a485656dcea4d"
@@ -6448,6 +6452,15 @@ ts-node@~5.0.1:
     source-map-support "^0.5.3"
     yn "^2.0.0"
 
+<<<<<<< HEAD
+=======
+ts-xlsx@^0.0.11:
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/ts-xlsx/-/ts-xlsx-0.0.11.tgz#5a5fbcdd0f59d558c287af4c74fd5ea9a4bbeb39"
+  dependencies:
+    "@types/xlsx" "0.0.34"
+
+>>>>>>> origin/development
 tsickle@^0.30.0:
   version "0.30.0"
   resolved "https://registry.yarnpkg.com/tsickle/-/tsickle-0.30.0.tgz#7941146ae92933854a8742fa1047606c4536649b"
