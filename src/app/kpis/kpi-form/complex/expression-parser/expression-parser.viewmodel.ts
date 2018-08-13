@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { clone, flatten, uniq } from 'lodash';
 
-import { SelectionItem } from '../../../../ng-material-components/index';
+import { SelectionItem } from '../../../../ng-material-components';
 import { AggregateFunctions } from '../../../../shared/domain/kpis/aggregates';
 import { IDataSource } from '../../../../shared/domain/kpis/data-source';
 import { IKPI } from '../../../../shared/domain/kpis/kpi';

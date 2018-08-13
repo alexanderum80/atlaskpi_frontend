@@ -1,5 +1,5 @@
 import { IUserInfo } from '../../shared/models/user';
-import { IManageUsers } from '../../users/shared/models/index';
+import { IManageUsers } from '../../users/shared/models';
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { IAlert, IWidgetAlertUsers, WidgetAlertFormViewModel } from './widget-alert-form.viewmodel';
 import {FormGroup, FormArray, FormControl, FormBuilder } from '@angular/forms';

@@ -4,7 +4,7 @@ import {
 } from '../../../shared/models';
 import {
     OnDestroy
-} from '@angular/core/core';
+} from '@angular/core';
 import { ISidebarItemSearchResult, SidebarService } from '../sidebar.service';
 import { Component, Input, NgZone, OnInit } from '@angular/core';
 import { MenuItem } from '../../../ng-material-components';

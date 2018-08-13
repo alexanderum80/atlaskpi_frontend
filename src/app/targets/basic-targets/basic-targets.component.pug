@@ -1,0 +1,50 @@
+div(layout="column")
+    //- name
+    div(flex)
+        bw-text-box([fg]="fg", field="name", label="name", leftIcon="local-offer")   
+
+    div(flex, layout="row")
+        .m-r-10(flex="33")
+            bw-select-picker.w-80.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
+                                    [fg]="fg", 
+                                    field="objetive",
+                                    label="Objetive",
+                                    [items]="vm.objetiveList",
+                                    leftIcon="gps-dot"
+                                    )  
+
+        .text-center(flex="33")
+            bw-text-box.m-r-20([fg]="fg", field="value", label="value", leftIcon="edit")   
+
+        .m-t-25.text-center(flex="30")
+            bw-button.m-l-5(title="value", color="white", icon="number", (clicked)="cancel()")  
+            bw-button.m-r-5(title="pct.", color="white", icon="percent", (clicked)="cancel()")  
+    
+    div(flex, layout="row")
+        .m-r-10(flex="50")
+            bw-select-picker.w-80.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
+                                    [fg]="fg", 
+                                    field="period",
+                                    label="Target period:",
+                                    [items]="vm.periodList",
+                                    leftIcon="calendar-alt"
+                                    )
+        .m-l-10(flex="50")
+            bw-select-picker.w-80.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
+                                    [fg]="fg", 
+                                    field="baseOn",
+                                    label="Base on",
+                                    [items]="vm.baseOnList",
+                                    leftIcon="calendar-alt"
+                                    )
+
+    div(flex, layout="row")
+        .m-r-10(flex="50")
+            bw-checkbox.m-t-25(flex, flex-xs="100", flex-gt-sm="33",
+                                    [fg]="fg",
+                                    field="repeat",
+                                    label="Repeat monthly",
+                    )
+        .m-l-10(flex="50")
+            bw-toggle(*ngIf="actived", [fg]="fg", field="active", color="green", label="Active")
+

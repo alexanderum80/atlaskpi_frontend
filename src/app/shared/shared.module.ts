@@ -112,7 +112,8 @@ import { FileInputComponent } from './ui/file-input/file-input.component';
         TagsComponent,
         FileInputComponent,
         // pipes
-        MomentFormatPipe
+        MomentFormatPipe,
+        ListItemTabularComponent
     ],
     providers: [
         ApiService,

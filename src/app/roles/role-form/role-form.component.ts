@@ -1,4 +1,4 @@
-import { IPermission } from '../../permissions/shared/models/index';
+import { IPermission } from '../../permissions/shared/models';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
@@ -7,7 +7,7 @@ import { titleCase } from 'change-case';
 
 import { RolesService } from '../shared/services/roles.service';
 import { ApolloService } from '../../shared/services/apollo.service';
-import { IRole } from '../../users/shared/index';
+import { IRole } from '../../users/shared';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 
 const roleByNameQuery = require('graphql-tag/loader!../shared/graphql/role-by-name.gql');

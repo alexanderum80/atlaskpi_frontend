@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
 import { environment } from '../../../environments/environment';
-import { IUserToken } from '../models/index';
+import { IUserToken } from '../models';
 
 
 /* Naming NOTE

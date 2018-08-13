@@ -1,4 +1,4 @@
-import {IDateRange, parsePredifinedDate} from '../../../shared/models/index';
+import {IDateRange, parsePredifinedDate} from '../../../shared/models';
 import {isEmpty, uniq} from 'lodash';
 import * as moment from 'moment';
 

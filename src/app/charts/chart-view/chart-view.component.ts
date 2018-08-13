@@ -3,7 +3,7 @@ import { CompareOnFlyActivity } from '../../shared/authorization/activities/char
 import {
     ChangeSettingsOnFlyActivity,
 } from '../../shared/authorization/activities/charts/change-settings-on-fly-chart.activity';
-import { IChartDateRange } from '../../shared/models/index';
+import { IChartDateRange } from '../../shared/models';
 import { Subscription } from 'rxjs/Subscription';
 import { ViewTargetActivity } from '../../shared/authorization/activities/targets/view-target.activity';
 import { AddTargetActivity } from '../../shared/authorization/activities/targets/add-target.activity';

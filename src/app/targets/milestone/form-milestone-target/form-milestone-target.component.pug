@@ -1,0 +1,37 @@
+.h-100(flex, layout="column") 
+    div(flex, layout="row")
+        div(flex="80")
+            bw-text-area(flex, [fg]="fg", leftIcon="file-text"
+                                            label="Milestone Task",
+                                            field="description",
+                                            placeholder="Some description go here and this is another line.",
+                                            [autosize]="false",
+                                            , icon="receip")
+            //- lack status divisibility condition
+            div(layout="row")
+                .w-60.m-t-20
+                    bw-text-box([fg]="fg", field="completetionDate", label="Completetion Date",
+                     leftIcon="calendar-alt") 
+                .w-40.m-l-20(*ngIf="!status")
+                    bw-select-picker.m-l-20([fg]="fg", 
+                                    field="status",
+                                    label="Status",
+                                    [items]="vm.statusList",
+                                    leftIcon="hourglass-outline"
+                                    )   
+
+        div(flex="20")
+    
+    div(layout="row")
+        div(flex="80")
+            bw-select-picker(flex, flex-xs="100", flex-gt-sm="33",
+                                        [fg]="fg", 
+                                        field="responsiblePeople",
+                                        label="Responsible People",
+                                        [items]="vm.responsiblePeopleList",
+                                        leftIcon="accounts"
+                                        )  
+
+        div(flex="20")
+            bw-button.m-t-20(color="blue", [simple]="true", title="", icon="floppy", class="normal", (clicked)="save()")
+            bw-button.m-t-20(color="black", [simple]="true", title="", icon="close", class="normal", (clicked)="cancel()")

@@ -1,6 +1,6 @@
 import { FormGroup } from '@angular/forms';
 import { Component, Input, OnInit, EventEmitter } from '@angular/core';
-import { ChartGalleryService } from '../../services/';
+import { ChartGalleryService } from '../../services';
 import { IChartGalleryItem } from '../../models';
 
 @Component({

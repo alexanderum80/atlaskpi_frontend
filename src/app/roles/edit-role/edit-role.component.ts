@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { ModalComponent } from '../../ng-material-components';
 import { RoleFormComponent } from '../role-form/role-form.component';
-import { RoleModel } from '../shared/models/index';
+import { RoleModel } from '../shared/models';
 import { IRole } from '../shared/role';
 import { RolesService } from '../shared/services/roles.service';
 import { editRoleApi } from './graphqlActions/edit-role.actions';

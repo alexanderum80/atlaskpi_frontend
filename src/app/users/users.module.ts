@@ -1,5 +1,5 @@
 import { UsersLogComponent } from './users-log/users-log.component';
-import { RolesModule } from '../roles/index';
+import { RolesModule } from '../roles';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 

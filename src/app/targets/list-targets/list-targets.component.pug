@@ -1,0 +1,17 @@
+div(flex, layout="row")
+    .m-t-40.m-r-10(flex="10")
+        i.zmdi.zmdi-gps 
+    .m-t-40(flex="80") TARGETS MANAGER
+
+div(layout="row", layout-wrap, layout-padding, *ngIf="vm.targetItems")
+    kpi-list-item-tabular.w-100(
+        *ngFor="let item of vm.targetItems",
+        [item]="item",
+        [actionItems]="vm.menuItems",
+        [tableRowTemplate]="tableRowTemplate",
+        (click)="itemClicked($event, item)",
+        (actionClicked)="actionClicked($event)")
+
+button.btn.btn-float.waves-effect.bgm-blue((click)="add()")
+                    i.zmdi.zmdi-plus
+

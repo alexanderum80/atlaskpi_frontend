@@ -1,0 +1,12 @@
+.h-100(layout="column")
+  .text-center.opcity--40(flex)
+    img.h-icon(src="./assets/img/targets/icon_new.png")
+
+  .commit.opcity--40.m-t-40(flex)
+    | You no milestones create yet. Click add botton to 
+    | start adding your milestones for this target.
+
+  .text-center.m-t-20(flex)
+    bw-button(color="blue" title="Add milestone", icon="plus", class="normal", (clicked)="addEvent()", [rounded]="true")
+
+

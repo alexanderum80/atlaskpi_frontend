@@ -1,0 +1,15 @@
+
+kpi-new-milestones-target(*ngIf="!addMilestones && !editMilestones", (addEvent)="addEvent()")
+
+div(*ngIf="addMilestones || editMilestones") 
+    .title(*ngIf="vm.titleAction") {{vm.titleAction}}
+    .text-right.m-t-20
+        bw-button(color="blue", [simple]="true", title="Add Milestone", icon="plus", class="normal", (clicked)="addEvent()")
+   
+    .m-t-20
+        kpi-list-milestones-target
+    .m-t-20(*ngIf="addMilestones")
+        kpi-add-milestones-target([fg]="vm.fg", [vm]="vm")
+
+
+kpi-edit-milestones-target(*ngIf="editMilestones")

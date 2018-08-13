@@ -1,13 +1,13 @@
 import { AddConnectorActivity } from '../../shared/authorization/activities/data-sources/add-connector.activity';
 import { Activity } from '../../shared/authorization/decorators/component-activity.decorator';
-import { GoogleAnalyticsServerSideConnector } from './../shared/models/data-sources/google-analytics-server-side-connector';
+import { GoogleAnalyticsServerSideConnector } from '../shared/models/data-sources/google-analytics-server-side-connector';
 import { CallRailComponent } from '../call-rail/call-rail.component';
 import { CallRailsConnector } from '../shared/models/data-sources/callrails-connector';
-import { TwitterServerSideConnector } from './../shared/models/data-sources/twitter-server-side-connector';
-import { QuickBooksConnector } from './../shared/models/data-sources/quickbooks-online-connector';
+import { TwitterServerSideConnector } from '../shared/models/data-sources/twitter-server-side-connector';
+import { QuickBooksConnector } from '../shared/models/data-sources/quickbooks-online-connector';
 import { SquareConnector } from '../shared/models/data-sources/square-connector';
 import { Component, Input, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { environment } from './../../../environments/environment';
+import { environment } from '../../../environments/environment';
 import {
     Router
 } from '@angular/router';

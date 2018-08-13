@@ -1,5 +1,5 @@
-import { IPermission } from '../../permissions/shared/models/index';
-import { IUserInfo } from '../models/index';
+import { IPermission } from '../../permissions/shared/models';
+import { IUserInfo } from '../models';
 
 export interface IActivity {
     name: string;

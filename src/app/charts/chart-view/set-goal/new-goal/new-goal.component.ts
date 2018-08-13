@@ -12,7 +12,7 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import { ITarget } from '../shared/targets.interface';
-import { Apollo } from 'apollo-angular/';
+import { Apollo } from 'apollo-angular';
 import { FormGroup } from '@angular/forms';
 import { TargetService } from '../shared/target.service';
 import { targetApi } from './graphqlActions/new-goal-actions';

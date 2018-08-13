@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { Field, ViewModel } from '../../../ng-material-components/viewModels';
 import { IListItem } from '../../../shared/ui/lists/list-item';
 import { ISearchArgs } from '../../../shared/ui/lists/item-list/item-list.component';
-import { MenuItem } from '../../../dashboards/shared/models/index';
+import { MenuItem } from '../../../dashboards/shared/models';
 
 
 

@@ -1,0 +1,13 @@
+div(flex, layout="row")
+    .m-t-40.m-r-10(flex="10")
+        i.zmdi.zmdi-gps 
+    .title.m-t-40(flex="80") {{vmm.desciption}}
+
+div(layout="row", layout-wrap, layout-padding, *ngIf="vmm.milestoneItems")
+    kpi-list-item-tabular.w-100(
+        *ngFor="let item of vmm.milestoneItems",
+        [item]="item",
+        [actionItems]="vmm.menuItems",
+        [tableRowTemplate]="tableRowTemplate",
+        (click)="itemClicked($event, item)",
+        (actionClicked)="actionClicked($event)")

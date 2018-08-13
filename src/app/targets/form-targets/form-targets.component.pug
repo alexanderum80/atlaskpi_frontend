@@ -1,0 +1,24 @@
+bw-modal(size="lg", [openOnInit]="true", (onClosed)="cancel()", (onDismiss)="cancel()")
+    bw-modal-body
+        .h-100(flex, layout="row")
+            div(flex="30", clicked="toggleActive()")
+                kpi-list-targets
+
+            .bgm-white(flex="70")
+                .m-r-10.m-l-10
+                    bw-tab-set.w-80
+                        bwTab.m-10(heading="Basic", icon="Basic", (select)="switchTab('basic')",
+                            [active]="basic") 
+                            kpi-basic-targets([fg]="vm.fg", [vm]="vm")
+                        bwTab.m-10(heading="Related Users", icon="Related Users", (select)="switchTab('relatedUsers')",
+                            [active]="relatedUsers") 
+                            kpi-related-users([fg]="vm.fg", [vm]="vm")
+                        bwTab.m-10(heading="milestones", icon="milestones", (select)="switchTab('milestone')",
+                            [active]="milestone") 
+                            kpi-milestone([fg]="vm.fg", [vm]="vm")
+
+                .m-b-0.m-l-40.text-right
+                    bw-button.m-r-5(*ngIf="!basic", title="Back", color="blue", [simple]="true", icon="arrow-left", (clicked)="actionBack()")  
+                    bw-button.m-r-5(*ngIf="!milestone", title="Next", color="blue", [simple]="true", icon="arrow-right", (clicked)="actionNext()")  
+                    bw-button.m-r-5(*ngIf="vm.fg.valid", color="blue" title="Save", icon="floppy", class="normal", (clicked)="save()")
+                    bw-button.m-r-5(title="Cancel", color="black", [simple]="true", icon="close", (clicked)="cancel()")  

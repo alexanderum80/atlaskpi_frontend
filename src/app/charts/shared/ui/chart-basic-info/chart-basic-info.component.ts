@@ -20,9 +20,9 @@ import { PredefinedDateRanges } from '../../../../shared/models';
 import { FrequencyTable } from '../../../../shared/models/frequency';
 import { BrowserService } from '../../../../shared/services/browser.service';
 import { ChartModel } from '../../models';
-import { ChartGalleryService } from '../../services/';
-import { IDateRangeItem } from './../../../../shared/models/date-range';
-import { chartsGraphqlActions } from './../../graphql/charts.graphql-actions';
+import { ChartGalleryService } from '../../services';
+import { IDateRangeItem } from '../../../../shared/models/date-range';
+import { chartsGraphqlActions } from '../../graphql/charts.graphql-actions';
 import { IKPI } from '../../../../shared/domain/kpis/kpi';
 import { ChartBasicInfoViewModel } from './chart-basic-info.viewmodel';
 import {

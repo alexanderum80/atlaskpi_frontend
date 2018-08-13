@@ -1,10 +1,10 @@
-import { MaterialFormsModule } from '../ng-material-components/modules/forms/index';
+import { MaterialFormsModule } from '../ng-material-components/modules/forms';
 import { AgmCoreModule } from '@agm/core';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
 import { environment } from '../../environments/environment';
-import { MaterialUserInterfaceModule } from '../ng-material-components/index';
+import { MaterialUserInterfaceModule } from '../ng-material-components';
 import { LegendService } from './shared/legend.service';
 import { ShowMapComponent } from './show-map/show-map.component';
 import { ShowMapFormComponent } from './show-map-form/show-map-form.component';

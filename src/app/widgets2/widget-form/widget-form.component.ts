@@ -8,7 +8,7 @@ import {
     OnInit
 } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { SelectionItem } from '../../ng-material-components/index';
+import { SelectionItem } from '../../ng-material-components';
 import {
     IListChartResponse,
     IDateRangeResponse,

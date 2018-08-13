@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { WindowService } from '../shared/services/index';
+import { WindowService } from '../shared/services';
 
 @Component({
   selector: 'kpi-unauthorized',

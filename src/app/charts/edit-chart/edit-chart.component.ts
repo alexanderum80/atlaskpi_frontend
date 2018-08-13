@@ -15,7 +15,7 @@ import { SingleChartQuery, UpdateChartMutation } from '../shared/graphql/charts.
 import { ChartModel, IChart, IUpdateChartResponse, SingleChartResponse } from '../shared/models';
 import { ChartFormComponent } from '../shared/ui/chart-form';
 import Sweetalert from 'sweetalert2';
-import { SelectedChartsService } from '../shared/index';
+import { SelectedChartsService } from '../shared';
 import { ApolloService } from '../../shared/services/apollo.service';
 
 

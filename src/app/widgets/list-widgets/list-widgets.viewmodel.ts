@@ -1,6 +1,6 @@
 import { UserService } from '../../shared/services/user.service';
 import { IUserInfo } from '../../shared/models/user';
-import { IWidget } from '../shared/models/index';
+import { IWidget } from '../shared/models';
 import { ViewModel } from '../../ng-material-components/viewModels/view-model';
 import { Injectable } from '@angular/core';
 

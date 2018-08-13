@@ -1,4 +1,4 @@
-import { ApolloService } from './../../shared/services/apollo.service';
+import { ApolloService } from '../../shared/services/apollo.service';
 import { Apollo } from 'apollo-angular';
 import {
     IChartDateRange

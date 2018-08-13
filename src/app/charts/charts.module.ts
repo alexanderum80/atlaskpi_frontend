@@ -1,5 +1,5 @@
 import { TableModeService } from './chart-view/table-mode/table-mode.service';
-import { MilestonesModule } from '../milestones/index';
+import { MilestonesModule } from '../milestones';
 import { ChartViewDashboardComponent } from './chart-view-dashboard/chart-view-dashboard.component';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -8,10 +8,10 @@ import { ChartModule, HIGHCHARTS_MODULES } from 'angular-highcharts';
 
 import { ChartsRoutingModule } from './charts-routing.module';
 import { ChartViewComponent } from './chart-view/chart-view.component';
-import { SetGoalComponent } from './chart-view/set-goal/';
-import { EditChartFormatComponent } from './chart-view/edit-chart-format/';
-import { DownloadChartViewComponent } from './chart-view/download-chart-view/';
-import { TableModeComponent } from './chart-view/table-mode/';
+import { SetGoalComponent } from './chart-view/set-goal';
+import { EditChartFormatComponent } from './chart-view/edit-chart-format';
+import { DownloadChartViewComponent } from './chart-view/download-chart-view';
+import { TableModeComponent } from './chart-view/table-mode';
 
 // import { MyDatePickerModule } from 'mydatepicker';
 

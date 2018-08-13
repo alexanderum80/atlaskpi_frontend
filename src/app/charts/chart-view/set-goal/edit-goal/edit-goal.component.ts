@@ -3,7 +3,7 @@ import { TargetModel } from '../shared/models/target.model';
 import { MenuItem, SelectionItem, ModalComponent } from '../../../../ng-material-components';
 import { Component, EventEmitter, Input, Output, OnInit, ViewChild } from '@angular/core';
 import { ITarget } from '../shared/targets.interface';
-import { Apollo } from 'apollo-angular/';
+import { Apollo } from 'apollo-angular';
 import { FormGroup } from '@angular/forms';
 import { TargetService } from '../shared/target.service';
 import { targetApi } from './graphqlActions/edit-goal-actions';

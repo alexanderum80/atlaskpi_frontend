@@ -20,7 +20,7 @@ import {
 } from '@angular/core';
 import {
     AuthenticationService
-} from '../../shared/services/';
+} from '../../shared/services';
 import {
     Router
 } from '@angular/router';

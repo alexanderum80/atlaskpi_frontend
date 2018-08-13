@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Injectable } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { industriesGraphQl } from './industries.graphql';
-import { Industry } from '../../shared/models';
+import { Industry } from '../models';
 
 @Injectable()
 export class IndustriesService {

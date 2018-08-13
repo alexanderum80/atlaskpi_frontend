@@ -17,7 +17,7 @@ import { TwitterAuthService } from './shared/services/data-source-auth.services/
 import { YoutubeAuthService } from './shared/services/data-source-auth.services/youtube-auth.service';
 import { GoogleAnaliticsAuthService } from './shared/services/data-source-auth.services/google-analitics-auth.service';
 import { NoDatasourcesComponent } from './no-datasources/no-datasources.component';
-import { SharedModule } from '../shared/index';
+import { SharedModule } from '../shared';
 import { CallRailComponent } from './call-rail/call-rail.component';
 import { CallRailApikeyTooltipComponent } from './call-rail/call-rail-apikey-tooltip/call-rail-apikey-tooltip.component';
 import { CallRailAccountidTooltipComponent } from './call-rail/call-rail-accountid-tooltip/call-rail-accountid-tooltip.component';

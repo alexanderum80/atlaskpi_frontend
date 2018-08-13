@@ -5,8 +5,8 @@ import { Activity } from '../../shared/authorization/decorators/component-activi
 import { DeleteConnectorActivity } from '../../shared/authorization/activities/data-sources/delete-connector.activity';
 import { ListConnectedDataSourcesViewModel } from './list-connected-data-sources.viewmodel';
 import { ServerSideConnectorFactory } from '../shared/models/data-sources/server-side-connector.factory';
-import { ServerSideDataSourceService } from './../shared/services/data-source.service/server-side-data-sources.service';
-import { IServerSideOAuthConnector, getConnectorType } from './../shared/models/data-sources/server-side-oauth-connector.base';
+import { ServerSideDataSourceService } from '../shared/services/data-source.service/server-side-data-sources.service';
+import { IServerSideOAuthConnector, getConnectorType } from '../shared/models/data-sources/server-side-oauth-connector.base';
 import {
   Component,
   OnInit,
@@ -25,7 +25,7 @@ import { AutoUnsubscribe } from '../shared/auto-unsubscribe';
 import { Apollo } from 'apollo-angular';
 import SweetAlert from 'sweetalert2';
 import { CallRailComponent } from '../call-rail/call-rail.component';
-import { environment } from './../../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { Subscription } from 'rxjs/Subscription';
 
 const ServerSideConnectorsQuery = require('graphql-tag/loader!./list-server-side-connectors.query.gql');

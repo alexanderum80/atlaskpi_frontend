@@ -1,4 +1,4 @@
-import { WindowService } from '../../shared/services/index';
+import { WindowService } from '../../shared/services';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -15,8 +15,8 @@ import { DialogResult } from '../../shared/models/dialog-result';
 import { ApolloService } from '../../shared/services/apollo.service';
 import { CommonService } from '../../shared/services/common.service';
 import { IWidget } from '../shared/models';
-import { widgetsGraphqlActions } from './../shared/graphql/widgets.graphql-actions';
-import { WidgetsFormService } from './../widget-form/widgets-form.service';
+import { widgetsGraphqlActions } from '../shared/graphql/widgets.graphql-actions';
+import { WidgetsFormService } from '../widget-form/widgets-form.service';
 
 const getWidgetByTitle = require('graphql-tag/loader!../shared/graphql/get-widget-by-name.gql');
 

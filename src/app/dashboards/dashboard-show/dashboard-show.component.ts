@@ -20,10 +20,10 @@ import { IWidget, WidgetSizeEnum } from '../../widgets/shared/models';
 import { WidgetAlertComponent } from '../../widgets/widget-alert/widget-alert.component';
 import { FormatterFactory, yAxisFormatterProcess } from '../shared/extentions/chart-formatter.extention';
 import { IDashboard } from '../shared/models';
-import { chartsGraphqlActions } from './../../charts/shared/graphql/charts.graphql-actions';
-import { IDateRangeItem } from './../../shared/models/date-range';
-import { SocialWidgetBase } from './../../social-widgets/models/social-widget-base';
-import { WidgetSizeMap } from './../../widgets/shared/models/widget.models';
+import { chartsGraphqlActions } from '../../charts/shared/graphql/charts.graphql-actions';
+import { IDateRangeItem } from '../../shared/models/date-range';
+import { SocialWidgetBase } from '../../social-widgets/models/social-widget-base';
+import { WidgetSizeMap } from '../../widgets/shared/models/widget.models';
 
 
 const Highcharts = require('highcharts/js/highcharts');
