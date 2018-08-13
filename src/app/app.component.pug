@@ -9,12 +9,12 @@
     .main-content(flex)
         .hv-100(layout="column")
             header(*ngIf="(authenticated$ | async)  && !hideLayout", flex-none)
-                kpi-header([sideBarOpen]="true")
+                kpi-header([sideBarOpen]="true", [showHelpCenter]="showHelpCenter")
             .app-body.overflow-auto(flex)
                 router-outlet
                 footer
                     kpi-footer
 
-bw-modal(#userAgreementModal='', [backdrop]="agreementBackdrop")
+bw-modal(*ngIf="showAgreement", [openOnInit]="showAgreement" )
     bw-modal-body
         kpi-user-agreement(#userAgreement, [username]="username", (done)="signInAgreement($event)")

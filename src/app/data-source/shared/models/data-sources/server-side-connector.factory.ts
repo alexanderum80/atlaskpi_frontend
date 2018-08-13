@@ -1,3 +1,6 @@
+import { CustomTableConnector } from './custom-table-connector';
+import { CustomCSVConnector } from './custom-csv-connector';
+import { CustomExcelConnector } from './custom-excel-connector';
 import { GoogleAnalyticsServerSideConnector } from './google-analytics-server-side-connector';
 import { CallRailsConnector } from './callrails-connector';
 import { FacebookServerSideConnector } from './facebook-server-side-connector';
@@ -28,6 +31,12 @@ export class ServerSideConnectorFactory {
                 return new GoogleAnalyticsServerSideConnector();
             case ConnectorTypeEnum.CallRail:
                 return new CallRailsConnector();
+            case ConnectorTypeEnum.CustomExcel:
+                return new CustomExcelConnector();
+            case ConnectorTypeEnum.CustomCSV:
+                return new CustomCSVConnector();
+            case ConnectorTypeEnum.CustomTable:
+                return new CustomTableConnector();
             default:
                 return null;
         }

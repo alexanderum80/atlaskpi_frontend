@@ -31,6 +31,7 @@ import {UserAgreementComponent} from './users/user-agreement/user-agreement.comp
 import {ModalComponent} from './ng-material-components';
 import SweetAlert, {SweetAlertOptions} from 'sweetalert2';
 import { filter } from 'rxjs/operators';
+import { HeaderComponent } from '../app/navigation/header/header.component';
 
 const routesWithNoLayout = ['/users/forgot-password'];
 const VERSION_CHECK_TIMESPAN = 1800000;
@@ -97,14 +98,14 @@ const inDemoMode = require('graphql-tag/loader!./in-demo-mode.query.gql');
 })
 export class AppComponent implements OnDestroy {
     userAgreement: UserAgreementComponent;
+    header: HeaderComponent;
+    showAgreement = false;
 
-    @ViewChild('userAgreementModal') userAgreementModal: ModalComponent;
     @ViewChild('userAgreement') set content(content: any) {
         if (content) {
             this.userAgreement = content;
         }
     }
-
 
     restServer = environment.restServer;
 
@@ -113,6 +114,7 @@ export class AppComponent implements OnDestroy {
     currentUser = null;
     mobile: boolean;
     demoMode = false;
+    showHelpCenter = false;
 
     agreementBackdrop = 'static';
     username: string;
@@ -161,10 +163,18 @@ export class AppComponent implements OnDestroy {
 
     signInAgreement(accept: boolean): void {
         this._userAgreeSvc.setOwnerAgreed(accept);
-        this.userAgreementModal.close();
         if (!accept) {
             this._authService.logout();
         }
+        this.cancel();
+    }
+
+    cancel(): void  {
+        const that = this;
+        this.showAgreement = false;
+        this._store.changes$.subscribe(state => {
+            that.showHelpCenter = true;
+        });
     }
 
     private _processUserChanges(user: IUserInfo) {
@@ -174,9 +184,7 @@ export class AppComponent implements OnDestroy {
         if (user) {
             this._checkIfDemoMode();
             this.username = user.username;
-            if (this.userAgreementModal) {
-                this._checkUserAgreement(user.roles, user.ownerAgreed, user.profile.agreement);
-            }
+            this._checkUserAgreement(user.roles, user.ownerAgreed, user.profile.agreement);
         }
     }
 
@@ -274,7 +282,7 @@ export class AppComponent implements OnDestroy {
 
         // if the user is an owner show the agreement
         if (isOwner) {
-            this.userAgreementModal.open();
+            this.showAgreement = true;
             return;
         }
 

@@ -1,0 +1,33 @@
+.title {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.subtitle {
+    font-size: 12px;
+    margin-left: 15px;
+}
+
+p {
+    font-size: 12px !important;
+    margin-left: 30px;
+}
+
+.table-image {
+    margin-top: 20px;
+    height: 150px;
+    width: 200px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.button-panel {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    text-align: right;
+    border-top: 1px solid transparent;
+}
