@@ -13,6 +13,9 @@ form#login-form(flex, [formGroup]="fg", (ngSubmit)="signIn($event)")
         //-password
         .m-15(flex-none)
             bw-password([fg]="fg", field="password", label="Password")
+        //-auth error message
+        .m-t-15.text-center(flex-none, [hidden]="!authError")
+            #invalid-credentials.error-message.c-red.animated([ngClass]="{'shake': authError}") {{authErrorMessage}}
         //-action
         .m-t-15(flex-none)
             bw-button#sign-in(color="blue", title="SIGN IN", class="normal", [rounded]="true", (clicked)="signIn($event)",
@@ -22,6 +25,3 @@ form#login-form(flex, [formGroup]="fg", (ngSubmit)="signIn($event)")
             a(href="#", (click)="goToSignup($event)") I do not have an account
         .m-t-15(flex-none)
             a(href="#", (click)="forgotPassword($event)") Forgot Password
-        //-auth error message
-        .m-t-15.text-center(flex-none, [hidden]="!authError")
-            #invalid-credentials.error-message.c-red.animated([ngClass]="{'shake': authError}") {{authErrorMessage}}
