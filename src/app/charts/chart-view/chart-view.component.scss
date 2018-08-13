@@ -1,3 +1,4 @@
+
 .chart-view {
     transition: 1s all ease-in-out;
 }
@@ -162,7 +163,24 @@ div.chart-title {
     right: 2px;
     z-index: 1;
 }
+.runRate-container {
+    position: relative;
+    background-color: gray;
+}
+.runRate-box {
+    position: absolute;
+    left: auto;
+    right: 2px;
+    z-index: 1;
+    background-color: gray;
+}
 
+.content {
+   margin-top: 10px;
+   max-width: 440px;
+   max-height: 400px;
+   overflow: auto;
+}
 .chart-normal {
     height: 90% !important;
     width: 90% !important;
@@ -183,9 +201,6 @@ div.chart-title {
     height:100% !important;
 }
 
-.rr-div {
-    background-color: gray;
-}
 .rr-text {
     background-color: gray;
     color: white;
@@ -197,3 +212,4 @@ div.chart-title {
     background-color: gray;
     color: white;
 }
+

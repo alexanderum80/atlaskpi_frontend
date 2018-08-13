@@ -17,7 +17,7 @@ import { Chart } from 'angular-highcharts';
 import { Apollo, QueryRef } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { Options } from 'highcharts';
-import { get as _get, pick, isEmpty, isString, isNumber } from 'lodash';
+import { get as _get, pick, isEmpty, isString, isNumber, includes } from 'lodash';
 import * as moment from 'moment';
 
 import { FormatterFactory, yAxisFormatterProcess } from '../../dashboards/shared/extentions/chart-formatter.extention';
@@ -169,6 +169,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     neededFrequency = 0;
     totalFrequency = 0;
     isStack = false;
+    isComparison = false;
     originalChartData: any;
     runrateValues:IRunRate[] = [];
     totalrunrateValues = 0;
@@ -258,6 +259,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         this.isDateRangeInPresent = this.getDateRangeInPresent();
         this.isfrequencyToRunRate = this.getFrecuencyToRunRate();
         this.isTargets = this.getIsTargets();
+        this.isComparison = this.getIsComparison();
         this.AnalizeFrequency();
         this.getShowRunRate();
     }
@@ -399,12 +401,12 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                     return true;
                 }
             } else if (this.chartData.dateRange[0].predefined) {
-                if (this.chartData.dateRange[0].predefined === 'this year') {
+                if (this.chartData.dateRange[0].predefined.includes('this year')) {
                     return true;
                 }
             }
             return false;
-        } catch(err) {
+        } catch (err) {
             return false;
         }
     }
@@ -419,6 +421,10 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         const that = this;
         return that.chartData.targetList && that.chartData.targetList.length !== 0;
       }
+    getIsComparison(): boolean {
+        const that = this;
+        return that.chartData.comparison && that.chartData.comparison.length !== 0;
+    }
 
     getShowRunRate() {
         if (!this.isDateRangeInPresent || !this.isfrequencyToRunRate || !this.chartData.chartDefinition.series) {
@@ -769,7 +775,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 this.frequencyName = 'week';
                 this.neededFrequency = 12;
                 this.previousfreq = Number.parseInt(moment().subtract(1, 'week').format('W'));
-                this.totalFrequency = moment().weeksInYear();
+                this.totalFrequency = 52;
                 break;
             case frequencyEnum.Monthly:
                 this.frequencyName = 'month';
@@ -789,17 +795,24 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     async getDataRunRate() {
         if (this.enableRunRate) { return; }
         this.enableRunRate = true;
-        this.isStack = this.chartData.chartDefinition.plotOptions.column.stacking ? true : false;
+        if (this.chartData.chartDefinition.plotOptions.column) {
+            this.isStack = this.chartData.chartDefinition.plotOptions.column.stacking ? true : false;
+        } else if (this.chartData.chartDefinition.plotOptions.bar) {
+            this.isStack = this.chartData.chartDefinition.plotOptions.bar.stacking ? true : false;
+        }
         let series =  this.chartData.chartDefinition.series;
-        
+
         if (this.isTargets) {
             series = series.filter(t => !t.type);
+        }
+
+        if (this.isComparison) {
+            series = series.filter(s => s.stack === 'main');
         }
         if (this.neededFrequency > this.previousfreq) {
             // Must run the query changing
             // dateRange from, looking neededFrequency periods back in time
             this.vm.seriesBack = await this.getChartValuesBackinTime();
-            // aqui tengo q mezclar las 2 series
         }
         // Calculate Run Rate
         this.calculateRunRate(series, this.vm.seriesBack);
@@ -817,7 +830,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         this.runrateValues = [];
         let freqbackCount = 0
         if (!this._hasGrouping()) {
-            //calculate simple AVG
+            // calculate simple AVG
             for(let i = 0; i < this.previousfreq; i++) {
                 if (isNumber(series[0].data[i])) {
                     total += series[0].data[i];
@@ -827,7 +840,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 seriesBack[0].data.map(d =>{
                     if (isNumber(d)) {
                         freqbackCount += 1;
-                        totalBack =+ d;
+                        totalBack += d;
                     }
                 });
             }
@@ -837,16 +850,16 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 colorIndex: series[0]._colorIndex,
                 data: avgValue
             });
-            this.totalrunrateValues += avgValue
+            this.totalrunrateValues += avgValue;
         } else {
-            //calculate AVG by serie
+            // calculate AVG by serie
             series.forEach(s => {
                 total = 0;
                 totalBack = 0;
                 freqbackCount = 0;
                 for(let i = 0; i < this.previousfreq; i++) {
                     if (isNumber(s.data[i])) {
-                        total += s.data[i];    
+                        total += s.data[i];
                     }
                 }
                 if (seriesBack) {
@@ -855,9 +868,9 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                         fs.data.map(d =>{
                             if (isNumber(d)) {
                                 freqbackCount += 1;
-                                totalBack =+ d;
+                                totalBack += d;
                             }
-                        }); 
+                        });
                     });
                 }
                 avgValue = (total + totalBack) / (this.previousfreq + freqbackCount);
@@ -869,11 +882,11 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 this.totalrunrateValues += avgValue;
             });
             this.vm.runRateList = this.runrateValues;
-        } 
+        }
     }
 
-    AddSeriesRunRate(runRateData:IRunRate[]) {
-        
+    AddSeriesRunRate(runRateData: IRunRate[]) {
+
         if (!this.chartData.groupings || (this.chartData.groupings && this.isStack)) {
             let totaldata = 0;
             runRateData.map(rr => {
@@ -938,7 +951,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
           comparison: this.chartData.comparison,
           frequency: this.chartData.frequency,
           isDrillDown: false
-        }
+        };
         return new Promise((resolve, reject) => {
             this._apolloService.networkQuery<ChartResponse>(ChartQuery, { id: that.chartData._id, input: dataInput })
             .then(data => {
