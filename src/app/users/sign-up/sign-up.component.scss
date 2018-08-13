@@ -64,6 +64,19 @@
     .authorization-form {
         min-height: 200px;
     }
+
+    @media screen and (min-width: 480px) and (max-width:824px) {
+        img {
+            height: 35px !important;
+        }
+    }
+
+    @media screen and (min-width: 567px) and (max-width:568px) {
+        img {
+            height: 40px !important;
+            margin-bottom: 15px !important;
+        }
+    }
 }
 
 .lead-created-container {
