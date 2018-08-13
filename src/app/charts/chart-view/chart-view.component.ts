@@ -1,3 +1,4 @@
+import { predefinedColors } from './../shared/ui/chart-format-info/material-colors';
 import { DownloadChartActivity } from '../../shared/authorization/activities/charts/download-chart.activity';
 import { CompareOnFlyActivity } from '../../shared/authorization/activities/charts/compare-on-fly-chart.activity';
 import {
@@ -8,8 +9,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { ViewTargetActivity } from '../../shared/authorization/activities/targets/view-target.activity';
 import { AddTargetActivity } from '../../shared/authorization/activities/targets/add-target.activity';
 import { TableModeService } from './table-mode/table-mode.service';
-import { ToSelectionItemList } from '../../shared/extentions';
-import { parseComparisonDateRange } from '../../shared/models';
+import { parseComparisonDateRange, parsePredifinedDate } from '../../shared/models';
 import { MilestoneService } from '../../milestones/shared/services/milestone.service';
 import { TargetService } from './set-goal/shared/target.service';
 import { Component, Input, OnDestroy, OnInit, ViewChild, AfterContentInit } from '@angular/core';
@@ -17,7 +17,7 @@ import { Chart } from 'angular-highcharts';
 import { Apollo, QueryRef } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { Options } from 'highcharts';
-import { get as _get, pick, isNull, isUndefined, isEmpty, isString } from 'lodash';
+import { get as _get, pick, isEmpty, isString, isNumber, includes } from 'lodash';
 import * as moment from 'moment';
 
 import { FormatterFactory, yAxisFormatterProcess } from '../../dashboards/shared/extentions/chart-formatter.extention';
@@ -42,6 +42,14 @@ const ChartQuery = gql`
         chart(id: $id, input: $input)
      }
 `;
+
+export enum frequencyEnum {
+    Daily = 'daily',
+    Weekly = 'weekly',
+    Monthly = 'monthly',
+    Quartely = 'quarterly',
+    Yearly = 'yearly'
+  }
 
 export interface IChartTreeNode {
     id: string;
@@ -97,6 +105,11 @@ export interface IChartVariable {
 export interface ChartResponse {
     chart: string;
 }
+export interface IRunRate {
+    name: string;
+    colorIndex: number;
+    data: number;
+}
 
 @Component({
     selector: 'kpi-chart-view',
@@ -146,6 +159,20 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
 
     comparisonDateRange: any[] = [];
     comparisonValue: string;
+    isDateRangeInPresent = false;
+    isfrequencyToRunRate = false;
+    isTargets = false;
+    iscollapsed = true;
+    enableRunRate = false;
+    frequencyName = '';
+    previousfreq = 0;
+    neededFrequency = 0;
+    totalFrequency = 0;
+    isStack = false;
+    isComparison = false;
+    originalChartData: any;
+    runrateValues:IRunRate[] = [];
+    totalrunrateValues = 0;
 
     compareActions: MenuItem[] = [{
         id: 'comparison',
@@ -182,6 +209,11 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 id: 'set-target',
                 title: 'Targets',
                 icon: 'check'
+            },
+            {
+                id: 'run-rate',
+                title: 'Run Rate',
+                icon: 'trending-up'
             },
             {
                 id: 'table-mode',
@@ -224,6 +256,12 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             this.seeChartInfoActivity, this.compareOnFlyActivity,
             this.downloadChartActivity
         ]);
+        this.isDateRangeInPresent = this.getDateRangeInPresent();
+        this.isfrequencyToRunRate = this.getFrecuencyToRunRate();
+        this.isTargets = this.getIsTargets();
+        this.isComparison = this.getIsComparison();
+        this.AnalizeFrequency();
+        this.getShowRunRate();
     }
 
     ngAfterContentInit() {
@@ -351,6 +389,50 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         }, 1000);
     }
 
+    getDateRangeInPresent(): boolean {
+        try {
+            if (!this.chartData.dateRange) { return false }
+            if (this.chartData.dateRange[0].custom.from && this.chartData.dateRange[0].custom.to) {
+                const dateRange = parsePredifinedDate('this year');
+                const from: Date = this.chartData.dateRange[0].custom.from;
+                const to: Date = this.chartData.dateRange[0].custom.to;
+                if (from >= dateRange.from && to <= dateRange.to) {
+                    // Custom Date Range is in present
+                    return true;
+                }
+            } else if (this.chartData.dateRange[0].predefined) {
+                if (this.chartData.dateRange[0].predefined.includes('this year')) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    getFrecuencyToRunRate(): boolean {
+        return this.chartData.frequency === 'quarterly' ||
+        this.chartData.frequency === 'monthly' ||
+        this.chartData.frequency === 'weekly' ;
+    }
+
+    getIsTargets(): boolean {
+        const that = this;
+        return that.chartData.targetList && that.chartData.targetList.length !== 0;
+      }
+    getIsComparison(): boolean {
+        const that = this;
+        return that.chartData.comparison && that.chartData.comparison.length !== 0;
+    }
+
+    getShowRunRate() {
+        if (!this.isDateRangeInPresent || !this.isfrequencyToRunRate || !this.chartData.chartDefinition.series) {
+            this._commonService.disableChildrenActionItems(
+                this.actionItems, ['run-rate']);
+        }
+    }
+
     ngOnDestroy() {
         this.chartData = null;
         console.log(`chart ${this.title} destroyed`);
@@ -415,6 +497,16 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         });
 
         this.isDataOnFly = true;
+    }
+
+    closeRunRate() {
+        this.chartSubscription.refetch({
+            id: this.chartData._id
+        }).then(({ data }) => {
+            this.enableRunRate = false;
+            this.chartData = JSON.parse(data.chart);
+            this.processChartUpdate(data.chart);
+        });
     }
 
     closeSettingOnFly() {
@@ -663,7 +755,9 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 this.getChart();
                 this.subscribeToChartUpdates();
                 break;
-
+            case 'run-rate':
+                this.getDataRunRate();
+                break;
             case 'download-chart':
                 this._resetOverlayStyle();
                 this.overlay.toggle();
@@ -673,6 +767,200 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 return;
 
         }
+    }
+
+    AnalizeFrequency() {
+        switch (this.chartData.frequency) {
+            case frequencyEnum.Weekly:
+                this.frequencyName = 'week';
+                this.neededFrequency = 12;
+                this.previousfreq = Number.parseInt(moment().subtract(1, 'week').format('W'));
+                this.totalFrequency = 52;
+                break;
+            case frequencyEnum.Monthly:
+                this.frequencyName = 'month';
+                this.neededFrequency = 3;
+                this.previousfreq = Number.parseInt(moment().subtract(1, 'month').format('M'));
+                this.totalFrequency = 12;
+                break;
+            case frequencyEnum.Quartely:
+                this.frequencyName = 'quarter';
+                this.neededFrequency = 1;
+                this.previousfreq = Number.parseInt(moment().subtract(1, 'quarter').format('Q'));
+                this.totalFrequency = 4;
+                break;
+        }
+    }
+
+    async getDataRunRate() {
+        if (this.enableRunRate) { return; }
+        this.enableRunRate = true;
+        if (this.chartData.chartDefinition.plotOptions.column) {
+            this.isStack = this.chartData.chartDefinition.plotOptions.column.stacking ? true : false;
+        } else if (this.chartData.chartDefinition.plotOptions.bar) {
+            this.isStack = this.chartData.chartDefinition.plotOptions.bar.stacking ? true : false;
+        }
+        let series =  this.chartData.chartDefinition.series;
+
+        if (this.isTargets) {
+            series = series.filter(t => !t.type);
+        }
+
+        if (this.isComparison) {
+            series = series.filter(s => s.stack === 'main');
+        }
+        if (this.neededFrequency > this.previousfreq) {
+            // Must run the query changing
+            // dateRange from, looking neededFrequency periods back in time
+            this.vm.seriesBack = await this.getChartValuesBackinTime();
+        }
+        // Calculate Run Rate
+        this.calculateRunRate(series, this.vm.seriesBack);
+        // Add the Series
+        this.AddSeriesRunRate(this.runrateValues);
+        // Refresh the chart
+        this.processChartUpdate(JSON.stringify(this.chartData));
+    }
+
+    calculateRunRate(series: any[], seriesBack: any[]) {
+        let total = 0;
+        let totalBack = 0
+        let  avgValue = 0;
+        this.totalrunrateValues = 0;
+        this.runrateValues = [];
+        let freqbackCount = 0
+        if (!this._hasGrouping()) {
+            // calculate simple AVG
+            for(let i = 0; i < this.previousfreq; i++) {
+                if (isNumber(series[0].data[i])) {
+                    total += series[0].data[i];
+                }
+            }
+            if (seriesBack) {
+                seriesBack[0].data.map(d =>{
+                    if (isNumber(d)) {
+                        freqbackCount += 1;
+                        totalBack += d;
+                    }
+                });
+            }
+            avgValue = (total + totalBack) / (this.previousfreq + freqbackCount);
+            this.runrateValues.push({
+                name: series[0].name,
+                colorIndex: series[0]._colorIndex,
+                data: avgValue
+            });
+            this.totalrunrateValues += avgValue;
+        } else {
+            // calculate AVG by serie
+            series.forEach(s => {
+                total = 0;
+                totalBack = 0;
+                freqbackCount = 0;
+                for(let i = 0; i < this.previousfreq; i++) {
+                    if (isNumber(s.data[i])) {
+                        total += s.data[i];
+                    }
+                }
+                if (seriesBack) {
+                    const seriesFilt = seriesBack.filter(sf => sf.name === s.name);
+                    seriesFilt.map(fs => {
+                        fs.data.map(d =>{
+                            if (isNumber(d)) {
+                                freqbackCount += 1;
+                                totalBack += d;
+                            }
+                        });
+                    });
+                }
+                avgValue = (total + totalBack) / (this.previousfreq + freqbackCount);
+                this.runrateValues.push({
+                    name: s.name,
+                    colorIndex: s._colorIndex,
+                    data: avgValue
+                });
+                this.totalrunrateValues += avgValue;
+            });
+            this.vm.runRateList = this.runrateValues;
+        }
+    }
+
+    AddSeriesRunRate(runRateData: IRunRate[]) {
+
+        if (!this.chartData.groupings || (this.chartData.groupings && this.isStack)) {
+            let totaldata = 0;
+            runRateData.map(rr => {
+                totaldata += rr.data;
+            });
+            const dataTMP = [];
+            for (let t = 0; t < this.previousfreq; t++) {
+                dataTMP.push(null);
+            }
+            for (let t = this.previousfreq ; t <= this.totalFrequency - 1; t++) {
+                dataTMP.push(totaldata);
+            }
+            const newSerie = {
+                name: 'estimated',
+                data: dataTMP,
+                type: 'spline',
+                color: !this.chartData.groupings ? 'black' : predefinedColors[4].colors[6],
+                marker: {
+                    lineWidth: 2,
+                    lineColor: predefinedColors[4].colors[6],
+                    fillColor: 'white'
+                },
+                zoneAxis: 'x',
+                zones: [{value: 4}, {dashStyle: 'shortDash'}]
+            };
+            this.chartData.chartDefinition.series.push(newSerie);
+        } else {
+            runRateData.forEach(rr => {
+                const dataTMP = [];
+                for (let t = 0; t < this.previousfreq; t++) {
+                    dataTMP.push(null);
+                }
+                for (let t = this.previousfreq ; t <= this.totalFrequency - 1; t++) {
+                    dataTMP.push(rr.data);
+                }
+                const newSerie = {
+                    name: 'estimated for ' + rr.name,
+                    data: dataTMP,
+                    type: 'spline',
+                    _colorIndex: rr.colorIndex,
+                    zoneAxis: 'x',
+                    zones: [{value: 4}, {dashStyle: 'shortDash'}]
+                };
+                this.chartData.chartDefinition.series.push(newSerie);
+            });
+        }
+    }
+
+    getChartValuesBackinTime(): Promise<Object[]> {
+        const that = this;
+        const freqback: number = this.neededFrequency;
+        const dateRangeNew = {
+          from: moment().subtract(<any>freqback, this.frequencyName).startOf(<any>this.frequencyName).toDate(),
+          to: moment().subtract(<any>freqback, this.frequencyName).endOf('year').toDate()
+        };
+        const dataInput = {
+          dateRange: [{
+              predefined: 'custom',
+              custom: dateRangeNew
+          }],
+          groupings: this.chartData.groupings,
+          comparison: this.chartData.comparison,
+          frequency: this.chartData.frequency,
+          isDrillDown: false
+        };
+        return new Promise((resolve, reject) => {
+            this._apolloService.networkQuery<ChartResponse>(ChartQuery, { id: that.chartData._id, input: dataInput })
+            .then(data => {
+                const chartResponse = JSON.parse(data.chart);
+                let seriesBack = chartResponse.chartDefinition.series;
+                seriesBack = seriesBack.filter(t => !t.type);
+                resolve(seriesBack);
+            });
+        });
     }
 
     closeDescription() {
@@ -1160,7 +1448,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     private _isStacked(groupings: string[], chartData: any) {
-        return ((chartData.chartDefinition.chart.type === 'column') &&
+        return  ((chartData.chartDefinition.chart.type === 'column') &&
             ((<any>chartData).groupings[0] === (<any>chartData).xAxisSource)) ||
             (groupings.length && !chartData.frequency && !chartData.xAxisSource);
     }
