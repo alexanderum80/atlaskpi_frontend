@@ -34,6 +34,7 @@ import { ChartViewViewModel } from './chart-view.viewmodel';
 import SweetAlert from 'sweetalert2';
 import { ApolloService } from '../../shared/services/apollo.service';
 import {SeeInfoActivity} from '../../shared/authorization/activities/charts/see-info-chart.activity';
+import { debug } from 'util';
 
 const Highcharts = require('highcharts/js/highcharts');
 
@@ -153,7 +154,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     filterData: any[];
     isDataOnFly = false;
     chartOnFly: Chart;
-
+    isSettingsOnFly = false;
+    
     rootNode: IChartTreeNode;
     currentNode: IChartTreeNode;
 
@@ -222,6 +224,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             }
         ]
     }];
+
 
     constructor(private _apollo: Apollo,
         private _broserService: BrowserService,
@@ -510,6 +513,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     closeSettingOnFly() {
+        this.isSettingsOnFly = !this.isSettingsOnFly;
+        this._isSettingsOnFly();
         const that = this;
         const predefined = this.currentNode.parent.dateRange[0].predefined || null;
         const groupings = this.currentNode.parent.groupings;
@@ -539,6 +544,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             that.isDataOnFly = false;
             that.processChartUpdate(data.chart);
         });
+
     }
 
     isDrillDownAvailable(): boolean {
@@ -968,6 +974,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     closeOverlay(result: DialogResult) {
+        this.isSettingsOnFly = !this.isSettingsOnFly;
+        this._isSettingsOnFly();
         this.actionItemsTarget = undefined;
         this.overlay.hide();
         this._refreshTarget(result);
@@ -1085,7 +1093,10 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     processChartUpdate(chart: string): void {
+        
         const rawChart: ChartData = JSON.parse(chart);
+        this.chartData = rawChart;
+
         let definition = this._processChartTooltipFormatter(rawChart.chartDefinition);
         definition = this._processPieChartPercent(rawChart.chartDefinition);
         yAxisFormatterProcess(definition);
@@ -1110,6 +1121,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             this.goalComponent.updateTarget(( < any > this.chartData).targetList);
         }
         this.enableDrillDown();
+        this.chartIsEmpty();
     }
 
     processChartNode(rawChart: ChartData, chart: any, chartData: ChartData): void {
@@ -1173,9 +1185,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         this.currentNode = this.rootNode;
     }
 
-    isSettingsOnFly() {
-        return this.currentNode && this.currentNode.isDataOnFly && !this.drilledDown;
-    }
+    
 
     getDateRange(custom: any) {
         if (custom.from && custom.to) {
@@ -1204,7 +1214,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     chartIsEmpty(): boolean {
-        return _get(this.chartData, 'chartDefinition.series', 0) === 0;
+        const value =_get(this.chartData, 'chartDefinition.series', 0) === 0;
+        return value;
     }
 
     get drilledDown(): boolean {
@@ -1299,6 +1310,10 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                this.chartData.chartDefinition.chart) ? true : false;
     }
 
+    private _isSettingsOnFly() {
+        return   this.currentNode && this.currentNode.isDataOnFly && !this.drilledDown;
+    }
+
     private _updateChartInfoFromDefinition() {
         // move title to car header
         this.title = this.chart.options.title.text ? this.chart.options.title.text : this.chartData.title;
@@ -1335,7 +1350,11 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             const formatterFactory = new FormatterFactory();
             definition.tooltip.formatter = formatterFactory.getFormatter(definition.tooltip.formatter, stack).exec;
         } else {
-            const targetExists = definition.series.find(s => s.targetId);
+            var targetExists = null;
+            if(definition.series == !undefined) {
+                targetExists =  definition.series.find(s => s.targetId);
+            }
+            
             if (definition.tooltip && definition.tooltip.altas_definition_id === 'default' && targetExists) {
                 const formatterFactory = new FormatterFactory();
                 const formatter = formatterFactory.getFormatter('percentage_target_default').exec;
