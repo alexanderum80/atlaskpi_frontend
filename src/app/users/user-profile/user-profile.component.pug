@@ -1,4 +1,5 @@
-bw-modal#user-profile-container(#userProfileEdit='', size="md", (onClosed)="cancel()", (onDismiss)="cancel()", [openOnInit]="true")
+bw-modal#user-profile-container(#userProfileEdit='', size="md", (onClosed)="cancel()", 
+    (onDismiss)="cancel()", [openOnInit]="true")
     bw-modal-header.modal-header(layout="column", layout-align="center center", image="./assets/img/backgrounds/bottom-banel.png")
       .profile-picture
         bw-cropped-image([width]="82", image="{{avatarAddress}}", [border]="true", [borderWidth]="3")

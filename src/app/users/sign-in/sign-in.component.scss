@@ -12,30 +12,40 @@
         color: $white-nav;
     }
     button {
-        width: 120px;
         height: 40px;
-        color: #2fb6fc;
         font-weight: bold;
     }
     &.mobile {
         .email,
         .password,
         button {
-            margin-top: 35px !important;
+            margin-top: 5px !important;
             @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
                 margin-top: 0 !important;
             }
         }
+        #sign-in button{
+            margin-top: 35px !important;
+        }
     }
+    
     @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
         padding: 0;
     }
+
+    @media screen and (min-width: 480px) and (max-width:824px) {
+        img {
+            height: 35px !important;
+        }
+    }
+
 }
 
 .mobile-sign-in-m-t {
     margin-top: 15px !important;
     @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
         margin-top: 5px !important;
+        height: 20px !important;
     }
 }
 
@@ -44,20 +54,25 @@
         display: table;
         width: 280px;
         margin: 0 !important;
+
     }
     @media only screen and (min-width: 320px) and (max-width: 568px) and (aspect-ratio: 40/71) and (orientation: portrait) {
         display: table;
         width: 280px;
         margin: 0 !important;
     }
-    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 3/2) and (orientation: landscape) {
+    @media only screen and (min-width: 320px)  and (aspect-ratio: 3/2) and (orientation: landscape) {
         display: table;
         width: 280px;
         margin: 0 !important;
     }
-    @media only screen and (min-width: 320px) and (max-width: 480px) and (aspect-ratio: 2/3) and (orientation: portrait) {
+    @media only screen and (min-width: 320px) and (aspect-ratio: 2/3) and (orientation: portrait) {
         display: table;
         width: 280px;
         margin: 0 !important;
     }
+}
+
+.size-150 {
+    width: 200px;
 }
