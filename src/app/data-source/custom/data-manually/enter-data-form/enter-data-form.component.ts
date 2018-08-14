@@ -18,7 +18,7 @@ export class EnterDataFormComponent implements OnInit, AfterViewInit {
   datePickerConfig: IDatePickerConfig;
 
   constructor(
-    private vm: CustomFormViewModel
+    public vm: CustomFormViewModel
   ) { }
 
   ngOnInit() {
@@ -31,6 +31,10 @@ export class EnterDataFormComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.dataField = this.vm.fg.get('data') as FormArray;
     this._subscribeToFormChanges();
+  }
+
+  get dataList() {
+      return (this.vm.fg.get('data') as FormArray).controls;
   }
 
   private _setConfigDatePicker() {
