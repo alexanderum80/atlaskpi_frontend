@@ -13,11 +13,12 @@ const addCustomMutation = require('graphql-tag/loader!../custom-datasource.conne
   templateUrl: './data-manually.component.pug',
   styleUrls: ['./data-manually.component.scss']
 })
-export class DataManuallyComponent {
+export class DataManuallyComponent implements OnInit {
   @Output() dialogResult = new EventEmitter<DialogResult>();
 
   blankTablePath: string;
   tablePath: string;
+  isEditing: boolean;
 
   constructor(
     public vm: CustomFormViewModel,
@@ -26,6 +27,10 @@ export class DataManuallyComponent {
   ) {
     this.blankTablePath = '../../../../assets/img/datasources/blank_table.png';
     this.tablePath = '../../../../assets/img/datasources/table.png';
+  }
+
+  ngOnInit() {
+      this.vm.isEdit$.subscribe(v => this.isEditing = v);
   }
 
    selectTableType(tableOption) {

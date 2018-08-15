@@ -16,7 +16,7 @@
                 .flex(*ngFor="let header of headerData")
                     .columns {{ header }}
             .table-body(layout="column")
-                .data-row(flex, layout="row", *ngFor="let controls of vm.fg.get('data').controls, let j = index")
+                .data-row(flex, layout="row", *ngFor="let controls of dataList, let j = index")
                     .flex(*ngFor="let fieldName of controls.controls, let i = index")
                         div(*ngIf="getInputType(j, i) === 'date'")
                             bw-date-picker(

@@ -25,7 +25,7 @@
 
 .button-panel(layout="row")
     bw-modal-footer
-        bw-button.m-l-5(icon="arrow-left", title="BACK", color="blue", (clicked)="goBack()", *ngIf="vm.currentStep !== 1 && vm.isEdit$.value === false")
+        bw-button.m-l-5(icon="arrow-left", title="BACK", color="blue", (clicked)="goBack()", *ngIf="vm.currentStep !== 1 && isEditing === false")
         bw-button.m-l-5(icon="arrow-right", title="NEXT", color="blue", (clicked)="goNext()", *ngIf="vm.currentStep !== 1 && vm.currentStep !== 3", [disabled]="!isValidForm()")
         bw-button.m-l-5(icon="floppy", title="SAVE", color="blue", (clicked)="connect()", *ngIf="vm.currentStep === 3", [disabled]="!isValidForm()")
         bw-button.m-l-5(icon="close", title="CANCEL", [simple]="true", (clicked)="cancel()")

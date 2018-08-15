@@ -15,7 +15,7 @@ export class CustomComponent {
   enterDataPath: string;
 
   constructor(
-    private vm: CustomFormViewModel
+    public vm: CustomFormViewModel
   ) {
     this.importFilePath = '../../../assets/img/datasources/folder.png';
     this.enterDataPath = '../../../assets/img/datasources/data.png';
