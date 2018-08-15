@@ -27,13 +27,13 @@ export class  MilestoneViewModel extends ViewModel<IMilestone> {
     description: string;
 
     @Field({ type: String })
-    completetionDate: boolean;
+    completionDate: boolean;
 
     @Field({ type: String })
     responsiblePeople: boolean;
 
     @Field({ type: String })
-    stauts: boolean;
+    status: boolean;
 
     initialize(model: IMilestone): void {
         this.onInit(model);
@@ -47,11 +47,11 @@ export class FormTargetsViewModel extends ViewModel<ITarget> {
         super(null);
     }
 
-    titleAction = "Add an execution plan for this target";
+    titleAction = 'Add an execution plan for this target';
 
-    actived = false;
+    active = false;
 
-    objetiveList: SelectionItem[] =[
+    objectiveList: SelectionItem[] =[
         { id: 'increase', title: 'Increase' },
         { id: 'decrease', title: 'Decrease' },
         { id: 'fixed', title: 'fixed' },
@@ -70,25 +70,25 @@ export class FormTargetsViewModel extends ViewModel<ITarget> {
     ];
 
     userList: SelectionItem[] = [{
-        id: 'current', title: 'Curruent User'
-    },{
+        id: 'current', title: 'Current User'
+    }, {
         id: 'other', title: 'Other User'
-    }]
+    }];
 
-    responsiblePeopleList: SelectionItem[]=[{
+    responsiblePeopleList: SelectionItem[] = [{
         id: 'People', title: 'People'
-    }]
+    }];
 
-    statusList: SelectionItem[]=[{
+    statusList: SelectionItem[] = [{
         id: 'due', title: 'Due'
-    }]
+    }];
 
 
     @Field({ type: String, required: true })
     name: string;
 
-    @Field({ type: String })
-    objetive: string;
+    @Field({ type: Date })
+    startDate: string;
 
     @Field({ type: String, required: true })
     value: string;
@@ -107,7 +107,7 @@ export class FormTargetsViewModel extends ViewModel<ITarget> {
 
     @Field({ type: String })
     nextDueDate: string;
-    
+
     @Field({ type: RelatedUseViewModel })
     relatedUse: IRelatedUser;
 

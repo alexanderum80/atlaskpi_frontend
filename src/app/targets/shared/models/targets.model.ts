@@ -1,7 +1,7 @@
 export interface ITarget {
     _id: string;
     name: string;
-    objetive: string;
+    objective: string;
     value: number;
     period: string;
     baseOn: string;
@@ -21,7 +21,7 @@ export interface IRelatedUser {
 
 export interface IMilestone {
     description: string;
-    completetionDate: string;
+    completionDate: string;
     responsiblePeople: string;
     status: string;
 }
