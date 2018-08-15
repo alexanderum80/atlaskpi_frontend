@@ -130,7 +130,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
                 private _apollo: Apollo,
                 private _apolloService: ApolloService,
                 private _browser: BrowserService,
-                private vm: ChartBasicInfoViewModel) {
+                public vm: ChartBasicInfoViewModel) {
         this._dateRangesQuery();
         toArray(PredefinedDateRanges)
          .forEach(d => { this.dateRangeList.push({ id: d, title: d, selected: false, disabled: false }); });

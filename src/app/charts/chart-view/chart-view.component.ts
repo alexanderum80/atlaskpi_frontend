@@ -347,10 +347,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         };
 
         this.currentNode = this.rootNode;
-
-        setTimeout(() => {
-            this._updateComparisonOptions();
-        }, 1000);
+        this._updateComparisonOptions();
     }
 
     ngOnDestroy() {
@@ -366,6 +363,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     getComparisonValue() {
         const dateRange = this.dateRanges.find(d => d.dateRange.predefined === this.chartData.dateRange[0].predefined);
         if (!dateRange) { return; }
+        this.comparisonValue = [];
         this.chartData.comparison.map( comp => {
             const comparison = dateRange.comparisonItems.find(c => c.key === comp);
             if (!comparison) {
@@ -702,7 +700,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
 
     drillup() {
         const that = this;
-
         if (this.currentNode.parent) {
             this.title = this.currentNode.parent.title;
             this.chartData.targetList = this.currentNode.parent.targetList;
@@ -721,14 +718,17 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             }
 
             this.drillUpAnimation = 'fadeOutLeft';
-
+            if (!this.currentNode.parent.isCompared) {
+                that.comparisonValue = [];
+            } else {
+                that.getComparisonValue();
+            }
             setTimeout(function () {
                 that.chartData.targetList = that.currentNode.parent.targetList;
                 that.currentNode = that.currentNode.parent;
                 that.drillUpAnimation = 'fadeInLeft';
             }, 500);
         }
-        this.comparisonValue = [];
         this._updateComparisonOptions();
     }
 
@@ -1241,7 +1241,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         if (!item || !item.payload) {
             return;
         }
-
         const that = this;
         const variables = {
             id: this.chartData._id,
