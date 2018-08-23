@@ -30,6 +30,7 @@
     }
 
     &.dm-icon {
+        max-height: 450px;
         & > li > a > .zmdi {
             line-height: 100%;
             vertical-align: top;

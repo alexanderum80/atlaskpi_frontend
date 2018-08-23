@@ -76,6 +76,7 @@ export class ActionItemDirective implements AfterViewInit {
             this.renderer.setElementClass(ul, 'dropdown-menu', true);
             this.renderer.setElementClass(ul, 'dm-icon', true);
             this.renderer.setElementClass(ul, 'dropdown-menu-right', true);
+            this.renderer.setElementClass(ul, 'overflow-auto', true);
 
             if (!this.bwActionItem || !this.bwActionItem.children) {
                 return;

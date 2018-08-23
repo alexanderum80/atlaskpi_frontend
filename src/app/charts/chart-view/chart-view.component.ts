@@ -1,3 +1,4 @@
+import { title } from 'change-case';
 import { predefinedColors } from './../shared/ui/chart-format-info/material-colors';
 import { DownloadChartActivity } from '../../shared/authorization/activities/charts/download-chart.activity';
 import { CompareOnFlyActivity } from '../../shared/authorization/activities/charts/compare-on-fly-chart.activity';
@@ -156,7 +157,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     isDataOnFly = false;
     chartOnFly: Chart;
     isSettingsOnFly = false;
-    
+
     rootNode: IChartTreeNode;
     currentNode: IChartTreeNode;
 
@@ -388,7 +389,11 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         };
 
         this.currentNode = this.rootNode;
-        this._updateComparisonOptions();
+        if (this.currentNode.definition.chart.type === 'pie') {
+            this.loadedComparisonData = true;
+        } else {
+            this._updateComparisonOptions();
+        }
     }
 
     getDateRangeInPresent(): boolean {
@@ -698,7 +703,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             Object.assign({},
             pick(this.chartData, ['frequency', 'groupings']))
         );
-
         switch (item.id) {
             case 'comparison':
                 return this._handleComparisonAction(item);
@@ -1002,6 +1006,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             this.chartData.dateRange = this.currentNode.parent.dateRange;
             this.chartData.groupings = this.currentNode.parent.groupings;
             this.chartData.frequency = this.currentNode.parent.frequency;
+            this.chartData.comparison = this.currentNode.parent.comparison;
 
             this.chart = new Chart(this.currentNode.parent.definition);
             this._tableModeService.setChart(this.chart);
@@ -1099,7 +1104,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     processChartUpdate(chart: string): void {
-        
+
         const rawChart: ChartData = JSON.parse(chart);
         this.chartData = rawChart;
 
@@ -1190,8 +1195,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
 
         this.currentNode = this.rootNode;
     }
-
-    
 
     getDateRange(custom: any) {
         if (custom.from && custom.to) {
@@ -1360,7 +1363,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             if(definition.series == !undefined) {
                 targetExists =  definition.series.find(s => s.targetId);
             }
-            
+
             if (definition.tooltip && definition.tooltip.altas_definition_id === 'default' && targetExists) {
                 const formatterFactory = new FormatterFactory();
                 const formatter = formatterFactory.getFormatter('percentage_target_default').exec;
