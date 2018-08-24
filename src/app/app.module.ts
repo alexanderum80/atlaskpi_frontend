@@ -38,7 +38,6 @@ import { WidgetsModule } from './widgets/widgets.module';
 import { Widgets2Module } from './widgets2/widgets2.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { TargetsModule } from './targets/targets.module';
-import { FormTargetsComponent } from './targets/form-targets/form-targets.component';
 
 @NgModule({
     declarations: [

@@ -1,22 +1,23 @@
-bw-modal(size="lg", [openOnInit]="true", (onClosed)="cancel()", (onDismiss)="cancel()")
+bw-modal(#targetModal='', size="lg", [openOnInit]="true", (onClosed)="cancel()", (onDismiss)="cancel()")
     bw-modal-body
-        .targets-form.xh-100(flex, layout="row")
-            .left-side(flex="30", clicked="toggleActive()")
-                kpi-list-targets
+        .targets-form.h-100(flex, layout="row")
+            .left-side.overflow-auto(flex="40", clicked="toggleActive()", *ngIf="listLoad")
+                kpi-list-targets.w-80.overflow-auto(flex, #listTarget, [chart]="chart",
+                 [targets]="targets", (selectItem)="selectItem($event)", (addItem)="add($event)", (onDelete)="onDelete($event)")
 
             .bgm-white(flex)
                 .h-100(layout="column")
-                    .m-r-10.m-l-10(flex)
+                    .m-r-10.m-l-10(flex="60")
                         bw-tab-set.w-80
                             bwTab.m-10(heading="Basic", icon="Basic", (select)="setIndex(1)",
                                 [active]="activeIndex(1)") 
-                                kpi-basic-targets([fg]="vm.fg", [vm]="vm")
+                                kpi-basic-targets(#basic, [fg]="vm.fg", [vm]="vm")
                             bwTab.m-10(heading="Related Users", icon="Related Users", (select)="setIndex(2)",
                                 [active]="activeIndex(2)") 
                                 kpi-related-users([fg]="vm.fg", [vm]="vm")
                             bwTab.m-10(heading="milestones", icon="milestones", (select)="setIndex(3)",
                                 [active]="activeIndex(3)") 
-                                kpi-milestone([fg]="vm.fg", [vm]="vm")
+                                kpi-milestone(#milestoneComponent, [fg]="vm.fg", [vm]="vm", [target]="vm._id")
 
                     .m-b-0.m-l-40.text-right(flex-initial)
                         bw-button.m-r-5(*ngIf="canGoBack()", title="Back", color="blue", [simple]="true", icon="arrow-left", (clicked)="goBack()")  

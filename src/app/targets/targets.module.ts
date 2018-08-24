@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { TargetsRoutingModule } from './targets-routing.module';
-import { FormTargetsComponent } from './form-targets/form-targets.component';
 import { ListTargetsComponent } from './list-targets/list-targets.component';
 import { BasicTargetsComponent } from './basic-targets/basic-targets.component';
 import { RelatedUsersComponent } from './related-users/related-users.component';
@@ -16,6 +15,7 @@ import { AddMilestonesTargetComponent } from './milestone/add-milestones-target/
 import { EditMilestonesTargetComponent } from './milestone/edit-milestones-target/edit-milestones-target.component';
 import { NewMilestonesTargetComponent } from './milestone/new-milestones-target/new-milestones-target.component';
 import { FormMilestoneTargetComponent } from './milestone/form-milestone-target/form-milestone-target.component';
+import { FormTargetsComponent } from './form-targets/form-targets.component';
 
 @NgModule({
   imports: [
@@ -26,6 +26,7 @@ import { FormMilestoneTargetComponent } from './milestone/form-milestone-target/
     ReactiveFormsModule,
     SharedModule,
   ],
-  declarations: [FormTargetsComponent, ListTargetsComponent, BasicTargetsComponent, RelatedUsersComponent, MilestoneComponent, TargetComponent, ListMilestonesTargetComponent, AddMilestonesTargetComponent, EditMilestonesTargetComponent, NewMilestonesTargetComponent, FormMilestoneTargetComponent]
+  declarations: [FormTargetsComponent, ListTargetsComponent, BasicTargetsComponent, RelatedUsersComponent, MilestoneComponent, TargetComponent, ListMilestonesTargetComponent, AddMilestonesTargetComponent, EditMilestonesTargetComponent, NewMilestonesTargetComponent, FormMilestoneTargetComponent],
+  exports:[FormTargetsComponent]
 })
 export class TargetsModule { }

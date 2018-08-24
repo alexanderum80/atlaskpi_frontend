@@ -1,0 +1,8 @@
+mutation deleteTargetNew($id:  String!){
+  deleteTargetNew(_id: $id) {
+    success,
+    errors {
+      field
+    }
+  }
+}

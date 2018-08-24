@@ -1,11 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
 
 import { IActionItemClickedArgs } from '../../shared/ui/lists/item-clicked-args';
-import { ITarget } from '../shared/models/targets.model';
 import { ListTargetsViewModel } from './list-targets.viewmodel';
+import { ITargetNew } from '../shared/models/targets.model';
+import { IListItem } from '../../shared/ui/lists/list-item';
+import { ApolloService } from '../../shared/services/apollo.service';
 
-
+const targesDelete = require('graphql-tag/loader!./delete-target.gql');
 
 @Component({
   selector: 'kpi-list-targets',
@@ -14,82 +15,37 @@ import { ListTargetsViewModel } from './list-targets.viewmodel';
   providers: [ListTargetsViewModel]
 })
 export class ListTargetsComponent implements OnInit {
-
+  @Input() chart: any;
+  // @Input() widget: any;
+  @Input() targets: ITargetNew[];
   // responsive input
   @Input() xsSize = 100;
   @Input() smSize = 25;
   @Input() xlSize = 20;
 
-  private _subscription: Subscription[] = [];
+  @Output() selectItem = new EventEmitter<any>();
+  @Output() addItem = new EventEmitter<any>();
+  @Output() onDelete = new EventEmitter<string>();
 
-  private _targets: ITarget[] = [{
-      _id: '1',
-      name: 'Target Name',
-      objetive: 'string',
-      value: 0,
-      period: 'string',
-      baseOn: 'string',
-      repeat: 'string',
-      active: true,
-      nextDueDate: 'Next due date',
-      relatedUser: {
-        user: 'current',
-        email: 'email',
-        phone: '01254122'
-      },
-      milestone: {
-        description: '',
-        completetionDate: '',
-        responsiblePeople: '',
-        status: ''
-      }
-
-    },
-    {
-      _id: '2',
-      name: 'Target 1',
-      objetive: 'string',
-      value: 0,
-      period: 'string',
-      baseOn: 'string',
-      repeat: 'string',
-      active: true,
-      nextDueDate: 'Next due date',
-      relatedUser: {
-        user: 'current',
-        email: 'email',
-        phone: '01254122'
-      },
-      milestone: {
-        description: '',
-        completetionDate: '',
-        responsiblePeople: '',
-        status: ''
-      }
-    }
-  ];
-
-
-  constructor(public vm: ListTargetsViewModel) {}
+  item: IListItem;
+  
+  constructor(public vml: ListTargetsViewModel,
+              private _apolloService: ApolloService) {}
 
   ngOnInit() {
     const that = this;
 
-    if (!that.vm.initialized) {
-      that.vm.initialize(null);
-      that.vm.targets = that._targets;
+    if (!that.vml.initialized) {
+      that.vml.initialize(null);
     }
-
+    this.vml.targets = this.targets;
   }
 
-  add() {
-
+  itemClicked(item) {
+      this.vml.selectTarget(item);
+      this.item = item;
+      this.selectItem.emit(item);
   }
-
-  itemClicked(e, item) {
-      this.vm.selectTarget(item);
-  }
-
 
   actionClicked(item: IActionItemClickedArgs) {
     switch (item.action.id) {
@@ -102,8 +58,17 @@ export class ListTargetsComponent implements OnInit {
     }
   }
 
+  add() {
+    this.vml.unSelectTarget();
+    this.addItem.emit();
+  }
+
   editClickedList(item: IActionItemClickedArgs) {
 
+  }
+
+  getTargets(targets) {
+    this.vml.targets = targets;
   }
 
   private disable(item) {
@@ -111,9 +76,17 @@ export class ListTargetsComponent implements OnInit {
   }
 
   private delete(item) {
-
+    this._apolloService.mutation < ITargetNew > (targesDelete, {'id': item })
+    .then(res => {
+      this.onDelete.emit(item);
+    })
+    .catch(err => {
+        this._displayServerErrors(err) ;
+    });
   }
 
-
+  private _displayServerErrors(err) {
+    console.log('Server errors: ' + JSON.stringify(err));
+  }
 
 }

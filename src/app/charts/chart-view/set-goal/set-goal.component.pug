@@ -1,7 +1,7 @@
 div(#tableContainer, *ngIf="isModeView()")
   bw-modal(#listModal='', (onClosed)="modalClose()", (onDismiss)="modalClose()")
     bw-modal-header
-      div(layout="row", layout-align="end", flex-none)
+      div(layout="row", layout-align="end", flex-none) 
         bw-button.target-close-btn(icon="close", color="gray", [simple]="true", (clicked)="close()")
     bw-modal-body
       kpi-item-list(

@@ -1,22 +1,22 @@
-.target-list.h-100(layout="column")
+.target-list.h-100.oeverflow-auto(layout="column")
     .m-20(flex-initial, layout="row")
         .m-r-10(flex="10")
             i.zmdi.zmdi-gps 
         div(flex="80") TARGETS MANAGER
 
-    .m-t-10(*ngIf="vm.targetItems", flex)
-        .target-item(*ngFor="let item of vm.targetItems", [class.selected]="item.selected")
-            kpi-list-item-tabular.w-100(
+    .m-l-10.m-r-10.m-t-10.overflow-auto(*ngIf="vml.targetItems", flex)
+        .target-item(*ngFor="let item of vml.targetItems", [class.selected]="item.selected")
+            kpi-list-item-tabular.w-100.m-r-10(
                 [item]="item",
-                [actionItems]="vm.menuItems",
+                [actionItems]="vml.menuItems",
                 [tableRowTemplate]="tableItem",
-                (click)="itemClicked($event, item)",
+                (click)="itemClicked(item)",
                 (actionClicked)="actionClicked($event)")
 
     button.btn.btn-float.waves-effect.bgm-blue((click)="add()")
         i.zmdi.zmdi-plus
 
-ng-template(#tableItem, let-item="item")
+ng-template(#listTargetsComponent, let-item="item")
     //- image
     .m-l-10(flex-initial)
         img.m-t-10(*ngIf="item.imagePath", [src]="item.imagePath", [style.height.px]="35")

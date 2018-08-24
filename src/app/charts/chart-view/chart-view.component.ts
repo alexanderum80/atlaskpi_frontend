@@ -22,7 +22,7 @@ import * as moment from 'moment';
 
 import { FormatterFactory, yAxisFormatterProcess } from '../../dashboards/shared/extentions/chart-formatter.extention';
 import { PredefinedDateRanges } from '../../shared/models/date-range';
-import { MenuItem } from '../../ng-material-components';
+import { MenuItem, ModalComponent } from '../../ng-material-components';
 import { IDateRangeItem } from '../../shared/models/date-range';
 import { DialogResult } from '../../shared/models/dialog-result';
 import { BrowserService } from '../../shared/services/browser.service';
@@ -34,6 +34,7 @@ import { ChartViewViewModel } from './chart-view.viewmodel';
 import SweetAlert from 'sweetalert2';
 import { ApolloService } from '../../shared/services/apollo.service';
 import {SeeInfoActivity} from '../../shared/authorization/activities/charts/see-info-chart.activity';
+import { FormTargetsComponent } from '../../targets/form-targets/form-targets.component';
 
 const Highcharts = require('highcharts/js/highcharts');
 
@@ -115,6 +116,10 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     @Input() isFromDashboard = false;
     @ViewChild(OverlayComponent) overlay: OverlayComponent;
     @ViewChild(SetGoalComponent) goalComponent: SetGoalComponent;
+    @ViewChild(FormTargetsComponent) targetsComponent: FormTargetsComponent;
+
+    
+    targetsVisible = false;
 
     private _subscription: Subscription[] = [];
 
@@ -618,26 +623,27 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 break;
 
             case 'set-target':
-                if (this.currentNode.rootChart &&
-                    this.chartData.chartDefinition.chart.type !== 'pie') {
-                    if (this.setGoal) {
-                        this._targetService.setChartId(this.chartData._id);
-                        this._targetService.updatePeriodTypes((<any>this.chartData).targetExtraPeriodOptions);
-                        this._targetService.setChartInfo({
-                            dateRange: this.chartData.dateRange,
-                            frequency: this.chartData.frequency
-                        });
-                        setTimeout(() => {
-                            if (this.goalComponent) {
-                                this.goalComponent.updateTarget(this.chartData.targetList);
-                                this.goalComponent.open();
-                            }
-                            this._getStackCategories(this.chart.options, this.chartData);
-                        }, 0);
-                    } else {
-                        this._targetNotAuthorizedMessage();
-                    }
-                }
+                // if (this.currentNode.rootChart &&
+                //     this.chartData.chartDefinition.chart.type !== 'pie') {
+                //     if (this.setGoal) {
+                //         this._targetService.setChartId(this.chartData._id);
+                //         this._targetService.updatePeriodTypes((<any>this.chartData).targetExtraPeriodOptions);
+                //         this._targetService.setChartInfo({
+                //             dateRange: this.chartData.dateRange,
+                //             frequency: this.chartData.frequency
+                //         });
+                //         setTimeout(() => {
+                //             if (this.goalComponent) {
+                //                 this.goalComponent.updateTarget(this.chartData.targetList);
+                //                 this.goalComponent.open();
+                //             }
+                //             this._getStackCategories(this.chart.options, this.chartData);
+                //         }, 0);
+                //     } else {
+                //         this._targetNotAuthorizedMessage();
+                //     }
+                // }
+                this.targetsVisible = true;
                 break;
 
             case 'edit-chart-format':
@@ -917,6 +923,10 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
 
     chartIsEmpty(): boolean {
         return _get(this.chartData, 'chartDefinition.series', 0) === 0;
+    }
+
+    onCloseTargets($event): void {
+        this.targetsVisible = false;
     }
 
     get drilledDown(): boolean {

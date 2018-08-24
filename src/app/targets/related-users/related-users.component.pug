@@ -4,25 +4,28 @@
     div(flex, layout="row")
             .m-l-20(flex="45")
                 | Select users
-            .text-center(flex="10")
+            .text-right(flex="5")
                     i.zmdi.zmdi-email
-            .text-center(flex="10")
+            .text-right(flex="5")
                     i.zmdi.zmdi-smartphone-android
-    div(flex, layout="row")
+            .text-center(flex="10").mdc-text-blue
+                    i.zmdi.zmdi-plus((click)="addUser()")
+
+    div(flex, layout="row", *ngFor="let item of vm.fg.get('users').controls; let i=index")
             .text-center(flex="50")
                 .m-t--20
-                    bw-select-picker([fg]="fg", 
-                                field="user",
-                                [items]="vm.userList",
+                    bw-select-picker([fg]="item", 
+                                field="id",
+                                [items]="notifyStaff",
                                 leftIcon="accounts-alt"
                                 )  
-            .text-center.m-t-10(flex="10")
-                bw-checkbox([fg]="fg", field="email")
+            .text-center.m-t-10(flex="5")
+                bw-checkbox([fg]="item", field="email")
         
-            .text-center.m-t-10(flex="10")
-                bw-checkbox([fg]="fg", field="phone")
-
-            .text-left.m-t-15.mdc-text-red(flex="10")
-                div(*ngIf="!fg.value.email && !fg.value.phone")
-                    i.zmdi.zmdi-close
+            .text-center.m-t-10(flex="5")
+                bw-checkbox([fg]="item", field="push")
+                
+            .text-center.m-t-15(*ngIf="!isUserCurrent", flex="5").mdc-text-red
+                    div(*ngIf="item")
+                        i.zmdi.zmdi-close((click)="removeUser(item)")
     

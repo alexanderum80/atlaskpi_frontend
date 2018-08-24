@@ -1,12 +1,17 @@
 // Angular Imports
 import { Injectable } from '@angular/core';
 
-import { MenuItem } from '../../ng-material-components';
+import { MenuItem, SelectionItem } from '../../ng-material-components';
 import { Field, ViewModel } from '../../ng-material-components/viewModels';
 import { IUserInfo } from '../../shared/models/user';
 import { UserService } from '../../shared/services/user.service';
 import { IListItem } from '../../shared/ui/lists/list-item';
-import { ITarget } from '../shared/models/targets.model';
+import { ITargetNew } from '../shared/models/targets.model';
+import * as moment from 'moment';
+
+
+import { map } from 'lodash';
+import { element } from 'protractor';
 
 // App Code
 
@@ -16,7 +21,7 @@ interface IFilter {
 
 @Injectable()
 export class ListTargetsViewModel extends ViewModel<IFilter> {
-    private _targets: ITarget[] = [];
+    private _targets: ITargetNew[] = [];
     private _targetsItemList: IListItem[];
     protected _user: IUserInfo;
 
@@ -34,22 +39,37 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
                 icon: 'delete'
             }]
         }];
-
+    
+    private item: IListItem;
+    
     constructor(userService: UserService) {
         super(userService);
     }
 
-    get targets(): ITarget[] {
+    get targets(): ITargetNew[] {
         return this._targets;
     }
 
-    set targets(list: ITarget[]) {
+    set targets(list: ITargetNew[]) {
         if (list === this._targets) {
             return;
         }
 
         this._targets = list;
-        this._prepareTargetListItems();
+        
+        this._targetsItemList =  this._targets.map(d => ( {
+            id: d._id ,
+            imagePath: './assets/img/targets/target_g_t.png',
+            title: d.name,
+            subtitle: 'Next due date:' + this._nextDueDate(d.reportOptions.frequency) ,
+            selected: false,
+        }));
+        if (this._targetsItemList.length > 0 ) {
+            this._targetsItemList[0].selected = true;
+            this.item = this._targetsItemList[0];
+            this.item.imagePath = './assets/img/targets/target_t.png';
+        }
+
     }
 
     @Field({ type: String })
@@ -63,24 +83,49 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
         return this._targetsItemList;
     }
 
-    getImage(active): string {
-        let img = './assets/img/targets/target_t.png';
-        active ? img = './assets/img/targets/target_t.png' : img = './assets/img/targets/targe_g_t.png';
-        return img;
-    }
 
     selectTarget(item: IListItem) {
-        this._targetsItemList.forEach(t => t.selected = false);
-        item.selected = true;
+        this._targetsItemList.forEach(t =>{ 
+            t.selected = false;
+            t.imagePath = './assets/img/targets/target_g_t.png';
+        });
+        if (item) {
+            item.selected = true;
+            item.imagePath = './assets/img/targets/target_t.png';
+            this.item = item;
+        }
     }
 
-    private _prepareTargetListItems() {
-        this._targetsItemList = this._targets.map(d => ({
-            id: d._id ,
-            imagePath: this.getImage(d.active || true) || '',
-            title: d.name || 'Target Name',
-            subtitle: d.nextDueDate || Date.now.toString(),
-        }));
+    unSelectTarget() {
+        this._targetsItemList.forEach(t =>{
+            t.selected = false;
+            t.imagePath = './assets/img/targets/target_g_t.png';
+        });
+    }
+
+
+    get itemSelected(): IListItem {
+        return this.item;
+    }
+
+
+    private _nextDueDate(frequency) {
+        //Aqui hay que general el valor
+        let dueDate: any;
+
+        switch(frequency) {
+            case 'monthly':
+                    dueDate = moment().endOf('month').toDate();
+                break;
+            case 'yearly':
+                    dueDate = moment().endOf('year').toDate() ;
+                break;
+            case 'quartely':
+                    dueDate =  moment().endOf('quarter').toDate();
+                break;
+        }
+
+        return moment(String(dueDate)).format('MM/DD/YYYY') ;
     }
 
 }

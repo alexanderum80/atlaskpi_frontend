@@ -1,0 +1,15 @@
+query targetByName($name: String!){
+  targetByName(name: $name) {
+    _id
+    name
+    kpi
+    compareTo
+    recurrent
+    type
+    value
+    unit
+    owner
+    active
+    selected
+  }
+}

@@ -1,0 +1,36 @@
+query targetsBySource($source: SourceNewInput!) {
+  targetBySource(source: $source) {
+    _id
+    name
+    kpi
+    compareTo
+    recurrent
+    type
+    value
+    unit
+    owner
+    active
+    selected
+    source {
+      type
+      identifier
+    }
+    reportOptions {
+      frequency
+      groupings
+      timezone
+      filter
+      dateRange{
+        from
+        to
+      }
+    }
+    notificationConfig{
+      notifiOnPercente
+      users {
+        id
+        deliveryMethod
+      }
+    }
+  }
+}

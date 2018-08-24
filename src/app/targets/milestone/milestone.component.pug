@@ -1,15 +1,21 @@
 
-kpi-new-milestones-target(*ngIf="!addMilestones && !editMilestones", (addEvent)="addEvent()")
+kpi-new-milestones-target(*ngIf="!existMileston && !addMilestones", (selectedEvent)="addEvent($event)")
 
-div(*ngIf="addMilestones || editMilestones") 
-    .title(*ngIf="vm.titleAction") {{vm.titleAction}}
-    .text-right.m-t-20
-        bw-button(color="blue", [simple]="true", title="Add Milestone", icon="plus", class="normal", (clicked)="addEvent()")
+div(flex) 
+    .title {{titleAction}}
+    .text-right.m-t-20(*ngIf="existMileston || addMilestones")
+        bw-button(color="blue", [simple]="true", title="Add Milestone", icon="plus", 
+        class="normal", (clicked)="addEvent($event)")
+
+    .m-t-20(*ngIf="editMilestones")
+        kpi-edit-milestones-target([fg]="fg", [vm]="vm",  [milestones]="milestones",  (onCancel)="cancel()")
    
-    .m-t-20
-        kpi-list-milestones-target
+    .m-t-20(*ngIf="existMileston")
+       kpi-list-milestones-target(#listMilestone, [milestones]="milestones", [allUsers]="allUsers",
+        (onEdit)="edit($event)", (onDelete)="delete($event)", (onEditStatus)="editStatus($event)")
+        
     .m-t-20(*ngIf="addMilestones")
-        kpi-add-milestones-target([fg]="vm.fg", [vm]="vm")
+        kpi-add-milestones-target([fg]="fg", [vm]="vm", (onAdd)="add()", (onCancel)="cancel()")
 
 
-kpi-edit-milestones-target(*ngIf="editMilestones")
+

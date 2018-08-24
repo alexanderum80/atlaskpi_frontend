@@ -53,6 +53,7 @@ import threeD from 'highcharts/highcharts-3d.src';
 import exporting from 'highcharts/modules/exporting.src';
 import offlineExporting from 'highcharts/modules/offline-exporting.src';
 import exportData from 'highcharts/modules/export-data.src';
+import { TargetsModule } from '../targets/targets.module';
 
 
 export function highchartsModules() {
@@ -70,7 +71,8 @@ export function highchartsModules() {
     SharedModule,
     NgxDatatableModule,
     MilestonesModule,
-    ScrollEventModule
+    ScrollEventModule,
+    TargetsModule
   ],
   declarations: [ChartViewComponent, SetGoalComponent, EditChartFormatComponent, DownloadChartViewComponent, ChartTestComponent,
                  ChartsComponent, ListChartComponent, ChartViewMiniComponent, NewChartComponent, ChartGalleryComponent,

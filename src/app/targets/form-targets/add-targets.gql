@@ -1,0 +1,41 @@
+mutation createTargetNew($TargetInput: TargetNewInput!) {
+  	createTargetNew(TargetInput: $TargetInput) {
+      entity {
+        name
+        kpi
+        compareTo
+        recurrent
+        type
+        value
+        unit
+        owner
+        active
+        selected
+        reportOptions{
+          frequency
+          groupings
+          timezone
+          dateRange {
+            from
+            to
+          }
+          filter
+        }
+        source {
+          type
+          identifier
+        }
+        notificationConfig {
+          notifiOnPercente
+          users{
+            id
+            deliveryMethod
+          }
+        }
+      }
+  	  success,
+      errors {
+        field
+      }
+  	}
+}

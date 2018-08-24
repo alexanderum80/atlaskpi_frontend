@@ -4,21 +4,21 @@ div(layout="column")
         bw-text-box([fg]="fg", field="name", label="name", leftIcon="local-offer")   
 
     div(flex, layout="row")
-        .m-r-10(flex="33")
+        .m-r-10(flex="40")
             bw-select-picker.w-80.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
                                     [fg]="fg", 
-                                    field="objetive",
+                                    field="type",
                                     label="Objetive",
-                                    [items]="vm.objetiveList",
+                                    [items]="vm.objectiveList",
                                     leftIcon="gps-dot"
                                     )  
 
-        .text-center(flex="33")
-            bw-text-box.m-r-20([fg]="fg", field="value", label="value", leftIcon="edit")   
-
-        .m-t-25.text-center(flex="30")
-            bw-button.m-l-5(title="value", color="white", icon="number", (clicked)="cancel()")  
-            bw-button.m-r-5(title="pct.", color="white", icon="percent", (clicked)="cancel()")  
+        .text-center(flex="20")
+            bw-number.m-r-20([fg]="fg", field="value", label="value", leftIcon="edit")   
+            div {{valuePerc}}
+        .m-t-25.text-center(flex="40")
+            bw-button.m-l-5(title="# value", color="white", icon="number", [disabled]="valuePerc", (clicked)="unit('value')")  
+            bw-button.m-r-5(title="% pct.", color="white", icon="percent", [disabled]="!valuePerc", (clicked)="unit('percent')")  
     
     div(flex, layout="row")
         .m-r-10(flex="50")
@@ -26,25 +26,27 @@ div(layout="column")
                                     [fg]="fg", 
                                     field="period",
                                     label="Target period:",
-                                    [items]="vm.periodList",
-                                    leftIcon="calendar-alt"
+                                    [items]="vm.targetPeriodItems",
+                                    leftIcon="calendar-alt",
+                                    [disabled]="vm.noFrequency",
+                                    noneSelectedText="{{vm.nodoSelectedText}}"
                                     )
         .m-l-10(flex="50")
             bw-select-picker.w-80.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
                                     [fg]="fg", 
-                                    field="baseOn",
+                                    field="compareTo",
                                     label="Base on",
                                     [items]="vm.baseOnList",
                                     leftIcon="calendar-alt"
                                     )
 
     div(flex, layout="row")
-        .m-r-10(flex="50")
+        .m-r-10(*ngIf="!isCustom", flex="50")
             bw-checkbox.m-t-25(flex, flex-xs="100", flex-gt-sm="33",
                                     [fg]="fg",
-                                    field="repeat",
-                                    label="Repeat monthly",
+                                    field="recurrent",
+                                    label="Repeat {{vm.frequency}}",
                     )
         .m-l-10(flex="50")
-            bw-toggle(*ngIf="actived", [fg]="fg", field="active", color="green", label="Active")
+            bw-toggle(*ngIf="vm.activeVisble", [fg]="fg", field="active", color="green", label="Active")
 
