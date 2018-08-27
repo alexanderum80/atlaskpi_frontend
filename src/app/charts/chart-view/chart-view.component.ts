@@ -465,6 +465,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     getComparisonDateRange() {
+        if (!this.chartData.comparison) { return; }
         let comparison: string[] = [];
         let customDateRange;
         if (this.chartData.dateRange[0].predefined === 'custom') {
@@ -712,6 +713,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                     this.descriptionAnimation = 'fadeOut';
                     setTimeout(() => this.showDescription = false, 1000);
                 } else {
+                    this.getComparisonDateRange()
                     this.showDescription = true;
                     this.descriptionAnimation = 'fadeIn';
                 }
@@ -1031,6 +1033,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             }, 500);
         }
         this._updateComparisonOptions();
+        this.getComparisonDateRange();
     }
 
     showFutureTargets() {
