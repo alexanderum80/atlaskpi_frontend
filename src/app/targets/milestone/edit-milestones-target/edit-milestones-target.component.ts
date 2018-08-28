@@ -27,23 +27,15 @@ export class EditMilestonesTargetComponent implements OnInit {
 
   onSave()  {
     const that = this;
-        const input = {"input": {
-            "task": that._form.vmm.task ,
-            "target": that.vm._id,
-            "dueDate": that._form.vmm.dueDate,
-            "status": that._form.vmm.status,
-            "responsible": [that._form.vmm.responsible]
-        }};
+             this._form.vmm.target =  that.vm._id;
 
-        this._form.vmm.target =  that.vm._id;
-  
         if (this._form.vmm.fg.valid) {
             this._apolloService.mutation < IMilestone > (editMilestone, {
               'id': this.milestones[0]._id, 'input': this._form.vmm.addPayload})
                 .then(res => {
                   that.onEdit.emit();
                 })
-                .catch(err => 
+                .catch(err =>
                   that._displayServerErrors(err)
                 );
         }

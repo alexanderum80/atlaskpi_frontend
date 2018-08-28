@@ -9,6 +9,7 @@ import { MenuItem } from '../../ng-material-components';
 import { userApi } from './users-actions';
 import { UserService } from '../../shared/services/user.service';
 import { IUserInfo } from '../../shared/models/user';
+import { filter } from 'lodash';
 
 @Component({
   selector: 'kpi-related-users',
@@ -19,38 +20,56 @@ export class RelatedUsersComponent implements OnInit {
   @Input() fg: FormGroup;
   @Input() vm: any;
 
+
   userCurrent: any;
   isUserCurrent: boolean;
   notifyStaff: MenuItem[];
 
   private _subscription: Subscription[] = [];
 
-  constructor(private _apollo: Apollo, private userService: UserService) {
-  
-  }
+  constructor(private _apollo: Apollo, private userService: UserService) {  }
 
   ngOnInit() {
-    this._refreshUser();
-    this.addUser();
-    this.subcriptionUser();
-  }
-
-  private subcriptionUser() {
     const that = this;
+    that._refreshUser();
+
+    that._subscription.push(that.vm.fg.controls['name'].valueChanges.subscribe(value => {
+      that.addUser(that.vm.target);
+    }));
   }
 
-  addUser() {
-    if(this.vm.users.length === 0) {
+  addUser(target) {
+
+    if (target === undefined && this.vm.users.length === 0) {
       this.isUserCurrent = true;
       this.userCurrent = this.userService.user._id;
       this.vm.users.push(new FormGroup({
         'id': new FormControl(this.userCurrent),
         'push': new FormControl(true),
         'email': new FormControl(false),
-      }) as any)
-    } else {
+      }) as any);
       this.isUserCurrent = false;
       this.vm.users.push(new FormGroup({}) as any);
+    } else if (target !== undefined && this.vm.users.length === 0) {
+      const users = target[0].notificationConfig.users;
+      users.forEach(element => {
+        this.isUserCurrent = false;
+        let email =  false;
+        let push =  false;
+        element.deliveryMethod.forEach(deliveryMethod => {
+           if (deliveryMethod === 'email') {
+            email = true ;
+           }
+           if (deliveryMethod === 'push') {
+            push = true ;
+           }
+        });
+        this.vm.users.push(new FormGroup({
+          'id': new FormControl(element.id),
+          'push': new FormControl(push),
+          'email': new FormControl(email),
+        }) as any);
+      });
     }
   }
 

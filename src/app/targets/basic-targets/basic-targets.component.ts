@@ -13,7 +13,8 @@ export class BasicTargetsComponent implements OnInit {
   @Input() fg: FormGroup;
   @Input() vm: any;
 
-
+  colorValue = 'white';
+  colorPercent = 'white';
   valuePerc = true;
   private _subscription: Subscription[] = [];
 
@@ -38,9 +39,13 @@ export class BasicTargetsComponent implements OnInit {
   private _valuePerc(type) {
     if (type === 'fixed')  {
       this.valuePerc = false;
+      this.colorPercent = 'white';
+      this.colorValue = 'silver';
       this.fg.controls.unit.setValue('value');
     } else {
       this.valuePerc = true;
+      this.colorPercent = 'silver';
+      this.colorValue = 'white';
       this.fg.controls.unit.setValue('percent');
     }
   }

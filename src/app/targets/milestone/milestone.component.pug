@@ -8,9 +8,10 @@ div(flex)
         class="normal", (clicked)="addEvent($event)")
 
     .m-t-20(*ngIf="editMilestones")
-        kpi-edit-milestones-target([fg]="fg", [vm]="vm",  [milestones]="milestones",  (onCancel)="cancel()")
+        kpi-edit-milestones-target([fg]="fg", [vm]="vm",  [milestones]="milestone",  (onCancel)="cancel()",
+        , (onEdit)="editStatus($event)")
    
-    .m-t-20(*ngIf="existMileston")
+    .m-t-20(*ngIf="existMileston && !editMilestones && !addMilestones")
        kpi-list-milestones-target(#listMilestone, [milestones]="milestones", [allUsers]="allUsers",
         (onEdit)="edit($event)", (onDelete)="delete($event)", (onEditStatus)="editStatus($event)")
         

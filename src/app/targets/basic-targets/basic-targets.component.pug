@@ -2,6 +2,15 @@ div(layout="column")
     //- name
     div(flex)
         bw-text-box([fg]="fg", field="name", label="name", leftIcon="local-offer")   
+        bw-select-picker.w-80.m-r-20(*ngIf="vm.visbleGroupings", flex, flex-xs="100", flex-gt-sm="33",
+                                    [fg]="fg", 
+                                    field="groupings",
+                                    label="I would like to set a target for:",
+                                    [items]="vm.groupingsList",
+                                    leftIcon="group-work",
+                                    noneSelectedText="{{vm.grouping}}",
+                                    [multiple]="true"
+                                    )
 
     div(flex, layout="row")
         .m-r-10(flex="40")
@@ -15,10 +24,10 @@ div(layout="column")
 
         .text-center(flex="20")
             bw-number.m-r-20([fg]="fg", field="value", label="value", leftIcon="edit")   
-            div {{valuePerc}}
+            
         .m-t-25.text-center(flex="40")
-            bw-button.m-l-5(title="# value", color="white", icon="number", [disabled]="valuePerc", (clicked)="unit('value')")  
-            bw-button.m-r-5(title="% pct.", color="white", icon="percent", [disabled]="!valuePerc", (clicked)="unit('percent')")  
+            bw-button.m-l-5(title="# value", color="{{colorValue}}", icon="number", [disabled]="valuePerc", (clicked)="unit('value')")  
+            bw-button.m-r-5(title="% pct.", color="{{colorPercent}}", icon="percent", [disabled]="!valuePerc", (clicked)="unit('percent')")  
     
     div(flex, layout="row")
         .m-r-10(flex="50")
@@ -31,13 +40,14 @@ div(layout="column")
                                     [disabled]="vm.noFrequency",
                                     noneSelectedText="{{vm.nodoSelectedText}}"
                                     )
-        .m-l-10(flex="50")
+        .m-l-10(flex="50", *ngIf="valuePerc")
             bw-select-picker.w-80.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
                                     [fg]="fg", 
                                     field="compareTo",
                                     label="Base on",
                                     [items]="vm.baseOnList",
-                                    leftIcon="calendar-alt"
+                                    leftIcon="calendar-alt",
+                                    noneSelectedText="{{vm.period}}"
                                     )
 
     div(flex, layout="row")

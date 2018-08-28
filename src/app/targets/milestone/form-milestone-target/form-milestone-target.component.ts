@@ -56,12 +56,14 @@ export class FormMilestoneTargetComponent implements OnInit {
 
   private refresh() {
     const that = this;
-    that.vmm.task = that.milestone[0].task;
-    that.vmm.target = that.milestone[0].target;
-    that.vmm.dueDate = that.milestone[0].dueDate;
-    that.vmm.responsible = that.milestone[0].responsible;
-    that.vmm.status = that.milestone[0].status;
-    this.status  = that.milestone[0].status;
+    if (that.milestone !== undefined) {
+      that.vmm.task = that.milestone[0].task;
+      that.vmm.target = that.milestone[0].target;
+      that.vmm.dueDate = that.milestone[0].dueDate;
+      that.vmm.responsible = that.milestone[0].responsible;
+      that.vmm.status = that.milestone[0].status;
+      this.status  = that.milestone[0].status;
+    }
   }
 
   private getResponsibleList() {
@@ -74,11 +76,16 @@ export class FormMilestoneTargetComponent implements OnInit {
       }).subscribe(({data}) => {
         const allUsers = (<any>data).allUsers;
         allUsers.forEach(element => {
+          if (element.profile !== undefined) {
             name = element.profile.firstName + ' ' + element.profile.lastName;
+          } else {
+            name = element.title;
+          }
             that.responsibleList.push({id: element._id,
               title: name,
               selected: false,
               disabled: false});
+            this.vmm.allUsers = allUsers;
             this.vmm.getReposibleList(that.responsibleList);
         });
      }));

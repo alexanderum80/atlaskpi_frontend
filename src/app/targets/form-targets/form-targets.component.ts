@@ -12,6 +12,7 @@ import { ListTargetsComponent } from '../list-targets/list-targets.component';
 import { IListItem } from '../../shared/ui/lists/list-item';
 import { MilestoneComponent } from '../milestone/milestone.component';
 import { Subscription } from 'rxjs';
+import { RelatedUsersComponent } from '../related-users/related-users.component';
 
 const targesQuery = require('graphql-tag/loader!./list-targets.gql');
 const addTargetsMutation = require('graphql-tag/loader!./add-targets.gql');
@@ -34,9 +35,11 @@ export class FormTargetsComponent implements OnInit {
   @ViewChild ('listTarget') listTarget: ListTargetsComponent;
   @ViewChild ('basic') basicForm: BasicTargetsComponent;
   @ViewChild ('milestoneComponent') milestoneComponent: MilestoneComponent;
+  @ViewChild ('related') relatedComponent: RelatedUsersComponent;
 
   @Output() onCancel = new EventEmitter<boolean>();
 
+  targat: any;
   targets: ITargetNew[];
   valuePerc = true;
   item: IListItem;
@@ -95,16 +98,20 @@ export class FormTargetsComponent implements OnInit {
   }
 
   add(event) {
+    this.vm.activeVisble = false;
     this.vm.fg.controls['_id'].setValue('');
     this.vm.fg.controls['name'].setValue('');
     this.vm.fg.controls['type'].setValue('');
     this.vm.value = null;
-    this.vm.fg.controls['compareTo'].setValue('');
     this.vm.fg.controls['recurrent'].setValue(false);
+    this._complitedGroupings(true);
+    this._complitedFrequency(true);
   }
 
   edit(id) {
+    this.vm.activeVisble = true;
     const target = filter( this.targets,  {'_id': id});
+    this.vm.target = target;
     this.vm.fg.controls['_id'].setValue(id);
     this.vm.fg.controls['name'].setValue(target[0].name);
     this.vm.fg.controls['unit'].setValue(target[0].unit);
@@ -112,6 +119,15 @@ export class FormTargetsComponent implements OnInit {
     this.vm.fg.controls['value'].setValue(target[0].value);
     this.vm.fg.controls['compareTo'].setValue(target[0].compareTo);
     this.vm.fg.controls['recurrent'].setValue(target[0].recurrent);
+
+    if (target[0].reportOptions.groupings) {
+      this.vm.grouping  = this.targets[0].reportOptions.groupings;
+    }
+
+    if (target[0].reportOptions.frequency) {
+      this.vm.fg.controls['recurrent'].setValue(target[0].reportOptions.frequency);
+    }
+
   }
 
 
@@ -148,6 +164,44 @@ export class FormTargetsComponent implements OnInit {
     if (that.chart) {
       that.type = 'chart';
       that.identifier = that.chart._id;
+
+      that.vm.source[0] =  {
+        type: 'chart',
+        identifier: that.chart._id
+      };
+
+      that.vm.kpi = that.chart.kpis[0]._id;
+    }
+
+  }
+
+  private _complitedGroupings(add?) {
+    const that = this;
+
+    if (that.chart.groupings.length > 0 && that.chart.groupings[0 ] !== '' ) {
+      if (add === true) {
+        this.vm.grouping = 'NOTHING SELECTED';
+      } else if (this.targets[0].reportOptions.groupings) {
+        this.vm.grouping  = this.targets[0].reportOptions.groupings;
+      }
+
+      that.vm.setGroupings(this.chart.groupings);
+      that.vm.visbleGroupings = true;
+    } else {
+      that.vm.visbleGroupings = false;
+    }
+
+  }
+
+  private _complitedFrequency(add?) {
+    const that = this;
+
+    if (that.chart.frequency !== '' && that.chart.frequency !== null && that.chart.frequency !== undefined  ) {
+      if (add === true) {
+        this.vm.period = 'NOTHING SELECTED';
+      } else if (this.targets[0].reportOptions.frequency) {
+        this.vm.period  = this.targets[0].reportOptions.frequency;
+      }
       const frequency = that.chart.frequency;
       const predefined = that.chart.dateRange[0].predefined;
 
@@ -155,15 +209,12 @@ export class FormTargetsComponent implements OnInit {
         that.isCustom = true;
       }
 
-      that.vm.setTargetPeriod(frequency,  predefined);
-      that.vm.source[0] =  {
-        type: 'chart',
-        identifier: that.chart._id
-      };
-      that.vm.kpi = that.chart.kpis[0]._id;
+      that.vm.baseOnLists(frequency);
+      that.vm.setTargetPeriod(frequency, predefined)
     }
 
   }
+
 
 
   private _refreshTargets(id?: string) {
@@ -195,9 +246,11 @@ export class FormTargetsComponent implements OnInit {
             that.listTarget.itemClicked(that.item );
             that.selectItem(that.item);
           }
+          that._complitedFrequency();
+          that._complitedGroupings();
           that.edit(that.vm.fg.controls._id.value);
         }
-     });
+      });
 
   }
 
@@ -238,8 +291,16 @@ export class FormTargetsComponent implements OnInit {
     let user = [];
     let index = 0;
     this.vm.users.forEach(element => {
-      //corregir element.deliveryMethod 
-      user[index++] = { id: element.id, deliveryMethod: [ 'mail' ]};
+      let deliveryMethodArray = [];
+      if (element['email'] === true) {
+        deliveryMethodArray.push('email');
+      }
+
+      if (element['push'] === true) {
+        deliveryMethodArray.push('push');
+      }
+
+      user[index++] = { id: element.id, deliveryMethod:  deliveryMethodArray };
     });
 
     const timezone = this.userService.user.profile.timezone;
@@ -261,7 +322,7 @@ export class FormTargetsComponent implements OnInit {
       'selected': this.vm.selected ? true : false,
       'reportOptions': {
         'frequency': this.chart.frequency,
-        'groupings': this.chart.groupings ,
+        'groupings': this.vm.groupings || '' ,
         'timezone': timezone ,
         'dateRange': {
           'from': this.chart.dateRange[0].custom.from !== null ? this.chart.dateRange[0].custom.from : '',

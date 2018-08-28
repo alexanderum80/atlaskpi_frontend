@@ -1,12 +1,12 @@
-.target-list.h-100.oeverflow-auto(layout="column")
+.target-list.h-100.overflow-auto(flex, layout="column")
     .m-20(flex-initial, layout="row")
         .m-r-10(flex="10")
             i.zmdi.zmdi-gps 
         div(flex="80") TARGETS MANAGER
 
-    .m-l-10.m-r-10.m-t-10.overflow-auto(*ngIf="vml.targetItems", flex)
+    .m-t-10(*ngIf="vml.targetItems", flex)
         .target-item(*ngFor="let item of vml.targetItems", [class.selected]="item.selected")
-            kpi-list-item-tabular.w-100.m-r-10(
+            kpi-list-item-tabular.w-100.m-r-40(
                 [item]="item",
                 [actionItems]="vml.menuItems",
                 [tableRowTemplate]="tableItem",

@@ -9,7 +9,7 @@ import { IMilestone } from '../../shared/models/targets.model';
 import { ApolloService } from '../../../shared/services/apollo.service';
 import { IUser } from '../../../users/shared';
 
-import { filter } from 'lodash';
+import { filter, clone, split } from 'lodash';
 
 // App Code
 
@@ -100,16 +100,20 @@ export class ListMiestoneViewModel extends ViewModel<IFilter> {
     }
 
     private getUserName(responsible) {
-        let allUser = [];
         let name = '';
+        const users = clone(this._allUsers);
         responsible.forEach(element => {
-             const filters = filter(this._allUsers,  {'_id': element});
-             name === '' ?
-                name = filters[0].profile.firstName + ' ' + filters[0].profile.lastName :
-                name = name + ', ' + filters[0].profile.firstName + ' ' + filters[0].profile.lastName;
-             allUser.push(name);
+            const stringSplite = element.split('|');
+            for (let i = 0; i < stringSplite.length; i++) {
+                const filters = filter(users,  {'_id': stringSplite[i]});
+                if (filters.length > 0) {
+                    name === '' ?
+                    name = filters[0].profile.firstName + ' ' + filters[0].profile.lastName :
+                    name = name + ', ' + filters[0].profile.firstName + ' ' + filters[0].profile.lastName;
+                }
+            }
          });
-        return String(allUser);
+        return name;
    }
 
 

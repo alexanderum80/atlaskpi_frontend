@@ -1320,10 +1320,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     private _disableTargetOption(): void {
-        if (!this._hasSeries() ||
-            this._isChartTypePie() ||
-            (!this._hasFrequency() && !this._hasGrouping()) ||
-            this._isDateRangeInPast()) {
+        if (!this._hasSeries()) {
             this._commonService.disableChildrenActionItems(this.actionItems, ['set-target']);
         } else if (!this.createTarget) {
             this._commonService.disableChildrenActionItems(this.actionItems, ['set-target'], !this.createTarget);

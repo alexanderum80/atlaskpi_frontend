@@ -17,7 +17,7 @@ export class DateRangeViewModel extends ViewModel<DateRangeNew> {
     from: string;
 
     @Field({ type: String })
-    to: string; 
+    to: string;
 
     public initialize(model: DateRangeNew): void {
         this.onInit(model);
@@ -112,12 +112,17 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
     protected _user: IUserInfo;
 
     private _targetsPeriodItemList: SelectionItem[];
+    private _groupingsItemList: SelectionItem[];
     private frequency: any;
+    private _groupings: any;
+    private nodoSelectedTextGrouping: string;
+    private nodoSelectedTextPeriod: string;
 
-
+    visbleGroupings = true;
     noFrequency = false;
     activeVisble = false;
-    nodoSelectedText = 'NOTHING SELECTED'; 
+    nodoSelectedText = 'NOTHING SELECTED';
+    target: any;
 
     constructor() {
         super(null);
@@ -125,20 +130,19 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
 
     titleAction = 'Add an execution plan for this target';
 
-
     objectiveList: SelectionItem[] = [
-        { id: '', title: 'NOTHING SELECTED' },
         { id: 'increase', title: 'Increase' },
         { id: 'decrease', title: 'Decrease' },
         { id: 'fixed', title: 'Fixed' },
     ];
+
     periodList: SelectionItem[] = [
-        { id: '', title: 'NOTHING SELECTED' },
         { id: 'pt', title: 'Part Time' },
         { id: 'ft', title: 'Full Time' },
         { id: 'terminate', title: 'Terminated' },
         { id: 'suspend', title: 'suspended' }
     ];
+
     baseOnList: SelectionItem[] = [];
 
     userList: SelectionItem[] = [];
@@ -196,7 +200,7 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
     @Field({ type: Boolean })
     selected: boolean ;
 
-    @ArrayField({type: UserViewModel }) 
+    @ArrayField({type: UserViewModel })
     users: UsersNew[];
 
     @ArrayField({type: SourceViewModel})
@@ -207,6 +211,9 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
 
     @ArrayField({type: NotifyViewModel })
     notificationConfig: NotificationConfigNew;
+
+    @Field({ type: String })
+    groupings:  [string];
 
     initialize(model: any): void {
         this.onInit(model);
@@ -226,7 +233,7 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
     }
 
     setTargetPeriod(frequency, predefined) {
-        if(frequency === this.frequency) {
+        if (frequency === this.frequency) {
             return;
         }
 
@@ -234,60 +241,97 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
         this._prepareTargentePeriodListItems(predefined);
     }
 
+    setGroupings(list) {
+        this.grouping = this.nodoSelectedTextGrouping;
+
+        if (list === this.groupings) {
+            return;
+        }
+
+        this._groupings = list;
+        this._groupings.push('all');
+        this._groupings.push('NOTHING SELECTED');
+        this._groupingsItemList = this._groupings.map(d => ({
+            id: d ,
+            title: d,
+        }));
+    }
+
+    get groupingsList(): SelectionItem[] {
+        return this._groupingsItemList;
+    }
 
     get targetPeriodItems(): SelectionItem[] {
         return this._targetsPeriodItemList;
     }
 
+    set grouping(grouping) {
+        this.nodoSelectedTextGrouping = grouping;
+    }
+
+    get grouping() {
+        return this.nodoSelectedTextGrouping;
+    }
+
+    set period(period) {
+        this.nodoSelectedTextPeriod = period;
+    }
+
+    get period() {
+        return this.nodoSelectedTextPeriod;
+    }
+
     private _prepareTargentePeriodListItems(predefined) {
         this._getFrequency(predefined);
+
         this._targetsPeriodItemList = this._getFrequency(predefined).map(d => ({
             id: d ,
             title: d,
         }));
     }
 
-    private _baseOnList(frequency) {
-        switch(frequency) {
+    baseOnLists(frequency) {
+        this.period = this.nodoSelectedTextPeriod;
+        switch (frequency) {
             case 'monthly':
-                    this.baseOnList = [{ 
-                        id: '', 
-                        title: 'NOTHING SELECTED' 
-                    },{
+                    this.baseOnList = [{
+                        id: '',
+                        title: 'NOTHING SELECTED'
+                    }, {
                         id: 'Last month',
                         title: 'Last month'
                     }, {
-                        id: 'Same month, Last year',
-                        title: 'Same month, Last year'
+                        id: 'Same month Last year',
+                        title: 'Same month Last year'
                     }, {
-                        id: 'Same month, 2 year ago',
-                        title: 'Same month, 2 year ago'
+                        id: 'Same month 2 year ago',
+                        title: 'Same month 2 year ago'
                     }];
                 break;
             case 'quarterly':
-                    this.baseOnList =  [{ 
-                        id: '', 
-                        title: 'NOTHING SELECTED' 
-                    },{
-                        id: 'Last quarterly',
-                        title: 'Last quarterly'
+                    this.baseOnList =  [{
+                        id: '',
+                        title: 'NOTHING SELECTED'
                     }, {
-                        id: 'Same quarterly, Last year',
-                        title: 'Same quarterly, Last year'
+                        id: 'Last quarter',
+                        title: 'Last quarter'
                     }, {
-                        id: 'Same quarterly, 2 year ago',
-                        title: 'Same quarterly, 2 year ago'
+                        id: 'Same quarter Last year',
+                        title: 'Same quarter Last year'
+                    }, {
+                        id: 'Same quarter 2 year ago',
+                        title: 'Same quarter 2 year ago'
                     }];
                 break;
             case 'yearly':
-                    this.baseOnList = [{ 
-                        id: '', 
-                        title: 'NOTHING SELECTED' 
-                    },{
+                    this.baseOnList = [{
+                        id: '',
+                        title: 'NOTHING SELECTED'
+                    }, {
                         id: 'Last year',
                         title: 'Last year'
                     }, {
-                        id: '2YearAgo',
+                        id: '2 year ago',
                         title: '2 year ago'
                     }];
                 break;
@@ -295,36 +339,39 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
                     this.baseOnList = [{
                         id: 'Previous Period',
                         title: 'Previous Period'
-                    }]
+                    }];
+                break;
         }
     }
 
     private _getFrequency(predefined) {
         let valueMoment = [];
-        
+
         switch(this.frequency) {
             case 'monthly':
-                    valueMoment[0] = 'NOTHING SELECTED';
+                    valueMoment[0] = 'This monthly';
                     const monthNow = Number(moment(Date.now()).format('MM')) ;
                     const monthDife = 12 - monthNow;
                     for (let index = 0; index < monthDife + 1; index++) {
                         valueMoment[index + 1] = moment(Date.now()).add(index, 'month').format('MMM') ;
                     }
-                    this._baseOnList(this.frequency);
+                    this.nodoSelectedText = 'This monthly';
+                    this.baseOnLists(this.frequency);
                 break;
             case 'quarterly':
-                valueMoment[0] = 'NOTHING SELECTED';
+                valueMoment[0] = 'This quarterly';
                 const quartlyNow = this.getQuartely(Number(moment(Date.now()).format('MM'))) ;
                 const quertlyDife = 4 - quartlyNow;
                 for (let index = 0; index < quertlyDife + 1; index++) {
                     valueMoment[index + 1] = 'Q' + (quartlyNow + index).toString();
                 }
-                this._baseOnList(this.frequency);
+                this.nodoSelectedText = 'This quarterly';
+                this.baseOnLists(this.frequency);
                 break;
             case 'yearly':
                     valueMoment[0] = 'This year';
                     this.nodoSelectedText = 'This year';
-                    this._baseOnList(this.frequency);
+                    this.baseOnLists(this.frequency);
                 break;
             default:
                     this.noFrequency = true;
@@ -332,28 +379,27 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
                     this.activeVisble = true;
                     this.active = true;
                     this.nodoSelectedText = predefined;
-                    switch(predefined) {
+                    switch (predefined) {
                         case 'this month':
-                            this._baseOnList('monthly');
+                            this.baseOnLists('monthly');
                             break;
                         case 'this year':
-                            this._baseOnList('yearly');
+                            this.baseOnLists('yearly');
                             break;
                         case 'this quarter':
-                            this._baseOnList('quarterly');
+                            this.baseOnLists('quarterly');
                             break;
                         case 'custom':
-                            this._baseOnList('custom');
+                            this.baseOnLists('custom');
                             break;
                     }
-                    
                 break;
         }
         return valueMoment;
     }
 
     private getQuartely(month) {
-        if(month < 5) {
+        if (month < 5) {
             return 1;
         } else if (month < 7 && month > 4) {
             return 2;

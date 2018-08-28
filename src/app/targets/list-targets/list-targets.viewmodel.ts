@@ -39,9 +39,9 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
                 icon: 'delete'
             }]
         }];
-    
+
     private item: IListItem;
-    
+
     constructor(userService: UserService) {
         super(userService);
     }
@@ -56,7 +56,7 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
         }
 
         this._targets = list;
-        
+
         this._targetsItemList =  this._targets.map(d => ( {
             id: d._id ,
             imagePath: './assets/img/targets/target_g_t.png',
@@ -85,7 +85,7 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
 
 
     selectTarget(item: IListItem) {
-        this._targetsItemList.forEach(t =>{ 
+        this._targetsItemList.forEach(t => { 
             t.selected = false;
             t.imagePath = './assets/img/targets/target_g_t.png';
         });
@@ -97,7 +97,7 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
     }
 
     unSelectTarget() {
-        this._targetsItemList.forEach(t =>{
+        this._targetsItemList.forEach(t => {
             t.selected = false;
             t.imagePath = './assets/img/targets/target_g_t.png';
         });
@@ -110,17 +110,16 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
 
 
     private _nextDueDate(frequency) {
-        //Aqui hay que general el valor
         let dueDate: any;
 
-        switch(frequency) {
+        switch (frequency) {
             case 'monthly':
                     dueDate = moment().endOf('month').toDate();
                 break;
             case 'yearly':
                     dueDate = moment().endOf('year').toDate() ;
                 break;
-            case 'quartely':
+            case 'quarterly':
                     dueDate =  moment().endOf('quarter').toDate();
                 break;
         }

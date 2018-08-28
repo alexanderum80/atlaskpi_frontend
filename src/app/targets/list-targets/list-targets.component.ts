@@ -5,6 +5,7 @@ import { ListTargetsViewModel } from './list-targets.viewmodel';
 import { ITargetNew } from '../shared/models/targets.model';
 import { IListItem } from '../../shared/ui/lists/list-item';
 import { ApolloService } from '../../shared/services/apollo.service';
+import SweetAlert from 'sweetalert2';
 
 const targesDelete = require('graphql-tag/loader!./delete-target.gql');
 
@@ -76,13 +77,27 @@ export class ListTargetsComponent implements OnInit {
   }
 
   private delete(item) {
-    this._apolloService.mutation < ITargetNew > (targesDelete, {'id': item })
-    .then(res => {
-      this.onDelete.emit(item);
-    })
-    .catch(err => {
-        this._displayServerErrors(err) ;
-    });
+    const that = this;
+
+        SweetAlert({
+                title: 'Are you sure?',
+                text: `Once target's location has been deleted, you will not be able to recover it. Are you sure you want to delete it?`,
+                type: 'warning',
+                showConfirmButton: true,
+                showCancelButton: true
+            })
+            .then((res) => {
+                if (res.value === true) {
+                  this._apolloService.mutation < ITargetNew > (targesDelete, {'id': item })
+                  .then(res => {
+                    this.onDelete.emit(item);
+                  })
+                  .catch(err => {
+                      this._displayServerErrors(err) ;
+                  });
+                }
+            });
+
   }
 
   private _displayServerErrors(err) {
