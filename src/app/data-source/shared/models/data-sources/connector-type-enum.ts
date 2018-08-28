@@ -11,5 +11,8 @@ export enum ConnectorTypeEnum  {
     FacebookServerSide,
     TwitterServerSide,
     GoogleAnalyticsServerSide,
-    CallRail
+    CallRail,
+    CustomExcel,
+    CustomCSV,
+    CustomTable
   }

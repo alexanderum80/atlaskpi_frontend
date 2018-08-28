@@ -1,0 +1,111 @@
+bw-card.chart-view.full-height.chart-card.p-relative([depth]="1", [class.maximized]="maximized")
+    kpi-overlay
+        kpi-edit-chart-format([chartData]="chartData", *ngIf="editChartFormat", (done)="closeOverlay($event)")
+        kpi-change-settings-on-fly.change-settings([chartData]="chartData", *ngIf="changeSettingsOnFly", (done)="closeOverlay($event)")
+        kpi-download-chart-view([chartData]="chartData", *ngIf="downLoadChart", [childChart]="chart", [title]="title", (done)="closeOverlay($event)")
+        kpi-table-mode(*ngIf="tableMode", (done)="closeOverlay($event)")
+    bw-card-header([padded]="true", color="white")
+        .m-b-10.chart-title([attr.title]="title") {{title}}
+        bw-actions.m-r-30([actionItems]="compareActions", (actionClicked)="actionClicked($event)")
+        bw-actions([actionItems]="actionItems", (actionClicked)="actionClicked($event)")
+        .runRate-container
+            .runRate-box(flex,*ngIf="enableRunRate", layout="column")
+                .rr-text.p-20(*ngIf="!_hasGrouping()",flex) RR: {{totalrunrateValues * totalFrequency | currency}}   
+                kpi-collapsable(flex, *ngIf="_hasGrouping()",[(collapsed)]="iscollapsed", headerText="RR {{totalrunrateValues * totalFrequency | currency}}", color="white")
+                    .content(flex)
+                        div(flex,flex-wrap,*ngFor="let run of vm.runRateList", layout="row",layout-xs="column", layout-align="center justify")
+                            .rr-text.p-10.text-left(flex=70) {{run.name}}   
+                            .rr-value.p-10.text-right(flex) {{run.data * totalFrequency  | currency}}
+    bw-card-body([padded]="true")
+        bw-button.drillup-button.animated(*ngIf="drilledDown", class="{{drillUpAnimation}}", icon="arrow-left", color="white", (clicked)="drillup()")
+
+        bw-button.go-back-button.animated(*ngIf="isSettingsOnFly", class="{{drillUpAnimation}}", icon="arrow-left", color="white", (clicked)="closeSettingOnFly()")
+
+        bw-button.go-back-button.animated(*ngIf="enableRunRate", class="{{drillUpAnimation}}", icon="arrow-left", color="white", (clicked)="closeRunRate()")            
+        .h-100.p-relative(layout="column", layout-align="center justify")    
+            .targets-button
+                div(*ngIf="chartData.futureTarget && hasFutureTargets && chartData.targetList.length", flex-none)
+                    div(layout="row", layout-align="end center")
+                        bw-button(icon="chevron-left", title="back", color="gray", (clicked)="subscribeToChartUpdates()")
+                div(*ngIf="futureTargetShow", flex-none)
+                    div(layout="row", layout-align="end center")
+                        bw-button(icon="chevron-right", title="show future targets", color="gray", (clicked)="showFutureTargets()")
+            .highcharts-container(flex, [chart]="chart", *ngIf="chartMaximized", [class.chart-normal]="!maximized")
+            div(flex, *ngIf="chartIsEmpty()")
+                .h-100.height-level(layout="row", layout-padding, layout-align="center center")
+                        div.text-center(flex)
+                            i.zmdi.zmdi-info-outline.c-lightGray.no-data-icon
+                .text-center(class="{{descriptionAnimation}}")
+                    | THERE IS NO DATA AVAILABLE   
+
+    .chart-description.animated(flex, *ngIf="showDescription", class="{{descriptionAnimation}}")
+        .chart-description-title.text-center.m-t-10.c-black
+            |   Details of chart and data modifications
+        .chart-info.zmdi.zmdi-chart
+            |   CHART General Info
+            .chart-detail(flex)
+                .m-5(layout="row", layout-padding, *ngIf="chartData.title") 
+                    div.bold(flex-xs="100", flex-sm="50", flex-md="30", flex-gt-md="20", layout="column") Name:
+                    div(flex-xs="100", flex-sm="50", flex-md="70", flex-gt-md="80", layout="column") "{{ chartData.title }}"
+                .m-5(layout="row", layout-padding, *ngIf="chartData.subtitle") 
+                    div.bold(flex-xs="100", flex-sm="50", flex-md="30", flex-gt-md="20", layout="column") Description:
+                    div(flex-xs="100", flex-sm="50", flex-md="70", flex-gt-md="80", layout="column") "{{ chartData.subtitle }}"
+                .m-5(layout="row", layout-padding, *ngIf="chartData.dateRange && chartData.dateRange.length > 0") 
+                    div(flex="60", layout="row", layout-padding, *ngIf="from && to")
+                        .bold(flex-xs="40", flex-sm="40", flex-md="35", flex-gt-md="35") Date Range:
+                        .flex(flex-xs="60", flex-sm="60", flex-md="65", flex-gt-md="65") "{{ from | date:'MM/dd/yyyy' }} To {{ to | date:'MM/dd/yyyy' }}"
+                    div(flex="40", layout="row", layout-padding, *ngIf="chartData.frequency")
+                        .bold(flex-xs="60", flex-sm="60", flex-md="40", flex-gt-md="40") Frequency:
+                        .flex(flex-xs="40", flex-sm="40", flex-md="60", flex-gt-md="60") "{{ chartData.frequency }}"
+        .chart-info.zmdi.zmdi-device-hub(flex="100")
+            |   KPI General Info
+            .chart-detail(flex, *ngFor="let Kpi of chartData.kpis")
+                .m-5(layout="row", layout-padding) 
+                    div(flex="50", layout="row", layout-padding, *ngIf="Kpi.name")
+                        .bold(flex-xs="50", flex-sm="50", flex-md="40", flex-gt-md="40") Name:
+                        .flex(flex-xs="50", flex-sm="50", flex-md="60", flex-gt-md="60") "{{ Kpi.name }}"
+                    div(flex="25", layout="row", layout-padding, *ngIf="Kpi.type")
+                        .bold(flex-xs="50", flex-sm="50", flex-md="40", flex-gt-md="40") Type:
+                        .flex(flex-xs="50", flex-sm="50", flex-md="60", flex-gt-md="60") "{{ Kpi.type }}"
+                    div(flex="25", layout="row", layout-padding, *ngIf="Kpi.group")
+                        .bold(flex-xs="50", flex-sm="50", flex-md="40", flex-gt-md="40") Group:
+                        .flex(flex-xs="50", flex-sm="50", flex-md="60", flex-gt-md="60") "{{ Kpi.group }}"
+                .m-5(layout="row", layout-padding, *ngIf="Kpi.description") 
+                    div.bold(flex-xs="100", flex-sm="50", flex-md="30", flex-gt-md="20", layout="column") Description:
+                    div(flex, layout="column") "{{ Kpi.description }}"
+                .m-5(layout="row", layout-padding, *ngIf="dataSource") 
+                    div.bold(flex-xs="100", flex-sm="50", flex-md="30", flex-gt-md="20", layout="column") Data Source:
+                    div(flex, layout="column") "{{ dataSource }}"
+                .m-5(layout="row", layout-padding, *ngIf="Kpi.expression") 
+                    div.bold(flex-xs="100", flex-sm="50", flex-md="30", flex-gt-md="20", layout="column") Formula used:
+                    div(flex, layout="column") "{{ Kpi.expression }}"
+        .chart-info.zmdi.zmdi-filter-list(*ngIf="filterData")
+            |   Filters on Data
+            .chart-detail(flex, *ngFor="let item of filterData")
+                kpi-chart-detail-filter([item]="item")
+        .chart-info.zmdi.zmdi-group-work(*ngIf="chartData.groupings && chartData.groupings.length > 0")
+            |   Groupings applied
+            .chart-detail(flex, *ngFor="let grouping of chartData.groupings")
+                .m-10(layout="row", layout-padding) 
+                    div Your data it's being grouped by "
+                    .bold  {{grouping}}
+                    | "
+        .chart-info.zmdi.zmdi-swap(*ngIf="chartData.comparison && chartData.comparison.length > 0")
+            |   Comparison
+            .chart-detail(flex, *ngFor="let comparison of chartData.comparison")
+                .m-5(layout="row", layout-padding) 
+                    div(flex) Your data it's being compared with values from {{comparisonValue}}
+                .m-5(layout="row", layout-padding) 
+                    div.bold(flex-xs="100", flex-sm="50", flex-md="50", flex-gt-md="40", layout="column") Previous Date Range:
+                    div(flex, layout="column") {{ comparisonDateRange.from | date: "MM/dd/yyyy" }} to {{ comparisonDateRange.to | date: "MM/dd/yyyy" }}
+
+    bw-button.closeDescription(*ngIf="showDescription", flex-none, color="blue", icon="arrow-left", title="BACK", class="normal", (clicked)="closeDescription()" )
+
+    div.p-absolute(*ngIf="setGoal")
+<<<<<<< HEAD
+        kpi-set-goal([chartData]="chartData", (done)="closeOverlay($event)", (targetOverlay)="targetOverlay($event)")
+
+kpi-form-targets(*ngIf="targetsVisible", [chart]="chartData", (onCancel)="onCloseTargets($event)")
+=======
+        kpi-set-goal([chartData]="chartData", (done)="closeOverlay($event)", (targetOverlay)="targetOverlay($event)")
+>>>>>>> development

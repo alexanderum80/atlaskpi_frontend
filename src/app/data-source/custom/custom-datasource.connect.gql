@@ -1,0 +1,9 @@
+mutation CustomConnect($input: ICustomInput) {
+    customConnect(input: $input) {
+        success
+        errors {
+            errors
+            field
+        }
+    }
+}

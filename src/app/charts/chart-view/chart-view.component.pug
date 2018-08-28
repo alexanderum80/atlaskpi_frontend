@@ -8,13 +8,21 @@ bw-card.chart-view.full-height.chart-card.p-relative([depth]="1", [class.maximiz
         .m-b-10.chart-title([attr.title]="title") {{title}}
         bw-actions.m-r-30([actionItems]="compareActions", (actionClicked)="actionClicked($event)")
         bw-actions([actionItems]="actionItems", (actionClicked)="actionClicked($event)")
-        
+        .runRate-container
+            .runRate-box(flex,*ngIf="enableRunRate", layout="column")
+                .rr-text.p-20(*ngIf="!_hasGrouping()",flex) RR: {{totalrunrateValues * totalFrequency | currency}}   
+                kpi-collapsable(flex, *ngIf="_hasGrouping()",[(collapsed)]="iscollapsed", headerText="RR {{totalrunrateValues * totalFrequency | currency}}", color="white")
+                    .content(flex)
+                        div(flex,flex-wrap,*ngFor="let run of vm.runRateList", layout="row",layout-xs="column", layout-align="center justify")
+                            .rr-text.p-10.text-left(flex=70) {{run.name}}   
+                            .rr-value.p-10.text-right(flex) {{run.data * totalFrequency  | currency}}
     bw-card-body([padded]="true")
         bw-button.drillup-button.animated(*ngIf="drilledDown", class="{{drillUpAnimation}}", icon="arrow-left", color="white", (clicked)="drillup()")
 
-        bw-button.go-back-button.animated(*ngIf="isSettingsOnFly()", class="{{drillUpAnimation}}", icon="arrow-left", color="white", (clicked)="closeSettingOnFly()")
+        bw-button.go-back-button.animated(*ngIf="isSettingsOnFly", class="{{drillUpAnimation}}", icon="arrow-left", color="white", (clicked)="closeSettingOnFly()")
 
-        .h-100.p-relative(layout="column", layout-align="center justify")
+        bw-button.go-back-button.animated(*ngIf="enableRunRate", class="{{drillUpAnimation}}", icon="arrow-left", color="white", (clicked)="closeRunRate()")            
+        .h-100.p-relative(layout="column", layout-align="center justify")    
             .targets-button
                 div(*ngIf="chartData.futureTarget && hasFutureTargets && chartData.targetList.length", flex-none)
                     div(layout="row", layout-align="end center")
@@ -22,7 +30,6 @@ bw-card.chart-view.full-height.chart-card.p-relative([depth]="1", [class.maximiz
                 div(*ngIf="futureTargetShow", flex-none)
                     div(layout="row", layout-align="end center")
                         bw-button(icon="chevron-right", title="show future targets", color="gray", (clicked)="showFutureTargets()")
-
             .highcharts-container(flex, [chart]="chart", *ngIf="chartMaximized", [class.chart-normal]="!maximized")
             div(flex, *ngIf="chartIsEmpty()")
                 .h-100.height-level(layout="row", layout-padding, layout-align="center center")
@@ -97,4 +104,4 @@ bw-card.chart-view.full-height.chart-card.p-relative([depth]="1", [class.maximiz
     div.p-absolute(*ngIf="setGoal")
         kpi-set-goal([chartData]="chartData", (done)="closeOverlay($event)", (targetOverlay)="targetOverlay($event)")
 
-kpi-form-targets(*ngIf="targetsVisible", [chart]="chartData", (onCancel)="onCloseTargets($event)")
+    kpi-form-targets(*ngIf="targetsVisible", [chart]="chartData", (onCancel)="onCloseTargets($event)")

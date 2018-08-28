@@ -58,24 +58,24 @@ form#signup-form(*ngIf="!leadCreated", flex, [formGroup]="fg", (ngSubmit)="signU
                 p.lead.c-red(*ngIf="error !== undefined")
                     | {{error}}
             //-action
-            .m-b-15(flex-none)
+            .m-b-10(flex-none)
                 bw-button(color="white", title="Sign Up", class="normal", [rounded]="true", (clicked)="signUp()",
                         [disabled]="!formValid", type="submit")
 
         .authorization-form(*ngIf="authorizationCode  && !creatingAccount", layout="column")
             .m-t-25(flex)
                 bw-text-box([fg]="fg", field="authorizationCode", label="Code", [required]="false", [alt]="true") 
-            .m-b-15(flex)
+            div(flex)
                 bw-button(color="white", title="Authorize", class="normal", [rounded]="true", (clicked)="signUp()",
                         [disabled]="!authorizedCodeEntered", type="submit")
 
         //-link to signIn
         .links(*ngIf="!creatingAccount && !accountReady")
-            div
-                a#have-an-account.c-white(href="#", (click)="goToSignin($event)") I already have an account
-            .m-t-5(*ngIf="!authorizationCode")
+            .text-center
+                a#have-an-account.c-white(href="#", (click)="goToSignin($event)") Go to Log In
+            .m-t-10(*ngIf="!authorizationCode")
                 a.c-white(href="#", (click)="switchToAuthorize($event)") I have an authorization code
-            .m-t-5(*ngIf="authorizationCode")
+            .m-t-10(*ngIf="authorizationCode")
                 a.c-white(href="#", (click)="backToSignUp($event)") Back to Sign Up
 
 .lead-created-container(*ngIf="leadCreated", layout="column")
