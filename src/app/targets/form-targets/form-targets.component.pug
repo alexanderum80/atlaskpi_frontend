@@ -11,7 +11,7 @@ bw-modal(#targetModal='', size="lg", [openOnInit]="true", (onClosed)="cancel()",
                         bw-tab-set.w-80
                             bwTab.m-10(heading="Basic", icon="Basic", (select)="setIndex(1)",
                                 [active]="activeIndex(1)") 
-                                kpi-basic-targets(#basic, [fg]="vm.fg", [vm]="vm")
+                                kpi-basic-targets(#basic, [fg]="vm.fg", [vm]="vm", [isBaseOnVisible]="isCustom")
                             bwTab.m-10(heading="Related Users", icon="Related Users", (select)="setIndex(2)",
                                 [active]="activeIndex(2)") 
                                 kpi-related-users(#related, [fg]="vm.fg", [vm]="vm")

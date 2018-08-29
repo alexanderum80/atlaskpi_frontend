@@ -62,6 +62,7 @@ export class MilestoneComponent implements OnInit {
   cancel(event) {
       this.addMilestones = false;
       this.editMilestones = false;
+      this.titleAction = '';
   }
 
   refresh(target) {

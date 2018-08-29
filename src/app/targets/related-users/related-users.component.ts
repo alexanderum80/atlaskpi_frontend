@@ -9,7 +9,7 @@ import { MenuItem } from '../../ng-material-components';
 import { userApi } from './users-actions';
 import { UserService } from '../../shared/services/user.service';
 import { IUserInfo } from '../../shared/models/user';
-import { filter } from 'lodash';
+import { filter, clone } from 'lodash';
 
 @Component({
   selector: 'kpi-related-users',
@@ -73,12 +73,18 @@ export class RelatedUsersComponent implements OnInit {
     }
   }
 
-  removeUser(item: FormGroup) {
+  removeUser(item?: FormGroup) {
     const usersControls = this.vm.fg.get('users') as FormArray;
-    const filterIndex = usersControls.controls.findIndex(c => c === item);
 
-    if (filterIndex > -1) {
+    let filterIndex: any ;
+
+    if (item) {
+      filterIndex = usersControls.controls.findIndex(c => c === item) ;
+      if (filterIndex > -1 ) {
         (this.vm.fg.get('users') as FormArray).removeAt(filterIndex);
+      }
+    } else {
+        delete(usersControls.controls);
     }
   }
 

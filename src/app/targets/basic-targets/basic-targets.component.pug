@@ -8,8 +8,7 @@ div(layout="column")
                                     label="I would like to set a target for:",
                                     [items]="vm.groupingsList",
                                     leftIcon="group-work",
-                                    noneSelectedText="{{vm.grouping}}",
-                                    [multiple]="true"
+                                    noneSelectedText="{{vm.grouping || 'NOTHING SELECTED'}}",
                                     )
 
     div(flex, layout="row")
@@ -26,8 +25,8 @@ div(layout="column")
             bw-number.m-r-20([fg]="fg", field="value", label="value", leftIcon="edit")   
             
         .m-t-25.text-center(flex="40")
-            bw-button.m-l-5(title="# value", color="{{colorValue}}", icon="number", [disabled]="valuePerc", (clicked)="unit('value')")  
-            bw-button.m-r-5(title="% pct.", color="{{colorPercent}}", icon="percent", [disabled]="!valuePerc", (clicked)="unit('percent')")  
+            bw-button.m-l-5(title="# value", color="{{colorValue}}", icon="number", (clicked)="unit('value')")  
+            bw-button.m-r-5(title="% pct.", color="{{colorPercent}}", icon="percent", (clicked)="unit('percent')")  
     
     div(flex, layout="row")
         .m-r-10(flex="50")
@@ -38,16 +37,16 @@ div(layout="column")
                                     [items]="vm.targetPeriodItems",
                                     leftIcon="calendar-alt",
                                     [disabled]="vm.noFrequency",
-                                    noneSelectedText="{{vm.nodoSelectedText}}"
+                                    noneSelectedText="{{vm.nodoSelectedText || 'NOTHING SELECTED'}}"
                                     )
-        .m-l-10(flex="50", *ngIf="valuePerc")
+        .m-l-10(flex="50", *ngIf="!isBaseOnVisible")
             bw-select-picker.w-80.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
                                     [fg]="fg", 
                                     field="compareTo",
                                     label="Base on",
                                     [items]="vm.baseOnList",
                                     leftIcon="calendar-alt",
-                                    noneSelectedText="{{vm.period}}"
+                                    noneSelectedText="{{vm.period || 'NOTHING SELECTED'}}"
                                     )
 
     div(flex, layout="row")
@@ -59,4 +58,3 @@ div(layout="column")
                     )
         .m-l-10(flex="50")
             bw-toggle(*ngIf="vm.activeVisble", [fg]="fg", field="active", color="green", label="Active")
-

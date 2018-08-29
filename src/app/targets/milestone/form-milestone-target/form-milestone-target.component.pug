@@ -26,7 +26,7 @@
                                         [items]="vmm.responsibleList",
                                         leftIcon="accounts",
                                         [multiple]="true",
-                                        noneSelectedText="{{vmm.noneSelectText}}"
+                                        noneSelectedText="{{vmm.noneSelectText || 'NOTHING SELECTED'}}"
                                         )  
 
         .m-b-0(flex="20")

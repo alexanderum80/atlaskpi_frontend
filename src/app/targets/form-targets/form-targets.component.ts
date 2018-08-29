@@ -13,6 +13,7 @@ import { IListItem } from '../../shared/ui/lists/list-item';
 import { MilestoneComponent } from '../milestone/milestone.component';
 import { Subscription } from 'rxjs';
 import { RelatedUsersComponent } from '../related-users/related-users.component';
+import { FormControl } from '@angular/forms';
 
 const targesQuery = require('graphql-tag/loader!./list-targets.gql');
 const addTargetsMutation = require('graphql-tag/loader!./add-targets.gql');
@@ -61,6 +62,7 @@ export class FormTargetsComponent implements OnInit {
   ngOnInit(): void {
     const that = this;
     this.vm.initialize(null);
+    that.vm.fg.addControl('period', new FormControl(that.vm.period));
     that.initialModel();
     that._refreshTargets();
   }
@@ -102,6 +104,7 @@ export class FormTargetsComponent implements OnInit {
     this.vm.fg.controls['_id'].setValue('');
     this.vm.fg.controls['name'].setValue('');
     this.vm.fg.controls['type'].setValue('');
+    this.relatedComponent.removeUser();
     this.vm.value = null;
     this.vm.fg.controls['recurrent'].setValue(false);
     this._complitedGroupings(true);
@@ -198,7 +201,7 @@ export class FormTargetsComponent implements OnInit {
 
     if (that.chart.frequency !== '' && that.chart.frequency !== null && that.chart.frequency !== undefined  ) {
       if (add === true) {
-        this.vm.period = 'NOTHING SELECTED';
+        this.vm.period = '';
       } else if (this.targets[0].reportOptions.frequency) {
         this.vm.period  = this.targets[0].reportOptions.frequency;
       }
@@ -207,10 +210,13 @@ export class FormTargetsComponent implements OnInit {
 
       if (predefined === 'custom') {
         that.isCustom = true;
+        that.vm.fg.controls['compareTo'].setValue('Previous Period');
+      } else {
+        that.isCustom = false;
       }
 
       that.vm.baseOnLists(frequency);
-      that.vm.setTargetPeriod(frequency, predefined)
+      that.vm.setTargetPeriod(frequency, predefined);
     }
 
   }
@@ -232,6 +238,8 @@ export class FormTargetsComponent implements OnInit {
 
         if (that.targets.length === 0) {
           that.listLoad = false;
+          that._complitedFrequency(true);
+          that._complitedGroupings(true);
         } else {
           that.listLoad = true;
 

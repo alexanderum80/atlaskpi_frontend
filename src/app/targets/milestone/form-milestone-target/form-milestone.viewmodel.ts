@@ -9,6 +9,7 @@ import { MenuItem } from '../../../ng-material-components';
 import * as moment from 'moment';
 import { clone, filter } from 'lodash';
 import { IUser } from '../../../users/shared';
+import { RouteReuseStrategy } from '@angular/router';
 
 
 
@@ -105,6 +106,10 @@ export class FormMilestoneViewModel extends ViewModel<IMilestone> {
     }
 
     private getUserName(responsible) {
+        if (!responsible) {
+            return '';
+        }
+
         let name = '';
         const users = clone(this._allUsers);
         responsible.forEach(element => {

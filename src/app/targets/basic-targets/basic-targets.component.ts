@@ -12,10 +12,12 @@ import {
 export class BasicTargetsComponent implements OnInit {
   @Input() fg: FormGroup;
   @Input() vm: any;
+  @Input() isBaseOnVisible = true;
 
   colorValue = 'white';
   colorPercent = 'white';
   valuePerc = true;
+  
   private _subscription: Subscription[] = [];
 
 
@@ -27,6 +29,8 @@ export class BasicTargetsComponent implements OnInit {
 
   unit(unit: string) {
     this.fg.controls.unit.setValue(unit);
+    unit === 'value' ? this.valuePerc = false : this.valuePerc = true;
+    this._color();
   }
 
   private subscription() {
@@ -34,20 +38,28 @@ export class BasicTargetsComponent implements OnInit {
       that._subscription.push(this.vm.fg.controls['type'].valueChanges.subscribe(value => {
         that._valuePerc(value);
     }));
+
+  }
+
+  private _color() {
+    if (this.valuePerc) {
+      this.colorPercent = 'blue';
+      this.colorValue = 'white';
+    } else {
+      this.colorPercent = 'white';
+      this.colorValue = 'blue';
+    }
   }
 
   private _valuePerc(type) {
     if (type === 'fixed')  {
       this.valuePerc = false;
-      this.colorPercent = 'white';
-      this.colorValue = 'silver';
       this.fg.controls.unit.setValue('value');
     } else {
       this.valuePerc = true;
-      this.colorPercent = 'silver';
-      this.colorValue = 'white';
       this.fg.controls.unit.setValue('percent');
     }
+    this._color();
   }
 
 

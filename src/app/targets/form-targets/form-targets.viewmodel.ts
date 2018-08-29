@@ -121,8 +121,9 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
     visbleGroupings = true;
     noFrequency = false;
     activeVisble = false;
-    nodoSelectedText = 'NOTHING SELECTED';
+    nodoSelectedText = '';
     target: any;
+    existCustom;
 
     constructor() {
         super(null);
@@ -250,7 +251,6 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
 
         this._groupings = list;
         this._groupings.push('all');
-        this._groupings.push('NOTHING SELECTED');
         this._groupingsItemList = this._groupings.map(d => ({
             id: d ,
             title: d,
@@ -295,9 +295,6 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
         switch (frequency) {
             case 'monthly':
                     this.baseOnList = [{
-                        id: '',
-                        title: 'NOTHING SELECTED'
-                    }, {
                         id: 'Last month',
                         title: 'Last month'
                     }, {
@@ -309,10 +306,7 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
                     }];
                 break;
             case 'quarterly':
-                    this.baseOnList =  [{
-                        id: '',
-                        title: 'NOTHING SELECTED'
-                    }, {
+                    this.baseOnList = [{
                         id: 'Last quarter',
                         title: 'Last quarter'
                     }, {
@@ -325,9 +319,6 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
                 break;
             case 'yearly':
                     this.baseOnList = [{
-                        id: '',
-                        title: 'NOTHING SELECTED'
-                    }, {
                         id: 'Last year',
                         title: 'Last year'
                     }, {
@@ -344,57 +335,71 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
         }
     }
 
+
     private _getFrequency(predefined) {
         let valueMoment = [];
+        let frequency: string;
 
-        switch(this.frequency) {
-            case 'monthly':
-                    valueMoment[0] = 'This monthly';
-                    const monthNow = Number(moment(Date.now()).format('MM')) ;
-                    const monthDife = 12 - monthNow;
-                    for (let index = 0; index < monthDife + 1; index++) {
-                        valueMoment[index + 1] = moment(Date.now()).add(index, 'month').format('MMM') ;
-                    }
-                    this.nodoSelectedText = 'This monthly';
-                    this.baseOnLists(this.frequency);
-                break;
-            case 'quarterly':
-                valueMoment[0] = 'This quarterly';
-                const quartlyNow = this.getQuartely(Number(moment(Date.now()).format('MM'))) ;
-                const quertlyDife = 4 - quartlyNow;
-                for (let index = 0; index < quertlyDife + 1; index++) {
-                    valueMoment[index + 1] = 'Q' + (quartlyNow + index).toString();
-                }
-                this.nodoSelectedText = 'This quarterly';
-                this.baseOnLists(this.frequency);
-                break;
-            case 'yearly':
-                    valueMoment[0] = 'This year';
-                    this.nodoSelectedText = 'This year';
-                    this.baseOnLists(this.frequency);
-                break;
-            default:
-                    this.noFrequency = true;
-                    valueMoment[0] = predefined;
-                    this.activeVisble = true;
-                    this.active = true;
-                    this.nodoSelectedText = predefined;
-                    switch (predefined) {
-                        case 'this month':
-                            this.baseOnLists('monthly');
-                            break;
-                        case 'this year':
-                            this.baseOnLists('yearly');
-                            break;
-                        case 'this quarter':
-                            this.baseOnLists('quarterly');
-                            break;
-                        case 'custom':
-                            this.baseOnLists('custom');
-                            break;
-                    }
-                break;
+        if (predefined  === 'custom') {
+            frequency = 'custom';
+        } else {
+            frequency = this.frequency;
         }
+
+            switch (frequency) {
+                case 'monthly':
+                        valueMoment[0] = 'This monthly';
+                        const monthNow = Number(moment(Date.now()).format('MM')) ;
+                        const monthDife = 12 - monthNow;
+                        let index = 0 ;
+                        for (index; index < monthDife + 1; index++) {
+                            valueMoment[index + 1] = moment(Date.now()).add(index, 'month').format('MMM') ;
+                        }
+                        this.nodoSelectedText = 'This monthly';
+                        this.baseOnLists(this.frequency);
+                    break;
+                case 'quarterly':
+                    valueMoment[0] = 'This quarterly';
+                    const quartlyNow = this.getQuartely(Number(moment(Date.now()).format('MM'))) ;
+                    const quertlyDife = 4 - quartlyNow;
+                    let index1 = 0;
+                    for (index1; index1 < quertlyDife + 1; index1++) {
+                        valueMoment[index1 + 1] = 'Q' + (quartlyNow + index1).toString();
+                    }
+                    this.nodoSelectedText = 'This quarterly';
+                    this.baseOnLists(this.frequency);
+                    break;
+                case 'yearly':
+                        valueMoment[0] = 'This year';
+                        if (this.custom === true ) {
+                            valueMoment[1] = 'custom';
+                        }
+                        this.nodoSelectedText = 'This year';
+                        this.baseOnLists(this.frequency);
+                    break;
+                default:
+                        this.noFrequency = true;
+                        valueMoment[0] = predefined;
+                        // this.activeVisble = true;
+                        this.active = true;
+                        this.nodoSelectedText = predefined;
+                        switch (predefined) {
+                            case 'this month':
+                                this.baseOnLists('monthly');
+                                break;
+                            case 'this year':
+                                this.baseOnLists('yearly');
+                                break;
+                            case 'this quarter':
+                                this.baseOnLists('quarterly');
+                                break;
+                            case 'custom':
+                                this.baseOnLists('custom');
+                                break;
+                        }
+                    break;
+            }
+        
         return valueMoment;
     }
 
