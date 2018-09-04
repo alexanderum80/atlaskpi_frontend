@@ -124,6 +124,7 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
     nodoSelectedText = '';
     target: any;
     existCustom;
+    custom: boolean;
 
     constructor() {
         super(null);
@@ -137,24 +138,15 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
         { id: 'fixed', title: 'Fixed' },
     ];
 
-    periodList: SelectionItem[] = [
-        { id: 'pt', title: 'Part Time' },
-        { id: 'ft', title: 'Full Time' },
-        { id: 'terminate', title: 'Terminated' },
-        { id: 'suspend', title: 'suspended' }
-    ];
+    periodList: SelectionItem[] = [];
 
     baseOnList: SelectionItem[] = [];
 
     userList: SelectionItem[] = [];
 
-    responsiblePeopleList: SelectionItem[] = [{
-        id: 'People', title: 'People'
-    }];
+    responsiblePeopleList: SelectionItem[] = [];
 
-    statusList: SelectionItem[] = [{
-        id: 'due', title: 'Due'
-    }];
+    statusList: SelectionItem[] = [];
 
     @Field({ type: String })
     _id: string;
@@ -295,32 +287,32 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
         switch (frequency) {
             case 'monthly':
                     this.baseOnList = [{
-                        id: 'Last month',
-                        title: 'Last month'
+                        id: 'last month',
+                        title: 'last month'
                     }, {
-                        id: 'Same month Last year',
-                        title: 'Same month Last year'
+                        id: 'same month, Last year',
+                        title: 'same month Last year'
                     }, {
-                        id: 'Same month 2 year ago',
-                        title: 'Same month 2 year ago'
+                        id: 'same month, 2 year ago',
+                        title: 'lame month 2 year ago'
                     }];
                 break;
             case 'quarterly':
                     this.baseOnList = [{
-                        id: 'Last quarter',
-                        title: 'Last quarter'
+                        id: 'last quarter',
+                        title: 'last quarter'
                     }, {
-                        id: 'Same quarter Last year',
-                        title: 'Same quarter Last year'
+                        id: 'same quarter, Last year',
+                        title: 'same quarter Last year'
                     }, {
-                        id: 'Same quarter 2 year ago',
-                        title: 'Same quarter 2 year ago'
+                        id: 'same quarter, 2 year ago',
+                        title: 'same quarter 2 year ago'
                     }];
                 break;
             case 'yearly':
                     this.baseOnList = [{
-                        id: 'Last year',
-                        title: 'Last year'
+                        id: 'last year',
+                        title: 'last year'
                     }, {
                         id: '2 year ago',
                         title: '2 year ago'
@@ -328,8 +320,8 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
                 break;
             case 'custom':
                     this.baseOnList = [{
-                        id: 'Previous Period',
-                        title: 'Previous Period'
+                        id: 'previous Period',
+                        title: 'previous Period'
                     }];
                 break;
         }

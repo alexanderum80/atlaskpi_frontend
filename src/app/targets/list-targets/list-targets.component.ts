@@ -29,7 +29,7 @@ export class ListTargetsComponent implements OnInit {
   @Output() onDelete = new EventEmitter<string>();
 
   item: IListItem;
-  
+
   constructor(public vml: ListTargetsViewModel,
               private _apolloService: ApolloService) {}
 

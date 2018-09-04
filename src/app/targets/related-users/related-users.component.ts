@@ -9,7 +9,7 @@ import { MenuItem } from '../../ng-material-components';
 import { userApi } from './users-actions';
 import { UserService } from '../../shared/services/user.service';
 import { IUserInfo } from '../../shared/models/user';
-import { filter, clone } from 'lodash';
+import { filter, clone, forEach } from 'lodash';
 
 @Component({
   selector: 'kpi-related-users',
@@ -34,13 +34,19 @@ export class RelatedUsersComponent implements OnInit {
     that._refreshUser();
 
     that._subscription.push(that.vm.fg.controls['name'].valueChanges.subscribe(value => {
-      that.addUser(that.vm.target);
+      that.addUser(that.vm.target, value);
     }));
   }
 
-  addUser(target) {
+  addUser(target, name) {
 
-    if (target === undefined && this.vm.users.length === 0) {
+    if (name === '') {
+      const usersControls = this.vm.fg.get('users').controls;
+      for (let i = this.vm.users.length; i >= 0; i--) {
+          this.vm.users.splice(i, 1);
+          usersControls.splice(i, 1);
+      }
+
       this.isUserCurrent = true;
       this.userCurrent = this.userService.user._id;
       this.vm.users.push(new FormGroup({
@@ -48,8 +54,7 @@ export class RelatedUsersComponent implements OnInit {
         'push': new FormControl(true),
         'email': new FormControl(false),
       }) as any);
-      this.isUserCurrent = false;
-      this.vm.users.push(new FormGroup({}) as any);
+
     } else if (target !== undefined && this.vm.users.length === 0) {
       const users = target[0].notificationConfig.users;
       users.forEach(element => {
@@ -73,18 +78,18 @@ export class RelatedUsersComponent implements OnInit {
     }
   }
 
-  removeUser(item?: FormGroup) {
+  private add () {
+      this.isUserCurrent = false;
+      this.vm.users.push(new FormGroup({}) as any);
+  }
+
+  private removeUser(item?: FormGroup) {
     const usersControls = this.vm.fg.get('users') as FormArray;
 
     let filterIndex: any ;
-
-    if (item) {
-      filterIndex = usersControls.controls.findIndex(c => c === item) ;
-      if (filterIndex > -1 ) {
-        (this.vm.fg.get('users') as FormArray).removeAt(filterIndex);
-      }
-    } else {
-        delete(usersControls.controls);
+    filterIndex = usersControls.controls.findIndex(c => c === item) ;
+    if (filterIndex > -1 ) {
+      (this.vm.fg.get('users') as FormArray).removeAt(filterIndex);
     }
   }
 

@@ -17,7 +17,7 @@ export class BasicTargetsComponent implements OnInit {
   colorValue = 'white';
   colorPercent = 'white';
   valuePerc = true;
-  
+
   private _subscription: Subscription[] = [];
 
 

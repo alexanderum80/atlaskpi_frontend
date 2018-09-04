@@ -779,8 +779,15 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         }
     }
 
-    onCloseTargets($event): void {
-        this.targetsVisible = false;
+    onCloseTargets(event): void {
+        if (event['click'] === 'cancel') {
+            this.targetsVisible = false;
+        }
+
+        const refresh = {
+            refresh: true,
+        };
+        this.targetOverlay(refresh);
     }
 
 
@@ -1102,7 +1109,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     processChartUpdate(chart: string): void {
-        
+
         const rawChart: ChartData = JSON.parse(chart);
         this.chartData = rawChart;
 

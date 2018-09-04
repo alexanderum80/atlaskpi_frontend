@@ -1,0 +1,6 @@
+query findTargetByName ($name: String!) {
+  findTargetByName(name: $name) {
+    _id
+    name
+  }
+}

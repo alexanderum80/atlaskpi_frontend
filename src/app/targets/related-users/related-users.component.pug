@@ -9,7 +9,7 @@
             .text-right(flex="5")
                     i.zmdi.zmdi-smartphone-android
             .text-center(flex="10").mdc-text-blue
-                    i.zmdi.zmdi-plus((click)="addUser()")
+                    i.zmdi.zmdi-plus((click)="add()")
 
     div(flex, layout="row", *ngFor="let item of vm.fg.get('users').controls; let i=index")
             .text-center(flex="50")

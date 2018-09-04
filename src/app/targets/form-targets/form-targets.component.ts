@@ -14,13 +14,19 @@ import { MilestoneComponent } from '../milestone/milestone.component';
 import { Subscription } from 'rxjs';
 import { RelatedUsersComponent } from '../related-users/related-users.component';
 import { FormControl } from '@angular/forms';
+import { Apollo } from 'apollo-angular';
+import { ITargetFormFields } from '../../charts/chart-view/set-goal/shared/target.service';
+import { ITarget } from '../../charts/chart-view/set-goal/shared/targets.interface';
 
 const targesQuery = require('graphql-tag/loader!./list-targets.gql');
 const addTargetsMutation = require('graphql-tag/loader!./add-targets.gql');
 const editTargetsMutation = require('graphql-tag/loader!./update-targets.gql');
 const trargetByName = require('graphql-tag/loader!./target-by-name.gql');
 
-
+const updateTarget = require('graphql-tag/loader!./update-target.mutation.gql');
+const createTarget = require('graphql-tag/loader!./create-target.mutation.gql');
+const findTargetByName = require('graphql-tag/loader!./find-target-by-name.gql');
+const removeTarget = require('graphql-tag/loader!./remove-target.gql');
 
 @Component({
   selector: 'kpi-form-targets',
@@ -38,7 +44,7 @@ export class FormTargetsComponent implements OnInit {
   @ViewChild ('milestoneComponent') milestoneComponent: MilestoneComponent;
   @ViewChild ('related') relatedComponent: RelatedUsersComponent;
 
-  @Output() onCancel = new EventEmitter<boolean>();
+  @Output() onCancel = new EventEmitter<any>();
 
   targat: any;
   targets: ITargetNew[];
@@ -47,14 +53,19 @@ export class FormTargetsComponent implements OnInit {
   listLoad = false;
   tabIndex = 1;
   isCustom = false;
+
+  valid = false;
+
   private type: string;
   private identifier: string;
   private totalTabs = 3;
+  private currentUser: string;
 
-
+  private _subscription: Subscription[] = [];
 
   constructor(public vm: FormTargetsViewModel,
     private _apolloService: ApolloService,
+    private _apollo: Apollo,
     private userService: UserService) {
 
   }
@@ -103,8 +114,6 @@ export class FormTargetsComponent implements OnInit {
     this.vm.activeVisble = false;
     this.vm.fg.controls['_id'].setValue('');
     this.vm.fg.controls['name'].setValue('');
-    this.vm.fg.controls['type'].setValue('');
-    this.relatedComponent.removeUser();
     this.vm.value = null;
     this.vm.fg.controls['recurrent'].setValue(false);
     this._complitedGroupings(true);
@@ -122,7 +131,7 @@ export class FormTargetsComponent implements OnInit {
     this.vm.fg.controls['value'].setValue(target[0].value);
     this.vm.fg.controls['compareTo'].setValue(target[0].compareTo);
     this.vm.fg.controls['recurrent'].setValue(target[0].recurrent);
-
+    this.vm.fg.controls['active'].setValue(target[0].active === 'true' ? true : false);
     if (target[0].reportOptions.groupings) {
       this.vm.grouping  = this.targets[0].reportOptions.groupings;
     }
@@ -130,7 +139,6 @@ export class FormTargetsComponent implements OnInit {
     if (target[0].reportOptions.frequency) {
       this.vm.fg.controls['recurrent'].setValue(target[0].reportOptions.frequency);
     }
-
   }
 
 
@@ -142,7 +150,7 @@ export class FormTargetsComponent implements OnInit {
 
 
   cancel() {
-    this.onCancel.emit(true) ;
+        this.onCancel.emit({click: 'cancel', mode: 'view'});
   }
 
   save(): void {
@@ -158,8 +166,93 @@ export class FormTargetsComponent implements OnInit {
   }
 
   onDelete(event) {
+    this._apolloService.networkQuery < ITargetNew > (findTargetByName, {'name': this.vm.name})
+    .then(res => {
+      this.deleteOld(res.findTargetByName._id);
+     })
+    .catch(err =>
+      this._displayServerErrors(err)
+    );
     this._refreshTargets();
   }
+
+  deleteOld(id) {
+    this._apolloService.mutation < ITargetNew > (removeTarget, {
+      'id': id,
+      'owner': this.userService.user._id })
+    .then(res => {
+    })
+    .catch(err => {
+        this._displayServerErrors(err) ;
+    });
+  }
+
+  setUpdate(id) {
+      const that = this;
+      const visible = this.vm.users[0].id;
+      const fields: ITargetFormFields = {
+        name: this.vm.name,
+        datepicker: this.chart.frequency ? that.nextDueDate(this.chart.frequency) : that.nextDueDate(this.chart.predefined),
+        vary:  this.vm.type,
+        amount: this.vm.value,
+        amountBy: this.vm.unit === 'value' ? 'dollar' : 'percent',
+        active:  true,
+        type: 'spline',
+        period: this.vm.compareTo,
+        visible: [ visible ],
+        nonStackName: this.chart.frequency ? this.chart.frequency : 'all' ,
+        stackName: this.chart.frequency ? '' : this.vm.fg.controls['groupings'].value,
+        owner: this.vm.owner,
+        chart: [this.chart._id]
+    };
+
+      this._apollo.mutate({
+          mutation: updateTarget,
+          variables: {
+            id: id,
+            data: fields
+          },
+          refetchQueries: [
+            'Chart'
+          ]
+        })
+        .toPromise()
+        .then(({data}) => {
+          that.onCancel.emit({click: 'save', mode: 'view'});
+        });
+  }
+
+  setAdd() {
+    const that = this;
+    const visible = this.vm.users[0].id;
+    const fields: ITargetFormFields = {
+      name: this.vm.name,
+      datepicker: this.chart.frequency ? that.nextDueDate(this.chart.frequency) : that.nextDueDate(this.chart.predefined),
+      vary:  this.vm.type,
+      amount: this.vm.value,
+      amountBy: this.vm.unit === 'value' ? 'dollar' : 'percent',
+      active:  true,
+      type: 'spline',
+      period: this.vm.compareTo,
+      visible: [ visible ],
+      nonStackName: this.chart.frequency ? this.chart.frequency : 'all' ,
+      stackName: this.chart.frequency ? '' : this.vm.fg.controls['groupings'].value,
+      owner: this.vm.owner,
+      chart: [this.chart._id]
+  };
+
+  this._apollo.mutate({
+    mutation: createTarget,
+    variables: {
+      data: fields
+    },
+  })
+  .toPromise()
+  .then(({data}) => {
+    that.onCancel.emit({click: 'save', mode: 'view'});
+  });
+
+}
 
   private initialModel() {
     const that = this;
@@ -180,14 +273,14 @@ export class FormTargetsComponent implements OnInit {
 
   private _complitedGroupings(add?) {
     const that = this;
+    if (add === true) {
+      this.vm.grouping = 'NOTHING SELECTED';
+      this.vm.fg.controls.groupings.setValue('');
+    } else if (this.targets[0].reportOptions.groupings) {
+      this.vm.grouping  = this.targets[0].reportOptions.groupings;
+    }
 
-    if (that.chart.groupings.length > 0 && that.chart.groupings[0 ] !== '' ) {
-      if (add === true) {
-        this.vm.grouping = 'NOTHING SELECTED';
-      } else if (this.targets[0].reportOptions.groupings) {
-        this.vm.grouping  = this.targets[0].reportOptions.groupings;
-      }
-
+    if (that.chart.groupings.length > 0 && that.chart.groupings[0] !== '' ) {
       that.vm.setGroupings(this.chart.groupings);
       that.vm.visbleGroupings = true;
     } else {
@@ -270,7 +363,7 @@ export class FormTargetsComponent implements OnInit {
       that.getId();
     })
     .catch(err => this._displayServerErrors(err));
-
+    that.setAdd();
   }
 
   private getId() {
@@ -285,6 +378,7 @@ export class FormTargetsComponent implements OnInit {
   }
 
   private actionEdit() {
+    const that = this;
     const input = this.prepareModel();
     this._apolloService.mutation < ITargetNew > (editTargetsMutation, {'id': this.vm._id, 'TargetInput': input })
     .then(res => {
@@ -293,6 +387,14 @@ export class FormTargetsComponent implements OnInit {
     .catch(err => {
         this._displayServerErrors(err) ;
     });
+
+    this._apolloService.networkQuery < ITargetNew > (findTargetByName, {'name': that.vm.name})
+    .then(res => {
+      this.setUpdate(res.findTargetByName._id);
+     })
+    .catch(err =>
+      this._displayServerErrors(err)
+    );
   }
 
   private prepareModel() {
@@ -353,5 +455,24 @@ export class FormTargetsComponent implements OnInit {
   private _displayServerErrors(err) {
         console.log('Server errors: ' + JSON.stringify(err));
   }
+
+  private nextDueDate(frequency) {
+    let dueDate: any;
+
+    switch (frequency) {
+        case 'monthly':
+                dueDate = moment().endOf('month').toDate();
+            break;
+        case 'yearly':
+                dueDate = moment().endOf('year').toDate() ;
+            break;
+        case 'quarterly':
+                dueDate =  moment().endOf('quarter').toDate();
+            break;
+    }
+
+    return moment(String(dueDate)).format('MM/DD/YYYY') ;
+}
+
 
 }
