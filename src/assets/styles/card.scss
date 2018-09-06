@@ -45,13 +45,15 @@ bw-card.full-height {
 }
 
 bw-card.maximized {
-    .card {
-        position: fixed !important;
-        top: 0px;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 5000;
+    @media only screen and (min-width: 824px)  {
+        .card {
+            position: fixed !important;
+            top: 0px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 5000;
+        }
     }
 }
 
