@@ -59,7 +59,7 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
 
         this._targetsItemList =  this._targets.map(d => ( {
             id: d._id ,
-            imagePath: './assets/img/targets/target_g_t.png',
+            imagePath: d.active ? './assets/img/targets/target_t.png' : './assets/img/targets/target_g_t.png',
             title: d.name,
             subtitle: 'Next due date:' + this._nextDueDate(d.reportOptions.frequency) ,
             selected: false,
@@ -67,7 +67,6 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
         if (this._targetsItemList.length > 0 ) {
             this._targetsItemList[0].selected = true;
             this.item = this._targetsItemList[0];
-            this.item.imagePath = './assets/img/targets/target_t.png';
         }
 
     }
@@ -84,22 +83,29 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
     }
 
 
-    selectTarget(item: IListItem) {
-        this._targetsItemList.forEach(t => { 
+    selectTarget(item: IListItem, active) {
+        this._targetsItemList.forEach(t => {
             t.selected = false;
-            t.imagePath = './assets/img/targets/target_g_t.png';
+            t.imagePath = active ? './assets/img/targets/target_t.png' : './assets/img/targets/target_g_t.png';
         });
         if (item) {
             item.selected = true;
-            item.imagePath = './assets/img/targets/target_t.png';
+            item.imagePath = active ? './assets/img/targets/target_t.png' : './assets/img/targets/target_g_t.png';
             this.item = item;
         }
     }
 
-    unSelectTarget() {
-        this._targetsItemList.forEach(t => {
+    unSelectTarget(frequency) {
+        this._targetsItemList.forEach (t => {
             t.selected = false;
-            t.imagePath = './assets/img/targets/target_g_t.png';
+        });
+
+        this._targetsItemList.push({
+            id: '',
+            title: 'Target name',
+            subtitle: 'Next due date:' + this._nextDueDate(frequency) ,
+            selected: true,
+            imagePath: './assets/img/targets/target_t.png',
         });
     }
 
@@ -111,19 +117,23 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
 
     private _nextDueDate(frequency) {
         let dueDate: any;
-
         switch (frequency) {
             case 'monthly':
-                    dueDate = moment().endOf('month').toDate();
+                    let dateD = moment().month(moment().month());
+                    dueDate = dateD.endOf('month').toDate();
                 break;
             case 'yearly':
                     dueDate = moment().endOf('year').toDate() ;
                 break;
             case 'quarterly':
-                    dueDate =  moment().endOf('quarter').toDate();
+                    let moments = moment().quarter(moment().quarter());
+                    dueDate =  moments.endOf('quarter').toDate();
                 break;
+            case 'weekly':
+                    let dateWeek = moment().week(moment().week());
+                    dueDate = dateWeek.endOf('week').toDate();
+                    break;
         }
-
         return moment(String(dueDate)).format('MM/DD/YYYY') ;
     }
 

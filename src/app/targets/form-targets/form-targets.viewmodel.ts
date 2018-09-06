@@ -116,7 +116,8 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
     private frequency: any;
     private _groupings: any;
     private nodoSelectedTextGrouping: string;
-    private nodoSelectedTextPeriod: string;
+    private nodoSelectedTextCompareTo: string;
+
 
     visbleGroupings = true;
     noFrequency = false;
@@ -130,7 +131,7 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
         super(null);
     }
 
-    titleAction = 'Add an execution plan for this target';
+    titleAction = '';
 
     objectiveList: SelectionItem[] = [
         { id: 'increase', title: 'Increase' },
@@ -146,7 +147,6 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
 
     responsiblePeopleList: SelectionItem[] = [];
 
-    statusList: SelectionItem[] = [];
 
     @Field({ type: String })
     _id: string;
@@ -165,6 +165,9 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
 
     @Field({ type: String,  required: true  })
     compareTo: string;
+
+    @Field({ type: String,  required: true  })
+    period: string;
 
     @Field({ type: Boolean })
     recurrent: boolean;
@@ -235,7 +238,9 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
     }
 
     setGroupings(list) {
-        this.grouping = this.nodoSelectedTextGrouping;
+        this.nodoSelectedTextGrouping !== '' ?
+             this.grouping = this.nodoSelectedTextGrouping :
+             this.grouping = 'all';
 
         if (list === this.groupings) {
             return;
@@ -265,25 +270,37 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
         return this.nodoSelectedTextGrouping;
     }
 
-    set period(period) {
-        this.nodoSelectedTextPeriod = period;
+    set peridos(period) {
+        this.period = period;
     }
 
-    get period() {
-        return this.nodoSelectedTextPeriod;
+    get periods() {
+        return this.period;
     }
 
     private _prepareTargentePeriodListItems(predefined) {
-        this._getFrequency(predefined);
+        // this._getFrequency(predefined);
 
         this._targetsPeriodItemList = this._getFrequency(predefined).map(d => ({
             id: d ,
             title: d,
         }));
+
+        if (this._targetsPeriodItemList.length === 0) {
+            this._targetsPeriodItemList = [{
+                id: predefined ,
+                title: predefined,
+            }];
+            this.period = predefined;
+            this.nodoSelectedText = predefined;
+        } else if (!this.period) {
+            this.period = this._targetsPeriodItemList[0].title;
+            this.nodoSelectedText = this._targetsPeriodItemList[0].title;
+        }
     }
 
     baseOnLists(frequency) {
-        this.period = this.nodoSelectedTextPeriod;
+        this.period = this.nodoSelectedTextCompareTo;
         switch (frequency) {
             case 'monthly':
                     this.baseOnList = [{
@@ -294,7 +311,7 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
                         title: 'same month Last year'
                     }, {
                         id: 'same month, 2 year ago',
-                        title: 'lame month 2 year ago'
+                        title: 'same month 2 year ago'
                     }];
                 break;
             case 'quarterly':
@@ -307,6 +324,18 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
                     }, {
                         id: 'same quarter, 2 year ago',
                         title: 'same quarter 2 year ago'
+                    }];
+                break;
+            case 'weekly':
+                    this.baseOnList = [{
+                        id: 'last week',
+                        title: 'last week'
+                    }, {
+                        id: 'same week, Last year',
+                        title: 'same week Last year'
+                    }, {
+                        id: 'same week, 2 year ago',
+                        title: 'same week 2 year ago'
                     }];
                 break;
             case 'yearly':
@@ -330,82 +359,74 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
 
     private _getFrequency(predefined) {
         let valueMoment = [];
-        let frequency: string;
+        this.active = true;
 
-        if (predefined  === 'custom') {
-            frequency = 'custom';
-        } else {
-            frequency = this.frequency;
-        }
-
-            switch (frequency) {
+        if (this.frequency !== '') {
+            switch (this.frequency) {
                 case 'monthly':
-                        valueMoment[0] = 'This monthly';
+                        valueMoment[0] = 'this month';
                         const monthNow = Number(moment(Date.now()).format('MM')) ;
                         const monthDife = 12 - monthNow;
-                        let index = 0 ;
+                        let index = 1 ;
                         for (index; index < monthDife + 1; index++) {
-                            valueMoment[index + 1] = moment(Date.now()).add(index, 'month').format('MMM') ;
+                            valueMoment[index] = moment(Date.now()).add(index, 'month').format('MMM') ;
                         }
-                        this.nodoSelectedText = 'This monthly';
+                        this.nodoSelectedText = 'this month';
                         this.baseOnLists(this.frequency);
                     break;
                 case 'quarterly':
-                    valueMoment[0] = 'This quarterly';
-                    const quartlyNow = this.getQuartely(Number(moment(Date.now()).format('MM'))) ;
+                    valueMoment[0] = 'this quarter';
+                    const quartlyNow = Number(moment().quarter()) ;
                     const quertlyDife = 4 - quartlyNow;
-                    let index1 = 0;
+                    let index1 = 1;
                     for (index1; index1 < quertlyDife + 1; index1++) {
-                        valueMoment[index1 + 1] = 'Q' + (quartlyNow + index1).toString();
+                        valueMoment[index1] = 'Q' + (quartlyNow + index1).toString();
                     }
-                    this.nodoSelectedText = 'This quarterly';
+                    this.nodoSelectedText = 'this quarter';
+                    this.baseOnLists(this.frequency);
+                    break;
+                case 'weekly':
+                    valueMoment[0] = 'this week';
+                    const week = Number(moment(Date.now()).week()) ;
+                    const weekDif = 52 - week;
+                    let index2 = 1;
+                    for (index2; index2 < weekDif + 1; index2++) {
+                        valueMoment[index2] = 'W' + (week + index2).toString();
+                    }
+                    this.nodoSelectedText = 'this week';
                     this.baseOnLists(this.frequency);
                     break;
                 case 'yearly':
-                        valueMoment[0] = 'This year';
-                        if (this.custom === true ) {
-                            valueMoment[1] = 'custom';
-                        }
-                        this.nodoSelectedText = 'This year';
+                        valueMoment[0] = 'this year';
+                        this.nodoSelectedText = 'this year';
                         this.baseOnLists(this.frequency);
                     break;
-                default:
-                        this.noFrequency = true;
-                        valueMoment[0] = predefined;
-                        // this.activeVisble = true;
-                        this.active = true;
-                        this.nodoSelectedText = predefined;
-                        switch (predefined) {
-                            case 'this month':
-                                this.baseOnLists('monthly');
-                                break;
-                            case 'this year':
-                                this.baseOnLists('yearly');
-                                break;
-                            case 'this quarter':
-                                this.baseOnLists('quarterly');
-                                break;
-                            case 'custom':
-                                this.baseOnLists('custom');
-                                break;
-                        }
-                    break;
             }
-        
+        } else {
+            this.nodoSelectedText = predefined;
+            switch (predefined) {
+                case 'this monthly':
+                    this.baseOnLists('monthly');
+                    break;
+                case 'this quarterly':
+                    this.baseOnLists('quarterly');
+                    break;
+                case 'this weekly':
+                    this.baseOnLists('weekly');
+                    break;
+                case 'this yearly':
+                    this.baseOnLists('weekly');
+                    break;
+                case 'custom':
+                    this.noFrequency = true;
+                    valueMoment[0] = predefined;
+                    this.baseOnLists('custom');
+                break;
+            }
+            valueMoment[0] = predefined;
+        }
+        // this.frequency = this.nodoSelectedText;
         return valueMoment;
     }
-
-    private getQuartely(month) {
-        if (month < 5) {
-            return 1;
-        } else if (month < 7 && month > 4) {
-            return 2;
-        } else if (month < 10 && month > 6) {
-            return 3;
-        } else {
-            return 4;
-        }
-    }
-
 }
 

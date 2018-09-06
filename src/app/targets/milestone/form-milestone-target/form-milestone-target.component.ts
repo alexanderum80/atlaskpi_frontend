@@ -21,6 +21,7 @@ const usersQueryGql = require('graphql-tag/loader!./users.query.gql');
 })
 export class FormMilestoneTargetComponent implements OnInit {
   @Input() model: IMilestone ;
+  @Input() vm: any;
   @Output() fg: FormGroup;
   @Output() onCancel = new EventEmitter<any>();
   @Output() onSave = new EventEmitter<any>();
@@ -62,7 +63,7 @@ export class FormMilestoneTargetComponent implements OnInit {
       that.vmm.dueDate = that.milestone[0].dueDate;
       that.vmm.responsible = that.milestone[0].responsible;
       that.vmm.status = that.milestone[0].status;
-      this.status  = that.milestone[0].status;
+      that.status  = that.milestone[0].status;
     }
   }
 

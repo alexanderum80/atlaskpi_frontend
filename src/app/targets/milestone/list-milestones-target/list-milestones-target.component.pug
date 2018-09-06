@@ -1,8 +1,14 @@
-div(layout="row", layout-wrap, layout-padding, *ngIf="vml.milestoineItems")
-    kpi-list-item-tabular.w-100(
-        *ngFor="let item of vml.milestoineItems",
-        [item]="item",
-        [actionItems]="vml.menuItems",
-        [tableRowTemplate]="tableRowTemplate",
-        (click)="itemClicked($event, item)",
-        (actionClicked)="actionClicked($event)")
+div(layout="column", layout-wrap, layout-padding, *ngIf="vml.milestoineItems")
+    div(layout="row", *ngFor="let item of vml.milestoineItems")
+        div(flex, *ngIf="!item.editing",)
+            kpi-list-item-tabular(
+                [item]="item",
+                [actionItems]="vml.menuItems",
+                [tableRowTemplate]="tableRowTemplate",
+                (click)="itemClicked($event, item)",
+                (actionClicked)="actionClicked($event)")
+
+        div(flex, *ngIf="item.editing",)
+            kpi-edit-milestones-target.m-t-20(#editMilestone, [fg]="fg", [vm]="vml",  [milestones]="vml.milestone",  (onCancel)="cancel(item)",
+             , (onEdit)="editStatus($event)")
+        

@@ -1,10 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { ListMiestoneViewModel } from './list-milestones.viewmodel';
 import { IMilestone } from '../../shared/models/targets.model';
 import { ApolloService } from '../../../shared/services/apollo.service';
 import { Action } from 'rxjs/internal/scheduler/Action';
 import { IUser } from '../../../users/shared';
 import {filter} from 'lodash';
+import { EditMilestonesTargetComponent } from '../edit-milestones-target/edit-milestones-target.component';
+import { FormMilestoneTargetComponent } from '../form-milestone-target/form-milestone-target.component';
 
 const editMilestone = require('graphql-tag/loader!../edit-milestones-target/update-milestone.gql');
 
@@ -19,9 +21,14 @@ export class ListMilestonesTargetComponent implements OnInit {
   @Input() model: IMilestone;
   @Input() target: any;
   @Input() allUsers: IUser[];
+  @Input() vm: any;
+
   @Output() onEdit = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   @Output() onEditStatus = new EventEmitter<any>();
+
+  @ViewChild('editMilestone') editMilestone: FormMilestoneTargetComponent;
+
 
   constructor(private vml: ListMiestoneViewModel,
               private _apolloService: ApolloService) {  }
@@ -33,17 +40,19 @@ export class ListMilestonesTargetComponent implements OnInit {
       that.vml.initialize(null);
       that.vml.allUsers = that.allUsers;
       that.vml.milestones = that.milestones;
+      that.vml.milestone = that.milestones[0];
     }
 
   }
 
   itemClicked(evente, item) {
+    this.vml.selectMilestone(item);
   }
 
   actionClicked(item) {
     switch (item.action.id) {
       case 'edit' :
-            this.onEdit.emit(item.item.id);
+            this.vml.editMilestone(item.item);
         break;
       case 'delete':
             this.onDelete.emit(item.item.id);
@@ -64,10 +73,19 @@ export class ListMilestonesTargetComponent implements OnInit {
       'id': id, 'input': input})
         .then(res => {
           that.onEditStatus.emit(status);
+          that.vml.noEditMilestone();
         })
         .catch(err =>
           that._displayServerErrors(err)
         );
+  }
+
+  cancel(item) {
+    this.vml.noEditMilestone();
+  }
+
+  editStatus(evente) {
+    this.onEditStatus.emit();
   }
 
   private _displayServerErrors(err) {

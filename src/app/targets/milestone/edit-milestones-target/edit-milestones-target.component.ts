@@ -27,7 +27,7 @@ export class EditMilestonesTargetComponent implements OnInit {
 
   onSave()  {
     const that = this;
-             this._form.vmm.target =  that.vm._id;
+             this._form.vmm.target =  that.milestones[0].target;
 
         if (this._form.vmm.fg.valid) {
             this._apolloService.mutation < IMilestone > (editMilestone, {

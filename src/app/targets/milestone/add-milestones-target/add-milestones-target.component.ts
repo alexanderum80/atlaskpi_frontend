@@ -33,6 +33,7 @@ export class AddMilestonesTargetComponent implements OnInit {
   onSave()  {
     const that = this;
         this._form.vmm.target =  that.vm._id;
+        this._form.vmm.status = 'due';
 
         if (this._form.vmm.fg.valid) {
             this._apolloService.mutation < IMilestone > (addMilestone, {'input': this._form.vmm.addPayload})

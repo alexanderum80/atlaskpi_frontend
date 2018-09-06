@@ -17,13 +17,23 @@ interface IFilter {
     search: string;
 }
 
+interface IListMilestone {
+    id: string;
+    imagePath?: string;
+    title?: string;
+    subtitle?: string;
+    editing?: boolean;
+    selected?: boolean;
+}
 
 
 @Injectable()
 export class ListMiestoneViewModel extends ViewModel<IFilter> {
     private _milestone: IMilestone[] = [];
-    private _milestonesItemList: IListItem[];
+    private _milestonesItemList: IListMilestone[];
     private _allUsers: IUser[];
+    milestone: IMilestone;
+
 
     public menuItems:  MenuItem[] = [{
         id: 'more-options',
@@ -80,14 +90,15 @@ export class ListMiestoneViewModel extends ViewModel<IFilter> {
         this.onInit(model);
     }
 
-    get milestoineItems(): IListItem[] {
+    get milestoineItems(): IListMilestone[] {
         return this._milestonesItemList;
     }
 
 
-    selectMilestone(item: IListItem) {
+    selectMilestone(item: IListMilestone) {
         this._milestonesItemList.forEach(t => t.selected = false);
         item.selected = true;
+        this.milestone = filter(this.milestones, {'_id': item.id});
     }
 
     private _prepareMilestoneListItems() {
@@ -96,8 +107,19 @@ export class ListMiestoneViewModel extends ViewModel<IFilter> {
             imagePath: './assets/img/milestones/milestone.jpg',
             title: d.task,
             subtitle: this.getUserName(d.responsible),
+            editing: false,
         }));
     }
+
+    editMilestone(item: IListMilestone) {
+        this._milestonesItemList.forEach(t => t.editing = false);
+        item.editing = true;
+    }
+
+    noEditMilestone() {
+        this._milestonesItemList.forEach(t => t.editing = false);
+    }
+
 
     private getUserName(responsible) {
         let name = '';

@@ -73,9 +73,9 @@ export class FormTargetsComponent implements OnInit {
   ngOnInit(): void {
     const that = this;
     this.vm.initialize(null);
-    that.vm.fg.addControl('period', new FormControl(that.vm.period));
     that.initialModel();
     that._refreshTargets();
+    // that.vm.fg.addControl('period', new FormControl(this.vm.period));
   }
 
   setIndex(index: number) {
@@ -116,6 +116,7 @@ export class FormTargetsComponent implements OnInit {
     this.vm.fg.controls['name'].setValue('');
     this.vm.value = null;
     this.vm.fg.controls['recurrent'].setValue(false);
+    this.vm.active = true;
     this._complitedGroupings(true);
     this._complitedFrequency(true);
   }
@@ -126,6 +127,7 @@ export class FormTargetsComponent implements OnInit {
     this.vm.target = target;
     this.vm.fg.controls['_id'].setValue(id);
     this.vm.fg.controls['name'].setValue(target[0].name);
+    this.vm.fg.controls['period'].setValue(target[0].period);
     this.vm.fg.controls['unit'].setValue(target[0].unit);
     this.vm.fg.controls['type'].setValue(target[0].type);
     this.vm.fg.controls['value'].setValue(target[0].value);
@@ -133,12 +135,17 @@ export class FormTargetsComponent implements OnInit {
     this.vm.fg.controls['recurrent'].setValue(target[0].recurrent);
     this.vm.fg.controls['active'].setValue(target[0].active === 'true' ? true : false);
     if (target[0].reportOptions.groupings) {
-      this.vm.grouping  = this.targets[0].reportOptions.groupings;
+      const group = target[0].reportOptions.groupings[0];
+      this.vm.grouping  = group;
     }
 
     if (target[0].reportOptions.frequency) {
       this.vm.fg.controls['recurrent'].setValue(target[0].reportOptions.frequency);
     }
+
+    this._complitedFrequency();
+    this._complitedGroupings(false, target);
+    this._complitedPeriod(target);
   }
 
 
@@ -159,8 +166,17 @@ export class FormTargetsComponent implements OnInit {
     }
 
     if (this.vm.valid) {
-       this.vm._id === '' || this.vm._id === null || this.vm._id === undefined ?
-         this.actionAdd() : this.actionEdit();
+       if (this.vm._id === '' || this.vm._id === null || this.vm._id === undefined) {
+          this.setAdd();
+        } else {
+            this._apolloService.networkQuery < ITargetNew > (findTargetByName, {'name': this.vm.name})
+            .then(resp => {
+              this.setUpdate(resp.findTargetByName._id);
+            }).catch(errs => {
+              this._displayServerErrors(errs) ;
+            });
+
+         };
     }
 
   }
@@ -189,22 +205,25 @@ export class FormTargetsComponent implements OnInit {
 
   setUpdate(id) {
       const that = this;
-      const visible = this.vm.users[0].id;
+      const categories = this._isStacked(that.chart.groupings, this.chart) ;
+      const visible = that.vm.users[0].id;
+      const dateP = that.nextDueDate( that.vm['frequency'], that.vm.fg.controls['period'].value) ;
       const fields: ITargetFormFields = {
-        name: this.vm.name,
-        datepicker: this.chart.frequency ? that.nextDueDate(this.chart.frequency) : that.nextDueDate(this.chart.predefined),
-        vary:  this.vm.type,
-        amount: this.vm.value,
-        amountBy: this.vm.unit === 'value' ? 'dollar' : 'percent',
+        name: that.vm.name,
+        datepicker: dateP,
+        vary:  that.vm.type,
+        amount: that.vm.value,
+        amountBy: that.vm.unit === 'value' ? 'dollar' : 'percent',
         active:  true,
         type: 'spline',
-        period: this.vm.compareTo,
+        period: that.vm.compareTo,
         visible: [ visible ],
-        nonStackName: this.chart.frequency ? this.chart.frequency : 'all' ,
-        stackName: this.chart.frequency ? '' : this.vm.fg.controls['groupings'].value,
-        owner: this.vm.owner,
-        chart: [this.chart._id]
+        nonStackName: that.chart.frequency ? that.chart.frequency : that.vm.fg.controls['groupings'].value ,
+        stackName: categories ? that.vm.fg.controls['groupings'].value : '',
+        owner: that.vm.owner,
+        chart: [that.chart._id]
     };
+
 
       this._apollo.mutate({
           mutation: updateTarget,
@@ -218,27 +237,30 @@ export class FormTargetsComponent implements OnInit {
         })
         .toPromise()
         .then(({data}) => {
-          that.onCancel.emit({click: 'save', mode: 'view'});
+          that.actionEdit();
+          that.onCancel.emit({click: 'cancel', mode: 'view'});
         });
   }
 
   setAdd() {
     const that = this;
-    const visible = this.vm.users[0].id;
+    const categories = this._isStacked(that.chart.groupings, this.chart) ;
+    const visible = that.vm.users[0].id;
+    const dateP = that.nextDueDate( that.vm['frequency'], that.vm.fg.controls['period'].value) ;
     const fields: ITargetFormFields = {
-      name: this.vm.name,
-      datepicker: this.chart.frequency ? that.nextDueDate(this.chart.frequency) : that.nextDueDate(this.chart.predefined),
-      vary:  this.vm.type,
-      amount: this.vm.value,
-      amountBy: this.vm.unit === 'value' ? 'dollar' : 'percent',
+      name: that.vm.name,
+      datepicker: dateP,
+      vary:  that.vm.type,
+      amount: that.vm.value,
+      amountBy: that.vm.unit === 'value' ? 'dollar' : 'percent',
       active:  true,
       type: 'spline',
-      period: this.vm.compareTo,
+      period: that.vm.compareTo,
       visible: [ visible ],
-      nonStackName: this.chart.frequency ? this.chart.frequency : 'all' ,
-      stackName: this.chart.frequency ? '' : this.vm.fg.controls['groupings'].value,
-      owner: this.vm.owner,
-      chart: [this.chart._id]
+      nonStackName: that.chart.frequency ? that.chart.frequency : that.vm.fg.controls['groupings'].value ,
+      stackName: categories ? that.vm.fg.controls['groupings'].value : '',
+      owner: that.vm.owner,
+      chart: [that.chart._id]
   };
 
   this._apollo.mutate({
@@ -249,7 +271,8 @@ export class FormTargetsComponent implements OnInit {
   })
   .toPromise()
   .then(({data}) => {
-    that.onCancel.emit({click: 'save', mode: 'view'});
+    that.actionAdd();
+    that.onCancel.emit({click: 'cancel', mode: 'view'});
   });
 
 }
@@ -271,23 +294,64 @@ export class FormTargetsComponent implements OnInit {
 
   }
 
-  private _complitedGroupings(add?) {
+  private _complitedGroupings(add?, target? ) {
     const that = this;
     if (add === true) {
-      this.vm.grouping = 'NOTHING SELECTED';
       this.vm.fg.controls.groupings.setValue('');
-    } else if (this.targets[0].reportOptions.groupings) {
-      this.vm.grouping  = this.targets[0].reportOptions.groupings;
+    } else if (target[0].reportOptions.groupings) {
+      this.vm.grouping  = target[0].reportOptions.groupings[0];
     }
 
-    if (that.chart.groupings.length > 0 && that.chart.groupings[0] !== '' ) {
-      that.vm.setGroupings(this.chart.groupings);
+    const categories = this._isStacked(that.chart.groupings, this.chart) ?
+    that.chart.chartDefinition.xAxis.categories.filter(item => item.title !== 'Others') : [];
+
+    if (categories.length > 0) {
+      that.vm.setGroupings(categories);
+      that.vm.visbleGroupings = true;
+      return;
+    }
+
+    if (that.chart.groupings[0] === '' || !that.chart.groupings === undefined || that.chart.groupings === null ) {
+      that.vm.visbleGroupings = false;
+      return;
+    }
+
+    if (that.chart.groupings.length > 0 || !that.chart.frequency) {
+      if (categories.length === 0 ) {
+        const series = this.chart.chartDefinition.series;
+
+        let names = [];
+        series.forEach(serie => {
+          const filterSerie = filter( that.targets , {'name': serie.name});
+          if (filterSerie.length === 0) {
+            names.push(serie.name);
+          }
+        });
+        that.vm.setGroupings(names);
+
+      } else {
+        that.vm.setGroupings(categories);
+      }
       that.vm.visbleGroupings = true;
     } else {
       that.vm.visbleGroupings = false;
     }
 
   }
+
+  private _isStacked(groupings: string[], chartData: any) {
+    return  ((chartData.chartDefinition.chart.type === 'column') &&
+        ((<any>chartData).groupings[0] === (<any>chartData).xAxisSource)) ||
+        (groupings.length && !chartData.frequency && !chartData.xAxisSource);
+  }
+
+  private _complitedPeriod(target) {
+    const that = this;
+    target[0].period ?
+      this.vm.period  = target[0].period :
+      this.vm.period  = '';
+  }
+
 
   private _complitedFrequency(add?) {
     const that = this;
@@ -299,17 +363,33 @@ export class FormTargetsComponent implements OnInit {
         this.vm.period  = this.targets[0].reportOptions.frequency;
       }
       const frequency = that.chart.frequency;
-      const predefined = that.chart.dateRange[0].predefined;
+      const predefined =  that.chart.dateRange[0].predefined;
 
-      if (predefined === 'custom') {
+      if (predefined === 'custom' && !frequency) {
         that.isCustom = true;
-        that.vm.fg.controls['compareTo'].setValue('Previous Period');
+        that.vm.fg.controls['compareTo'].setValue('previous Period');
       } else {
         that.isCustom = false;
       }
 
       that.vm.baseOnLists(frequency);
       that.vm.setTargetPeriod(frequency, predefined);
+      that.vm.peridos = 'this ' + frequency;
+    } else {
+      const predefined = that.chart.dateRange[0].predefined;
+      let periods = '';
+      if (predefined === 'custom') {
+        that.isCustom = true;
+        periods = predefined;
+        that.vm.fg.controls['compareTo'].setValue('previous Period');
+      } else {
+        periods = predefined.replace(/this /g, '') + 'ly';
+        that.isCustom = false;
+      }
+
+      that.vm.baseOnLists(periods);
+      that.vm.setTargetPeriod(periods, predefined);
+      that.vm.peridos = predefined;
     }
 
   }
@@ -347,8 +427,9 @@ export class FormTargetsComponent implements OnInit {
             that.listTarget.itemClicked(that.item );
             that.selectItem(that.item);
           }
-          that._complitedFrequency();
-          that._complitedGroupings();
+          // that._complitedFrequency();
+          // that._complitedGroupings();
+          // that._complitedPeriod();
           that.edit(that.vm.fg.controls._id.value);
         }
       });
@@ -357,13 +438,12 @@ export class FormTargetsComponent implements OnInit {
 
   private actionAdd() {
     const that = this;
-    const input =  this.prepareModel();
+    const input =  this.prepareModel(true);
     this._apolloService.mutation < ITargetNew > (addTargetsMutation, {'TargetInput': input})
     .then(res => {
       that.getId();
     })
     .catch(err => this._displayServerErrors(err));
-    that.setAdd();
   }
 
   private getId() {
@@ -382,22 +462,14 @@ export class FormTargetsComponent implements OnInit {
     const input = this.prepareModel();
     this._apolloService.mutation < ITargetNew > (editTargetsMutation, {'id': this.vm._id, 'TargetInput': input })
     .then(res => {
-      this._refreshTargets(this.vm._id);
-    })
-    .catch(err => {
-        this._displayServerErrors(err) ;
-    });
-
-    this._apolloService.networkQuery < ITargetNew > (findTargetByName, {'name': that.vm.name})
-    .then(res => {
-      this.setUpdate(res.findTargetByName._id);
-     })
-    .catch(err =>
-      this._displayServerErrors(err)
+      that._refreshTargets(that.vm._id);
+      })
+      .catch(err =>
+      that._displayServerErrors(err)
     );
   }
 
-  private prepareModel() {
+  private prepareModel(add ?) {
     let user = [];
     let index = 0;
     this.vm.users.forEach(element => {
@@ -419,6 +491,10 @@ export class FormTargetsComponent implements OnInit {
 
     this.chart.kpis[0].filter ? filter = JSON.stringify(this.chart.kpis[0].filter) : filter = '';
 
+    let active = this.vm.active ? true : false;
+    if (add === true) {
+      active = true;
+    }
     const TargetNewInput =  {
       'name': this.vm.name,
       'kpi': this.vm.kpi,
@@ -428,11 +504,11 @@ export class FormTargetsComponent implements OnInit {
       'value': Number(String(this.vm.value).replace(/,/g, '')),
       'unit': this.vm.unit,
       'owner': this.vm.owner,
-      'active': this.vm.active ? true : false,
+      'active': active,
       'selected': this.vm.selected ? true : false,
       'reportOptions': {
         'frequency': this.chart.frequency,
-        'groupings': this.vm.groupings || '' ,
+        'groupings': this.vm.fg.controls['groupings'].value || [''] ,
         'timezone': timezone ,
         'dateRange': {
           'from': this.chart.dateRange[0].custom.from !== null ? this.chart.dateRange[0].custom.from : '',
@@ -447,7 +523,8 @@ export class FormTargetsComponent implements OnInit {
       'notificationConfig': {
         'notifiOnPercente': [Number(String(this.vm.value).replace(/,/g, ''))],
         'users': user
-      }
+      },
+      'period': this.vm.period
     };
     return TargetNewInput;
   }
@@ -456,19 +533,33 @@ export class FormTargetsComponent implements OnInit {
         console.log('Server errors: ' + JSON.stringify(err));
   }
 
-  private nextDueDate(frequency) {
+  private nextDueDate(frequency, period) {
     let dueDate: any;
-
     switch (frequency) {
         case 'monthly':
-                dueDate = moment().endOf('month').toDate();
+                let dateD = moment().month(moment().month());
+                if (period !== 'this month') {
+                  dateD = moment().month(period);
+                }
+                dueDate = dateD.endOf('month').toDate();
             break;
         case 'yearly':
                 dueDate = moment().endOf('year').toDate() ;
             break;
         case 'quarterly':
-                dueDate =  moment().endOf('quarter').toDate();
+                let moments = moment().quarter(moment().quarter());
+                if (period !== 'this quarter') {
+                  moments = moment().quarter(period.replace(/Q/g, ''));
+                }
+                dueDate =  moments.endOf('quarter').toDate();
             break;
+        case 'weekly':
+                let dateWeek = moment().week(moment().week());
+                if (period !== 'this week') {
+                  dateWeek = moment().week(period.replace(/W/g, ''));
+                }
+                dueDate = dateWeek.endOf('week').toDate();
+                break;
     }
 
     return moment(String(dueDate)).format('MM/DD/YYYY') ;

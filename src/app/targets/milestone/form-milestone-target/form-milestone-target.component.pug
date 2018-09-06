@@ -10,10 +10,18 @@
             div(layout="row")
                 div(flex, *ngIf="!status")
                     bw-date-picker([fg]="vmm.fg", field="dueDate", label="Date", [required]="true", [config]="datePickerConfig")
-                div(flex="60", *ngIf="status")
+                .m-t-10(flex="60", *ngIf="status")
                     bw-date-picker([fg]="vmm.fg", field="dueDate", label="Date", [required]="true", [config]="datePickerConfig")
                 div(flex="40", *ngIf="status")
-                    .m-l-20.m-t-10 Status: {{' ' + status}}
+                    .m-l-20.m-t--10
+                         bw-select-picker(flex
+                                        [fg]="vmm.fg", 
+                                        field="status",
+                                        label="Status",
+                                        [items]="vmm.statusList",
+                                        leftIcon="hourglass-outline",
+                                        noneSelectedText="{{vmm.status}}"
+                                        )  
 
         div(flex="20")
     

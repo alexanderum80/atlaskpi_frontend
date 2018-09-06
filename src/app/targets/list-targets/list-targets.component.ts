@@ -6,6 +6,7 @@ import { ITargetNew } from '../shared/models/targets.model';
 import { IListItem } from '../../shared/ui/lists/list-item';
 import { ApolloService } from '../../shared/services/apollo.service';
 import SweetAlert from 'sweetalert2';
+import { filter } from 'lodash';
 
 const targesDelete = require('graphql-tag/loader!./delete-target.gql');
 
@@ -43,7 +44,8 @@ export class ListTargetsComponent implements OnInit {
   }
 
   itemClicked(item) {
-      this.vml.selectTarget(item);
+      const targ = filter(this.targets, {'_id': item.id});
+      this.vml.selectTarget(item, targ[0].active);
       this.item = item;
       this.selectItem.emit(item);
   }
@@ -60,7 +62,7 @@ export class ListTargetsComponent implements OnInit {
   }
 
   add() {
-    this.vml.unSelectTarget();
+    this.vml.unSelectTarget(this.chart.frequency || this.chart.dateRange[0].predefined);
     this.addItem.emit();
   }
 
@@ -81,7 +83,8 @@ export class ListTargetsComponent implements OnInit {
 
         SweetAlert({
                 title: 'Are you sure?',
-                text: `Once target's location has been deleted, you will not be able to recover it. Are you sure you want to delete it?`,
+                text: `Once deleted, you will not be able to recover this target.
+                  Also note that this action will remove all milestones associated with it, if any.`,
                 type: 'warning',
                 showConfirmButton: true,
                 showCancelButton: true

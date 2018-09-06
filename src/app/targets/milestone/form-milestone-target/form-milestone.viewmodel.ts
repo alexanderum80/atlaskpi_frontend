@@ -17,10 +17,15 @@ import { RouteReuseStrategy } from '@angular/router';
 export class FormMilestoneViewModel extends ViewModel<IMilestone> {
     private _allUsers: IUser[];
 
+    statusList: SelectionItem[] = [{
+        id: 'due', title: 'due', selected: false, disabled: false
+      }, {
+        id: 'completed', title: 'completed', selected: false, disabled: false
+      }, {
+        id: 'declined', title: 'declined', selected: false, disabled: false
+      }];
 
     responsibleList: SelectionItem[] = [];
-
-    statusList: SelectionItem[];
 
     noneSelectText: any;
 

@@ -32,5 +32,6 @@ query targetsBySource($source: SourceNewInput!) {
         deliveryMethod
       }
     }
+    period
   }
 }

@@ -8,7 +8,7 @@ div(layout="column")
                                     label="I would like to set a target for:",
                                     [items]="vm.groupingsList",
                                     leftIcon="group-work",
-                                    noneSelectedText="{{vm.grouping || 'NOTHING SELECTED'}}",
+                                    noneSelectedText="{{vm.grouping}}",
                                     )
 
     div(flex, layout="row")
@@ -16,7 +16,7 @@ div(layout="column")
             bw-select-picker.w-80.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
                                     [fg]="fg", 
                                     field="type",
-                                    label="Objetive",
+                                    label="Objective",
                                     [items]="vm.objectiveList",
                                     leftIcon="gps-dot"
                                     )  
@@ -39,14 +39,14 @@ div(layout="column")
                                     [disabled]="vm.noFrequency",
                                     noneSelectedText="{{vm.nodoSelectedText || 'NOTHING SELECTED'}}"
                                     )
-        .m-l-10(flex="50", *ngIf="!isBaseOnVisible")
+        .m-l-10(flex="50", *ngIf="isBaseOnVisible")
             bw-select-picker.w-80.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
                                     [fg]="fg", 
                                     field="compareTo",
-                                    label="Base on",
+                                    label="Based on",
                                     [items]="vm.baseOnList",
                                     leftIcon="calendar-alt",
-                                    noneSelectedText="{{vm.period || 'NOTHING SELECTED'}}"
+                                    noneSelectedText="{{vm.nodoSelectedTextCompareTo || 'NOTHING SELECTED'}}"
                                     )
 
     div(flex, layout="row")

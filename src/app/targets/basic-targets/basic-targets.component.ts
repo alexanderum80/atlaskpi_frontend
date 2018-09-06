@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import {
   Subscription
 } from 'rxjs/Subscription';
@@ -53,9 +53,11 @@ export class BasicTargetsComponent implements OnInit {
 
   private _valuePerc(type) {
     if (type === 'fixed')  {
+      this.isBaseOnVisible = false;
       this.valuePerc = false;
       this.fg.controls.unit.setValue('value');
     } else {
+      this.isBaseOnVisible = true;
       this.valuePerc = true;
       this.fg.controls.unit.setValue('percent');
     }

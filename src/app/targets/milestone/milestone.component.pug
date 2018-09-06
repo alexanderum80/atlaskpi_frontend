@@ -1,22 +1,17 @@
 
-kpi-new-milestones-target(*ngIf="!existMileston && !addMilestones", (selectedEvent)="addEvent($event)")
+kpi-new-milestones-target(*ngIf="existNew", 
+    (selectedEvent)="addEvent($event)")
 
 div(flex) 
-    .title {{titleAction}}
+    .title(*ngIf="addMilestones") Add an execution plan for this target
+    .title(*ngIf="existMileston && !addMilestones") Milestones for this target
     .text-right.m-t-20(*ngIf="existMileston || addMilestones")
         bw-button(color="blue", [simple]="true", title="Add Milestone", icon="plus", 
         class="normal", (clicked)="addEvent($event)")
-
-    .m-t-20(*ngIf="editMilestones")
-        kpi-edit-milestones-target([fg]="fg", [vm]="vm",  [milestones]="milestone",  (onCancel)="cancel()",
-        , (onEdit)="editStatus($event)")
    
-    .m-t-20(*ngIf="existMileston && !editMilestones && !addMilestones")
-       kpi-list-milestones-target(#listMilestone, [milestones]="milestones", [allUsers]="allUsers",
+    .m-t-20.w-80(*ngIf="existMileston")
+       kpi-list-milestones-target.w-100(#listMilestone, [milestones]="milestones", [allUsers]="allUsers", [vm]="vm",
         (onEdit)="edit($event)", (onDelete)="delete($event)", (onEditStatus)="editStatus($event)")
         
     .m-t-20(*ngIf="addMilestones")
         kpi-add-milestones-target([fg]="fg", [vm]="vm", (onAdd)="add()", (onCancel)="cancel()")
-
-
-

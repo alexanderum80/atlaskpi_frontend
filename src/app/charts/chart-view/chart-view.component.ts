@@ -1201,7 +1201,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         this.currentNode = this.rootNode;
     }
 
-    
 
     getDateRange(custom: any) {
         if (custom.from && custom.to) {
@@ -1370,7 +1369,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             if(definition.series == !undefined) {
                 targetExists =  definition.series.find(s => s.targetId);
             }
-            
+
             if (definition.tooltip && definition.tooltip.altas_definition_id === 'default' && targetExists) {
                 const formatterFactory = new FormatterFactory();
                 const formatter = formatterFactory.getFormatter('percentage_target_default').exec;
@@ -1633,10 +1632,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     private _disableTargetOption(): void {
-        if (!this._hasSeries() ||
-            this._isChartTypePie() ||
-            (!this._hasFrequency() && !this._hasGrouping()) ||
-            this._isDateRangeInPast()) {
+        if (!this._hasSeries() || this._hasDaily()) {
             this._commonService.disableChildrenActionItems(this.actionItems, ['set-target']);
         } else if (!this.createTarget) {
             this._commonService.disableChildrenActionItems(this.actionItems, ['set-target'], !this.createTarget);
@@ -1662,6 +1658,10 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
 
     private _hasSeries(): boolean {
         return (this.chart.options.series || []).length > 0;
+    }
+
+    private _hasDaily(): boolean {
+        return this.chartData.frequency === 'daily' ? true : false;
     }
 
     private _hasFrequency(): boolean {

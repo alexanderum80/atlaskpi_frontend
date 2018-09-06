@@ -51,6 +51,7 @@ export interface ITargetNew {
     owner: string;
     active?: boolean;
     selected?: boolean;
+    period: string;
 }
 
 export interface ITargetNewInput {
@@ -67,6 +68,7 @@ export interface ITargetNewInput {
     owner: string;
     active?: boolean;
     selected?: boolean;
+    period: string;
 }
 
 

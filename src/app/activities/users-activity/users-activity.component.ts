@@ -91,36 +91,36 @@ export class UsersActivityComponent implements OnInit {
     });
     let data = payload.split(':{');
 
-    if (this.type === 'Target') {
-      if (this.action === 'created') {
-        data = data[2].split(',');
-        data = data[0].split(':');
-        const targetName = data[1].replace(/"/g, '');
+    // if (this.type === 'Target') {
+    //   if (this.action === 'created') {
+    //     data = data[2].split(',');
+    //     data = data[0].split(':');
+    //     const targetName = data[1].replace(/"/g, '');
 
-        if (this.activity && this.activity.payload) {
-          const targetPayload: string = this.activity.payload;
+    //     if (this.activity && this.activity.payload) {
+    //       const targetPayload: string = this.activity.payload;
 
-          if (typeof targetPayload === 'string') {
-            const parsedPayload = JSON.parse(targetPayload);
-            this.processCreateTarget(parsedPayload);
-          }
-        }
-      }
-      if (this.action === 'modified') {
-        data = data[1].split(',');
-        data = data[0].split(':');
-        const targetId = data[1].replace(/"/g, '');
+    //       if (typeof targetPayload === 'string') {
+    //         const parsedPayload = JSON.parse(targetPayload);
+    //         this.processCreateTarget(parsedPayload);
+    //       }
+    //     }
+    //   }
+    //   if (this.action === 'modified') {
+    //     data = data[1].split(',');
+    //     data = data[0].split(':');
+    //     const targetId = data[1].replace(/"/g, '');
 
-        this.getTargetById(targetId);
-      }
-      if (this.action === 'deleted') {
-        data = data[data.length - 1].split(',');
-        data = data[0].split(':');
-        const targetId = data[1].replace(/"/g, '');
+    //     this.getTargetById(targetId);
+    //   }
+    //   if (this.action === 'deleted') {
+    //     data = data[data.length - 1].split(',');
+    //     data = data[0].split(':');
+    //     const targetId = data[1].replace(/"/g, '');
 
-        this.getTargetById(targetId);
-      }
-    }
+    //     this.getTargetById(targetId);
+    //   }
+    // }
 
     if (this.type === 'Role') {
       if (data[2]) {

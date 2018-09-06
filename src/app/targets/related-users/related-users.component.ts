@@ -38,9 +38,9 @@ export class RelatedUsersComponent implements OnInit {
     }));
   }
 
-  addUser(target, name) {
+  addUser(target?, name?) {
 
-    if (name === '') {
+    if (target === undefined  || name === '' || name === undefined || name === null) {
       const usersControls = this.vm.fg.get('users').controls;
       for (let i = this.vm.users.length; i >= 0; i--) {
           this.vm.users.splice(i, 1);
