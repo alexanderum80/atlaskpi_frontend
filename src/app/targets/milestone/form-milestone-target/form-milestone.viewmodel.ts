@@ -61,7 +61,7 @@ export class FormMilestoneViewModel extends ViewModel<IMilestone> {
     task: string;
 
     @Field({ type: String })
-    target: string;
+    target?: string;
 
     @Field({ type: String,  required: true })
     dueDate: string ;

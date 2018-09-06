@@ -25,8 +25,8 @@ div(layout="column")
             bw-number.m-r-20([fg]="fg", field="value", label="value", leftIcon="edit")   
             
         .m-t-25.text-center(flex="40")
-            bw-button.m-l-5(title="# value", color="{{colorValue}}", icon="number", (clicked)="unit('value')")  
-            bw-button.m-r-5(title="% pct.", color="{{colorPercent}}", icon="percent", (clicked)="unit('percent')")  
+            bw-button(title="# value", color="{{colorValue}}", icon="number", (clicked)="unit('value')")  
+            bw-button(title="% pct. ", color="{{colorPercent}}", icon="percent", (clicked)="unit('percent')")  
     
     div(flex, layout="row")
         .m-r-10(flex="50")

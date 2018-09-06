@@ -7,7 +7,8 @@ import { IMilestone } from '../shared/models/targets.model';
 import { IUser } from '../../users/shared';
 import { EditMilestonesTargetComponent } from './edit-milestones-target/edit-milestones-target.component';
 import SweetAlert from 'sweetalert2';
-import { filter } from 'lodash';
+import { filter, clone } from 'lodash';
+import { file } from 'babel-types';
 
 
 const milestoQuery = require('graphql-tag/loader!./list-milestones.gql');
@@ -37,7 +38,8 @@ export class MilestoneComponent implements OnInit {
   titleAction: string;
   existMileston = false;
   milestone: any;
-  existNew: boolean;
+  existNew = false;
+  tempTarget = [];
 
   private _subscription: Subscription[] = [];
 
@@ -50,6 +52,7 @@ export class MilestoneComponent implements OnInit {
     this._subscription.push(this.fg.controls['_id'].valueChanges.subscribe(value => {
         this.refresh(value);
     }));
+    this.refresh('');
     this.getAllUsers();
   }
 
@@ -92,8 +95,20 @@ export class MilestoneComponent implements OnInit {
       target: target || ''
     }).then(d => {
         that.milestones  = d.milestonesByTarget || null;
-        if (!that.milestones || that.milestones.length === 0) {
-          that.cancel();
+        if (!that.milestones || that.milestones.length === 0 ) {
+          if (that.tempTarget.length > 0) {
+            that.milestones = that.tempTarget;
+            that.existMileston = true;
+            that.existNew = false;
+            if (that.action === 'add') {
+              that.titleAction = 'Add an execution plan for this target';
+              that.action = '';
+            } else {
+              that.titleAction = 'Milestones for this target';
+            }
+          } else {
+            that.cancel();
+          }
         }  else {
           that.existMileston = true;
           that.existNew = false;
@@ -110,7 +125,10 @@ export class MilestoneComponent implements OnInit {
     ;
   }
 
-  add() {
+  add(event) {
+    if (event) {
+      this.tempTarget.push(event);
+    }
     this.addMilestones = false;
     this.editMilestones = false;
     this.action = 'add';
@@ -125,6 +143,12 @@ export class MilestoneComponent implements OnInit {
   }
 
   editStatus(event) {
+    if (event) {
+      const temp = clone(this.tempTarget);
+      const tempDelete = temp.filter(f => f.task !== event.task);
+      this.tempTarget = tempDelete;
+      this.tempTarget.push(event);
+    }
     this.editMilestones = false;
     this.addMilestones = false;
     this.titleAction = 'Milestones for this target';
@@ -142,12 +166,19 @@ export class MilestoneComponent implements OnInit {
   })
   .then((res) => {
       if (res.value === true) {
-        this._apolloService.mutation < IMilestone > (deleteMilestone, {'id': event })
-        .then(res1 => {
-          that.refresh(that.target);
-        })
-        .catch(err => { this._displayServerErrors(err) ; });
+        if (event.id ) {
+          this._apolloService.mutation < IMilestone > (deleteMilestone, {'id': event.id })
+          .then(res1 => {
+            that.refresh(that.target);
+          })
+          .catch(err => { this._displayServerErrors(err) ; });
+      }  else {
+        const temp = clone(this.tempTarget);
+        const tempDelete = temp.filter(f => f.task !== event.title);
+        this.tempTarget = tempDelete;
+        that.refresh(that.target);
       }
+    }
   });
 }
 

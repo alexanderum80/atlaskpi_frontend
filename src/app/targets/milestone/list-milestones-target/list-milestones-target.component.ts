@@ -55,7 +55,7 @@ export class ListMilestonesTargetComponent implements OnInit {
             this.vml.editMilestone(item.item);
         break;
       case 'delete':
-            this.onDelete.emit(item.item.id);
+              this.onDelete.emit(item.item);
         break;
       case 'declined':
             this.save(item.item.id, 'declined');
@@ -84,8 +84,8 @@ export class ListMilestonesTargetComponent implements OnInit {
     this.vml.noEditMilestone();
   }
 
-  editStatus(evente) {
-    this.onEditStatus.emit();
+  editStatus(event) {
+    this.onEditStatus.emit(event);
   }
 
   private _displayServerErrors(err) {

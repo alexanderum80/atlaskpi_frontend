@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter,  ViewChild } from '@ang
 import { FormGroup } from '@angular/forms';
 import { FormMilestoneTargetComponent } from '../form-milestone-target/form-milestone-target.component';
 import { ApolloService } from '../../../shared/services/apollo.service';
-import { IMilestone } from '../../shared/models/targets.model';
+import { IMilestone, ITargetNew } from '../../shared/models/targets.model';
 
 import {
   IDatePickerConfig,
@@ -23,6 +23,7 @@ export class AddMilestonesTargetComponent implements OnInit {
   @ViewChild('fromMilestonesTarget') private _form: FormMilestoneTargetComponent;
   @Output() onAdd = new EventEmitter<any>();
   @Output() onCancel = new EventEmitter<any>();
+  @Output() newTarget: any = [];
 
   constructor( private _apolloService: ApolloService) { }
 
@@ -35,7 +36,7 @@ export class AddMilestonesTargetComponent implements OnInit {
         this._form.vmm.target =  that.vm._id;
         this._form.vmm.status = 'due';
 
-        if (this._form.vmm.fg.valid) {
+        if (this._form.vmm.fg.valid && this._form.vmm.target) {
             this._apolloService.mutation < IMilestone > (addMilestone, {'input': this._form.vmm.addPayload})
                 .then(res => {
                   that.onAdd.emit();
@@ -43,6 +44,8 @@ export class AddMilestonesTargetComponent implements OnInit {
                 .catch(err =>
                   that._displayServerErrors(err)
                 );
+        } else {
+          that.onAdd.emit(this._form.vmm.addPayload);
         }
   }
 

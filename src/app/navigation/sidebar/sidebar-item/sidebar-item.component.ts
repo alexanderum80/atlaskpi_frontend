@@ -66,9 +66,9 @@ export class SidebarItemComponent implements OnInit, OnDestroy {
         this._routeEventsSub.unsubscribe();
     }
 
-    showListDashboardItem() {
+    get showListDashboardItem(): boolean {
         if (!this.vm || isEmpty(this.vm.list_item)) {
-            return '';
+            return true;
         }
 
         return this.menuItem && this.menuItem.id === 'dashboard';

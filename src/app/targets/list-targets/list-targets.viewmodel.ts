@@ -59,7 +59,7 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
 
         this._targetsItemList =  this._targets.map(d => ( {
             id: d._id ,
-            imagePath: d.active ? './assets/img/targets/target_t.png' : './assets/img/targets/target_g_t.png',
+            imagePath: this.getImagent(d.active),
             title: d.name,
             subtitle: 'Next due date:' + this._nextDueDate(d.reportOptions.frequency) ,
             selected: false,
@@ -86,11 +86,9 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
     selectTarget(item: IListItem, active) {
         this._targetsItemList.forEach(t => {
             t.selected = false;
-            t.imagePath = active ? './assets/img/targets/target_t.png' : './assets/img/targets/target_g_t.png';
         });
         if (item) {
             item.selected = true;
-            item.imagePath = active ? './assets/img/targets/target_t.png' : './assets/img/targets/target_g_t.png';
             this.item = item;
         }
     }
@@ -105,7 +103,6 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
             title: 'Target name',
             subtitle: 'Next due date:' + this._nextDueDate(frequency) ,
             selected: true,
-            imagePath: './assets/img/targets/target_t.png',
         });
     }
 
@@ -114,6 +111,13 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
         return this.item;
     }
 
+    private getImagent(active) {
+        let path = './assets/img/targets/target_g_t.png';
+        if (active === 'true') {
+            path = './assets/img/targets/target_t.png';
+        }
+        return path;
+    }
 
     private _nextDueDate(frequency) {
         let dueDate: any;

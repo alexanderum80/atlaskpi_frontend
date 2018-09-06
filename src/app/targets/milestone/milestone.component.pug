@@ -14,4 +14,4 @@ div(flex)
         (onEdit)="edit($event)", (onDelete)="delete($event)", (onEditStatus)="editStatus($event)")
         
     .m-t-20(*ngIf="addMilestones")
-        kpi-add-milestones-target([fg]="fg", [vm]="vm", (onAdd)="add()", (onCancel)="cancel()")
+        kpi-add-milestones-target([fg]="fg", [vm]="vm", (onAdd)="add($event)", (onCancel)="cancel()")

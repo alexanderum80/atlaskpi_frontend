@@ -228,6 +228,10 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
         return value;
     }
 
+    set compareTos(compareTo) {
+        this.compareTo = compareTo;
+    }
+
     setTargetPeriod(frequency, predefined) {
         if (frequency === this.frequency) {
             return;
@@ -238,9 +242,12 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
     }
 
     setGroupings(list) {
-        this.nodoSelectedTextGrouping !== '' ?
-             this.grouping = this.nodoSelectedTextGrouping :
-             this.grouping = 'all';
+        if (this.nodoSelectedTextGrouping !== undefined && this.nodoSelectedTextGrouping !== '') {
+             this.grouping = this.nodoSelectedTextGrouping;
+        } else {
+            this.grouping = 'all';
+        }
+
 
         if (list === this.groupings) {
             return;
@@ -264,13 +271,14 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
 
     set grouping(grouping) {
         this.nodoSelectedTextGrouping = grouping;
+        this.groupings = [grouping];
     }
 
     get grouping() {
         return this.nodoSelectedTextGrouping;
     }
 
-    set peridos(period) {
+    set periods(period) {
         this.period = period;
     }
 
@@ -279,8 +287,6 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
     }
 
     private _prepareTargentePeriodListItems(predefined) {
-        // this._getFrequency(predefined);
-
         this._targetsPeriodItemList = this._getFrequency(predefined).map(d => ({
             id: d ,
             title: d,
@@ -291,10 +297,10 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
                 id: predefined ,
                 title: predefined,
             }];
-            this.period = predefined;
+            this.periods = predefined;
             this.nodoSelectedText = predefined;
         } else if (!this.period) {
-            this.period = this._targetsPeriodItemList[0].title;
+            this.periods = this._targetsPeriodItemList[0].title;
             this.nodoSelectedText = this._targetsPeriodItemList[0].title;
         }
     }
@@ -354,6 +360,7 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
                     }];
                 break;
         }
+        this.compareTos = this.baseOnList[0].title;
     }
 
 
@@ -425,7 +432,6 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
             }
             valueMoment[0] = predefined;
         }
-        // this.frequency = this.nodoSelectedText;
         return valueMoment;
     }
 }

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 
-import { ITargetNew } from '../shared/models/targets.model';
+import { ITargetNew, IMilestone } from '../shared/models/targets.model';
 import { FormTargetsViewModel } from './form-targets.viewmodel';
 import { ApolloService } from '../../shared/services/apollo.service';
 import { BasicTargetsComponent } from '../basic-targets/basic-targets.component';
@@ -27,6 +27,8 @@ const updateTarget = require('graphql-tag/loader!./update-target.mutation.gql');
 const createTarget = require('graphql-tag/loader!./create-target.mutation.gql');
 const findTargetByName = require('graphql-tag/loader!./find-target-by-name.gql');
 const removeTarget = require('graphql-tag/loader!./remove-target.gql');
+
+const addMilestone = require('graphql-tag/loader!./add-milestones.gql');
 
 @Component({
   selector: 'kpi-form-targets',
@@ -75,7 +77,6 @@ export class FormTargetsComponent implements OnInit {
     this.vm.initialize(null);
     that.initialModel();
     that._refreshTargets();
-    // that.vm.fg.addControl('period', new FormControl(this.vm.period));
   }
 
   setIndex(index: number) {
@@ -279,7 +280,8 @@ export class FormTargetsComponent implements OnInit {
 
   private initialModel() {
     const that = this;
-    this.vm.owner = this.userService.user._id;
+    that.vm.owner = this.userService.user._id;
+    that.vm.recurrent ? that.vm.recurrent = true : that.vm.recurrent = false;
     if (that.chart) {
       that.type = 'chart';
       that.identifier = that.chart._id;
@@ -302,17 +304,17 @@ export class FormTargetsComponent implements OnInit {
       this.vm.grouping  = target[0].reportOptions.groupings[0];
     }
 
+    if (that.chart.groupings[0] === '' || !that.chart.groupings === undefined || that.chart.groupings === null ) {
+      that.vm.visbleGroupings = false;
+      return;
+    }
+
     const categories = this._isStacked(that.chart.groupings, this.chart) ?
     that.chart.chartDefinition.xAxis.categories.filter(item => item.title !== 'Others') : [];
 
     if (categories.length > 0) {
       that.vm.setGroupings(categories);
       that.vm.visbleGroupings = true;
-      return;
-    }
-
-    if (that.chart.groupings[0] === '' || !that.chart.groupings === undefined || that.chart.groupings === null ) {
-      that.vm.visbleGroupings = false;
       return;
     }
 
@@ -374,7 +376,7 @@ export class FormTargetsComponent implements OnInit {
 
       that.vm.baseOnLists(frequency);
       that.vm.setTargetPeriod(frequency, predefined);
-      that.vm.peridos = 'this ' + frequency;
+      that.vm.periods = 'this ' + frequency;
     } else {
       const predefined = that.chart.dateRange[0].predefined;
       let periods = '';
@@ -389,7 +391,7 @@ export class FormTargetsComponent implements OnInit {
 
       that.vm.baseOnLists(periods);
       that.vm.setTargetPeriod(periods, predefined);
-      that.vm.peridos = predefined;
+      that.vm.periods = predefined;
     }
 
   }
@@ -427,9 +429,6 @@ export class FormTargetsComponent implements OnInit {
             that.listTarget.itemClicked(that.item );
             that.selectItem(that.item);
           }
-          // that._complitedFrequency();
-          // that._complitedGroupings();
-          // that._complitedPeriod();
           that.edit(that.vm.fg.controls._id.value);
         }
       });
@@ -450,7 +449,19 @@ export class FormTargetsComponent implements OnInit {
     const that = this;
     this._apolloService.networkQuery < ITargetNew > (trargetByName, {'name': that.vm.name})
     .then(res => {
-      that._refreshTargets(res.targetByName._id);
+      const id = res.targetByName._id;
+      that._refreshTargets(id);
+      if (that.milestoneComponent.tempTarget.length > 0) {
+        that.milestoneComponent.tempTarget.forEach(element => {
+            element.target = id;
+            this._apolloService.mutation < IMilestone > (addMilestone, {'input': element})
+            .then(restarget => {
+            })
+            .catch(err =>
+              that._displayServerErrors(err)
+            );
+        });
+      }
      })
     .catch(err =>
       this._displayServerErrors(err)

@@ -98,7 +98,6 @@ export class ListMiestoneViewModel extends ViewModel<IFilter> {
     selectMilestone(item: IListMilestone) {
         this._milestonesItemList.forEach(t => t.selected = false);
         item.selected = true;
-        this.milestone = filter(this.milestones, {'_id': item.id});
     }
 
     private _prepareMilestoneListItems() {
