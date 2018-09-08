@@ -115,8 +115,8 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
     private _groupingsItemList: SelectionItem[];
     private frequency: any;
     private _groupings: any;
-    private nodoSelectedTextGrouping: string;
-    private nodoSelectedTextCompareTo: string;
+    nodoSelectedTextGrouping: string;
+    nodoSelectedTextCompareTo: string;
 
 
     visbleGroupings = true;
@@ -232,13 +232,17 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
         this.compareTo = compareTo;
     }
 
-    setTargetPeriod(frequency, predefined) {
+    set frequencys(frequency) {
+        this.frequency = frequency;
+    }
+
+    setTargetPeriod(frequency) {
         if (frequency === this.frequency) {
             return;
         }
 
         this.frequency = frequency;
-        this._prepareTargentePeriodListItems(predefined);
+        this._prepareTargentePeriodListItems(frequency);
     }
 
     setGroupings(list) {
@@ -306,18 +310,17 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
     }
 
     baseOnLists(frequency) {
-        this.period = this.nodoSelectedTextCompareTo;
         switch (frequency) {
             case 'monthly':
                     this.baseOnList = [{
                         id: 'last month',
                         title: 'last month'
                     }, {
-                        id: 'same month, Last year',
-                        title: 'same month Last year'
+                        id: 'same month, last year',
+                        title: 'same month last year'
                     }, {
-                        id: 'same month, 2 year ago',
-                        title: 'same month 2 year ago'
+                        id: 'same month, 2 years ago',
+                        title: 'same month 2 years ago'
                     }];
                 break;
             case 'quarterly':
@@ -325,11 +328,11 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
                         id: 'last quarter',
                         title: 'last quarter'
                     }, {
-                        id: 'same quarter, Last year',
-                        title: 'same quarter Last year'
+                        id: 'same quarter, last year',
+                        title: 'same quarter last year'
                     }, {
-                        id: 'same quarter, 2 year ago',
-                        title: 'same quarter 2 year ago'
+                        id: 'same quarter, 2 years ago',
+                        title: 'same quarter 2 years ago'
                     }];
                 break;
             case 'weekly':
@@ -337,11 +340,11 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
                         id: 'last week',
                         title: 'last week'
                     }, {
-                        id: 'same week, Last year',
-                        title: 'same week Last year'
+                        id: 'same week, last year',
+                        title: 'same week last year'
                     }, {
-                        id: 'same week, 2 year ago',
-                        title: 'same week 2 year ago'
+                        id: 'same week, 2 years ago',
+                        title: 'same week 2 years ago'
                     }];
                 break;
             case 'yearly':
@@ -349,18 +352,17 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
                         id: 'last year',
                         title: 'last year'
                     }, {
-                        id: '2 year ago',
-                        title: '2 year ago'
+                        id: '2 years ago',
+                        title: '2 years ago'
                     }];
                 break;
             case 'custom':
                     this.baseOnList = [{
-                        id: 'previous Period',
-                        title: 'previous Period'
+                        id: 'previous period',
+                        title: 'previous period'
                     }];
                 break;
         }
-        this.compareTos = this.baseOnList[0].title;
     }
 
 

@@ -16,6 +16,8 @@ import { EditMilestonesTargetComponent } from './milestone/edit-milestones-targe
 import { NewMilestonesTargetComponent } from './milestone/new-milestones-target/new-milestones-target.component';
 import { FormMilestoneTargetComponent } from './milestone/form-milestone-target/form-milestone-target.component';
 import { FormTargetsComponent } from './form-targets/form-targets.component';
+import { AddBasicTargetsComponent } from './add-basic-targets/add-basic-targets.component';
+
 
 @NgModule({
   imports: [
@@ -26,7 +28,9 @@ import { FormTargetsComponent } from './form-targets/form-targets.component';
     ReactiveFormsModule,
     SharedModule,
   ],
-  declarations: [FormTargetsComponent, ListTargetsComponent, BasicTargetsComponent, RelatedUsersComponent, MilestoneComponent, TargetComponent, ListMilestonesTargetComponent, AddMilestonesTargetComponent, EditMilestonesTargetComponent, NewMilestonesTargetComponent, FormMilestoneTargetComponent],
+  declarations: [FormTargetsComponent, ListTargetsComponent, BasicTargetsComponent, RelatedUsersComponent, 
+    MilestoneComponent, TargetComponent, ListMilestonesTargetComponent, AddMilestonesTargetComponent, EditMilestonesTargetComponent,
+     NewMilestonesTargetComponent, FormMilestoneTargetComponent, AddBasicTargetsComponent],
   exports:[FormTargetsComponent]
 })
 export class TargetsModule { }

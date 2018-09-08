@@ -47,57 +47,66 @@ export class MilestoneComponent implements OnInit {
 
   constructor(private _apolloService: ApolloService) { }
 
-  ngOnInit() {
-    this.addMilestones = false;
-    this._subscription.push(this.fg.controls['_id'].valueChanges.subscribe(value => {
-        this.refresh(value);
-    }));
-    this.refresh('');
-    this.getAllUsers();
-  }
+    ngOnInit() {
+      this.subscription();
+      this.refresh('');
+      this.getAllUsers();
+    }
 
-  addEvent(): void {
-    this.addMilestones = true;
-    this.editMilestones = false;
-    this.existNew = false;
-    this.titleAction = 'Add an execution plan for this target';
-    this.action = 'add';
-    this.refresh(this.target);
-  }
-
-  cancel(event?) {
-      this.addMilestones = false;
+    addEvent(): void {
+      this.addMilestones = true;
       this.editMilestones = false;
-      if (this.existMileston) {
-        this.titleAction = 'Milestones for this target';
-        this.existNew = false;
-       } else {
-         this.titleAction = '';
-         if (this.action === 'add') {
+      this.existNew = false;
+      this.titleAction = 'Add an execution plan for this target';
+      this.action = 'add';
+      this.refresh(this.target);
+    }
+
+    cancel(event?) {
+        this.addMilestones = false;
+        this.editMilestones = false;
+        if (this.existMileston) {
+          this.titleAction = 'Milestones for this target';
           this.existNew = false;
-          this.addMilestones = true;
-          this.titleAction = 'Add an execution plan for this target';
         } else {
-          this.existNew = true;
           this.titleAction = '';
+          if (this.action === 'add') {
+            this.existNew = false;
+            this.addMilestones = true;
+            this.titleAction = 'Add an execution plan for this target';
+          } else {
+            this.existNew = true;
+            this.titleAction = '';
+          }
         }
-      }
-      this.action = '';
-  }
+        this.action = '';
+    }
 
-  refresh(target) {
-    const that = this;
+    refresh(target) {
+      const that = this;
 
-    that.existMileston = false;
-    that.titleAction = '';
+      that.existMileston = false;
+      that.titleAction = '';
 
-    this._apolloService.networkQuery < IMilestone[] > (milestoQuery, {
-      target: target || ''
-    }).then(d => {
-        that.milestones  = d.milestonesByTarget || null;
-        if (!that.milestones || that.milestones.length === 0 ) {
-          if (that.tempTarget.length > 0) {
-            that.milestones = that.tempTarget;
+      this._apolloService.networkQuery < IMilestone[] > (milestoQuery, {
+        target: target || ''
+      }).then(d => {
+          that.milestones  = d.milestonesByTarget || null;
+          if (!that.milestones || that.milestones.length === 0 ) {
+            if (that.tempTarget.length > 0) {
+              that.milestones = that.tempTarget;
+              that.existMileston = true;
+              that.existNew = false;
+              if (that.action === 'add') {
+                that.titleAction = 'Add an execution plan for this target';
+                that.action = '';
+              } else {
+                that.titleAction = 'Milestones for this target';
+              }
+            } else {
+              that.cancel();
+            }
+          }  else {
             that.existMileston = true;
             that.existNew = false;
             if (that.action === 'add') {
@@ -106,93 +115,88 @@ export class MilestoneComponent implements OnInit {
             } else {
               that.titleAction = 'Milestones for this target';
             }
-          } else {
-            that.cancel();
           }
-        }  else {
-          that.existMileston = true;
-          that.existNew = false;
-          if (that.action === 'add') {
-            that.titleAction = 'Add an execution plan for this target';
-            that.action = '';
-          } else {
-            that.titleAction = 'Milestones for this target';
-          }
-        }
-    })
-    .catch(err =>
-      this._displayServerErrors(err))
-    ;
-  }
-
-  add(event) {
-    if (event) {
-      this.tempTarget.push(event);
+      })
+      .catch(err =>
+        this._displayServerErrors(err))
+      ;
     }
-    this.addMilestones = false;
-    this.editMilestones = false;
-    this.action = 'add';
-    this.refresh(this.target);
-  }
 
-  edit(event) {
-    this.editMilestones = true;
-    this.addMilestones = false;
-    this.titleAction = 'Milestones for this target';
-    this.milestone = filter(this.milestones, {'_id': event}) ;
-  }
-
-  editStatus(event) {
-    if (event) {
-      const temp = clone(this.tempTarget);
-      const tempDelete = temp.filter(f => f.task !== event.task);
-      this.tempTarget = tempDelete;
-      this.tempTarget.push(event);
-    }
-    this.editMilestones = false;
-    this.addMilestones = false;
-    this.titleAction = 'Milestones for this target';
-    this.refresh(this.target);
-  }
-
-  delete(event) {
-    const that = this;
-    SweetAlert({
-      title: 'Are you sure?',
-      text: `Once mistelone's has been deleted, you will not be able to recover it. Are you sure you want to delete it?`,
-      type: 'warning',
-      showConfirmButton: true,
-      showCancelButton: true
-  })
-  .then((res) => {
-      if (res.value === true) {
-        if (event.id ) {
-          this._apolloService.mutation < IMilestone > (deleteMilestone, {'id': event.id })
-          .then(res1 => {
-            that.refresh(that.target);
-          })
-          .catch(err => { this._displayServerErrors(err) ; });
-      }  else {
-        const temp = clone(this.tempTarget);
-        const tempDelete = temp.filter(f => f.task !== event.title);
-        this.tempTarget = tempDelete;
-        that.refresh(that.target);
+    add(event) {
+      if (event) {
+        this.tempTarget.push(event);
       }
+      this.addMilestones = false;
+      this.editMilestones = false;
+      this.action = 'add';
+      this.refresh(this.target);
     }
-  });
-}
 
-private _displayServerErrors(err) {
-  console.log('Server errors: ' + JSON.stringify(err));
-}
+    edit(event) {
+      this.editMilestones = true;
+      this.addMilestones = false;
+      this.titleAction = 'Milestones for this target';
+      this.milestone = filter(this.milestones, {'_id': event}) ;
+    }
 
-private getAllUsers() {
-  const that = this;
-  this._apolloService.networkQuery < IUser[] >( userQuery).then(data => {
-        that.allUsers = (<any>data).allUsers;
-      }).catch(err => {
-          console.log('Server errors: ' + JSON.stringify(err));
-      });
+    editStatus(event) {
+      if (event) {
+        const temp = clone(this.tempTarget);
+        const tempDelete = temp.filter(f => f.task !== event.task);
+        this.tempTarget = tempDelete;
+        this.tempTarget.push(event);
+      }
+      this.editMilestones = false;
+      this.addMilestones = false;
+      this.titleAction = 'Milestones for this target';
+      this.refresh(this.target);
+    }
 
-}
+    delete(event) {
+      const that = this;
+      SweetAlert({
+        title: 'Are you sure?',
+        text: `Once mistelone's has been deleted, you will not be able to recover it. Are you sure you want to delete it?`,
+        type: 'warning',
+        showConfirmButton: true,
+        showCancelButton: true
+    })
+    .then((res) => {
+        if (res.value === true) {
+          if (event.id ) {
+            this._apolloService.mutation < IMilestone > (deleteMilestone, {'id': event.id })
+            .then(res1 => {
+              that.refresh(that.target);
+            })
+            .catch(err => { this._displayServerErrors(err) ; });
+        }  else {
+          const temp = clone(this.tempTarget);
+          const tempDelete = temp.filter(f => f.task !== event.title);
+          this.tempTarget = tempDelete;
+          that.refresh(that.target);
+        }
+      }
+    });
+  }
+
+  private _displayServerErrors(err) {
+    console.log('Server errors: ' + JSON.stringify(err));
+  }
+
+  private getAllUsers() {
+    const that = this;
+    this._apolloService.networkQuery < IUser[] >( userQuery).then(data => {
+          that.allUsers = (<any>data).allUsers;
+        }).catch(err => {
+            console.log('Server errors: ' + JSON.stringify(err));
+        });
+
+  }
+
+  private subscription() {
+    this.addMilestones = false;
+      this._subscription.push(this.fg.controls['_id'].valueChanges.subscribe(value => {
+          this.refresh(value);
+      }));
+  }
 }

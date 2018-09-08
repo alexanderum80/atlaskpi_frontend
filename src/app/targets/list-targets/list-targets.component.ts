@@ -45,7 +45,7 @@ export class ListTargetsComponent implements OnInit {
 
   itemClicked(item) {
       const targ = filter(this.targets, {'_id': item.id});
-      this.vml.selectTarget(item, targ[0].active);
+      this.vml.selectTarget(item, targ.active);
       this.item = item;
       this.selectItem.emit(item);
   }
@@ -62,7 +62,7 @@ export class ListTargetsComponent implements OnInit {
   }
 
   add() {
-    this.vml.unSelectTarget(this.chart.frequency || this.chart.dateRange[0].predefined);
+    this.vml.unSelectTarget(this.chart.frequency, this.chart.dateRange[0].predefined);
     this.addItem.emit();
   }
 

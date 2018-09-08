@@ -13,10 +13,8 @@ import { IListItem } from '../../shared/ui/lists/list-item';
 import { MilestoneComponent } from '../milestone/milestone.component';
 import { Subscription } from 'rxjs';
 import { RelatedUsersComponent } from '../related-users/related-users.component';
-import { FormControl } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { ITargetFormFields } from '../../charts/chart-view/set-goal/shared/target.service';
-import { ITarget } from '../../charts/chart-view/set-goal/shared/targets.interface';
 
 const targesQuery = require('graphql-tag/loader!./list-targets.gql');
 const addTargetsMutation = require('graphql-tag/loader!./add-targets.gql');
@@ -48,13 +46,13 @@ export class FormTargetsComponent implements OnInit {
 
   @Output() onCancel = new EventEmitter<any>();
 
-  targat: any;
   targets: ITargetNew[];
   valuePerc = true;
   item: IListItem;
   listLoad = false;
   tabIndex = 1;
   isCustom = false;
+  isAdd = false;
 
   valid = false;
 
@@ -77,7 +75,9 @@ export class FormTargetsComponent implements OnInit {
     this.vm.initialize(null);
     that.initialModel();
     that._refreshTargets();
+    that.subscriptionName();
   }
+
 
   setIndex(index: number) {
     if (index < 1 && index > this.totalTabs) {
@@ -112,38 +112,19 @@ export class FormTargetsComponent implements OnInit {
   }
 
   add(event) {
-    this.vm.activeVisble = false;
-    this.vm.fg.controls['_id'].setValue('');
-    this.vm.fg.controls['name'].setValue('');
-    this.vm.value = null;
-    this.vm.fg.controls['recurrent'].setValue(false);
-    this.vm.active = true;
-    this._complitedGroupings(true);
-    this._complitedFrequency(true);
+    const that = this;
+    this.vm.initialize(null);
+    that.initialModel();
+    that.isAdd = true;
+    that.vm.activeVisble = false;
+    that.subscriptionName();
+    that._complitedGroupings(true);
+    that._complitedFrequency(true);
   }
 
   edit(id) {
-    this.vm.activeVisble = true;
     const target = filter( this.targets,  {'_id': id});
-    this.vm.target = target;
-    this.vm.fg.controls['_id'].setValue(id);
-    this.vm.fg.controls['name'].setValue(target[0].name);
-    this.vm.fg.controls['period'].setValue(target[0].period);
-    this.vm.fg.controls['unit'].setValue(target[0].unit);
-    this.vm.fg.controls['type'].setValue(target[0].type);
-    this.vm.fg.controls['value'].setValue(target[0].value);
-    this.vm.fg.controls['compareTo'].setValue(target[0].compareTo);
-    this.vm.fg.controls['recurrent'].setValue(target[0].recurrent);
-    this.vm.fg.controls['active'].setValue(target[0].active === 'true' ? true : false);
-    if (target[0].reportOptions.groupings) {
-      const group = target[0].reportOptions.groupings[0];
-      this.vm.grouping  = group;
-    }
-
-    if (target[0].reportOptions.frequency) {
-      this.vm.fg.controls['recurrent'].setValue(target[0].reportOptions.frequency);
-    }
-
+    this._refreshForm(target);
     this._complitedFrequency();
     this._complitedGroupings(false, target);
     this._complitedPeriod(target);
@@ -206,31 +187,12 @@ export class FormTargetsComponent implements OnInit {
 
   setUpdate(id) {
       const that = this;
-      const categories = this._isStacked(that.chart.groupings, this.chart) ;
-      const visible = that.vm.users[0].id;
-      const dateP = that.nextDueDate( that.vm['frequency'], that.vm.fg.controls['period'].value) ;
-      const fields: ITargetFormFields = {
-        name: that.vm.name,
-        datepicker: dateP,
-        vary:  that.vm.type,
-        amount: that.vm.value,
-        amountBy: that.vm.unit === 'value' ? 'dollar' : 'percent',
-        active:  true,
-        type: 'spline',
-        period: that.vm.compareTo,
-        visible: [ visible ],
-        nonStackName: that.chart.frequency ? that.chart.frequency : that.vm.fg.controls['groupings'].value ,
-        stackName: categories ? that.vm.fg.controls['groupings'].value : '',
-        owner: that.vm.owner,
-        chart: [that.chart._id]
-    };
-
 
       this._apollo.mutate({
           mutation: updateTarget,
           variables: {
             id: id,
-            data: fields
+            data: this.fields()
           },
           refetchQueries: [
             'Chart'
@@ -245,36 +207,18 @@ export class FormTargetsComponent implements OnInit {
 
   setAdd() {
     const that = this;
-    const categories = this._isStacked(that.chart.groupings, this.chart) ;
-    const visible = that.vm.users[0].id;
-    const dateP = that.nextDueDate( that.vm['frequency'], that.vm.fg.controls['period'].value) ;
-    const fields: ITargetFormFields = {
-      name: that.vm.name,
-      datepicker: dateP,
-      vary:  that.vm.type,
-      amount: that.vm.value,
-      amountBy: that.vm.unit === 'value' ? 'dollar' : 'percent',
-      active:  true,
-      type: 'spline',
-      period: that.vm.compareTo,
-      visible: [ visible ],
-      nonStackName: that.chart.frequency ? that.chart.frequency : that.vm.fg.controls['groupings'].value ,
-      stackName: categories ? that.vm.fg.controls['groupings'].value : '',
-      owner: that.vm.owner,
-      chart: [that.chart._id]
-  };
 
-  this._apollo.mutate({
-    mutation: createTarget,
-    variables: {
-      data: fields
-    },
-  })
-  .toPromise()
-  .then(({data}) => {
-    that.actionAdd();
-    that.onCancel.emit({click: 'cancel', mode: 'view'});
-  });
+    this._apollo.mutate({
+      mutation: createTarget,
+      variables: {
+        data: this.fields()
+      },
+    })
+    .toPromise()
+    .then(({data}) => {
+      that.actionAdd();
+      that.onCancel.emit({click: 'cancel', mode: 'view'});
+    });
 
 }
 
@@ -296,6 +240,53 @@ export class FormTargetsComponent implements OnInit {
 
   }
 
+  private fields() {
+      const that = this;
+      const categories = this._isStacked(that.chart.groupings, this.chart) ;
+      const visible = that.vm.users[0].id;
+      const dateP = that.nextDueDate( that.vm['frequency'], that.vm.fg.controls['period'].value) ;
+      const fields: ITargetFormFields = {
+        name: that.vm.name,
+        datepicker: dateP,
+        vary:  that.vm.type,
+        amount: that.vm.value,
+        amountBy: that.vm.unit === 'value' ? 'dollar' : 'percent',
+        active:  true,
+        type: 'spline',
+        period: that.vm.compareTo,
+        visible: [ visible ],
+        nonStackName: that.chart.frequency ? that.chart.frequency : that.vm.fg.controls['groupings'].value ,
+        stackName: categories ? that.vm.fg.controls['groupings'].value : '',
+        owner: that.vm.owner,
+        chart: [that.chart._id]
+    };
+    return fields;
+  }
+
+  private _refreshForm(target) {
+    this.vm.target = target;
+    this.isAdd = false;
+    this.vm.activeVisble = true;
+    this.vm.fg.controls['_id'].setValue(target[0]._id);
+    this.vm.fg.controls['name'].setValue(target[0].name);
+    this.vm.fg.controls['period'].setValue(target[0].period);
+    this.vm.fg.controls['unit'].setValue(target[0].unit);
+    this.vm.fg.controls['type'].setValue(target[0].type);
+    this.vm.fg.controls['value'].setValue(target[0].value);
+    this.vm.fg.controls['compareTo'].setValue(target[0].compareTo);
+    this.vm.periods = target[0].compareTo;
+    this.vm.fg.controls['recurrent'].setValue(target[0].recurrent);
+    this.vm.fg.controls['active'].setValue(target[0].active === 'true' ? true : false);
+    if (target[0].reportOptions.groupings) {
+      const group = target[0].reportOptions.groupings[0];
+      this.vm.grouping  = group;
+    }
+
+    if (target[0].reportOptions.frequency) {
+      this.vm.fg.controls['recurrent'].setValue(target[0].reportOptions.frequency);
+    }
+
+  }
   private _complitedGroupings(add?, target? ) {
     const that = this;
     if (add === true) {
@@ -323,6 +314,7 @@ export class FormTargetsComponent implements OnInit {
         const series = this.chart.chartDefinition.series;
 
         let names = [];
+
         series.forEach(serie => {
           const filterSerie = filter( that.targets , {'name': serie.name});
           if (filterSerie.length === 0) {
@@ -348,18 +340,18 @@ export class FormTargetsComponent implements OnInit {
   }
 
   private _complitedPeriod(target) {
-    const that = this;
-    target[0].period ?
-      this.vm.period  = target[0].period :
-      this.vm.period  = '';
+    target.length > 0 ?
+      this.vm.period ? this.vm.period  = target[0].period :
+      this.vm.period  = '' : this.vm.period  = '';
   }
 
 
   private _complitedFrequency(add?) {
     const that = this;
 
-    if (that.chart.frequency !== '' && that.chart.frequency !== null && that.chart.frequency !== undefined  ) {
+    if (that.chart.frequency !== '' || that.chart.frequency !== null || that.chart.frequency !== undefined  ) {
       if (add === true) {
+        this.vm.frequencys = '';
         this.vm.period = '';
       } else if (this.targets[0].reportOptions.frequency) {
         this.vm.period  = this.targets[0].reportOptions.frequency;
@@ -374,9 +366,13 @@ export class FormTargetsComponent implements OnInit {
         that.isCustom = false;
       }
 
-      that.vm.baseOnLists(frequency);
-      that.vm.setTargetPeriod(frequency, predefined);
-      that.vm.periods = 'this ' + frequency;
+      const base = frequency ? frequency : predefined.replace(/this /g, '') + 'ly' ;
+      that.vm.baseOnLists(base);
+      that.vm.setTargetPeriod(base);
+
+      if (add === true) {
+        this.vm.compareTos = this.vm.baseOnList[0].title;
+      }
     } else {
       const predefined = that.chart.dateRange[0].predefined;
       let periods = '';
@@ -389,8 +385,10 @@ export class FormTargetsComponent implements OnInit {
         that.isCustom = false;
       }
 
-      that.vm.baseOnLists(periods);
-      that.vm.setTargetPeriod(periods, predefined);
+      const frequency = that.chart.frequency;
+      const base = frequency ? frequency : predefined.replace(/this /g, '') + 'ly' ;
+      that.vm.baseOnLists(base);
+      that.vm.setTargetPeriod(base);
       that.vm.periods = predefined;
     }
 
@@ -483,8 +481,10 @@ export class FormTargetsComponent implements OnInit {
   private prepareModel(add ?) {
     let user = [];
     let index = 0;
+
     this.vm.users.forEach(element => {
       let deliveryMethodArray = [];
+
       if (element['email'] === true) {
         deliveryMethodArray.push('email');
       }
@@ -502,40 +502,41 @@ export class FormTargetsComponent implements OnInit {
 
     this.chart.kpis[0].filter ? filter = JSON.stringify(this.chart.kpis[0].filter) : filter = '';
 
-    let active = this.vm.active ? true : false;
+    let active = this.vm.active !== undefined && this.vm.active !== null ? true : false;
     if (add === true) {
       active = true;
     }
+
     const TargetNewInput =  {
-      'name': this.vm.name,
-      'kpi': this.vm.kpi,
-      'compareTo': this.vm.compareTo ,
-      'recurrent': this.vm.recurrent ? true : false ,
-      'type': this.vm.type,
-      'value': Number(String(this.vm.value).replace(/,/g, '')),
-      'unit': this.vm.unit,
-      'owner': this.vm.owner,
-      'active': active,
-      'selected': this.vm.selected ? true : false,
-      'reportOptions': {
-        'frequency': this.chart.frequency,
-        'groupings': this.vm.fg.controls['groupings'].value || [''] ,
-        'timezone': timezone ,
-        'dateRange': {
-          'from': this.chart.dateRange[0].custom.from !== null ? this.chart.dateRange[0].custom.from : '',
-          'to': this.chart.dateRange[0].custom.to !== null ? this.chart.dateRange[0].custom.to : '',
+      name: this.vm.name,
+      kpi: this.vm.kpi,
+      compareTo: this.vm.compareTo ,
+      recurrent: this.vm.recurrent ? true : false ,
+      type: this.vm.type,
+      value: Number(String(this.vm.value).replace(/,/g, '')),
+      unit: this.vm.unit,
+      owner: this.vm.owner,
+      active: active,
+      selected: this.vm.selected ? true : false,
+      reportOptions: {
+        frequency: this.chart.frequency,
+        groupings: this.vm.fg.controls['groupings'].value || [''] ,
+        timezone: timezone ,
+        dateRange: {
+          from: this.chart.dateRange[0].custom.from !== null ? this.chart.dateRange[0].custom.from : '',
+          to: this.chart.dateRange[0].custom.to !== null ? this.chart.dateRange[0].custom.to : '',
         },
-        'filter':  filter
+        filter:  filter
       },
-      'source': {
-        'type': this.type,
-        'identifier': this.identifier
+      source: {
+        type: this.type,
+        identifier: this.identifier
       },
-      'notificationConfig': {
-        'notifiOnPercente': [Number(String(this.vm.value).replace(/,/g, ''))],
-        'users': user
+      notificationConfig: {
+        notifiOnPercente: [Number(String(this.vm.value).replace(/,/g, ''))],
+        users: user
       },
-      'period': this.vm.period
+      period: this.vm.period
     };
     return TargetNewInput;
   }
@@ -575,6 +576,17 @@ export class FormTargetsComponent implements OnInit {
 
     return moment(String(dueDate)).format('MM/DD/YYYY') ;
 }
+
+  private subscriptionName() {
+    const that = this;
+
+    that._subscription.push(that.vm.fg.controls['name'].valueChanges.subscribe(value => {
+      that.relatedComponent.addUser(that.vm.target, value);
+      if (that.listTarget) {
+        that.listTarget.vml.changedTitle(value);
+      }
+    }));
+  }
 
 
 }

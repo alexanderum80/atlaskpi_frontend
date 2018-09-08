@@ -32,10 +32,6 @@ export class RelatedUsersComponent implements OnInit {
   ngOnInit() {
     const that = this;
     that._refreshUser();
-
-    that._subscription.push(that.vm.fg.controls['name'].valueChanges.subscribe(value => {
-      that.addUser(that.vm.target, value);
-    }));
   }
 
   addUser(target?, name?) {

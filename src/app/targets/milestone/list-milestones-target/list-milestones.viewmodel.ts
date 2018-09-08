@@ -104,8 +104,8 @@ export class ListMiestoneViewModel extends ViewModel<IFilter> {
         this._milestonesItemList = this._milestone.map(d => ({
             id: d._id ,
             imagePath: './assets/img/milestones/milestone.jpg',
-            title: d.task,
             subtitle: this.getUserName(d.responsible),
+            title: d.task,
             editing: false,
         }));
     }

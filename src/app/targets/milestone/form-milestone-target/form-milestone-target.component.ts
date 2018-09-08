@@ -58,12 +58,12 @@ export class FormMilestoneTargetComponent implements OnInit {
   private refresh() {
     const that = this;
     if (that.milestone !== undefined) {
-      that.vmm.task = that.milestone[0].task;
-      that.vmm.target = that.milestone[0].target;
-      that.vmm.dueDate = that.milestone[0].dueDate;
-      that.vmm.responsible = that.milestone[0].responsible;
-      that.vmm.status = that.milestone[0].status;
-      that.status  = that.milestone[0].status;
+      that.vmm.task = that.milestone.task;
+      that.vmm.target = that.milestone.target;
+      that.vmm.dueDate = that.milestone.dueDate;
+      that.vmm.responsible = that.milestone.responsible;
+      that.vmm.status = that.milestone.status;
+      that.status  = that.milestone.status;
     }
   }
 
