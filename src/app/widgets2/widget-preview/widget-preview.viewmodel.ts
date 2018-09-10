@@ -56,6 +56,7 @@ export class WidgetPreviewViewModel extends ViewModel<IWidgetData> {
 
     initialize(model: IWidgetData): void {
         this.onInit(model);
+
     }
 
     get isAValidNumericWidget(): boolean {

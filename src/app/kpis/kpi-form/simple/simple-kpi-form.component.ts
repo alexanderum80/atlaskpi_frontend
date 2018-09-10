@@ -1,5 +1,10 @@
 // Angular Import
 import { SelectPickerComponent } from '../../../ng-material-components/modules/forms/select-picker/select-picker.component';
+import { ModalComponent } from '../../../ng-material-components/modules/user-interface/modal/modal.component';
+import { IWidget , IWidgetFormGroupValues } from '../../../widgets/shared/models';
+import { WidgetsFormService } from '../../../widgets/widget-form/widgets-form.service';
+
+
 import {
     AfterViewInit,
     ChangeDetectorRef,
@@ -27,7 +32,8 @@ import { SimpleKpiFormViewModel } from './simple-kpi-form.viewmodel';
 import { ITag } from '../../../shared/domain/shared/tag';
 import { IKPIPayload } from '../shared/simple-kpi-payload';
 import {CommonService} from '../../../shared/services/common.service';
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef  } from 'apollo-angular';
+import { timeout } from 'rxjs/operators';
 
 const dataSources = require('graphql-tag/loader!../data-sources.gql');
 const tags = require('graphql-tag/loader!./tags.gql');
@@ -47,6 +53,7 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
     @Input() model: IKPI;
     @Input() editing: boolean;
     @Input() clone: boolean;
+    @ViewChild('previewModal') previewModal: ModalComponent;
 
     @ViewChild('numericFieldSelector') set content(content: SelectPickerComponent) {
         if (content) {
@@ -65,6 +72,17 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
     resultName: string;
     isLoading = true;
 
+    fromSaveAndVisualize: boolean;
+    currrentKPI: IKPI;
+    widgetModel: IWidget;
+    newWidgetFromKPI: boolean;
+    newChartFromKPI: boolean;
+
+    fg: FormGroup = new FormGroup({});
+    chartDefinition: any;
+    _previewQuerySubscription: Subscription;
+    viewportSizeSub: Subscription;
+    _previewQuery: QueryRef<any>;
     vm: SimpleKpiFormViewModel;
 
     private _subscription: Subscription[] = [];
@@ -74,7 +92,9 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
         private _apolloService: ApolloService,
         private _apollo: Apollo,
         private _router: Router,
-        private _cdr: ChangeDetectorRef
+        private _cdr: ChangeDetectorRef,
+        private _widgetFormService: WidgetsFormService
+
     ) {}
 
     ngOnInit(): void {
@@ -85,6 +105,29 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
+    }
+
+    private _openVisualizeModal() {
+        this.fromSaveAndVisualize = true;
+        this.save();
+    }
+    
+    private _closePreviewModal() {
+        if ( this.newWidgetFromKPI === true || this. newChartFromKPI === true ) {
+            this.previewModal.close();
+        
+        } else {
+        
+            this.previewModal.close();
+            this._goToListKpis();
+        }
+    }
+    
+    newWidget() {
+        this.newWidgetFromKPI = true;
+        this.newChartFromKPI = false;
+        // this._router.navigate(['widgets/new']);
+        this._closePreviewModal();
     }
 
     save() {
@@ -128,11 +171,31 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
                         confirmButtonText: 'Ok'
                       });
                 }
+                if (this.fromSaveAndVisualize) {
+                    this.currrentKPI = res.data[this.resultName].entity;
+                    this.vm.valuesPreviewWidget.name = this.currrentKPI.name;
+                    this.vm.valuesPreviewWidget.kpi = this.currrentKPI._id;
+                    this.vm.valuesPreviewWidget.color = this.vm.selectColorWidget();
+                    // this._widgetFormService.processFormChanges(this.vm.valuesPreviewWidget)
+                    // .then(widget => this.widgetModel = widget);
+                    // this.fg.controls['name'].setValue(this.currrentKPI.name);
+                    // this.fg.controls['group'].setValue(this.currrentKPI.group);
+                    // this.fg.controls['frequency'].setValue('monthly');
+                    // this.fg.controls['predefinedDateRange'].setValue('this year');
+                    // this.fg.controls['grouping'].setValue('location.name');
+                    // this.fg.controls['tooltipEnabled'].setValue(true);
+                    // this.fg.controls['predefinedTooltipFormat'].setValue('multiple_percent');
+                    // this.fg.controls['kpi'].setValue(this.currrentKPI._id);
+                    this.fromSaveAndVisualize = !this.fromSaveAndVisualize;
+                    this.previewModal.open();
 
-                this._router.navigateByUrl('/kpis/list');
+                }else {
+                    this._router.navigateByUrl('/kpis/list');
+                }
             });
         });
     }
+
 
     cancel() {
         const that = this;

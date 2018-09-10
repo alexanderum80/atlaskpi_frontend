@@ -28,6 +28,7 @@ const getWidgetByTitle = require('graphql-tag/loader!../shared/graphql/get-widge
 
 export class NewWidgetComponent implements OnInit, OnDestroy {
   @Input() isFromDashboard = false;
+  @Input() widgetDataFromKPI : any;
   @Output() result = new EventEmitter();
   fg: FormGroup = new FormGroup({});
 

@@ -20,6 +20,7 @@ import { FilterFormComponent } from './kpi-form/filters/filter-form/filter-form.
 import { ExpressionParserComponent } from './kpi-form/complex/expression-parser/expression-parser.component';
 import { ExternalSourceKpiFormComponent } from './kpi-form/external-source/external-source-kpi-form.component';
 import { CloneKpiComponent } from './clone-kpi/clone-kpi.component';
+import { WidgetsModule } from '../widgets/widgets.module';
 
 @NgModule({
   imports: [
@@ -29,7 +30,9 @@ import { CloneKpiComponent } from './clone-kpi/clone-kpi.component';
     MaterialUserInterfaceModule,
     NgxDatatableModule,
     KpisRoutingModule,
-    SharedModule
+    SharedModule,
+    WidgetsModule
+
   ],
   declarations: [
      KpisComponent,

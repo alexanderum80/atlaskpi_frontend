@@ -74,7 +74,6 @@ export class WidgetsFormService {
       query: chartsGraphqlActions.dateRanges,
       fetchPolicy: 'network-only'
     });
-
     this._subscription.push(this.dateRangesQuery.valueChanges.subscribe(res => this._handleDateRangesQueryResponse(res)));
 
     this.chartsQuery = this._apollo.watchQuery <{ listCharts: {data: IChart[]} }> ({
@@ -321,7 +320,7 @@ export class WidgetsFormService {
     this.dateRangeList = list;
     this._dateRangeListSubject.next(list);
   }
-
+  
   private _handleChartsQueryResponse(res: any) {
     this.charts = res.data.listCharts.data;
     this.chartList = ToSelectionItemList(this.charts, '_id', 'title');
@@ -329,10 +328,10 @@ export class WidgetsFormService {
   }
 
   public getComparisonListForDateRange(dateRangeString: string) {
+    const that = this;
+
     if (IsNullOrWhiteSpace(dateRangeString)) { return; }
-
     const dateRange = this.dateRanges.find(d => d.dateRange.predefined === dateRangeString);
-
     if (!dateRange) {
         this.comparisonList = [];
         return [];
@@ -478,7 +477,7 @@ export class WidgetsFormService {
                                       ? this._widgetModel.numericWidgetAttributes.comparisonArrowDirection
                                       : '',
           };
-          return numericWidget;
+        return numericWidget;
 
       default:
           return null;

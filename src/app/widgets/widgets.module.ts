@@ -42,6 +42,7 @@ import { WidgetsAlertListComponent } from './widgets-alert-list/widgets-alert-li
                 ],
   exports: [WidgetViewComponent, NewWidgetComponent, WidgetAlertComponent, WidgetAlertFormComponent,
             WidgetNoAlertsComponent, WidgetsAlertListComponent, AutoRenderableWidgetComponent],
-  providers: [UserService]
+  providers: [WidgetsFormService, UserService]
+
 })
 export class WidgetsModule { }

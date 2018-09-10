@@ -18,6 +18,7 @@ import { FilterViewModel } from '../shared/filter.viewmodel';
 import { SimpleKpiExpressionViewModel } from '../shared/simple-kpi-expression.viewmodel';
 import { IKPIPayload } from '../shared/simple-kpi-payload';
 import { getAggregateFunctions } from './../../../shared/domain/kpis/functions';
+import { IWidgetFormGroupValues } from '../../../widgets/shared/models';
 
 export const KPINAMEREGULAREXPRESSION = /^([a-zA-Z0-9\*\-\(\)\$\&\:#%] *){5,}$/;
 const expressionNumericFieldQuery = require('graphql-tag/loader!./get-expression-fields.query.gql');
@@ -43,6 +44,19 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     sourceItems: SelectionItem[];
     consSourceValue: string;
     consSourceValues: string[] = [];
+    valuesPreviewWidget : IWidgetFormGroupValues = {
+        name: '',
+        description: '',
+        type: 'numeric',
+        size: 'big',
+        order: '4',
+        color: '',
+        kpi: '',
+        predefinedDateRange: 'this year',
+        format: 'dollar',
+        comparison: 'previousPeriod',
+        comparisonArrowDirection: 'up'
+      };
 
     constructor(private _apollo: Apollo) {
         super(null);
@@ -202,6 +216,31 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
 
     get sourceValue() {
         return this.fg.controls['source'].setValue(this.consSourceValue);
+    }
+
+    selectColorWidget() {
+        switch (Math.round(Math.random()*10)) {
+            case 0 :
+                return 'white';
+            case 1 :
+                return 'orange';
+            case 2 :
+                return 'blue';
+            case 3 :
+                return 'green';
+            case 4 :
+                return 'light-green';
+            case 5 :
+                return 'sei-green';
+            case 6 :
+                return 'purple';
+            case 7 :
+                return 'light-purple';
+            case 8 : 
+                return "pink";
+            default :
+                return 'white';
+        }
     }
 
     resetItemSource() {
