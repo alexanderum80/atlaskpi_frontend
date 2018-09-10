@@ -80,6 +80,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     source: string;
 
     initialize(model: any): void {
+        const that = this;
         if (model) {
             // deserialize expression and filters
             const cleanModel = this.objectWithoutProperties(model, ['__typename']) as IKPI;
@@ -90,14 +91,40 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
                 if (cleanModel.filter.length) {
                     const cleanModelFilter: string[] = [];
                     cleanModel.filter.forEach(item => {
-                        if (isNaN(parseFloat(item.criteria)) && moment(item.criteria).isValid()) {
-                            item.criteria = moment(item.criteria).format('MM/DD/YYYY');
-                        }
+                        // FIX for CORE-2630, transforming "La Jolla Cosmetic Surgery Centre, Inc 3092" => "01/01/3092"
+                        // process source field first
                         if (item.field === 'source') {
                             cleanModel.source = item.criteria;
-                        } else {
-                            cleanModelFilter.push(item);
+                            return;
                         }
+
+                        if (!cleanModel.expression) {
+                            console.log('expression not ready');
+                            return;
+                        }
+
+                        const virtualSource = that._dataSources.find(s => s.name === (<any>cleanModel.expression).dataSource);
+                        const vsField = virtualSource.fields.find(f => f.path === item.field);
+
+                        switch (vsField.type) {
+                            case 'Date':
+                                item.criteria = moment(item.criteria).format('MM/DD/YYYY');
+                                break;
+
+                            case 'Number':
+                                item.criteria = Number(item.criteria);
+                                break;
+
+                            case 'Boolean':
+                                item.criteria = Boolean(item.criteria);
+                                break;
+
+                            default:
+                                item.criteria = String(item.criteria);
+                                break;
+                        }
+
+                        cleanModelFilter.push(item);
                     });
                     cleanModel.filter = cleanModelFilter;
                 }
@@ -111,7 +138,6 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             this.onInit(model);
         }
 
-        const that = this;
         this.expressionFieldSubject.subscribe(expressionField => {
             if (!that._expressionFieldValuesTracker.currentValue && !that._expressionFieldValuesTracker.previousValue) {
                 that._expressionFieldValuesTracker = {
