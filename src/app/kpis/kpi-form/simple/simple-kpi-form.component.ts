@@ -241,7 +241,7 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
                  * edit-kpi to add-kpi and vice-versa for name and description
                  */
                 that.isLoading = false;
-                that.vm = new SimpleKpiFormViewModel(that._apollo);
+                that.vm = new SimpleKpiFormViewModel(that._apollo, this._cdr);
 
                 that._getTags();
 

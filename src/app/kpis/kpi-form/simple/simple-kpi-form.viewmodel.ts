@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { FormArray } from '@angular/forms/src/model';
 import { Apollo } from 'apollo-angular';
@@ -44,7 +44,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     consSourceValue: string;
     consSourceValues: string[] = [];
 
-    constructor(private _apollo: Apollo) {
+    constructor(private _apollo: Apollo, private _cdr: ChangeDetectorRef ) {
         super(null);
         this.expressionFieldSubject = new Subject<string>();
     }
@@ -82,9 +82,15 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     initialize(model: any): void {
         const that = this;
         if (model) {
+            let dataSourceValue;
+            let sourceCollectionValue;
+
             // deserialize expression and filters
             const cleanModel = this.objectWithoutProperties(model, ['__typename']) as IKPI;
             cleanModel.expression = JSON.parse(cleanModel.expression);
+
+            dataSourceValue = (<any>cleanModel.expression).dataSource;
+
             if (cleanModel.filter) {
                 cleanModel.filter = JSON.parse(cleanModel.filter);
 
@@ -95,6 +101,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
                         // process source field first
                         if (item.field === 'source') {
                             cleanModel.source = item.criteria;
+                            sourceCollectionValue = item.criteria;
                             return;
                         }
 
@@ -134,8 +141,11 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
                 cleanModel.tags = cleanModel.tags.map(t => ({ value: t, display: t })) as any;
             }
             this.onInit(cleanModel);
+            this._queryFields(dataSourceValue, sourceCollectionValue || []);
+            this._cdr.detectChanges();
         } else {
             this.onInit(model);
+            this._cdr.detectChanges();
         }
 
         this.expressionFieldSubject.subscribe(expressionField => {
