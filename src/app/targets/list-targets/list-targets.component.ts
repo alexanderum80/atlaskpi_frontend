@@ -27,6 +27,7 @@ export class ListTargetsComponent implements OnInit {
 
   @Output() selectItem = new EventEmitter<any>();
   @Output() addItem = new EventEmitter<any>();
+  @Output() editItem = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<string>();
 
   item: IListItem;
@@ -53,7 +54,7 @@ export class ListTargetsComponent implements OnInit {
   actionClicked(item: IActionItemClickedArgs) {
     switch (item.action.id) {
       case 'edit':
-        this.disable(item.item.id);
+        this.disable(item);
         break;
       case 'delete':
         this.delete(item.item.id);
@@ -75,7 +76,7 @@ export class ListTargetsComponent implements OnInit {
   }
 
   private disable(item) {
-
+    this.editItem.emit(item);
   }
 
   private delete(item) {

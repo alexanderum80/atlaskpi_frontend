@@ -25,16 +25,7 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
     public menuItems:  MenuItem[] = [{
         id: 'more-options',
         icon: 'more-vert',
-        children: [{
-                id: 'edit',
-                title: 'disable',
-                icon: 'notifications-off'
-            },
-            {
-                id: 'delete',
-                title: 'Delete',
-                icon: 'delete'
-            }]
+        children: []
         }];
 
     private item: IListItem;
@@ -55,12 +46,14 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
 
         this._targets = list;
 
+
         this._targetsItemList =  this._targets.map(d => ( {
             id: d._id ,
-            imagePath: this.getImagent(d.active),
+            imagePath: this.getImagent(d),
             title: d.name,
             subtitle: 'Next due date:' + this._nextDueDate(d.reportOptions.frequency, d.period) ,
             selected: false,
+            extras: d.active,
         }));
         if (this._targetsItemList.length > 0 ) {
             this._targetsItemList[0].selected = true;
@@ -98,11 +91,11 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
             if (!title || title === undefined) {
                 return;
             }
-            const item = this._targetsItemList.filter ( f => f.id === '' );
-            this._targetsItemList =  this._targetsItemList.filter ( f => f.id !== '' );
+            const item = this._targetsItemList.filter ( f => f.selected === true );
             this.item = item[0];
-            this.item ? this.item.title = title : this.item = this._targetsItemList[0];
-            this._targetsItemList.push(this.item);
+            if (this.item !== undefined) {
+                this.item.title = title;
+            }
     }
 
     unSelectTarget(frequency, period) {
@@ -116,20 +109,54 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
             subtitle: 'Next due date:' + this._nextDueDate(frequency, period) ,
             selected: true,
             imagePath: this.getImagent('true'),
+            extras: 'true',
         });
-    }
 
+    }
+ 
 
     get itemSelected(): IListItem {
         return this.item;
     }
 
-    private getImagent(active) {
+    private getImagent(item) {
+        let active = item === 'true' ? item : item['active'];
         let path = './assets/img/targets/target_g_t.png';
-        if (active === 'true') {
+        if (active === 'true' || active === true) {
             path = './assets/img/targets/target_t.png';
         }
+
+        this.getChangeIconEnabled(item);
+
         return path;
+    }
+
+    getChangeIconEnabled(item): MenuItem[] {
+        let icon = 'notifications-off';
+        let title = 'disable';
+        if (item.active === 'true' || item.active === true) {
+            icon = 'notifications';
+            title = 'enabled';
+        } else {
+            title = 'disable';
+            icon = 'notifications-off';
+        }
+
+        this.menuItems[0].children.splice(0, 2);
+
+        this.menuItems[0].children.push({
+                    id: 'edit',
+                    title: title,
+                    icon: icon
+                });
+
+        this.menuItems[0].children.push({
+            id: 'delete',
+            title: 'Delete',
+            icon: 'delete'
+            });
+
+        return this.menuItems;
     }
 
     private _nextDueDate(frequency, period) {

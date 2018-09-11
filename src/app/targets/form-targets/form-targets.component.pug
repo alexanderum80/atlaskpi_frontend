@@ -2,7 +2,7 @@ bw-modal(#targetModal='', size="lg", [openOnInit]="true", (onClosed)="cancel()",
     bw-modal-body
         .targets-form.h-100(flex, layout="row")
             .left-side.overflow-auto(flex="30", clicked="toggleActive()", *ngIf="listLoad")
-                kpi-list-targets.overflow-auto(flex, #listTarget, [chart]="chart",
+                kpi-list-targets.overflow-auto(flex, #listTarget, [chart]="chart", (editItem)="disbled($event)",
                  [targets]="targets", (selectItem)="selectItem($event)", (addItem)="add($event)", (onDelete)="onDelete($event)")
 
             .bgm-white([class.listLoad]="listLoad")
@@ -25,4 +25,4 @@ bw-modal(#targetModal='', size="lg", [openOnInit]="true", (onClosed)="cancel()",
                             bw-button.m-r-5(*ngIf="canGoBack()", title="Back", color="blue", [simple]="true", icon="arrow-left", (clicked)="goBack()")  
                             bw-button.m-r-5(*ngIf="canGoNext()", title="Next", color="blue", [simple]="true", icon="arrow-right", (clicked)="goNext()")  
                             bw-button.m-r-5(*ngIf="vm.fg.valid", color="blue" title="Save", icon="floppy", class="normal", (clicked)="save()")
-                            bw-button.m-r-5(title="Cancel", color="black", [simple]="true", icon="close", (clicked)="cancel()")  
+                            bw-button.m-r-5(title="Cancel", color="black", [simple]="true", icon="close", (clicked)="cancel()")

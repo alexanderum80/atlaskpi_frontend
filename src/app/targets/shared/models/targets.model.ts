@@ -37,7 +37,7 @@ export interface NotificationConfigNew {
 }
 
 export interface ITargetNew {
-    _id: string;
+    _id?: string;
     name: string;
     source: SourceNew;
     kpi: string;

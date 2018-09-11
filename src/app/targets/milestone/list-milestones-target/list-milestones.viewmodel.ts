@@ -44,8 +44,8 @@ export class ListMiestoneViewModel extends ViewModel<IFilter> {
             icon: 'close-circle'
         },
         {
-            id: 'complited',
-            title: 'Complited',
+            id: 'completed',
+            title: 'Completed',
             icon: 'check'
         }, {
                 id: 'edit',

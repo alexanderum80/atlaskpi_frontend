@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 import { RelatedUsersComponent } from '../related-users/related-users.component';
 import { Apollo } from 'apollo-angular';
 import { ITargetFormFields } from '../../charts/chart-view/set-goal/shared/target.service';
+import { MilestoneService } from '../../milestones/shared/services/milestone.service';
 
 const targesQuery = require('graphql-tag/loader!./list-targets.gql');
 const addTargetsMutation = require('graphql-tag/loader!./add-targets.gql');
@@ -66,7 +67,8 @@ export class FormTargetsComponent implements OnInit {
   constructor(public vm: FormTargetsViewModel,
     private _apolloService: ApolloService,
     private _apollo: Apollo,
-    private userService: UserService) {
+    private userService: UserService,
+    private _milestoneService: MilestoneService) {
 
   }
 
@@ -128,6 +130,7 @@ export class FormTargetsComponent implements OnInit {
     this._complitedFrequency();
     this._complitedGroupings(false, target);
     this._complitedPeriod(target);
+    this._complitedActive(target);
   }
 
 
@@ -222,6 +225,22 @@ export class FormTargetsComponent implements OnInit {
 
 }
 
+disbled(event) {
+    this.vm.active =  !this.vm.active;
+    this.vm.fg.controls['active'].setValue(this.vm.active);
+    const target = this.prepareModelDissabled();
+    let targets: any = [];
+    this.targets.forEach(f => {
+      if (f !== undefined) {
+       if (f._id !== event.item.id) {
+        targets.push(f);
+      }}
+    });
+    targets.push(target[0]);
+    this.targets = targets;
+    this.listTarget.vml.targets = targets;
+}
+
   private initialModel() {
     const that = this;
     that.vm.owner = this.userService.user._id;
@@ -242,6 +261,11 @@ export class FormTargetsComponent implements OnInit {
 
   private fields() {
       const that = this;
+      let active =  true ;
+      if (this.vm.active !== undefined || this.vm.active !== null  ) {
+        active =  this.vm.active ;
+      }
+
       const categories = this._isStacked(that.chart.groupings, this.chart) ;
       const visible = that.vm.users[0].id;
       const dateP = that.nextDueDate( that.vm['frequency'], that.vm.fg.controls['period'].value) ;
@@ -251,7 +275,7 @@ export class FormTargetsComponent implements OnInit {
         vary:  that.vm.type,
         amount: that.vm.value,
         amountBy: that.vm.unit === 'value' ? 'dollar' : 'percent',
-        active:  true,
+        active:  active,
         type: 'spline',
         period: that.vm.compareTo,
         visible: [ visible ],
@@ -264,19 +288,25 @@ export class FormTargetsComponent implements OnInit {
   }
 
   private _refreshForm(target) {
+    if (target[0].active !== 'true') {
+      this.vm.active = false;
+    } else {
+      this.vm.active = true;
+    }
     this.vm.target = target;
     this.isAdd = false;
     this.vm.activeVisble = true;
     this.vm.fg.controls['_id'].setValue(target[0]._id);
     this.vm.fg.controls['name'].setValue(target[0].name);
     this.vm.fg.controls['period'].setValue(target[0].period);
+    this.vm.period = target[0].period;
     this.vm.fg.controls['unit'].setValue(target[0].unit);
     this.vm.fg.controls['type'].setValue(target[0].type);
     this.vm.fg.controls['value'].setValue(target[0].value);
     this.vm.fg.controls['compareTo'].setValue(target[0].compareTo);
-    this.vm.periods = target[0].compareTo;
+    this.vm.compareTos = target[0].compareTo;
     this.vm.fg.controls['recurrent'].setValue(target[0].recurrent);
-    this.vm.fg.controls['active'].setValue(target[0].active === 'true' ? true : false);
+
     if (target[0].reportOptions.groupings) {
       const group = target[0].reportOptions.groupings[0];
       this.vm.grouping  = group;
@@ -286,7 +316,9 @@ export class FormTargetsComponent implements OnInit {
       this.vm.fg.controls['recurrent'].setValue(target[0].reportOptions.frequency);
     }
 
+    this.vm.fg.controls['active'].setValue(this.vm.active);
   }
+
   private _complitedGroupings(add?, target? ) {
     const that = this;
     if (add === true) {
@@ -340,9 +372,23 @@ export class FormTargetsComponent implements OnInit {
   }
 
   private _complitedPeriod(target) {
-    target.length > 0 ?
-      this.vm.period ? this.vm.period  = target[0].period :
-      this.vm.period  = '' : this.vm.period  = '';
+    if (target.length > 0) {
+      this.vm.period  = target[0].period;
+    } else {
+      this.vm.period  = '';
+    }
+  }
+
+  private _complitedActive(target) {
+    if (target.length > 0) {
+      if (target[0].active === 'true' || target[0].active === true) {
+        this.vm.active  = true;
+      } else {
+        this.vm.active  = false;
+      }
+    } else {
+      this.vm.active  = true;
+    }
   }
 
 
@@ -453,7 +499,11 @@ export class FormTargetsComponent implements OnInit {
         that.milestoneComponent.tempTarget.forEach(element => {
             element.target = id;
             this._apolloService.mutation < IMilestone > (addMilestone, {'input': element})
-            .then(restarget => {
+            .then(data => {
+              const dueDate = element.dueDate;
+              const task = element.task;
+              const resp = element.responsible;
+              that._milestoneService.userMilestoneNotification(resp , { task: task, dueDate: dueDate});
             })
             .catch(err =>
               that._displayServerErrors(err)
@@ -502,12 +552,77 @@ export class FormTargetsComponent implements OnInit {
 
     this.chart.kpis[0].filter ? filter = JSON.stringify(this.chart.kpis[0].filter) : filter = '';
 
-    let active = this.vm.active !== undefined && this.vm.active !== null ? true : false;
+    let active =  true ;
+    if (this.vm.active !== undefined || this.vm.active !== null  ) {
+      active =  this.vm.active ;
+    }
+
     if (add === true) {
       active = true;
     }
 
     const TargetNewInput =  {
+      name: this.vm.name,
+      kpi: this.vm.kpi,
+      compareTo: this.vm.compareTo ,
+      recurrent: this.vm.recurrent ? true : false ,
+      type: this.vm.type,
+      value: Number(String(this.vm.value).replace(/,/g, '')),
+      unit: this.vm.unit,
+      owner: this.vm.owner,
+      active: active,
+      selected: this.vm.selected ? true : false,
+      reportOptions: {
+        frequency: this.chart.frequency,
+        groupings: this.vm.fg.controls['groupings'].value || [''] ,
+        timezone: timezone ,
+        dateRange: {
+          from: this.chart.dateRange[0].custom.from !== null ? this.chart.dateRange[0].custom.from : '',
+          to: this.chart.dateRange[0].custom.to !== null ? this.chart.dateRange[0].custom.to : '',
+        },
+        filter:  filter
+      },
+      source: {
+        type: this.type,
+        identifier: this.identifier
+      },
+      notificationConfig: {
+        notifiOnPercente: [Number(String(this.vm.value).replace(/,/g, ''))],
+        users: user
+      },
+      period: this.vm.period
+    };
+    return TargetNewInput;
+  }
+
+  private prepareModelDissabled() {
+    let user = [];
+    let index = 0;
+
+    this.vm.users.forEach(element => {
+      let deliveryMethodArray = [];
+
+      if (element['email'] === true) {
+        deliveryMethodArray.push('email');
+      }
+
+      if (element['push'] === true) {
+        deliveryMethodArray.push('push');
+      }
+
+      user[index++] = { id: element.id, deliveryMethod:  deliveryMethodArray };
+    });
+
+    const timezone = this.userService.user.profile.timezone;
+
+    let filter: any;
+
+    this.chart.kpis[0].filter ? filter = JSON.stringify(this.chart.kpis[0].filter) : filter = '';
+
+    const active = this.vm.active ;
+
+    const TargetNewInput =  {
+      _id: this.vm._id,
       name: this.vm.name,
       kpi: this.vm.kpi,
       compareTo: this.vm.compareTo ,

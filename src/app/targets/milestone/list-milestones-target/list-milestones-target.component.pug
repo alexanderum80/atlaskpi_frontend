@@ -9,6 +9,6 @@ div(layout="column", layout-wrap, layout-padding, *ngIf="vml.milestoineItems")
                 (actionClicked)="actionClicked($event)")
 
         div(flex, *ngIf="item.editing",)
-            kpi-edit-milestones-target.m-t-20(#editMilestone, [fg]="fg", [vm]="vml",  [milestones]="vml.milestone",  (onCancel)="cancel(item)",
-             , (onEdit)="editStatus($event)")
+            kpi-edit-milestones-target.m-t-20(#editMilestone, [fg]="fg", [vm]="vml", [item]="item", 
+                [milestones]="vml.milestones",  (onCancel)="cancel(item)" , (onEdit)="editStatus($event)")
         

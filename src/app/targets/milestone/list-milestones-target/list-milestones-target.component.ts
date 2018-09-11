@@ -60,8 +60,8 @@ export class ListMilestonesTargetComponent implements OnInit {
       case 'declined':
             this.save(item.item.id, 'declined');
         break;
-      case 'complited':
-          this.save(item.item.id, 'complited');
+      case 'completed':
+          this.save(item.item.id, 'completed');
         break;
     }
   }
