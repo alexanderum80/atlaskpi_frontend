@@ -13,7 +13,7 @@ import { ToSelectionItemList } from '../../shared/extentions';
 import { parseComparisonDateRange, parsePredifinedDate } from '../../shared/models';
 import { MilestoneService } from '../../milestones/shared/services/milestone.service';
 import { TargetService } from './set-goal/shared/target.service';
-import { Component, Input, OnDestroy, OnInit, ViewChild, AfterContentInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild, AfterContentInit, ChangeDetectionStrategy } from '@angular/core';
 import { Chart } from 'angular-highcharts';
 import { Apollo, QueryRef } from 'apollo-angular';
 import gql from 'graphql-tag';
@@ -123,7 +123,8 @@ export interface IRunRate {
         ChartViewViewModel, ViewTargetActivity, AddTargetActivity,
         ChangeSettingsOnFlyActivity, CompareOnFlyActivity,
         SeeInfoActivity, DownloadChartActivity
-    ]
+    ],
+    // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     @Input() chartData: ChartData;

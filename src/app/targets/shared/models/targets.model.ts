@@ -21,19 +21,38 @@ export interface ReportOptionsNew {
     filter?: string[];
 }
 
-export interface deliveryMethod {
+export interface ITargetSource {
+    type: string;
+    identifier: string;
+}
+
+export interface IDeliveryMethod {
     email: boolean;
     push: boolean;
 }
 
-export interface UsersNew {
+export interface ITargetUser {
     id: string;
-    deliveryMethod: [string];
+    email: boolean;
+    push: boolean;
 }
 
-export interface NotificationConfigNew {
-    notifiOnPercente: string;
-    users: [UsersNew];
+export interface ITargetNotificationConfig {
+    users: ITargetUser[];
+}
+
+export interface ITargetFormFields {
+    name: string;
+    source: ITargetSource;
+    kpi: string;
+    compareTo: string;
+    recurrent: boolean;
+    type: string;
+    unit: string;
+    value: number;
+    active: boolean;
+    period: string;
+    notificationConfig: ITargetNotificationConfig;
 }
 
 export interface ITargetNew {
@@ -47,7 +66,7 @@ export interface ITargetNew {
     type: string;
     value: string;
     unit: string;
-    notificationConfig: NotificationConfigNew;
+    notificationConfig: ITargetNotificationConfig;
     owner: string;
     active?: boolean;
     selected?: boolean;
@@ -64,7 +83,7 @@ export interface ITargetNewInput {
     type: string;
     value: string;
     unit: string;
-    notificationConfig: NotificationConfigNew;
+    notificationConfig: ITargetNotificationConfig;
     owner: string;
     active?: boolean;
     selected?: boolean;

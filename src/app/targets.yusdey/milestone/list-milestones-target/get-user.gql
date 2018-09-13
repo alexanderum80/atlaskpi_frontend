@@ -1,0 +1,11 @@
+query user($id: String!) {
+  User(id: $id) {
+    _id
+    username
+    profile {
+      firstName
+      lastName
+      timezone
+    }
+  }
+}

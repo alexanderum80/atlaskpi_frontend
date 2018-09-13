@@ -1,4 +1,4 @@
-mutation CreateTarget($data: TargetInput) {
+mutation CreateTarget($data: TargetNewInput) {
     createTarget(data: $data) {
         success
         entity {

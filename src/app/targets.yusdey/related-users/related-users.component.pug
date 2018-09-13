@@ -1,0 +1,31 @@
+.title  Notifications will be sent and completion percentages 25%, 50%, 75%  or above, and  at 100%.
+
+.contener-related-users.m-t-20
+    div(flex, layout="row")
+            .m-l-20.m-r-5(flex="65")
+                | Select users
+            .text-right.m-r-10(flex="5")
+                    i.zmdi.zmdi-email
+            .text-right.m-r-10(flex="5")
+                    i.zmdi.zmdi-smartphone-android
+            .text-center(flex="10").mdc-text-blue
+                    i.zmdi.zmdi-plus((click)="add()")
+
+    div(flex, layout="row", *ngFor="let item of vm.fg.get('users').controls; let i=index")
+            .text-center.m-r-10(flex="70")
+                .m-t--20
+                    bw-select-picker([fg]="item", 
+                                field="id",
+                                [items]="notifyStaff",
+                                leftIcon="accounts-alt"
+                                )  
+            .text-center.m-t-10.m-r-10(flex="5")
+                bw-checkbox([fg]="item", field="email")
+        
+            .text-center.m-t-10.m-r-15(flex="5")
+                bw-checkbox([fg]="item", field="push")
+                
+            .text-center.m-t-15(*ngIf="!isUserCurrent", flex="5").mdc-text-red
+                    div(*ngIf="item")
+                        i.zmdi.zmdi-close((click)="removeUser(item)")
+    

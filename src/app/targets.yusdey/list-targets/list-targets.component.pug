@@ -1,0 +1,29 @@
+.target-list.h-100.overflow-auto(flex, layout="column")
+    .m-20(flex-initial, layout="row")
+        .m-r-10(flex="10")
+            i.zmdi.zmdi-gps 
+        div(flex="80") TARGETS MANAGER
+
+    .m-t-10(*ngIf="vml.targetItems", flex)
+        .target-item(*ngFor="let item of vml.targetItems", [class.selected]="item.selected")
+            kpi-list-item-tabular.w-100.m-r-40(
+                [item]="item",
+                [actionItems]="vml.menuItems",
+                [tableRowTemplate]="tableItem",
+                (click)="itemClicked(item)",
+                (actionClicked)="actionClicked($event)"
+                )
+
+    button.btn.btn-float.waves-effect.bgm-blue((click)="add()")
+        i.zmdi.zmdi-plus
+
+ng-template(#listTargetsComponent, let-item="item")
+    //- image
+    .m-l-10(flex-initial)
+        img.m-t-10(*ngIf="item.imagePath", [src]="item.imagePath", [style.height.px]="35")
+    //- title & subtitle
+    div(flex)
+        .m-t-10.m-l-10 
+            h2.title {{ item.title }}
+            small {{ item.subtitle }}
+    

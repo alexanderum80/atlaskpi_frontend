@@ -11,33 +11,24 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
 import {IChartDateRange, PredefinedDateRanges, IDateRange} from '../../../../shared/models/date-range';
+import { ITargetFormFields } from '../../../../targets/shared/models/targets.model';
 
-export interface ITargetNotifyFields {
-    users: string[];
-    notification: string;
-}
-
-export interface IDataNotify {
-    notifyUsers: string;
-    notificationUsers: string;
-}
-
-export interface ITargetFormFields {
-    name: string;
-    datepicker: string;
-    vary: string;
-    amount: number|string;
-    amountBy: string;
-    active: boolean;
-    type: string;
-    period?: string;
-    visible?: string[];
-    notify?: ITargetNotifyFields;
-    nonStackName?: string;
-    stackName?: string;
-    owner: string;
-    chart: string[];
-}
+// export interface ITargetFormFields {
+//     name: string;
+//     datepicker: string;
+//     vary: string;
+//     amount: number|string;
+//     amountBy: string;
+//     active: boolean;
+//     type: string;
+//     period?: string;
+//     visible?: string[];
+//     notify?: ITargetNotifyFields;
+//     nonStackName?: string;
+//     stackName?: string;
+//     owner: string;
+//     chart: string[];
+// }
 
 export interface IChartInfo {
     dateRange: IChartDateRange[];
@@ -224,14 +215,18 @@ export class TargetService {
         );
     }
 
-    getNotify(data: IDataNotify): ITargetNotifyFields {
-        if (!data || !data.notifyUsers) {
-            return;
-        }
-        return {
-            users: data.notifyUsers.split('|'),
-            notification: data.notificationUsers
-        };
+    // getNotify(data: IDataNotify): ITargetNotificationConfig {
+    //     if (!data || !data.notifyUsers) {
+    //         return;
+    //     }
+    //     return {
+    //         users: data.notifyUsers.split('|'),
+    //         notification: data.notificationUsers
+    //     };
+    // }
+
+    getNotify(data: any): any {
+        console.log('this may not be necessary');
     }
 
     getVisible(data: any) {
@@ -291,21 +286,22 @@ export class TargetService {
 
         const period = (form.fg.vary === 'fixed') ? '' : form.fg.period;
         const amountBy = (form.fg.vary === 'fixed' && (form.fg.amountBy !== 'dollar')) ? 'dollar' : form.fg.amountBy;
-        const fields: ITargetFormFields = {
-            name: form.fg.name,
-            datepicker: form.fg.datepicker,
-            vary: form.fg.vary,
-            amount: form.fg.amount,
-            amountBy: amountBy,
-            active: form.fg.active,
-            type: 'spline',
-            period: period,
-            visible: this.getVisible(form.fgVisible),
-            nonStackName: form.fg.nonStackName,
-            stackName: form.fg.stackName,
-            owner: currentUser,
-            chart: [chartId]
-        };
+        const fields = {} as any;
+        // const fields: ITargetFormFields = {
+        //     name: form.fg.name,
+        //     datepicker: form.fg.datepicker,
+        //     vary: form.fg.vary,
+        //     amount: form.fg.amount,
+        //     amountBy: amountBy,
+        //     active: form.fg.active,
+        //     type: 'spline',
+        //     period: period,
+        //     visible: this.getVisible(form.fgVisible),
+        //     nonStackName: form.fg.nonStackName,
+        //     stackName: form.fg.stackName,
+        //     owner: currentUser,
+        //     chart: [chartId]
+        // };
 
         const notification = this.getNotify(form.fgNotify);
         if (notification) {
