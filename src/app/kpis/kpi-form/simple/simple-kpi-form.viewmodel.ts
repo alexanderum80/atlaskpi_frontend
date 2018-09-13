@@ -19,6 +19,7 @@ import { SimpleKpiExpressionViewModel } from '../shared/simple-kpi-expression.vi
 import { IKPIPayload } from '../shared/simple-kpi-payload';
 import { getAggregateFunctions } from './../../../shared/domain/kpis/functions';
 import { IWidgetFormGroupValues } from '../../../widgets/shared/models';
+import { IChartFormValues } from '../../../charts/shared/models/chart.models';
 
 export const KPINAMEREGULAREXPRESSION = /^([a-zA-Z0-9\*\-\(\)\$\&\:#%] *){5,}$/;
 const expressionNumericFieldQuery = require('graphql-tag/loader!./get-expression-fields.query.gql');
@@ -56,6 +57,21 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         format: 'dollar',
         comparison: 'previousPeriod',
         comparisonArrowDirection: 'up'
+      };
+      
+      valuesPreviewChart : IChartFormValues = {
+        name: '',
+        description: '',
+        group: 'pre-defined',
+        frequency: 'monthly',
+        grouping: 'location.name',
+        tooltipEnabled: true,
+        predefinedTooltipFormat: 'multiple_percent',
+        kpi: '',
+        legendEnabled: false,
+        predefinedDateRange: 'this year',
+        invertAxisEnabled: false,
+        seriesDataLabels: false
       };
 
     constructor(private _apollo: Apollo) {
@@ -219,26 +235,27 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     }
 
     selectColorWidget() {
+        
         switch (Math.round(Math.random()*10)) {
-            case 0 :
+            case 0:
                 return 'white';
-            case 1 :
+            case 1:
                 return 'orange';
-            case 2 :
+            case 2:
                 return 'blue';
-            case 3 :
+            case 3:
                 return 'green';
-            case 4 :
+            case 4:
                 return 'light-green';
-            case 5 :
+            case 5:
                 return 'sei-green';
-            case 6 :
+            case 6:
                 return 'purple';
-            case 7 :
+            case 7:
                 return 'light-purple';
-            case 8 : 
+            case 8: 
                 return "pink";
-            default :
+            default:
                 return 'white';
         }
     }

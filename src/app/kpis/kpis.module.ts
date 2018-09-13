@@ -21,6 +21,7 @@ import { ExpressionParserComponent } from './kpi-form/complex/expression-parser/
 import { ExternalSourceKpiFormComponent } from './kpi-form/external-source/external-source-kpi-form.component';
 import { CloneKpiComponent } from './clone-kpi/clone-kpi.component';
 import { WidgetsModule } from '../widgets/widgets.module';
+import { ChartsModule} from '../charts/charts.module'
 
 @NgModule({
   imports: [
@@ -31,7 +32,8 @@ import { WidgetsModule } from '../widgets/widgets.module';
     NgxDatatableModule,
     KpisRoutingModule,
     SharedModule,
-    WidgetsModule
+    WidgetsModule,
+    ChartsModule
 
   ],
   declarations: [

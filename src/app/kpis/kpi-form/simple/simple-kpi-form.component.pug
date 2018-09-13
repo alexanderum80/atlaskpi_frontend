@@ -135,10 +135,12 @@ bw-modal(#previewModal, (onDismiss)="_closePreviewModal()", (onClosed)="_closePr
                         img.m-t-20([style.height.px]="120", src='./assets/img/kpis/widget.PNG')
                     .m-t-20(flex-none, layout="row", layout-align="center center")
                         h2 Widget
-                div.ligth.m-10.z-depth-1.bgm-white.pointer-cursor.text-center(flex, flex-xs="50", flex-sm="50", flex-md="50", flex-gt-sm="50", flex-gt-md="45")
+                div.ligth.m-10.z-depth-1.bgm-white.pointer-cursor.text-center(flex, flex-xs="50", flex-sm="50", flex-md="50", flex-gt-sm="50", flex-gt-md="45", (click)="newChart()")
                     div(flex)
                         img.m-t-20([style.height.px]="120", src='./assets/img/kpis/chart.PNG')
                     .m-t-20(flex-none, layout="row", layout-align="center center")
                         h2 Chart
 .new-widget-from-kpi(*ngIf="newWidgetFromKPI")
     kpi-new-widget([widgetDataFromKPI]="vm.valuesPreviewWidget")
+.new-chart-from-kpi(*ngIf="newChartFromKPI")
+    kpi-new-chart([chartDataFromKPI]="vm.valuesPreviewChart")

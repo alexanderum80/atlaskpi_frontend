@@ -33,6 +33,7 @@ const getChartByTitle = require('graphql-tag/loader!../shared/graphql/get-chart-
 export class NewChartComponent implements OnInit, AfterViewInit {
     @Input() isFromDashboard = false;
     @Output() result = new EventEmitter();
+    @Input() chartDataFromKPI: any;
     @ViewChild(ChartFormComponent) private chartFormComponent: ChartFormComponent;
     fg: FormGroup = new FormGroup({});
     chartForm: FormGroup;
@@ -79,8 +80,13 @@ export class NewChartComponent implements OnInit, AfterViewInit {
         if (this.isFromDashboard) {
             this.result.emit('charts');
         } else {
-            this._router.navigateByUrl('/charts');
-        }
+            if (this.chartDataFromKPI){
+                this._router.navigateByUrl('/kpis/list');
+            
+            } else {
+                this._router.navigateByUrl('/charts');
+            }
+        }    
     }
 
     saveChart() {

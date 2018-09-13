@@ -78,11 +78,6 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
     newWidgetFromKPI: boolean;
     newChartFromKPI: boolean;
 
-    fg: FormGroup = new FormGroup({});
-    chartDefinition: any;
-    _previewQuerySubscription: Subscription;
-    viewportSizeSub: Subscription;
-    _previewQuery: QueryRef<any>;
     vm: SimpleKpiFormViewModel;
 
     private _subscription: Subscription[] = [];
@@ -125,8 +120,11 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
     
     newWidget() {
         this.newWidgetFromKPI = true;
-        this.newChartFromKPI = false;
-        // this._router.navigate(['widgets/new']);
+        this._closePreviewModal();
+    }
+    
+    newChart() {
+        this.newChartFromKPI = true;
         this._closePreviewModal();
     }
 
@@ -172,20 +170,16 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
                       });
                 }
                 if (this.fromSaveAndVisualize) {
+                    // for widget
                     this.currrentKPI = res.data[this.resultName].entity;
                     this.vm.valuesPreviewWidget.name = this.currrentKPI.name;
                     this.vm.valuesPreviewWidget.kpi = this.currrentKPI._id;
                     this.vm.valuesPreviewWidget.color = this.vm.selectColorWidget();
-                    // this._widgetFormService.processFormChanges(this.vm.valuesPreviewWidget)
-                    // .then(widget => this.widgetModel = widget);
-                    // this.fg.controls['name'].setValue(this.currrentKPI.name);
-                    // this.fg.controls['group'].setValue(this.currrentKPI.group);
-                    // this.fg.controls['frequency'].setValue('monthly');
-                    // this.fg.controls['predefinedDateRange'].setValue('this year');
-                    // this.fg.controls['grouping'].setValue('location.name');
-                    // this.fg.controls['tooltipEnabled'].setValue(true);
-                    // this.fg.controls['predefinedTooltipFormat'].setValue('multiple_percent');
-                    // this.fg.controls['kpi'].setValue(this.currrentKPI._id);
+
+                    // for chart
+                    this.vm.valuesPreviewChart.name = this.currrentKPI.name;
+                    this.vm.valuesPreviewChart.kpi = this.currrentKPI._id;
+
                     this.fromSaveAndVisualize = !this.fromSaveAndVisualize;
                     this.previewModal.open();
 
