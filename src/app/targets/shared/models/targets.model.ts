@@ -50,6 +50,7 @@ export interface ITargetFormFields {
     type: string;
     unit: string;
     value: number;
+    appliesTo: string;
     active: boolean;
     period: string;
     notificationConfig: ITargetNotificationConfig;

@@ -131,11 +131,11 @@ export class FormTargetsComponent implements OnInit {
         const target = filter(this.targets, {
             _id: id,
         });
-        this._refreshForm(target);
         this._complitedFrequency();
         this._complitedGroupings(false, target);
         this._complitedPeriod(target);
         this._complitedActive(target);
+        this._refreshForm(target);
     }
 
     selectItem(event) {
@@ -231,22 +231,22 @@ export class FormTargetsComponent implements OnInit {
             });
     }
 
-    disbled(event) {
-        this.vm.active = !this.vm.active;
-        this.vm.fg.controls['active'].setValue(this.vm.active);
-        const target = this.prepareModelDissabled();
-        let targets: any = [];
-        this.targets.forEach(f => {
-            if (f !== undefined) {
-                if (f._id !== event.item.id) {
-                    targets.push(f);
-                }
-            }
-        });
-        targets.push(target[0]);
-        this.targets = targets;
-        this.listTarget.vml.targets = targets;
-    }
+    // disbled(event) {
+    //     this.vm.active = !this.vm.active;
+    //     this.vm.fg.controls['active'].setValue(this.vm.active);
+    //     // const target = this.prepareModelDissabled();
+    //     // let targets: any = [];
+    //     // this.targets.forEach(f => {
+    //     //     if (f !== undefined) {
+    //     //         if (f._id !== event.item.id) {
+    //     //             targets.push(f);
+    //     //         }
+    //     //     }
+    //     // });
+    //     // targets.push(target[0]);
+    //     // this.targets = targets;
+    //     // this.listTarget.vml.targets = targets;
+    // }
 
     private initialModel() {
         const that = this;
@@ -285,7 +285,9 @@ export class FormTargetsComponent implements OnInit {
                 identifier: that.chart._id,
                 type: 'chart'
             },
+            appliesTo: this.vm.appliesTo,
             unit: that.vm.unit,
+            value: +this.vm.value.toString().replace(',', ''),
             type: that.vm.type,
             active: that.vm.active,
             period: that.vm.period,
@@ -294,7 +296,7 @@ export class FormTargetsComponent implements OnInit {
                     const methods = [];
 
                     if (u.email) { methods.push('email'); }
-                    if (u.push) { methods.push('phone'); }
+                    if (u.push) { methods.push('push'); }
 
                     return {
                         id: u.id,
@@ -338,11 +340,7 @@ export class FormTargetsComponent implements OnInit {
         this.vm.fg.controls['compareTo'].setValue(target[0].compareTo);
         this.vm.compareTos = target[0].compareTo;
         this.vm.fg.controls['recurrent'].setValue(target[0].recurrent);
-
-        if (target[0].reportOptions.groupings) {
-            const group = target[0].reportOptions.groupings[0];
-            this.vm.grouping = group;
-        }
+        this.vm.fg.controls['appliesTo'].setValue(target[0].appliesTo);
 
         if (target[0].reportOptions.frequency) {
             this.vm.fg.controls['recurrent'].setValue(target[0].reportOptions.frequency);
@@ -488,6 +486,7 @@ export class FormTargetsComponent implements OnInit {
 
             if (that.targets.length === 0) {
                 that.listLoad = false;
+                that.initialModel();
                 that._complitedFrequency(true);
                 that._complitedGroupings(true);
             } else {
@@ -641,69 +640,69 @@ export class FormTargetsComponent implements OnInit {
         return TargetNewInput;
     }
 
-    private prepareModelDissabled() {
-        let user = [];
-        let index = 0;
+    // private prepareModelDissabled() {
+    //     let user = [];
+    //     let index = 0;
 
-        this.vm.users.forEach(element => {
-            let deliveryMethodArray = [];
+    //     this.vm.users.forEach(element => {
+    //         let deliveryMethodArray = [];
 
-            if (element['email'] === true) {
-                deliveryMethodArray.push('email');
-            }
+    //         if (element['email'] === true) {
+    //             deliveryMethodArray.push('email');
+    //         }
 
-            if (element['push'] === true) {
-                deliveryMethodArray.push('push');
-            }
+    //         if (element['push'] === true) {
+    //             deliveryMethodArray.push('push');
+    //         }
 
-            user[index++] = {
-                id: element.id,
-                deliveryMethod: deliveryMethodArray,
-            };
-        });
+    //         user[index++] = {
+    //             id: element.id,
+    //             deliveryMethod: deliveryMethodArray,
+    //         };
+    //     });
 
-        const timezone = this.userService.user.profile.timezone;
+    //     const timezone = this.userService.user.profile.timezone;
 
-        let filter: any;
+    //     let filter: any;
 
-        this.chart.kpis[0].filter ? (filter = JSON.stringify(this.chart.kpis[0].filter)) : (filter = '');
+    //     this.chart.kpis[0].filter ? (filter = JSON.stringify(this.chart.kpis[0].filter)) : (filter = '');
 
-        const active = this.vm.active;
+    //     const active = this.vm.active;
 
-        const TargetNewInput = {
-            _id: this.vm._id,
-            name: this.vm.name,
-            kpi: this.vm.kpi,
-            compareTo: this.vm.compareTo,
-            recurrent: this.vm.recurrent ? true : false,
-            type: this.vm.type,
-            value: Number(String(this.vm.value).replace(/,/g, '')),
-            unit: this.vm.unit,
-            owner: this.vm.owner,
-            active: active,
-            selected: this.vm.selected ? true : false,
-            reportOptions: {
-                frequency: this.chart.frequency,
-                groupings: this.vm.fg.controls['groupings'].value || [''],
-                timezone: timezone,
-                dateRange: {
-                    from: this.chart.dateRange[0].custom.from !== null ? this.chart.dateRange[0].custom.from : '',
-                    to: this.chart.dateRange[0].custom.to !== null ? this.chart.dateRange[0].custom.to : '',
-                },
-                filter: filter,
-            },
-            source: {
-                type: this.type,
-                identifier: this.identifier,
-            },
-            notificationConfig: {
-                notifyOnPercentage: [Number(String(this.vm.value).replace(/,/g, ''))],
-                users: user,
-            },
-            period: this.vm.period,
-        };
-        return TargetNewInput;
-    }
+    //     const TargetNewInput = {
+    //         _id: this.vm._id,
+    //         name: this.vm.name,
+    //         kpi: this.vm.kpi,
+    //         compareTo: this.vm.compareTo,
+    //         recurrent: this.vm.recurrent ? true : false,
+    //         type: this.vm.type,
+    //         value: Number(String(this.vm.value).replace(/,/g, '')),
+    //         unit: this.vm.unit,
+    //         owner: this.vm.owner,
+    //         active: active,
+    //         selected: this.vm.selected ? true : false,
+    //         reportOptions: {
+    //             frequency: this.chart.frequency,
+    //             groupings: this.vm.fg.controls['groupings'].value || [''],
+    //             timezone: timezone,
+    //             dateRange: {
+    //                 from: this.chart.dateRange[0].custom.from !== null ? this.chart.dateRange[0].custom.from : '',
+    //                 to: this.chart.dateRange[0].custom.to !== null ? this.chart.dateRange[0].custom.to : '',
+    //             },
+    //             filter: filter,
+    //         },
+    //         source: {
+    //             type: this.type,
+    //             identifier: this.identifier,
+    //         },
+    //         notificationConfig: {
+    //             notifyOnPercentage: [Number(String(this.vm.value).replace(/,/g, ''))],
+    //             users: user,
+    //         },
+    //         period: this.vm.period,
+    //     };
+    //     return TargetNewInput;
+    // }
 
     private _displayServerErrors(err) {
         console.log('Server errors: ' + JSON.stringify(err));

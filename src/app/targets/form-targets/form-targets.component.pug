@@ -2,8 +2,7 @@ bw-modal(#targetModal='', size="lg", [openOnInit]="true", (onClosed)="cancel()",
     bw-modal-body
         .targets-form.h-100(flex, layout="row")
             .left-side.overflow-auto(flex="30", clicked="toggleActive()", *ngIf="listLoad")
-                kpi-list-targets.overflow-auto(flex, #listTarget, [chart]="chart", (editItem)="disbled($event)",
-                 [targets]="targets", (selectItem)="selectItem($event)", (addItem)="add($event)", (onDelete)="onDelete($event)")
+                kpi-list-targets.overflow-auto(flex)
 
             .bgm-white([class.listLoad]="listLoad")
                 .h-100(layout="column")
@@ -11,18 +10,18 @@ bw-modal(#targetModal='', size="lg", [openOnInit]="true", (onClosed)="cancel()",
                         bw-tab-set.w-80
                             bwTab.m-10(heading="Basic", icon="Basic", (select)="setIndex(1)",
                                 [active]="activeIndex(1)") 
-                                kpi-basic-targets(*ngIf="!isAdd", #basic, [fg]="vm.fg", [vm]="vm", [isBaseOnVisible]="isCustom")
-                                kpi-add-basic-targets(*ngIf="isAdd", #basic, [fg]="vm.fg", [vm]="vm", [isBaseOnVisible]="isCustom")
-                            bwTab.m-10(heading="Related Users", icon="Related Users", (select)="setIndex(2)",
-                                [active]="activeIndex(2)") 
-                                kpi-related-users(#related, [fg]="vm.fg", [vm]="vm")
-                            bwTab.m-10(heading="milestones", icon="milestones", (select)="setIndex(3)",
-                                [active]="activeIndex(3)") 
-                                kpi-milestone(#milestoneComponent, [fg]="vm.fg", [vm]="vm", [target]="vm._id")
+                                kpi-basic-targets(*ngIf="!isAdd")
+                                kpi-add-basic-targets(*ngIf="isAdd")
+                    //-         bwTab.m-10(heading="Related Users", icon="Related Users", (select)="setIndex(2)",
+                    //-             [active]="activeIndex(2)") 
+                    //-             kpi-related-users
+                    //-         bwTab.m-10(heading="milestones", icon="milestones", (select)="setIndex(3)",
+                    //-             [active]="activeIndex(3)") 
+                    //-             kpi-milestone
 
-                    .m-b-10
-                        .text-right.w-100
-                            bw-button.m-r-5(*ngIf="canGoBack()", title="Back", color="blue", [simple]="true", icon="arrow-left", (clicked)="goBack()")  
-                            bw-button.m-r-5(*ngIf="canGoNext()", title="Next", color="blue", [simple]="true", icon="arrow-right", (clicked)="goNext()")  
-                            bw-button.m-r-5(*ngIf="vm.fg.valid", color="blue" title="Save", icon="floppy", class="normal", (clicked)="save()")
-                            bw-button.m-r-5(title="Cancel", color="black", [simple]="true", icon="close", (clicked)="cancel()")
+                    //- .m-b-10
+                    //-     .text-right.w-100
+                    //-         bw-button.m-r-5(*ngIf="canGoBack()", title="Back", color="blue", [simple]="true", icon="arrow-left", (clicked)="goBack()")  
+                    //-         bw-button.m-r-5(*ngIf="canGoNext()", title="Next", color="blue", [simple]="true", icon="arrow-right", (clicked)="goNext()")  
+                    //-         bw-button.m-r-5(*ngIf="fg.valid", color="blue" title="Save", icon="floppy", class="normal", (clicked)="save()")
+                    //-         bw-button.m-r-5(title="Cancel", color="black", [simple]="true", icon="close", (clicked)="cancel()")

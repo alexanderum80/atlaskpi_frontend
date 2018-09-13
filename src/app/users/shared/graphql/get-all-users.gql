@@ -12,7 +12,6 @@ query AllUsers {
             }
         }
         profile {
-            _id
             firstName
             lastName
             timezone

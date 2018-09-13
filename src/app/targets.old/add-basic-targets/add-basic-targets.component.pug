@@ -2,7 +2,7 @@ div(layout="column")
     //- name
     div(flex)
         bw-text-box([fg]="fg", field="name", label="Name", leftIcon="local-offer")   
-        bw-select-picker.w-80.m-r-20(*ngIf="vm.visbleGroupings", flex, flex-xs="100", flex-gt-sm="33",
+        bw-select-picker.w-80.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
                                     [fg]="fg", 
                                     field="groupings",
                                     label="I would like to set a target for:",

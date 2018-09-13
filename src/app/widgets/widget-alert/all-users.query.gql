@@ -7,7 +7,6 @@ query AllUsers {
             name
         }
         profile {
-            _id
             firstName
             lastName
             timezone

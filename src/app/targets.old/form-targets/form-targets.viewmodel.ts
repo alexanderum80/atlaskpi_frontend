@@ -209,7 +209,7 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
     notificationConfig: ITargetNotificationConfig;
 
     @Field({ type: String })
-    groupings:  [string];
+    appliesTo:  string;
 
     initialize(model: any): void {
         this.onInit(model);
@@ -253,7 +253,7 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
         }
 
 
-        if (list === this.groupings) {
+        if (list === this.appliesTo) {
             return;
         }
 
@@ -275,7 +275,7 @@ export class FormTargetsViewModel extends ViewModel<ITargetNew> {
 
     set grouping(grouping) {
         this.nodoSelectedTextGrouping = grouping;
-        this.groupings = [grouping];
+        this.appliesTo = grouping;
     }
 
     get grouping() {

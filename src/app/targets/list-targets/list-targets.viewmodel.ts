@@ -132,29 +132,29 @@ export class ListTargetsViewModel extends ViewModel<IFilter> {
     }
 
     getChangeIconEnabled(item): MenuItem[] {
-        let icon = 'notifications-off';
-        let title = 'disable';
-        if (item.active === 'true' || item.active === true) {
-            icon = 'notifications';
-            title = 'enabled';
-        } else {
-            title = 'disable';
-            icon = 'notifications-off';
-        }
+        // let icon = 'notifications-off';
+        // let title = 'disable';
+        // if (item.active === 'true' || item.active === true) {
+        //     icon = 'notifications';
+        //     title = 'enabled';
+        // } else {
+        //     title = 'disable';
+        //     icon = 'notifications-off';
+        // }
 
-        this.menuItems[0].children.splice(0, 2);
+        // this.menuItems[0].children.splice(0, 2);
 
-        this.menuItems[0].children.push({
-                    id: 'edit',
-                    title: title,
-                    icon: icon
-                });
+        // this.menuItems[0].children.push({
+        //             id: 'edit',
+        //             title: title,
+        //             icon: icon
+        //         });
 
-        this.menuItems[0].children.push({
+        this.menuItems = [{
             id: 'delete',
-            title: 'Delete',
+            // title: 'Delete',
             icon: 'delete'
-            });
+        }];
 
         return this.menuItems;
     }

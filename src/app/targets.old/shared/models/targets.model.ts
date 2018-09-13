@@ -49,6 +49,8 @@ export interface ITargetFormFields {
     recurrent: boolean;
     type: string;
     unit: string;
+    value: number;
+    appliesTo: string;
     active: boolean;
     period: string;
     notificationConfig: ITargetNotificationConfig;

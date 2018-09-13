@@ -2,13 +2,13 @@ div(layout="column")
     //- name
     div(flex)
         bw-text-box([fg]="fg", field="name", label="Name", leftIcon="local-offer")   
-        bw-select-picker.w-80.m-r-20(*ngIf="vm.visbleGroupings", flex, flex-xs="100", flex-gt-sm="33",
+        bw-select-picker.w-80.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
                                     [fg]="fg", 
                                     field="groupings",
                                     label="I would like to set a target for:",
-                                    [items]="vm.groupingsList",
+                                    [items]="groupingsList",
                                     leftIcon="group-work",
-                                    noneSelectedText="{{vm.grouping}}",
+                                    noneSelectedText="{{grouping}}",
                                     )
 
     div(flex, layout="row")
@@ -17,7 +17,7 @@ div(layout="column")
                                     [fg]="fg", 
                                     field="type",
                                     label="Objective",
-                                    [items]="vm.objectiveList",
+                                    [items]="objectiveList",
                                     leftIcon="gps-dot"
                                     )  
 
@@ -34,19 +34,19 @@ div(layout="column")
                                     [fg]="fg", 
                                     field="period",
                                     label="Target period:",
-                                    [items]="vm.targetPeriodItems",
+                                    [items]="targetPeriodItems",
                                     leftIcon="calendar-alt",
-                                    [disabled]="vm.noFrequency",
-                                    noneSelectedText="{{vm.nodoSelectedText || 'NOTHING SELECTED'}}"
+                                    [disabled]="noFrequency",
+                                    noneSelectedText="{{nodoSelectedText || 'NOTHING SELECTED'}}"
                                     )
         .m-l-10(flex="50", *ngIf="isBaseOnVisible")
             bw-select-picker.w-80.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
                                     [fg]="fg", 
                                     field="compareTo",
                                     label="Based on",
-                                    [items]="vm.baseOnList",
+                                    [items]="baseOnList",
                                     leftIcon="calendar-alt",
-                                    noneSelectedText="{{vm.nodoSelectedTextCompareTo || 'NOTHING SELECTED'}}"
+                                    noneSelectedText="{{nodoSelectedTextCompareTo || 'NOTHING SELECTED'}}"
                                     )
 
     div(flex, layout="row")
@@ -54,7 +54,7 @@ div(layout="column")
             bw-checkbox.m-t-25(flex, flex-xs="100", flex-gt-sm="33",
                                     [fg]="fg",
                                     field="recurrent",
-                                    label="Repeat {{vm.frequency}}",
+                                    label="Repeat {{frequency}}",
                     )
         .m-l-10(flex="50")
-            bw-toggle(*ngIf="vm.activeVisble", [fg]="fg", field="active", color="green", label="Active")
+            bw-toggle(*ngIf="activeVisble", [fg]="fg", field="active", color="green", label="Active")
