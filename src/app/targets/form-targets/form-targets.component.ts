@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
-import { FormTargetsViewModel } from './form-targets.viewmodel';
 import { FormGroup } from '@angular/forms';
+import { FormGroupTypeSafe } from '../../shared/services';
+import { ITarget } from '../shared/models/target';
+import { IListItem } from '../../shared/ui/lists/list-item';
 
 // const targesQuery = require('graphql-tag/loader!./list-targets.gql');
 // const addTargetsMutation = require('graphql-tag/loader!./add-targets.gql');
@@ -16,23 +18,45 @@ import { FormGroup } from '@angular/forms';
 // const addMilestone = require('graphql-tag/loader!./add-milestones.gql');
 
 @Component({
-    selector: 'kpi-form-targets',
+    selector: 'app-form-targets',
     templateUrl: './form-targets.component.pug',
     styleUrls: ['./form-targets.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormTargetsComponent {
+    @Input()
+    fg: FormGroupTypeSafe<ITarget>;
+    @Input()
+    objectiveList: IListItem[];
+    @Input()
+    targetPeriodList: IListItem[];
+    @Input()
+    baseOnList: IListItem[];
 
-    fg: FormGroup = new FormGroup({});
+    private _pageCount = 3;
+    private _selectedPage = 1;
 
-    activeIndex(index) {
-        return false;
+    setIndex(idx: number) {
+        this._selectedPage = idx;
+    }
+
+    isSelected(idx: number) {
+        return this._selectedPage === idx;
     }
 
     canGoBack() {
-        return false;
+        return this._selectedPage !== 1;
     }
 
     canGoNext() {
-        return false;
+        return this._selectedPage !== this._pageCount;
+    }
+
+    goBack() {
+        this._selectedPage -= 1;
+    }
+
+    goNext() {
+        this._selectedPage += 1;
     }
 }

@@ -37,7 +37,8 @@ import {
     StoreHelper,
     TimezoneService,
     UserService,
-    PaginationService
+    PaginationService,
+    FormBuilderTypeSafe
 } from './services';
 
 import { CollapsableComponent } from './ui/collapsable/collapsable.component';
@@ -132,7 +133,8 @@ import { FileInputComponent } from './ui/file-input/file-input.component';
         PaginationService,
         ApolloService,
         SelectPickerService,
-        FileUploadClientService
+        FileUploadClientService,
+        FormBuilderTypeSafe
     ],
 })
 export class SharedModule { }

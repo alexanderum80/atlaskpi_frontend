@@ -3,10 +3,8 @@ query AllUsers {
         _id
         username
         roles {
-            _id
             name
             permissions {
-                _id
                 action
                 subject
             }

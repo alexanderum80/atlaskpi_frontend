@@ -1,37 +1,13 @@
-import { IRole } from '../../roles/shared/role';
-import {CommonService} from '../../shared/services/common.service';
-import { ICompanyInfo, LocalStorageService } from '../../shared/services/local-storage.service';
-import {
-    BrowserService
-} from '../../shared/services/browser.service';
-import {
-    FormGroup
-} from '@angular/forms';
-import {
-    Component,
-    EventEmitter,
-    Input,
-    OnDestroy,
-    OnInit,
-    AfterViewInit,
-    Output,
-    ViewEncapsulation,
-    ViewChild
-} from '@angular/core';
-import {
-    AuthenticationService
-} from '../../shared/services';
-import {
-    Router
-} from '@angular/router';
-import {
-    Subscription
-} from 'rxjs/Subscription';
-import {ModalComponent} from '../../ng-material-components';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { isBoolean } from 'lodash';
-import SweetAlert from 'sweetalert2';
-import {environment} from '../../../environments/environment';
+import { Subscription } from 'rxjs/Subscription';
+
+import { AuthenticationService } from '../../shared/services';
+import { BrowserService } from '../../shared/services/browser.service';
+import { CommonService } from '../../shared/services/common.service';
+import { ICompanyInfo, LocalStorageService } from '../../shared/services/local-storage.service';
 
 const findByUserNameQuery = require('graphql-tag/loader!./find-by-username.query.gql');
 

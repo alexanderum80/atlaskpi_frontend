@@ -1,0 +1,12 @@
+bw-modal(*ngIf="ready$ | async", #targetModal='', size="lg", [openOnInit]="true")
+    bw-modal-body
+        .targets-form.h-100(flex, layout="row")
+            .left-side.overflow-auto(flex="30", *ngIf="!model.isEmpty")
+                app-list-targets.overflow-auto(flex)
+            .bgm-white(flex)
+                app-form-targets(
+                    [fg]="model.form",
+                    [objectiveList]="model.objectiveList",
+                    [targetPeriodList]="model.targetPeriodList",
+                    [baseOnList]="model.baseOnList"
+                )

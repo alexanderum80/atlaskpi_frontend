@@ -1,27 +1,21 @@
-bw-modal(#targetModal='', size="lg", [openOnInit]="true", (onClosed)="cancel()", (onDismiss)="cancel()")
-    bw-modal-body
-        .targets-form.h-100(flex, layout="row")
-            .left-side.overflow-auto(flex="30", clicked="toggleActive()", *ngIf="listLoad")
-                kpi-list-targets.overflow-auto(flex)
+.h-100(layout="column")
+    .m-r-20.m-l-20.h-100
+        bw-tab-set.w-80
+            bwTab.m-10(heading="Basic", icon="Basic", (select)="setIndex(1)", [active]="isSelected(1)") 
+                app-basic-targets(
+                    [fg]="fg",
+                    [objectiveList]="objectiveList",
+                    [targetPeriodList]="targetPeriodList",
+                    [baseOnList]="baseOnList"
+                )
+            bwTab.m-10(heading="Related Users", icon="Related Users", (select)="setIndex(2)", [active]="isSelected(2)") 
+                app-related-users([fg]="fg")
+            bwTab.m-10(heading="milestones", icon="milestones", (select)="setIndex(3)", [active]="isSelected(3)")
+                app-milestones([fg]="fg")
 
-            .bgm-white([class.listLoad]="listLoad")
-                .h-100(layout="column")
-                    .m-r-20.m-l-20.h-100
-                        bw-tab-set.w-80
-                            bwTab.m-10(heading="Basic", icon="Basic", (select)="setIndex(1)",
-                                [active]="activeIndex(1)") 
-                                kpi-basic-targets(*ngIf="!isAdd")
-                                kpi-add-basic-targets(*ngIf="isAdd")
-                    //-         bwTab.m-10(heading="Related Users", icon="Related Users", (select)="setIndex(2)",
-                    //-             [active]="activeIndex(2)") 
-                    //-             kpi-related-users
-                    //-         bwTab.m-10(heading="milestones", icon="milestones", (select)="setIndex(3)",
-                    //-             [active]="activeIndex(3)") 
-                    //-             kpi-milestone
-
-                    //- .m-b-10
-                    //-     .text-right.w-100
-                    //-         bw-button.m-r-5(*ngIf="canGoBack()", title="Back", color="blue", [simple]="true", icon="arrow-left", (clicked)="goBack()")  
-                    //-         bw-button.m-r-5(*ngIf="canGoNext()", title="Next", color="blue", [simple]="true", icon="arrow-right", (clicked)="goNext()")  
-                    //-         bw-button.m-r-5(*ngIf="fg.valid", color="blue" title="Save", icon="floppy", class="normal", (clicked)="save()")
-                    //-         bw-button.m-r-5(title="Cancel", color="black", [simple]="true", icon="close", (clicked)="cancel()")
+    .m-b-10
+        .text-right.w-100
+            bw-button.m-r-5(*ngIf="canGoBack()", title="Back", color="blue", [simple]="true", icon="arrow-left", (clicked)="goBack()")  
+            bw-button.m-r-5(*ngIf="canGoNext()", title="Next", color="blue", [simple]="true", icon="arrow-right", (clicked)="goNext()")  
+            bw-button.m-r-5(color="blue" title="Save", icon="floppy", class="normal", (clicked)="save()", [disabled]="fg.invalid")
+            bw-button.m-r-5(title="Cancel", color="black", [simple]="true", icon="close", (clicked)="cancel()")

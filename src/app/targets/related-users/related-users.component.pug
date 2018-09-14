@@ -2,30 +2,32 @@
 
 .contener-related-users.m-t-20
     div(flex, layout="row")
-            .m-l-20.m-r-5(flex="65")
+            div(flex)
                 | Select users
-            .text-right.m-r-10(flex="5")
-                    i.zmdi.zmdi-email
-            .text-right.m-r-10(flex="5")
-                    i.zmdi.zmdi-smartphone-android
-            .text-center(flex="10").mdc-text-blue
-                    i.zmdi.zmdi-plus((click)="add()")
+            .fixed-column.m-r-10(flex-initial)
+                i.zmdi.zmdi-email
+            .fixed-column.m-r-10(flex-initial)
+                i.zmdi.zmdi-smartphone-android
+            .fixed-column.text-center(flex-initial) &nbsp;    
 
-    div(flex, layout="row", *ngFor="let item of vm.fg.get('users').controls; let i=index")
-            .text-center.m-r-10(flex="70")
+    div(flex, layout="row", *ngFor="let item of fg.get('notificationConfig').get('users').controls; let i=index")
+            .text-center.m-r-10(flex)
                 .m-t--20
                     bw-select-picker([fg]="item", 
-                                field="id",
+                                field="identifier",
                                 [items]="notifyStaff",
                                 leftIcon="accounts-alt"
                                 )  
-            .text-center.m-t-10.m-r-10(flex="5")
+            .fixed-column.text-center.m-t-10.m-r-10(flex-initial)
                 bw-checkbox([fg]="item", field="email")
         
-            .text-center.m-t-10.m-r-15(flex="5")
+            .fixed-column.text-center.m-t-10.m-r-15(flex-initial)
                 bw-checkbox([fg]="item", field="push")
                 
-            .text-center.m-t-15(*ngIf="!isUserCurrent", flex="5").mdc-text-red
-                    div(*ngIf="item")
-                        i.zmdi.zmdi-close((click)="removeUser(item)")
+            .fixed-column.text-center.m-t-15.mdc-text-red(*ngIf="!isUserCurrent", flex-initial)
+                //- bw-button(title="Cancel", [simple]="true", icon="delete", (clicked)="cancelRemove()")
+                i.zmdi.zmdi-delete((click)="removeUser(item)")
+
+    .text-left(flex)
+        bw-button(title="Add user", color="green", icon="plus", type="button", (clicked)="addUser()")
     

@@ -3,7 +3,6 @@ query AllUsers {
         _id
         username
         roles {
-            _id
             name
         }
         profile {

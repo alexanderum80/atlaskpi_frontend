@@ -1,9 +1,0 @@
-mutation dete($id: String!, $owner: String!) {
-  removeTarget(id: $id, owner: $owner) {
-    success,
-    errors {
-      field,
-      errors
-    }
-  }
-}

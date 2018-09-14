@@ -78,7 +78,6 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
     ) {}
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log('widget chart changed');
         if (this.widget) {
             this._removeInfoItem();
             if (this.widget.materialized && this.widget.materialized.chart) {

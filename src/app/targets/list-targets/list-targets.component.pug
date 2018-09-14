@@ -5,10 +5,10 @@
         div(flex="80") TARGETS MANAGER
 
     .m-t-10(*ngIf="vml.targetItems", flex)
-        .target-item(*ngFor="let item of vml.targetItems", [class.selected]="item.selected")
+        .target-item(*ngFor="let item of targetList", [class.selected]="item.selected")
             kpi-list-item-tabular.w-100.m-r-40(
                 [item]="item",
-                [actionItems]="vml.menuItems",
+                [actionItems]="targetActions",
                 [tableRowTemplate]="tableItem",
                 (click)="itemClicked(item)",
                 (actionClicked)="actionClicked($event)"

@@ -1,7 +1,0 @@
-mutation deleteMilestone($id: String!) {
-  deleteMilestone(_id: $id) {
-    success
-    errors {
-      field
-    }
-  }}

@@ -1,16 +1,29 @@
 import { Component } from '@angular/core';
 
 import { ListTargetsViewModel } from './list-targets.viewmodel';
+import { ITarget } from '../shared/models/target';
 
 const targesDelete = require('graphql-tag/loader!./delete-target.gql');
 
 @Component({
-    selector: 'kpi-list-targets',
+    selector: 'app-list-targets',
     templateUrl: './list-targets.component.pug',
     styleUrls: ['./list-targets.component.scss'],
     providers: [ListTargetsViewModel],
 })
 export class ListTargetsComponent {
+    targetList: ITarget[];
+    targetActionList: string[];
+
+    itemClicked(item) {
+
+    }
+
+    actionClicked(action) {
+
+    }
+
+
     // private delete(item) {
     //     const that = this;
 

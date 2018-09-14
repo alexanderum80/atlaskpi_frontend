@@ -1,8 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { FormGroupTypeSafe } from '../../shared/services';
+import { ITarget } from '../shared/models/target';
 
 @Component({
-  selector: 'kpi-related-users',
+  selector: 'app-related-users',
   templateUrl: './related-users.component.pug',
   styleUrls: ['./related-users.component.scss']
 })
-export class RelatedUsersComponent { }
+export class RelatedUsersComponent {
+    @Input()
+    fg: FormGroupTypeSafe<ITarget>;
+}

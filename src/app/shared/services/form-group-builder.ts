@@ -1,5 +1,4 @@
 import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import * as traverse from 'traverse';
 
 export type FormGroupControlsOf<T> = {
     [P in keyof T]: FormControl | FormGroup | any;
@@ -21,7 +20,6 @@ export abstract class FormGroupTypeSafe<T> extends FormGroup {
     public abstract setControlSafe(propertyFunction: PropertyFn<T>, control: AbstractControl): void;
     public abstract setValueSafe(val: Partial<T>): void;
     public abstract patchValueSafe(val: Partial<T>): void;
-    public abstract updateFieldsSafe(val: Partial<T>): void;
     // public abstract disableFieldsSafe(val: Partial<DisabledControls<T>>): void;
     // public abstract updateDisableSafe(val: FormGroupControlsOf<T>): void;
     // If you need more function implement declare them here
@@ -77,33 +75,6 @@ export class FormBuilderTypeSafe extends FormBuilder {
             // implement patch value
             gr.patchValueSafe = (val: Partial<T>) => {
                 gr.patchValue(val);
-            };
-
-            // implement update fields
-            gr.updateFieldsSafe = function(val: Partial<T>) {
-                const that: FormGroupTypeSafe<any> = this as any;
-                // const that = this;
-                if (!val) {
-                    return;
-                }
-
-                traverse(val).forEach(function(value) {
-                    const ctx: traverse.TraverseContext = this as any;
-
-                    if (ctx.isLeaf) {
-                        let control: AbstractControl;
-
-                        if (ctx.path) {
-                            for (const token of ctx.path) {
-                                control = !control ? that.get(token) : control.get(token);
-                            }
-                        } else {
-                            control = that.get(ctx.key);
-                        }
-
-                        control.setValue(value);
-                    }
-                });
             };
 
             // update disable fields
