@@ -1,15 +1,4 @@
 
-kpi-new-milestones-target
+kpi-new-milestones-target(*ngIf="isEmpty")
 
-div(flex) 
-    .title(*ngIf="addMilestones") Add an execution plan for this target
-    .title(*ngIf="existMileston && !addMilestones") Milestones for this target
-    .text-right.m-t-20(*ngIf="existMileston || addMilestones")
-        bw-button(color="blue", [simple]="true", title="Add Milestone", icon="plus", 
-        class="normal", (clicked)="addEvent($event)")
-   
-    .m-t-20.w-80(*ngIf="existMileston")
-       kpi-list-milestones-target.w-100
-        
-    .m-t-20(*ngIf="addMilestones")
-        kpi-add-milestones-target
+app-milestone-item([fg]="fg", *ngFor="let fg of fa.controls; let i = index")

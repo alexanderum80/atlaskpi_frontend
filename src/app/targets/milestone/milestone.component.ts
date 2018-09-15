@@ -1,15 +1,17 @@
-import { Component, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-
-const milestoQuery = require('graphql-tag/loader!./list-milestones.gql');
-const deleteMilestone = require('graphql-tag/loader!./delete-milestone.gql');
-const userQuery = require('graphql-tag/loader!./form-milestone-target/users.query.gql');
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { FormArray } from '@angular/forms';
 
 @Component({
-  selector: 'app-milestones',
-  templateUrl: './milestone.component.pug',
-  styleUrls: ['./milestone.component.scss']
+    selector: 'app-milestones',
+    templateUrl: './milestone.component.pug',
+    styleUrls: ['./milestone.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MilestoneComponent {
-  @Input() fg: FormGroup;
+    @Input()
+    fa: FormArray;
+
+    get isEmpty(): boolean {
+        return this.fa.controls.length === 0;
+    }
 }

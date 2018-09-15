@@ -10,28 +10,33 @@ import { MilestoneComponent } from './milestone/milestone.component';
 import { MaterialFormsModule, MaterialUserInterfaceModule } from '../ng-material-components';
 import { TargetComponent } from './target/target.component';
 import { SharedModule } from '../shared';
-import { ListMilestonesTargetComponent } from './milestone/list-milestones-target/list-milestones-target.component';
-import { AddMilestonesTargetComponent } from './milestone/add-milestones-target/add-milestones-target.component';
-import { EditMilestonesTargetComponent } from './milestone/edit-milestones-target/edit-milestones-target.component';
 import { NewMilestonesTargetComponent } from './milestone/new-milestones-target/new-milestones-target.component';
 import { FormMilestoneTargetComponent } from './milestone/form-milestone-target/form-milestone-target.component';
 import { FormTargetsComponent } from './form-targets/form-targets.component';
-import { AddBasicTargetsComponent } from './add-basic-targets/add-basic-targets.component';
 import { TargetsScreenComponent } from './targets-screen/targets-screen.component';
-
+import { MilestoneItemComponent } from './milestone/milestone-item/milestone-item.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    TargetsRoutingModule,
-    MaterialFormsModule,
-    MaterialUserInterfaceModule,
-    ReactiveFormsModule,
-    SharedModule,
-  ],
-  declarations: [FormTargetsComponent, ListTargetsComponent, BasicTargetsComponent, RelatedUsersComponent,
-    MilestoneComponent, TargetComponent, ListMilestonesTargetComponent, AddMilestonesTargetComponent, EditMilestonesTargetComponent,
-     NewMilestonesTargetComponent, FormMilestoneTargetComponent, AddBasicTargetsComponent, TargetsScreenComponent],
-  exports: [ TargetsScreenComponent ]
+    imports: [
+        CommonModule,
+        TargetsRoutingModule,
+        MaterialFormsModule,
+        MaterialUserInterfaceModule,
+        ReactiveFormsModule,
+        SharedModule,
+    ],
+    declarations: [
+        FormTargetsComponent,
+        ListTargetsComponent,
+        BasicTargetsComponent,
+        RelatedUsersComponent,
+        MilestoneComponent,
+        TargetComponent,
+        NewMilestonesTargetComponent,
+        FormMilestoneTargetComponent,
+        TargetsScreenComponent,
+        MilestoneItemComponent,
+    ],
+    exports: [TargetsScreenComponent],
 })
-export class TargetsModule { }
+export class TargetsModule {}

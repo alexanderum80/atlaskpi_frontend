@@ -70,6 +70,10 @@ export class TargetScreenService {
         this._formModel.removeUser(index);
     }
 
+    addMilestone() {
+        this._formModel.addMilestone();
+    }
+
     private getBasedOnList(): IListItem[] {
         const getList = (name: string) => {
             const lower = name.toLowerCase();

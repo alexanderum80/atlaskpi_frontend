@@ -1,7 +1,8 @@
 import { ITarget, ITargetSource, ITargetUser } from './target';
 import { Validators, FormArray } from '@angular/forms';
 import { FormGroupTypeSafe, FormBuilderTypeSafe } from '../../../shared/services';
-import { ITargetNotificationConfig } from './targets.model';
+import { ITargetNotificationConfig, IMilestone } from './targets.model';
+
 
 export class TargetFormModel {
 
@@ -39,6 +40,15 @@ export class TargetFormModel {
                 users.controls.push(this.getTargetUserForm(u));
             });
         }
+
+        if (t.milestones) {
+            const milestones = this._form.getSafe(f => f.milestones) as FormArray;
+            milestones.controls.splice(0, milestones.controls.length);
+
+            t.milestones.forEach(m => {
+                milestones.controls.push(this.getMilestoneForm(m));
+            });
+        }
     }
 
     addUser() {
@@ -49,6 +59,16 @@ export class TargetFormModel {
     removeUser(index: number) {
         const users = this._form.getSafe(f => f.notificationConfig.users) as FormArray;
         users.removeAt(index);
+    }
+
+    addMilestone() {
+        const milestones = this._form.getSafe(f => f.milestones) as FormArray;
+        milestones.controls.push(this.getMilestoneForm(null));
+    }
+
+    removeMilestone(index: number) {
+        const milestones = this._form.getSafe(f => f.milestones) as FormArray;
+        milestones.removeAt(index);
     }
 
     private buildForm() {
@@ -68,6 +88,7 @@ export class TargetFormModel {
             type: [null, Validators.required],
             unit: [null, Validators.required],
             value: [null, Validators.required],
+            milestones: this.builder.array([]),
         });
     }
 
@@ -77,6 +98,19 @@ export class TargetFormModel {
         return this.builder.group<ITargetUser>({
             deliveryMethods: [u.deliveryMethods, Validators.required],
             identifier: [u.identifier, Validators.required]
+        });
+    }
+
+    private getMilestoneForm(ms: IMilestone) {
+        if (!ms) { ms = {} as any; }
+
+        return this.builder.group<IMilestone>({
+            _id: [ms._id],
+            dueDate: [ms.dueDate],
+            responsible: [ms.responsible],
+            status: [ms.status],
+            task: [ms.task, Validators.required],
+            target: [ms.target]
         });
     }
 

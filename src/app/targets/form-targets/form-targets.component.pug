@@ -14,7 +14,7 @@
                     [userList]="userList",
                 )
             bwTab.m-10(heading="milestones", icon="milestones", (select)="setIndex(3)", [active]="isSelected(3)")
-                app-milestones([fg]="fg")
+                app-milestones([fa]="fg.get('milestones')")
 
     .m-b-10
         .text-right.w-100

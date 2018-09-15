@@ -1,4 +1,5 @@
 import { FrequencyEnum, IDateRange } from '../../../shared/models';
+import { IMilestone } from './targets.model';
 
 export interface INotify {
     users: string[];
@@ -47,6 +48,7 @@ export interface ITarget {
     unit: TargetValueUnitEnum;
     notificationConfig: ITargetNotificationConfig;
     active?: boolean;
+    milestones?: IMilestone[];
 }
 
 export function getNewTarget(userId: string) {
@@ -67,6 +69,7 @@ export function getNewTarget(userId: string) {
         value: 0,
         notificationConfig: {
             users: [{ identifier: userId, deliveryMethods: [ DeliveryMethodEnum.email ] }]
-        }
+        },
+        milestones: [],
     } as ITarget;
 }
