@@ -318,6 +318,10 @@
   dependencies:
     "@types/jasmine" "*"
 
+"@types/lodash@^4.14.116":
+  version "4.14.116"
+  resolved "http://npm.atlaskpi.com:9000/@types%2flodash/-/lodash-4.14.116.tgz#5ccf215653e3e8c786a58390751033a9adca0eb9"
+
 "@types/node@^6.0.46":
   version "6.0.114"
   resolved "http://npm.atlaskpi.com:9000/@types%2fnode/-/node-6.0.114.tgz#c42cd56479f32bc1576a5cb19f8a208da9a2b052"
@@ -343,6 +347,10 @@
   resolved "http://npm.atlaskpi.com:9000/@types%2fvalidate.js/-/validate.js-0.11.0.tgz#121a83aecfdb848f46a4c796644e0da7cb1633c8"
   dependencies:
     validate.js "*"
+
+"@types/xlsx@0.0.34":
+  version "0.0.34"
+  resolved "http://npm.atlaskpi.com:9000/@types%2fxlsx/-/xlsx-0.0.34.tgz#2b49e60dcbd3553a6bf211a3af1a6f4c7cb2c8b9"
 
 "@types/zen-observable@^0.5.3":
   version "0.5.4"
@@ -6547,6 +6555,12 @@ ts-node@~5.0.1:
     mkdirp "^0.5.1"
     source-map-support "^0.5.3"
     yn "^2.0.0"
+
+ts-xlsx@0.0.11:
+  version "0.0.11"
+  resolved "http://npm.atlaskpi.com:9000/ts-xlsx/-/ts-xlsx-0.0.11.tgz#5a5fbcdd0f59d558c287af4c74fd5ea9a4bbeb39"
+  dependencies:
+    "@types/xlsx" "0.0.34"
 
 tsickle@^0.29.0:
   version "0.29.0"

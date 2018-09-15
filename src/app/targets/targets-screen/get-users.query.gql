@@ -6,8 +6,5 @@ query AllUsers {
             firstName
             lastName
         }
-        emails {
-            address
-        }
     }
 }

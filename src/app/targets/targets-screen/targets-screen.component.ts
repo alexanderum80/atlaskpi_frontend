@@ -6,8 +6,11 @@ import { filter, map, tap } from 'rxjs/operators';
 import { ChartData } from '../../charts/shared';
 import { ITarget } from '../shared/models/target';
 import { TargetScreenService } from '../shared/services/target-screen.service';
+import { ITargetUser } from '../shared/models/targets.model';
+import { IBasicUser } from '../shared/models/target-user';
 
 const targetsQuery = require('graphql-tag/loader!./list-targets.gql');
+const usersQuery = require('graphql-tag/loader!./get-users.query.gql');
 
 @Component({
     selector: 'app-targets-screen',
@@ -38,12 +41,17 @@ export class TargetsScreenComponent implements OnInit {
                 query: targetsQuery,
                 variables: { source: { identifier: this.chart._id } },
             }),
-        ).pipe(
-            filter(([targets]) => {
-                return targets.data.targetBySource !== undefined;
+            this.apollo.query<{ allUsers: IBasicUser[] }>({
+                query: usersQuery,
             }),
-            tap(([targets]) => {
+        ).pipe(
+            filter(([targets, users]) => {
+                return targets.data.targetBySource !== undefined
+                    && users.data.allUsers !== undefined;
+            }),
+            tap(([targets, users]) => {
                 this.model.targetList = targets.data.targetBySource;
+                this.model.userList = users.data.allUsers;
 
                 // assign an empty target or the first one
                 const target = !this.model.targetList.length ? null : this.model.targetList[0];

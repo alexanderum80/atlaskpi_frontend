@@ -5,11 +5,14 @@
                 app-basic-targets(
                     [fg]="fg",
                     [objectiveList]="objectiveList",
-                    [targetPeriodList]="targetPeriodList",
-                    [baseOnList]="baseOnList"
+                    [baseOnList]="baseOnList",
+                    [displayForField]="displayForField"
                 )
             bwTab.m-10(heading="Related Users", icon="Related Users", (select)="setIndex(2)", [active]="isSelected(2)") 
-                app-related-users([fg]="fg")
+                app-related-users(
+                    [fg]="fg",
+                    [userList]="userList",
+                )
             bwTab.m-10(heading="milestones", icon="milestones", (select)="setIndex(3)", [active]="isSelected(3)")
                 app-milestones([fg]="fg")
 

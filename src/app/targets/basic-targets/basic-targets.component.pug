@@ -2,7 +2,7 @@ div(layout="column")
     //- name
     div(flex)
         bw-text-box([fg]="fg", field="name", label="Name", leftIcon="local-offer")   
-    .m-t-15(flex)
+    .m-t-15(*ngIf="displayForField", flex)
         bw-select-picker(flex
             [fg]="fg", 
             field="appliesTo",
@@ -28,17 +28,7 @@ div(layout="column")
             bw-button-group([options]="valueOptions", type="default", [activeOption]="fg.controls['unit'].value", (optionSelected)="onOptionSelected($event)")
     
     .m-t-15(flex, layout="row")
-        .m-r-10(flex="50")
-            bw-select-picker(flex,
-                [fg]="fg", 
-                field="period",
-                label="Target period:",
-                [items]="targetPeriodList",
-                leftIcon="calendar-alt",
-                [disabled]="noFrequency",
-                noneSelectedText="{{nodoSelectedText || 'NOTHING SELECTED'}}"
-            )
-        .m-l-10(flex="50", *ngIf="isBaseOnVisible")
+        .m-l-10(flex="50", *ngIf="showBasedOn")
             bw-select-picker(flex,
                 [fg]="fg", 
                 field="compareTo",
@@ -49,11 +39,5 @@ div(layout="column")
             )
 
     .m-t-15(flex, layout="row")
-        .m-r-10(*ngIf="!isCustom", flex="50")
-            bw-checkbox.m-t-25(flex,
-                [fg]="fg",
-                field="recurrent",
-                label="Repeat {{frequency}}",
-            )
         div(flex="50")
             bw-toggle(*ngIf="activeVisible", [fg]="fg", field="active", color="green", label="Active")

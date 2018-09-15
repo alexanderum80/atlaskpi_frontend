@@ -25,8 +25,6 @@ export class TargetFormModel {
             compareTo: t.compareTo,
             id: t.id,
             name: t.name,
-            period: t.period,
-            recurrent: t.recurrent,
             source: t.source,
             type: t.type,
             unit: t.unit,
@@ -43,18 +41,26 @@ export class TargetFormModel {
         }
     }
 
+    addUser() {
+        const users = this._form.getSafe(f => f.notificationConfig.users) as FormArray;
+        users.controls.push(this.getTargetUserForm(null));
+    }
+
+    removeUser(index: number) {
+        const users = this._form.getSafe(f => f.notificationConfig.users) as FormArray;
+        users.removeAt(index);
+    }
+
     private buildForm() {
         this._form = this.builder.group<ITarget>({
             id: [null],
             active: [null, Validators.required],
             appliesTo: [null, Validators.required],
-            period: [null, Validators.required],
             compareTo: [null, Validators.required],
             name: [null, Validators.required],
             notificationConfig: this.builder.group<ITargetNotificationConfig>({
                 users: this.builder.array([])
             }),
-            recurrent: [null, Validators.required],
             source: this.builder.group<ITargetSource>({
                 identifier: [null, Validators.required],
                 type: [null, Validators.required],
@@ -66,6 +72,8 @@ export class TargetFormModel {
     }
 
     private getTargetUserForm(u: ITargetUser) {
+        if (!u) { u = {} as any; }
+
         return this.builder.group<ITargetUser>({
             deliveryMethods: [u.deliveryMethods, Validators.required],
             identifier: [u.identifier, Validators.required]

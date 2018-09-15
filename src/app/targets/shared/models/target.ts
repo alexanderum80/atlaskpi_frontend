@@ -40,9 +40,7 @@ export interface ITarget {
     id?: string;
     name: string;
     source: ITargetSource;
-    period: string;
     compareTo: string;
-    recurrent: boolean;
     type: TargetTypeEnum;
     appliesTo?: string;
     value: number;

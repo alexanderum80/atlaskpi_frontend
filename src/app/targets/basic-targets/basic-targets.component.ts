@@ -1,15 +1,17 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
 
-import { ITarget } from '../../charts/chart-view/set-goal/shared/targets.interface';
 import { FormGroupTypeSafe } from '../../shared/services';
 import { IListItem } from '../../shared/ui/lists/list-item';
+import { Subscription } from 'apollo-client/util/Observable';
+import { ITarget, TargetTypeEnum } from '../shared/models/target';
 
 @Component({
     selector: 'app-basic-targets',
     templateUrl: './basic-targets.component.pug',
     styleUrls: ['./basic-targets.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BasicTargetsComponent {
+export class BasicTargetsComponent implements OnInit, OnDestroy {
     @Input()
     fg: FormGroupTypeSafe<ITarget>;
     @Input()
@@ -17,13 +19,32 @@ export class BasicTargetsComponent {
     @Input()
     objectiveList: IListItem[];
     @Input()
-    targetPeriodList: IListItem[];
-    @Input()
     baseOnList: IListItem[];
+    @Input()
+    displayForField: boolean;
+
+    showBasedOn: boolean;
 
     valueOptions = [ '%', '#' ];
 
+    private basedOnSub: Subscription;
+
+    ngOnInit() {
+        const typeCtrl = this.fg.getSafe(f => f.type);
+        this.basedOnSub = typeCtrl.valueChanges
+            .subscribe(t => this.updateBasedOnVisibility(t));
+        this.updateBasedOnVisibility(typeCtrl.value);
+    }
+
+    ngOnDestroy() {
+        this.basedOnSub.unsubscribe();
+    }
+
     onOptionSelected(val) {
         console.log(val);
+    }
+
+    private updateBasedOnVisibility(val) {
+        this.showBasedOn = val !== TargetTypeEnum.fixed;
     }
 }

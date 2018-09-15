@@ -10,14 +10,14 @@
                 i.zmdi.zmdi-smartphone-android
             .fixed-column.text-center(flex-initial) &nbsp;    
 
-    div(flex, layout="row", *ngFor="let item of fg.get('notificationConfig').get('users').controls; let i=index")
+    div(flex, layout="row", *ngFor="let item of fg.get('notificationConfig.users').controls; let i=index")
             .text-center.m-r-10(flex)
                 .m-t--20
                     bw-select-picker([fg]="item", 
-                                field="identifier",
-                                [items]="notifyStaff",
-                                leftIcon="accounts-alt"
-                                )  
+                        field="identifier",
+                        [items]="userItemList",
+                        leftIcon="accounts-alt"
+                    )  
             .fixed-column.text-center.m-t-10.m-r-10(flex-initial)
                 bw-checkbox([fg]="item", field="email")
         
@@ -26,7 +26,7 @@
                 
             .fixed-column.text-center.m-t-15.mdc-text-red(*ngIf="!isUserCurrent", flex-initial)
                 //- bw-button(title="Cancel", [simple]="true", icon="delete", (clicked)="cancelRemove()")
-                i.zmdi.zmdi-delete((click)="removeUser(item)")
+                i.zmdi.zmdi-delete(*ngIf="i !== 0", (click)="removeUser(i)")
 
     .text-left(flex)
         bw-button(title="Add user", color="green", icon="plus", type="button", (clicked)="addUser()")

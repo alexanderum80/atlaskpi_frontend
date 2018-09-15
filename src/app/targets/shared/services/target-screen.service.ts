@@ -1,23 +1,27 @@
 import { Injectable } from '@angular/core';
+import { isEmpty } from 'lodash';
 
 import { ChartData } from '../../../charts/shared';
 import { FormBuilderTypeSafe, FormGroupTypeSafe, UserService } from '../../../shared/services';
 import { IListItem } from '../../../shared/ui/lists/list-item';
 import { getNewTarget, ITarget } from '../models/target';
 import { TargetFormModel } from '../models/target-form.model';
+import { FrequencyEnum } from '../../../shared/models';
+import { IBasicUser } from '../models/target-user';
 
 
 @Injectable()
 export class TargetScreenService {
 
     targetList: ITarget[];
+    userList: IBasicUser[];
     objectiveList: IListItem[] = [
         { id: 'increase', title: 'Increase' },
         { id: 'decrease', title: 'Decrease' },
         { id: 'fixed', title: 'Fixed' },
     ];
-    targetPeriodList: IListItem[];
     baseOnList: IListItem[];
+    displayForField: boolean;
 
     private _formModel: TargetFormModel;
     private _selected: ITarget;
@@ -34,9 +38,10 @@ export class TargetScreenService {
 
     initialize(chart: ChartData) {
         this.chart = chart;
+        this.displayForField = !isEmpty(this.chart.xAxisSource) && this.chart.xAxisSource !== 'frequency';
+        this.baseOnList = this.getBasedOnList();
 
         this._formModel = new TargetFormModel(this.builder);
-        this.targetPeriodList = this.getTargetPeriodList();
     }
 
     get isEmpty(): boolean {
@@ -57,11 +62,43 @@ export class TargetScreenService {
         this._formModel.update(target);
     }
 
-    private getTargetPeriodList(): IListItem[] {
+    addNewUser() {
+        this._formModel.addUser();
+    }
+
+    removeUser(index: number) {
+        this._formModel.removeUser(index);
+    }
+
+    private getBasedOnList(): IListItem[] {
+        const getList = (name: string) => {
+            const lower = name.toLowerCase();
+            return [
+                { id: `last ${lower}`, title: `Last ${name}` },
+                { id: `same ${lower} last year`, title: `Same ${name}, last year` },
+                { id: `same ${lower} 2 years ago`, title: `Same ${name}, 2 years ago` },
+            ];
+        };
+
         if (this.chart.frequency) {
-
-        } else {
-
+            switch (this.chart.frequency) {
+                // do not support daily frequency on targets for now
+                // case FrequencyEnum.Daily:
+                //     break;
+                case FrequencyEnum.Monthly:
+                    return getList('Month');
+                case FrequencyEnum.Quartely:
+                    return getList('Quarter');
+                case FrequencyEnum.Weekly:
+                    return getList('Week');
+                case FrequencyEnum.Yearly:
+                    const lower = 'year';
+                    return [
+                        { id: `last ${lower}`, title: `Last Year` },
+                        { id: `two years ago`, title: `Two years ago` },
+                        { id: `three years ago`, title: `Three years ago` },
+                    ];
+            }
         }
     }
 

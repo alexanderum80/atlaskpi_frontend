@@ -10,7 +10,7 @@ import { ViewTargetActivity } from '../../shared/authorization/activities/target
 import { AddTargetActivity } from '../../shared/authorization/activities/targets/add-target.activity';
 import { TableModeService } from './table-mode/table-mode.service';
 import { ToSelectionItemList } from '../../shared/extentions';
-import { parseComparisonDateRange, parsePredifinedDate } from '../../shared/models';
+import { parseComparisonDateRange, parsePredefinedDate } from '../../shared/models';
 import { MilestoneService } from '../../milestones/shared/services/milestone.service';
 import { TargetService } from './set-goal/shared/target.service';
 import { Component, Input, OnDestroy, OnInit, ViewChild, AfterContentInit, ChangeDetectionStrategy } from '@angular/core';
@@ -400,7 +400,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         try {
             if (!this.chartData.dateRange) { return false }
             if (this.chartData.dateRange[0].custom.from && this.chartData.dateRange[0].custom.to) {
-                const dateRange = parsePredifinedDate('this year');
+                const dateRange = parsePredefinedDate('this year');
                 const from: Date = this.chartData.dateRange[0].custom.from;
                 const to: Date = this.chartData.dateRange[0].custom.to;
                 if (from >= dateRange.from && to <= dateRange.to) {

@@ -38,7 +38,8 @@ import {
     TimezoneService,
     UserService,
     PaginationService,
-    FormBuilderTypeSafe
+    FormBuilderTypeSafe,
+    DateService
 } from './services';
 
 import { CollapsableComponent } from './ui/collapsable/collapsable.component';
@@ -134,7 +135,8 @@ import { FileInputComponent } from './ui/file-input/file-input.component';
         ApolloService,
         SelectPickerService,
         FileUploadClientService,
-        FormBuilderTypeSafe
+        FormBuilderTypeSafe,
+        DateService,
     ],
 })
 export class SharedModule { }

@@ -4,6 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { FormGroupTypeSafe } from '../../shared/services';
 import { ITarget } from '../shared/models/target';
 import { IListItem } from '../../shared/ui/lists/list-item';
+import { IBasicUser } from '../shared/models/target-user';
 
 // const targesQuery = require('graphql-tag/loader!./list-targets.gql');
 // const addTargetsMutation = require('graphql-tag/loader!./add-targets.gql');
@@ -29,9 +30,11 @@ export class FormTargetsComponent {
     @Input()
     objectiveList: IListItem[];
     @Input()
-    targetPeriodList: IListItem[];
-    @Input()
     baseOnList: IListItem[];
+    @Input()
+    userList: IBasicUser[];
+    @Input()
+    displayForField: boolean;
 
     private _pageCount = 3;
     private _selectedPage = 1;

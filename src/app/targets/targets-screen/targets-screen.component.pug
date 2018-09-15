@@ -7,6 +7,7 @@ bw-modal(*ngIf="ready$ | async", #targetModal='', size="lg", [openOnInit]="true"
                 app-form-targets(
                     [fg]="model.form",
                     [objectiveList]="model.objectiveList",
-                    [targetPeriodList]="model.targetPeriodList",
-                    [baseOnList]="model.baseOnList"
+                    [baseOnList]="model.baseOnList",
+                    [userList]="model.userList",
+                    [displayForField]="model.displayForField"
                 )

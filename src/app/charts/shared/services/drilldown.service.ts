@@ -1,4 +1,4 @@
-import {IDateRange, parsePredifinedDate} from '../../../shared/models';
+import {IDateRange, parsePredefinedDate} from '../../../shared/models';
 import {isEmpty, uniq} from 'lodash';
 import * as moment from 'moment';
 
@@ -594,7 +594,7 @@ export class DrillDownService {
                     switch (dateRange) {
 
                         case PredefinedDateRanges.allTimes:
-                            const years = this._getCustomYears(parsePredifinedDate(PredefinedDateRanges.allTimes));
+                            const years = this._getCustomYears(parsePredefinedDate(PredefinedDateRanges.allTimes));
                             return years.map(y => {
                                 return {
                                     predefined: null,
