@@ -111,7 +111,7 @@ export class TargetFormModel {
             dueDate: [ms.dueDate],
             responsible: [ms.responsible, Validators.required],
             status: [ms.status || 'due', Validators.required],
-            task: [ms.task, Validators.required, Validators.required],
+            task: [ms.task, Validators.required],
             target: [ms.target]
         });
     }
