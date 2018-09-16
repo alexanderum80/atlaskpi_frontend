@@ -3,5 +3,5 @@ export interface IMilestone {
     task: string;
     dueDate: Date;
     status: string;
-    responsible: string[];
+    responsible: string;
 }

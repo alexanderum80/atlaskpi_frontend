@@ -14,7 +14,6 @@ import { IBasicUser } from '../models/target-user';
 export class TargetScreenService {
 
     targetList: ITarget[];
-    userList: IBasicUser[];
     objectiveList: IListItem[] = [
         { id: 'increase', title: 'Increase' },
         { id: 'decrease', title: 'Decrease' },
@@ -23,6 +22,22 @@ export class TargetScreenService {
     baseOnList: IListItem[];
     displayForField: boolean;
 
+    get userList(): IBasicUser[] {
+        return this._userList;
+    }
+    set userList(users: IBasicUser[]) {
+        this._userList = users;
+        this._userItemList = users.map(u => ({
+            id: u._id,
+            title: `${u.profile.firstName} ${u.profile.lastName}`,
+        }));
+    }
+    get userItemList(): IListItem[] {
+        return this._userItemList;
+    }
+
+    private _userList: IBasicUser[];
+    private _userItemList: IListItem[];
     private _formModel: TargetFormModel;
     private _selected: ITarget;
     private chart: ChartData;
@@ -72,6 +87,10 @@ export class TargetScreenService {
 
     addMilestone() {
         this._formModel.addMilestone();
+    }
+
+    removeMilestone(index: number) {
+        this._formModel.removeMilestone(index);
     }
 
     private getBasedOnList(): IListItem[] {

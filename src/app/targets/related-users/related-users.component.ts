@@ -15,16 +15,9 @@ export class RelatedUsersComponent {
     @Input()
     fg: FormGroupTypeSafe<ITarget>;
     @Input()
-    userList: IBasicUser[];
+    userList: IListItem[];
 
     constructor(private targetScreenService: TargetScreenService) { }
-
-    get userItemList(): IListItem[] {
-        return this.userList.map(u => ({
-            id: u._id,
-            title: `${u.profile.firstName} ${u.profile.lastName}`
-        }));
-    }
 
     addUser() {
         this.targetScreenService.addNewUser();

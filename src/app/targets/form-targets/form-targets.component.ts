@@ -32,7 +32,7 @@ export class FormTargetsComponent {
     @Input()
     baseOnList: IListItem[];
     @Input()
-    userList: IBasicUser[];
+    userList: IListItem[];
     @Input()
     displayForField: boolean;
 

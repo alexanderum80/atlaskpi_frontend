@@ -1,4 +1,4 @@
-div(layout="column")
+.milestone-form(layout="column")
     //- form controls
     div(flex)
         div(layout="row")
@@ -18,7 +18,7 @@ div(layout="column")
                 bw-select-picker(
                     [fg]="fg",
                     field="responsible",
-                    [items]="responsibleList",
+                    [items]="userList",
                     leftIcon="accounts",
                     [multiple]="true",
                     noneSelectedText="Responsible(s)"
