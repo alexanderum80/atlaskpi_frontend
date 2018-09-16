@@ -1,0 +1,9 @@
+mutation CreateTargetNew ($data: TargetNewInput!) {
+  createTargetNew(TargetInput: $data) {
+    success
+    errors {
+      field
+      errors
+    }
+  }
+}

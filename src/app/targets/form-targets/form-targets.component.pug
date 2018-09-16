@@ -20,5 +20,5 @@
         .text-right.w-100
             bw-button.m-r-5(*ngIf="canGoBack()", title="Back", color="blue", [simple]="true", icon="arrow-left", (clicked)="goBack()")  
             bw-button.m-r-5(*ngIf="canGoNext()", title="Next", color="blue", [simple]="true", icon="arrow-right", (clicked)="goNext()")  
-            bw-button.m-r-5(color="blue" title="Save", icon="floppy", class="normal", (clicked)="save()", [disabled]="fg.invalid")
+            bw-button.m-r-5(color="blue" title="Save", icon="floppy", class="normal", (clicked)="save.emit()", [disabled]="fg.invalid")
             bw-button.m-r-5(title="Cancel", color="black", [simple]="true", icon="close", (clicked)="cancel()")

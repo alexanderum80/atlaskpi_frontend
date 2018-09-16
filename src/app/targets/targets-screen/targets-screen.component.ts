@@ -5,12 +5,12 @@ import { filter, map, tap } from 'rxjs/operators';
 
 import { ChartData } from '../../charts/shared';
 import { ITarget } from '../shared/models/target';
-import { TargetScreenService } from '../shared/services/target-screen.service';
-import { ITargetUser } from '../shared/models/targets.model';
 import { IBasicUser } from '../shared/models/target-user';
+import { TargetScreenService } from '../shared/services/target-screen.service';
 
 const targetsQuery = require('graphql-tag/loader!./list-targets.gql');
 const usersQuery = require('graphql-tag/loader!./get-users.query.gql');
+const createTarget = require('graphql-tag/loader!./create-target.mutation.gql');
 
 @Component({
     selector: 'app-targets-screen',
@@ -33,6 +33,14 @@ export class TargetsScreenComponent implements OnInit {
     ngOnInit() {
         this.model.initialize(this.chart);
         this.ready$ = this.loadDependencies();
+    }
+
+    async save() {
+        const res = await this.apollo.mutate({
+            mutation: createTarget,
+            variables: { data: this.model.getData() }
+        }).toPromise();
+        console.log(res);
     }
 
     private loadDependencies() {

@@ -30,30 +30,28 @@ export class TargetFormModel {
             type: t.type,
             unit: t.unit,
             value: t.value,
+            notificationConfig: t.notificationConfig,
+            milestones: t.milestones,
         });
 
-        if (t.notificationConfig.users) {
+        if (t.notificationConfig.users && t.notificationConfig.users.length) {
             const users = this._form.getSafe(f => f.notificationConfig.users) as FormArray;
-            users.controls.splice(0, users.controls.length);
-
             t.notificationConfig.users.forEach(u => {
-                users.controls.push(this.getTargetUserForm(u));
+                users.push(this.getTargetUserForm(u));
             });
         }
 
-        if (t.milestones) {
+        if (t.milestones && t.milestones.length) {
             const milestones = this._form.getSafe(f => f.milestones) as FormArray;
-            milestones.controls.splice(0, milestones.controls.length);
-
             t.milestones.forEach(m => {
-                milestones.controls.push(this.getMilestoneForm(m));
+                milestones.push(this.getMilestoneForm(m));
             });
         }
     }
 
     addUser() {
         const users = this._form.getSafe(f => f.notificationConfig.users) as FormArray;
-        users.controls.push(this.getTargetUserForm(null));
+        users.push(this.getTargetUserForm(null));
     }
 
     removeUser(index: number) {
@@ -63,7 +61,7 @@ export class TargetFormModel {
 
     addMilestone() {
         const milestones = this._form.getSafe(f => f.milestones) as FormArray;
-        milestones.controls.push(this.getMilestoneForm(null));
+        milestones.push(this.getMilestoneForm(null));
     }
 
     removeMilestone(index: number) {
@@ -107,12 +105,10 @@ export class TargetFormModel {
         if (!ms) { ms = {} as any; }
 
         return this.builder.group<IMilestone>({
-            _id: [ms._id],
             dueDate: [ms.dueDate],
             responsible: [ms.responsible, Validators.required],
             status: [ms.status || 'due', Validators.required],
             task: [ms.task, Validators.required],
-            target: [ms.target]
         });
     }
 

@@ -9,5 +9,6 @@ bw-modal(*ngIf="ready$ | async", #targetModal='', size="lg", [openOnInit]="true"
                     [objectiveList]="model.objectiveList",
                     [baseOnList]="model.baseOnList",
                     [userList]="model.userItemList",
-                    [displayForField]="model.displayForField"
+                    [displayForField]="model.displayForField",
+                    (save)="save()"
                 )

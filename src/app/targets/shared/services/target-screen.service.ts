@@ -67,6 +67,33 @@ export class TargetScreenService {
         return this._formModel.form;
     }
 
+    getData() {
+        const v = this._formModel.form.value;
+
+        return {
+            name: v.name,
+            source: {
+                identifier: this.chart._id,
+                type: 'chart'
+            },
+            compareTo: v.compareTo,
+            type: v.type,
+            unit: v.unit,
+            value: +v.value || 0,
+            appliesTo: v.appliesTo,
+            active: v.active,
+            notificationConfig: {
+                users: v.notificationConfig.users.map(u => {
+                    const tu = { identifier: u.identifier, deliveryMethods: [] };
+                    if (u.email) { tu.deliveryMethods.push('email'); }
+                    if (u.push) { tu.deliveryMethods.push('push'); }
+                    return tu;
+                })
+            },
+            milestones: v.milestones,
+        } as ITarget;
+    }
+
     selectTarget(target?: ITarget) {
         if (!target) {
             target = getNewTarget(this.userService.user._id);

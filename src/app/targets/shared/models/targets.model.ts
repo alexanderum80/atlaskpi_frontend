@@ -94,9 +94,7 @@ export interface ITargetNewInput {
 
 
 export interface IMilestone {
-    _id?: string;
     task: string;
-    target: string;
     dueDate: string;
     responsible: string;
     status?: string;

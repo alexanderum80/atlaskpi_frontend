@@ -1,9 +1,0 @@
-mutation createTarget ($data: TargetNewInput!) {
-  createTarget(data: $data) {
-    success
-    errors {
-      field
-      errors
-    }
-  }
-}
