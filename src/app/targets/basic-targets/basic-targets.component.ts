@@ -41,7 +41,7 @@ export class BasicTargetsComponent implements OnInit, OnDestroy {
     }
 
     onOptionSelected(val) {
-        console.log(val);
+        this.fg.getSafe(f => f.unit).setValue(val);
     }
 
     private updateBasedOnVisibility(val) {

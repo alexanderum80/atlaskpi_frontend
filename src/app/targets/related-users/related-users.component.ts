@@ -1,9 +1,8 @@
 import { Component, Input } from '@angular/core';
 
 import { FormGroupTypeSafe } from '../../shared/services';
-import { ITarget } from '../shared/models/target';
-import { IBasicUser } from '../shared/models/target-user';
 import { IListItem } from '../../shared/ui/lists/list-item';
+import { ITarget } from '../shared/models/target';
 import { TargetScreenService } from '../shared/services/target-screen.service';
 
 @Component({

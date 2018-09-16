@@ -31,6 +31,8 @@ export enum DeliveryMethodEnum {
 export interface ITargetUser {
     identifier: string;
     deliveryMethods: DeliveryMethodEnum[];
+    email?: boolean;
+    push?: boolean;
 }
 
 export interface ITargetNotificationConfig {

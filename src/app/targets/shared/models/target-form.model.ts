@@ -21,7 +21,7 @@ export class TargetFormModel {
         }
 
         this._form.patchValueSafe({
-            active: t.active,
+            active: t.active !== undefined ? t.active : true,
             appliesTo: t.appliesTo,
             compareTo: t.compareTo,
             id: t.id,
@@ -75,15 +75,15 @@ export class TargetFormModel {
         this._form = this.builder.group<ITarget>({
             id: [null],
             active: [null, Validators.required],
-            appliesTo: [null, Validators.required],
-            compareTo: [null, Validators.required],
+            appliesTo: [null],
+            compareTo: [null],
             name: [null, Validators.required],
             notificationConfig: this.builder.group<ITargetNotificationConfig>({
                 users: this.builder.array([])
             }),
             source: this.builder.group<ITargetSource>({
-                identifier: [null, Validators.required],
-                type: [null, Validators.required],
+                identifier: [null],
+                type: [null],
             }),
             type: [null, Validators.required],
             unit: [null, Validators.required],
@@ -93,11 +93,13 @@ export class TargetFormModel {
     }
 
     private getTargetUserForm(u: ITargetUser) {
-        if (!u) { u = {} as any; }
+        if (!u) { u = { deliveryMethods: [] } as any; }
 
         return this.builder.group<ITargetUser>({
-            deliveryMethods: [u.deliveryMethods, Validators.required],
-            identifier: [u.identifier, Validators.required]
+            deliveryMethods: [u.deliveryMethods],
+            identifier: [u.identifier, Validators.required],
+            email: [u.deliveryMethods.filter(m => m === 'email').length],
+            push: [u.deliveryMethods.filter(m => m === 'push').length],
         });
     }
 
@@ -107,9 +109,9 @@ export class TargetFormModel {
         return this.builder.group<IMilestone>({
             _id: [ms._id],
             dueDate: [ms.dueDate],
-            responsible: [ms.responsible],
-            status: [ms.status || 'due'],
-            task: [ms.task, Validators.required],
+            responsible: [ms.responsible, Validators.required],
+            status: [ms.status || 'due', Validators.required],
+            task: [ms.task, Validators.required, Validators.required],
             target: [ms.target]
         });
     }
