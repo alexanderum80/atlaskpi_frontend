@@ -2,7 +2,7 @@
 .m-t-15.m-b-15(*ngIf="!fg.valid || !fg.pristine")
     kpi-form-milestone-target([fg]="fg", [index]="index", [userList]="userList")
 
-.milestone-line(*ngIf="fg.valid && fg.pristine", layout="row")
+.milestone-line(*ngIf="fg.valid && fg.pristine", layout="row", layout-align="center center")
     //- status
     div(flex-initial) 
         p.status(class="{{line.status}}") {{ line.status }}
