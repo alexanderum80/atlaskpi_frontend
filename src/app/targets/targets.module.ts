@@ -8,7 +8,6 @@ import { BasicTargetsComponent } from './basic-targets/basic-targets.component';
 import { RelatedUsersComponent } from './related-users/related-users.component';
 import { MilestoneComponent } from './milestone/milestone.component';
 import { MaterialFormsModule, MaterialUserInterfaceModule } from '../ng-material-components';
-import { TargetComponent } from './target/target.component';
 import { SharedModule } from '../shared';
 import { NewMilestonesTargetComponent } from './milestone/new-milestones-target/new-milestones-target.component';
 import { FormMilestoneTargetComponent } from './milestone/form-milestone-target/form-milestone-target.component';
@@ -31,7 +30,6 @@ import { MilestoneItemComponent } from './milestone/milestone-item/milestone-ite
         BasicTargetsComponent,
         RelatedUsersComponent,
         MilestoneComponent,
-        TargetComponent,
         NewMilestonesTargetComponent,
         FormMilestoneTargetComponent,
         TargetsScreenComponent,
