@@ -1,0 +1,31 @@
+.m-l-20.m-r-20.h-100(layout="row", layout-align="top center")
+    .step-1(flex="100", *ngIf="vm.currentStep === 1", layout="column")
+        div(layout="row")
+            div.m-r-40(flex="50") 
+                .title Define your schema
+                .subtitle Good if:
+                p You have your data on paper.
+            div 
+                img.table-image(src="{{ blankTablePath }}", alt="Blank table image", (click)="selectTableType('blank_table')")
+
+        div.p-t-20(layout="row")
+            div.m-r-40(flex="50") 
+                .title Use a predefined format
+                .subtitle Good for:
+                p Account payable,
+                p Account receivable,
+                p Assumptions
+            div 
+                img.table-image(src="{{ tablePath }}", alt="Blank table image", (click)="selectTableType('table')")
+    .step-2(flex="100", *ngIf="vm.currentStep === 2", layout="column")
+        kpi-schema-form([schema]="vm.fg.get('schema')")
+
+    .step-3(flex="100", *ngIf="vm.currentStep === 3", layout="column")
+        kpi-enter-data-form.h-100
+
+.button-panel(layout="row")
+    bw-modal-footer
+        bw-button.m-l-5(icon="arrow-left", title="BACK", color="blue", (clicked)="goBack()", *ngIf="vm.currentStep !== 1 && isEditing === false")
+        bw-button.m-l-5(icon="arrow-right", title="NEXT", color="blue", (clicked)="goNext()", *ngIf="vm.currentStep !== 1 && vm.currentStep !== 3", [disabled]="!isValidForm()")
+        bw-button.m-l-5(icon="floppy", title="SAVE", color="blue", (clicked)="connect()", *ngIf="vm.currentStep === 3", [disabled]="!isValidForm()")
+        bw-button.m-l-5(icon="close", title="CANCEL", [simple]="true", (clicked)="cancel()")

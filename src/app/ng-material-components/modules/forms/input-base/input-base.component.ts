@@ -140,7 +140,7 @@ export class InputBase {
 
     private _processControl(field: string): void {
         const that: InputBase = this;
-        const pathTokens: string[] = field.split('.');
+        const pathTokens: string[] = field.toString().split('.');
         // the latest element is the array indicates the control name so I should
         // not process it
         const fieldName: string = pathTokens.pop() || '';
@@ -159,7 +159,7 @@ export class InputBase {
             this.value = '';
         }
 
-        this.control = this.fg.get(this.field) as ControlWithType;
+        this.control = this.fg.get(this.field.toString()) as ControlWithType;
 
         if (!this.control) {
             const validators: any = this._getValidators();

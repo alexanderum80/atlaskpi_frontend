@@ -45,6 +45,7 @@ const visibleToRoles = ['owner', 'admin', 'semi-admin'];
 })
 export class HeaderComponent implements OnInit, OnDestroy {
     @Input() sideBarOpen = true;
+    @Input() showHelpCenter = false;
     @ViewChild(UserProfileComponent) editUserProfileModal: UserProfileComponent;
     fg = new FormGroup({});
     showSidebarCalendar = false;
@@ -102,7 +103,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     currentUser: IUserInfo;
     newVersion: IVersion;
-    showHelpCenter = false;
+    // showHelpCenter = false;
     showActivityIcon = false;
     value = false;
     showSearchPage = false;

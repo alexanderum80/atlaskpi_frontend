@@ -1,0 +1,3 @@
+query DataSourceCollection($name: String!) {
+  dataSourceCollection(name: $name) 
+}

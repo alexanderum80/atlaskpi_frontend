@@ -60,6 +60,7 @@ export class ChangeSettingsOnFlyComponent implements OnInit, AfterViewInit {
         // this.fg.valueChanges.subscribe(() => {
         //     this.isChangedValue = this.changedValue() && this.fg.valid;
         // });
+        // this.chartType = this.chartData.chartDefinition.chart.type;
     }
 
     updateChart() {
@@ -104,8 +105,11 @@ export class ChangeSettingsOnFlyComponent implements OnInit, AfterViewInit {
             from: value.from,
             to: value.to
         };
+        
+        this._getValueFromChart();
 
-        this._chartViewComponent.setSettingsOnFly(value.predefinedDateRange, dateRange, value.frequency, value.groupings);
+        this._chartViewComponent.setSettingsOnFly(value.predefinedDateRange, dateRange,
+             value.frequency, value.groupings);
     }
 
     /**
