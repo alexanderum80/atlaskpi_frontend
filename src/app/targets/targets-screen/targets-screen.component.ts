@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
+import SweetAlert from 'sweetalert2';
 
 import { ChartData } from '../../charts/shared';
 import { ModalComponent } from '../../ng-material-components';
@@ -66,15 +67,26 @@ export class TargetsScreenComponent implements OnInit {
         delete data._id;
 
         const res = await this.apollo.mutate({ mutation, variables }).toPromise();
+        const result = data._id ? res.data.updateTargetNew : res.data.createTargetNew;
 
-        if (res.data.createTargetNew.success) {
-            this.model.updateNewModel(res.data.createTargetNew.entity._id);
+        if (res.data.createTargetNew && res.data.createTargetNew.success) {
+            this.model.updateNewModel(result.entity._id);
         }
+
+        SweetAlert({
+            title: 'Confirmation',
+            text: `All changes have been saved`,
+            type: 'warning',
+            showConfirmButton: true
+        });
 
     }
 
     async remove(target: ITarget) {
-        // this.targetService.removeTarget(target);
+        const confirmed = await this.confirmRemoval();
+
+        if (!confirmed) { return; }
+
         const res = await this.apollo.mutate({ mutation: removeTarget, variables: { id: target._id } })
             .toPromise();
         this.model.removeTarget(target);
@@ -112,5 +124,17 @@ export class TargetsScreenComponent implements OnInit {
             }),
             map(_ => true),
         );
+    }
+
+    private async confirmRemoval(): Promise<boolean> {
+        const res = await SweetAlert({
+            title: 'Are you sure?',
+            text: `You are about to lose the changes you made to the current target. Do you want to continue?`,
+            type: 'warning',
+            showConfirmButton: true,
+            showCancelButton: true
+        });
+
+        return res.value;
     }
 }

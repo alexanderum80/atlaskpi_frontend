@@ -112,7 +112,7 @@ export class TargetScreenService {
             milestones: v.milestones.map(m => ({
                 task: m.task,
                 dueDate: new Date(m.dueDate).toISOString() as any,
-                responsible: m.responsible.toString().split('|'),
+                responsible: typeof m.responsible === 'string' ? (<string>m.responsible).split('|') : m.responsible,
                 status: m.status
             })),
         } as ITarget;

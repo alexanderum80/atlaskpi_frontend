@@ -4,6 +4,7 @@
         padding: 15px;
         line-height: normal;
         font-size: 14px;
+        overflow-y: auto;
 
         &.selected { background-color: white; }
     }

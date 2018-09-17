@@ -36,7 +36,8 @@ export class TargetFormModel {
 
         // clean users form array
         const users = this._form.getSafe(f => f.notificationConfig.users) as FormArray;
-        for (let i = 0; i < users.length; i++) {
+        const userCount = users.length;
+        for (let i = 0; i < userCount; i++) {
             users.removeAt(0);
         }
 
@@ -48,7 +49,8 @@ export class TargetFormModel {
 
         // clean milestones
         const milestones = this._form.getSafe(f => f.milestones) as FormArray;
-        for (let i = 0; i < milestones.length; i++) {
+        const milestoneCount = milestones.length;
+        for (let i = 0; i < milestoneCount; i++) {
             milestones.removeAt(0);
         }
 
