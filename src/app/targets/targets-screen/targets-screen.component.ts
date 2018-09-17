@@ -13,12 +13,12 @@ const targetsQuery = require('graphql-tag/loader!./list-targets.gql');
 const usersQuery = require('graphql-tag/loader!./get-users.query.gql');
 const createTarget = require('graphql-tag/loader!./create-target.mutation.gql');
 const updateTarget = require('graphql-tag/loader!./update-target.mutation.gql');
+const removeTarget = require('graphql-tag/loader!./remove-target.mutation.gql');
 
 @Component({
     selector: 'app-targets-screen',
     templateUrl: './targets-screen.component.pug',
     styleUrls: ['./targets-screen.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [ TargetScreenService ],
 })
 export class TargetsScreenComponent implements OnInit {
@@ -47,6 +47,18 @@ export class TargetsScreenComponent implements OnInit {
         this.closed.emit();
     }
 
+    cancel() {
+        if (this.model.form.dirty) {
+            if (this.model.form.value._id) {
+                this.model.selectTarget(this.model.selected);
+            } else {
+                this.model.form.reset();
+            }
+        } else {
+            this.modal.close();
+        }
+    }
+
     async save() {
         const data = this.model.getData();
         const mutation = data._id ? updateTarget : createTarget;
@@ -54,6 +66,18 @@ export class TargetsScreenComponent implements OnInit {
         delete data._id;
 
         const res = await this.apollo.mutate({ mutation, variables }).toPromise();
+
+        if (res.data.createTargetNew.success) {
+            this.model.updateNewModel(res.data.createTargetNew.entity._id);
+        }
+
+    }
+
+    async remove(target: ITarget) {
+        // this.targetService.removeTarget(target);
+        const res = await this.apollo.mutate({ mutation: removeTarget, variables: { id: target._id } })
+            .toPromise();
+        this.model.removeTarget(target);
     }
 
     private loadDependencies() {

@@ -12,7 +12,7 @@ import { InputBase } from '../input-base/input-base.component';
     selector: 'bw-checkbox',
     template: `
         <div class="checkbox m-b-25" [class.fc-alt]="alt">
-            <label style="padding-top: 8px;">
+            <label>
                 <input class="form-control" type="checkbox" [formControl]="control" [disabled]="disabled"/>
                 <i class="input-helper"></i>{{label}}
             </label>

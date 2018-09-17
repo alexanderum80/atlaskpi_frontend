@@ -9,7 +9,6 @@ import { ITarget, TargetTypeEnum } from '../shared/models/target';
     selector: 'app-basic-targets',
     templateUrl: './basic-targets.component.pug',
     styleUrls: ['./basic-targets.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BasicTargetsComponent implements OnInit, OnDestroy {
     @Input()
@@ -42,6 +41,10 @@ export class BasicTargetsComponent implements OnInit, OnDestroy {
 
     onOptionSelected(val) {
         this.fg.getSafe(f => f.unit).setValue(val);
+    }
+
+    get activeVisible(): boolean {
+        return !this.fg.value._id ? false : true;
     }
 
     private updateBasedOnVisibility(val) {

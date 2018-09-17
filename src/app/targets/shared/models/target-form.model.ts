@@ -34,25 +34,25 @@ export class TargetFormModel {
             milestones: t.milestones,
         });
 
+        // clean users form array
+        const users = this._form.getSafe(f => f.notificationConfig.users) as FormArray;
+        for (let i = 0; i < users.length; i++) {
+            users.removeAt(0);
+        }
+
         if (t.notificationConfig.users && t.notificationConfig.users.length) {
-            const users = this._form.getSafe(f => f.notificationConfig.users) as FormArray;
-
-            for (let i = 0; i < users.length; i++) {
-                users.removeAt(0);
-            }
-
             t.notificationConfig.users.forEach(u => {
                 users.push(this.getTargetUserForm(u));
             });
         }
 
+        // clean milestones
+        const milestones = this._form.getSafe(f => f.milestones) as FormArray;
+        for (let i = 0; i < milestones.length; i++) {
+            milestones.removeAt(0);
+        }
+
         if (t.milestones && t.milestones.length) {
-            const milestones = this._form.getSafe(f => f.milestones) as FormArray;
-
-            for (let i = 0; i < milestones.length; i++) {
-                milestones.removeAt(0);
-            }
-
             t.milestones.forEach(m => {
                 milestones.push(this.getMilestoneForm(m));
             });

@@ -1,11 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-import { ListTargetsViewModel } from './list-targets.viewmodel';
+import { MenuItem } from '../../ng-material-components';
+import { FormGroupTypeSafe } from '../../shared/services';
 import { ITarget } from '../shared/models/target';
 import { TargetScreenService } from '../shared/services/target-screen.service';
-import { MenuItem } from '../../ng-material-components';
-
-const targesDelete = require('graphql-tag/loader!./delete-target.gql');
+import { ListTargetsViewModel } from './list-targets.viewmodel';
 
 @Component({
     selector: 'app-list-targets',
@@ -18,24 +17,20 @@ export class ListTargetsComponent {
     targetList: ITarget[];
     @Input()
     selected: ITarget;
+    @Input()
+    fg: FormGroupTypeSafe<ITarget>;
+
+    @Output()
+    remove = new EventEmitter<ITarget>();
 
     constructor(private targetService: TargetScreenService) { }
 
-    targetActionList: MenuItem[] = [{
-        id: 'more',
-        icon: 'more-vert',
-        children: [{
-                id: 'edit',
-                icon: 'edit',
-                title: 'Edit'
-            },
-            {
-                id: 'delete',
-                icon: 'delete',
-                title: 'Delete'
-            }
-        ]
-    }];
+    targetActionList: MenuItem[] = [
+        {
+            id: 'delete',
+            icon: 'delete',
+        }
+    ];
 
     add() {
         this.targetService.addTarget();
@@ -45,8 +40,10 @@ export class ListTargetsComponent {
         this.targetService.selectTarget(item);
     }
 
-    actionClicked(action) {
-
+    actionClicked(action, target) {
+        if (action.id === 'delete') {
+            this.remove.emit(target);
+        }
     }
 
 

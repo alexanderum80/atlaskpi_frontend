@@ -6,33 +6,11 @@
 
     .m-t-10(*ngIf="targetList", flex)
         .target-item(*ngFor="let item of targetList", [class.selected]="selected === item", layout="row", (click)="select(item)")
-            //- image
-            .m-l-10(flex-initial)
-                img.m-t-10(*ngIf="item.imagePath", [src]="item.imagePath", [style.height.px]="35")
             //- title & subtitle
             div(flex, style="margin: auto;")
-                h2.title {{ item.name }}
+                h2.title {{ selected === item ? fg.value.name : item.name }}
             div(flex-initial)
-                bw-actions([actionItems]="targetActionList", (actionClicked)="actionClicked($event)")
-
-            //- kpi-list-item-tabular.w-100.m-r-40(
-            //-     [item]="item",
-            //-     [actionItems]="targetActions",
-            //-     [tableRowTemplate]="tableItem",
-            //-     (click)="itemClicked(item)",
-            //-     (actionClicked)="actionClicked($event)"
-            //- )
+                bw-actions([actionItems]="targetActionList", (actionClicked)="actionClicked($event, item)")
 
     button.btn.btn-float.waves-effect.bgm-blue((click)="add()")
         i.zmdi.zmdi-plus
-
-//- ng-template(#tableItem, let-item="item")
-//-     //- image
-//-     .m-l-10(flex-initial)
-//-         img.m-t-10(*ngIf="item.imagePath", [src]="item.imagePath", [style.height.px]="35")
-//-     //- title & subtitle
-//-     div(flex)
-//-         .m-t-10.m-l-10 
-//-             h2.title {{ item.name }}
-//-             small {{ item.dueDate }}
-    

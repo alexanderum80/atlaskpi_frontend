@@ -1,4 +1,8 @@
 div(layout="column")
+    .m-t-15(flex, layout="row", layout-align="end center")
+        div(flex-initial)
+            //- bw-toggle(*ngIf="activeVisible", [fg]="fg", field="active", color="green", label="Active")
+            bw-checkbox(*ngIf="activeVisible", [fg]="fg", field="active", label="Active")
     //- name
     div(flex)
         bw-text-box([fg]="fg", field="name", label="Name", leftIcon="local-offer")   
@@ -24,7 +28,7 @@ div(layout="column")
         .text-center.m-t-10(flex="20")
             bw-number.m-r-20([fg]="fg", field="value", label="Value", leftIcon="edit")   
             
-        .m-t-15.m-l-10.text-center(flex-initial)
+        .m-t-35.m-l-10.text-center(flex-initial)
             bw-button-group([options]="valueOptions", type="default", [activeOption]="fg.controls['unit'].value", (optionSelected)="onOptionSelected($event)")
     
     .m-t-15(flex, layout="row")
@@ -37,7 +41,3 @@ div(layout="column")
                 leftIcon="calendar-alt",
                 noneSelectedText="{{nodoSelectedTextCompareTo || 'NOTHING SELECTED'}}"
             )
-
-    .m-t-15(flex, layout="row")
-        div(flex="50")
-            bw-toggle(*ngIf="activeVisible", [fg]="fg", field="active", color="green", label="Active")

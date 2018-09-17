@@ -8,7 +8,6 @@ import { ITarget } from '../shared/models/target';
     selector: 'app-form-targets',
     templateUrl: './form-targets.component.pug',
     styleUrls: ['./form-targets.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormTargetsComponent {
     @Input()
@@ -24,6 +23,9 @@ export class FormTargetsComponent {
 
     @Output()
     save = new EventEmitter();
+
+    @Output()
+    cancel = new EventEmitter();
 
     private _pageCount = 3;
     private _selectedPage = 1;

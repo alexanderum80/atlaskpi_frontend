@@ -9,6 +9,7 @@ import { getNewTarget, ITarget } from '../models/target';
 import { TargetFormModel } from '../models/target-form.model';
 import { FrequencyEnum } from '../../../shared/models';
 import { IBasicUser } from '../models/target-user';
+import { select } from 'async';
 
 
 @Injectable()
@@ -126,6 +127,17 @@ export class TargetScreenService {
     removeTarget(target: ITarget) {
         const idx = this.targetList.findIndex(t => t === target);
         this.targetList.splice(idx, 1);
+
+        if (this.selected === target) {
+            this.form.reset();
+
+            if (this.targetList.length > 0) {
+                this._selected = this.targetList[0];
+                this._formModel.update(this._selected);
+            } else {
+                this.addTarget();
+            }
+        }
     }
 
     async selectTarget(target?: ITarget) {
@@ -133,12 +145,17 @@ export class TargetScreenService {
 
         if (this.form.dirty) {
             const result = await this.confirmFormReset();
-            this.form.reset();
-            if (!this.form.valid) {
+            if (!result) { return; }
+
+            // remove target if it is new
+            if (!this.form.value._id) {
                 this.removeTarget(this.selected);
+            } else {
+                // restore original values
+                this._formModel.update(this.selected);
+                this.form.markAsPristine();
             }
 
-            if (!result) { return; }
         }
 
         const t = this.targetList.find(i => i === target);
@@ -160,6 +177,14 @@ export class TargetScreenService {
 
     removeMilestone(index: number) {
         this._formModel.removeMilestone(index);
+    }
+
+    updateNewModel(id: string) {
+        this._formModel.form.getSafe(f => f._id).setValue(id);
+        const target = this.targetList.find(t => t === this.selected);
+        Object.assign(target, this._formModel.form.value);
+        this._formModel.form.markAsPristine();
+        this.selectTarget(target);
     }
 
     private getBasedOnList(): IListItem[] {
