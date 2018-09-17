@@ -31,6 +31,3 @@
                 bw-button.m-t-20(color="blue", title="Save", [simple]="true", icon="floppy", (clicked)="save()", [disabled]="!fg.valid")
             div(flex-initial)
                 bw-button.m-t-20(title="Cancel", color="black", [simple]="true", icon="close", (clicked)="cancel()")
-    //- data
-    div(flex)
-        pre(style="line-height: normal;") {{ fg.value | json }}

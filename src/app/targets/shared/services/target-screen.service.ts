@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { isEmpty } from 'lodash';
+import SweetAlert from 'sweetalert2';
 
 import { ChartData } from '../../../charts/shared';
 import { FormBuilderTypeSafe, FormGroupTypeSafe, UserService } from '../../../shared/services';
@@ -71,6 +72,7 @@ export class TargetScreenService {
         const v = this._formModel.form.value;
 
         return {
+            _id: v._id,
             name: v.name,
             source: {
                 identifier: this.chart._id,
@@ -79,9 +81,9 @@ export class TargetScreenService {
             compareTo: v.compareTo,
             type: v.type,
             unit: v.unit,
-            value: +v.value || 0,
+            value: +(v.value.toString().replace(',', '')) || 0,
             appliesTo: v.appliesTo,
-            active: v.active,
+            active: Boolean(v.active),
             notificationConfig: {
                 users: v.notificationConfig.users.map(u => {
                     const tu = { identifier: u.identifier, deliveryMethods: [] };
@@ -94,12 +96,31 @@ export class TargetScreenService {
         } as ITarget;
     }
 
-    selectTarget(target?: ITarget) {
-        if (!target) {
-            target = getNewTarget(this.userService.user._id);
+    addTarget() {
+        const newTarget = getNewTarget(this.userService.user._id);
+        this.targetList.push(newTarget);
+        this.selectTarget(newTarget);
+    }
+
+    removeTarget(target: ITarget) {
+        const idx = this.targetList.findIndex(t => t === target);
+        this.targetList.splice(idx, 1);
+    }
+
+    async selectTarget(target?: ITarget) {
+        if (!target) { return; }
+
+        if (this.form.dirty) {
+            const result = await this.confirmFormReset();
+            this.form.reset();
+            if (!this.form.valid) {
+                this.removeTarget(this.selected);
+            }
+
+            if (!result) { return; }
         }
 
-        const t = this.targetList.find(i => i.id === target.id);
+        const t = this.targetList.find(i => i === target);
         this._selected = t;
         this._formModel.update(target);
     }
@@ -150,6 +171,18 @@ export class TargetScreenService {
                     ];
             }
         }
+    }
+
+    private async confirmFormReset(): Promise<boolean> {
+        const res = await SweetAlert({
+            title: 'Are you sure?',
+            text: `You are about to lose the changes you made to the current target. Do you want to continue?`,
+            type: 'warning',
+            showConfirmButton: true,
+            showCancelButton: true
+        });
+
+        return res.value;
     }
 
 }

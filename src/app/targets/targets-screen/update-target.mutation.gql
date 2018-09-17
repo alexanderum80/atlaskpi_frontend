@@ -4,10 +4,6 @@ mutation UpdateTarget($_id: String!, $data: TargetNewInput!) {
         entity {
             _id
             name
-            kpi
-            compareTo
-            recurrent
-            type
         }
     }
 }

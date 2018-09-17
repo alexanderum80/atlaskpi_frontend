@@ -40,7 +40,7 @@ export interface ITargetNotificationConfig {
 }
 
 export interface ITarget {
-    id?: string;
+    _id?: string;
     name: string;
     source: ITargetSource;
     compareTo: string;
@@ -53,12 +53,16 @@ export interface ITarget {
     milestones?: IMilestone[];
 }
 
+export interface ISelectableTarget extends ITarget {
+    selected: boolean;
+}
+
 export function getNewTarget(userId: string) {
     return {
         active: true,
         appliesTo: null,
         compareTo: null,
-        id: null,
+        _id: null,
         name: null,
         period: null,
         recurrent: false,

@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { ListTargetsViewModel } from './list-targets.viewmodel';
 import { ITarget } from '../shared/models/target';
+import { TargetScreenService } from '../shared/services/target-screen.service';
+import { MenuItem } from '../../ng-material-components';
 
 const targesDelete = require('graphql-tag/loader!./delete-target.gql');
 
@@ -12,11 +14,35 @@ const targesDelete = require('graphql-tag/loader!./delete-target.gql');
     providers: [ListTargetsViewModel],
 })
 export class ListTargetsComponent {
+    @Input()
     targetList: ITarget[];
-    targetActionList: string[];
+    @Input()
+    selected: ITarget;
 
-    itemClicked(item) {
+    constructor(private targetService: TargetScreenService) { }
 
+    targetActionList: MenuItem[] = [{
+        id: 'more',
+        icon: 'more-vert',
+        children: [{
+                id: 'edit',
+                icon: 'edit',
+                title: 'Edit'
+            },
+            {
+                id: 'delete',
+                icon: 'delete',
+                title: 'Delete'
+            }
+        ]
+    }];
+
+    add() {
+        this.targetService.addTarget();
+    }
+
+    select(item: ITarget) {
+        this.targetService.selectTarget(item);
     }
 
     actionClicked(action) {

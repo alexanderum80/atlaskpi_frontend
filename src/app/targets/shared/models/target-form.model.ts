@@ -24,7 +24,7 @@ export class TargetFormModel {
             active: t.active !== undefined ? t.active : true,
             appliesTo: t.appliesTo,
             compareTo: t.compareTo,
-            id: t.id,
+            _id: t._id,
             name: t.name,
             source: t.source,
             type: t.type,
@@ -36,6 +36,11 @@ export class TargetFormModel {
 
         if (t.notificationConfig.users && t.notificationConfig.users.length) {
             const users = this._form.getSafe(f => f.notificationConfig.users) as FormArray;
+
+            for (let i = 0; i < users.length; i++) {
+                users.removeAt(0);
+            }
+
             t.notificationConfig.users.forEach(u => {
                 users.push(this.getTargetUserForm(u));
             });
@@ -43,6 +48,11 @@ export class TargetFormModel {
 
         if (t.milestones && t.milestones.length) {
             const milestones = this._form.getSafe(f => f.milestones) as FormArray;
+
+            for (let i = 0; i < milestones.length; i++) {
+                milestones.removeAt(0);
+            }
+
             t.milestones.forEach(m => {
                 milestones.push(this.getMilestoneForm(m));
             });
@@ -71,7 +81,7 @@ export class TargetFormModel {
 
     private buildForm() {
         this._form = this.builder.group<ITarget>({
-            id: [null],
+            _id: [null],
             active: [null, Validators.required],
             appliesTo: [null],
             compareTo: [null],

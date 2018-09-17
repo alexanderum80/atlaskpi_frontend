@@ -76,7 +76,8 @@ export class MilestoneItemComponent implements OnInit, OnDestroy {
     }
 
     get responsibleList(): string[] {
-        return this.line.responsible.split('|').map(r => {
+        const list = typeof(this.line.responsible) === 'string' ? this.line.responsible.split('|') : this.line.responsible;
+        return list.map(r => {
             const user = this.targetService.userList.find(u => u._id === r);
             return `${user.profile.firstName} ${user.profile.lastName}`;
         });

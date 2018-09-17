@@ -781,9 +781,9 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     onCloseTargets(event): void {
-        if (event['click'] === 'cancel') {
-            this.targetsVisible = false;
-        }
+        // if (event['click'] === 'cancel') {
+        this.targetsVisible = false;
+        // }
 
         const refresh = {
             refresh: true,
