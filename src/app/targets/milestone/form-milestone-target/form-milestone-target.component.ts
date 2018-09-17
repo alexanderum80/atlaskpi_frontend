@@ -17,6 +17,11 @@ export class FormMilestoneTargetComponent implements OnInit {
     @Input()
     index: number;
 
+    datePickerConfig = {
+        showGoToCurrent: false,
+        format: 'MM/DD/YYYY'
+    };
+
     private milestone: IMilestone;
 
     constructor(private targetService: TargetScreenService) { }

@@ -115,7 +115,7 @@ export class TargetFormModel {
         if (!ms) { ms = {} as any; }
 
         return this.builder.group<IMilestone>({
-            dueDate: [ms.dueDate],
+            dueDate: [!ms.dueDate ? null : new Date(ms.dueDate).toLocaleDateString('en-US')],
             responsible: [ms.responsible, Validators.required],
             status: [ms.status || 'due', Validators.required],
             task: [ms.task, Validators.required],

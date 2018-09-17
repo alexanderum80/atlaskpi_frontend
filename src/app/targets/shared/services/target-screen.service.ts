@@ -14,7 +14,23 @@ import { IBasicUser } from '../models/target-user';
 @Injectable()
 export class TargetScreenService {
 
-    targetList: ITarget[];
+    private _targetList: ITarget[];
+    set targetList(val: ITarget[]) {
+        // val.map(t => {
+        //     if (t.milestones) {
+        //         t.milestones.forEach(m => {
+        //             if (m.dueDate) {
+        //                 m.dueDate = new Date(m.dueDate);
+        //             }
+        //         });
+        //     }
+        // });
+        this._targetList = val;
+    }
+    get targetList(): ITarget[] {
+        return this._targetList;
+    }
+
     objectiveList: IListItem[] = [
         { id: 'increase', title: 'Increase' },
         { id: 'decrease', title: 'Decrease' },
@@ -92,7 +108,12 @@ export class TargetScreenService {
                     return tu;
                 })
             },
-            milestones: v.milestones,
+            milestones: v.milestones.map(m => ({
+                task: m.task,
+                dueDate: new Date(m.dueDate).toISOString() as any,
+                responsible: m.responsible.toString().split('|'),
+                status: m.status
+            })),
         } as ITarget;
     }
 

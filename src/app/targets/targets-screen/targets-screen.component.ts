@@ -65,6 +65,7 @@ export class TargetsScreenComponent implements OnInit {
             }),
             this.apollo.query<{ allUsers: IBasicUser[] }>({
                 query: usersQuery,
+                fetchPolicy: 'network-only',
             }),
         ).pipe(
             filter(([targets, users]) => {

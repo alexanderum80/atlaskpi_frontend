@@ -95,7 +95,7 @@ export interface ITargetNewInput {
 
 export interface IMilestone {
     task: string;
-    dueDate: string;
-    responsible: string;
+    dueDate: Date;
+    responsible: string[];
     status?: string;
 }
