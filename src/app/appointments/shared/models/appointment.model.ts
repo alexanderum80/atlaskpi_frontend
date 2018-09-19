@@ -1,4 +1,4 @@
-import { IEntity } from './../../../activities/shared/models/activity-models';
+import { IEntity } from '../../../activities/shared/models/activity-models';
 
 // export interface IAppointment {
 //     _id: string;

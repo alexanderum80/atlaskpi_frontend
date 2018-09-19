@@ -6,10 +6,10 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { ModalComponent } from '../../ng-material-components';
 import { RoleFormComponent } from '../role-form/role-form.component';
-import { RoleModel } from '../shared/models/index';
+import { RoleModel } from '../shared/models';
 import { RolesService } from '../shared/services/roles.service';
 import { addRoleApi } from './graphqlActions/add-role.actions';
-import { IRole } from '../../users/shared/index';
+import { IRole } from '../../users/shared';
 import { ApolloService } from '../../shared/services/apollo.service';
 import Sweetalert from 'sweetalert2';
 

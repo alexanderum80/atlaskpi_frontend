@@ -1,4 +1,4 @@
-import { CommonService } from '../../shared/services/index';
+import { CommonService } from '../../shared/services';
 import {
   Component,
   OnInit,

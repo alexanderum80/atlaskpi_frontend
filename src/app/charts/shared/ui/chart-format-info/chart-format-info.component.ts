@@ -3,7 +3,7 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChil
 import { FormGroup } from '@angular/forms';
 
 import { SelectionItem, ModalComponent } from '../../../../ng-material-components';
-import { ChartGalleryService } from '../../services/index';
+import { ChartGalleryService } from '../../services';
 
 import { predefinedColors, Colors, labelItems } from './material-colors';
 

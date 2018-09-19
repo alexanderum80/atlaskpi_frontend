@@ -7,7 +7,7 @@ import { ViewModel } from '../../ng-material-components/viewModels/view-model';
 import { AddressViewModel } from '../../shared/view-models/address.viewmodel';
 import { IEmploymentInfo, IEmployee } from '../../employees/shared/models/employee.model';
 import { UserProfileViewModel } from '../user-profile/user-profile.viewmodel';
-import { IUser, IUserProfile, IUserEmail, IUserNotifications, IUserPreference, IUserProfileData } from '../shared/index';
+import { IUser, IUserProfile, IUserEmail, IUserNotifications, IUserPreference, IUserProfileData } from '../shared';
 import { generateTimeZoneOptions } from '../../shared/helpers/timezone.helper';
 
 // Yojanier

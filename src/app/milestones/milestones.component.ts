@@ -1,4 +1,4 @@
-import { IUserInfo } from '../shared/models/index';
+import { IUserInfo } from '../shared/models';
 import { ViewMilestoneActivity } from '../shared/authorization/activities/milestones/view-milestone.activity';
 import {
     Component,

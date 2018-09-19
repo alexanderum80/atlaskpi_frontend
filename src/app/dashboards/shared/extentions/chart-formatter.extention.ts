@@ -246,8 +246,6 @@ function tooltip_point_percentaje_total_formatter(stack?: string) {
         let calculateComparison;
         let nonTargetPointCount = 0;
 
-        console.log('percent method');
-
         this.points.forEach(point => {
             if (point.series.userOptions.type !== 'spline') {
                 total += point.y;

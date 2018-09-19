@@ -1,6 +1,6 @@
 
 import { IListItem } from './list-item';
-import { MenuItem } from '../../../ng-material-components/index';
+import { MenuItem } from '../../../ng-material-components';
 
 export interface IActionItemClickedArgs {
     item: IListItem;

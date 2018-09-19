@@ -1,6 +1,0 @@
-query TargetAmount($input: TargetAmountInput) {
-    targetAmount(input: $input) {
-        amount
-        met
-    }
-}

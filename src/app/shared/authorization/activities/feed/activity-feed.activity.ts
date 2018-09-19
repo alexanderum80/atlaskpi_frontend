@@ -1,4 +1,4 @@
-import { IUserInfo } from '../../../models/index';
+import { IUserInfo } from '../../../models';
 import { ActionsMap } from '../../permissions/actions.map';
 import { SubjectEnum } from '../../permissions/all-permission-subjects';
 import { IActivity } from '../../activity';

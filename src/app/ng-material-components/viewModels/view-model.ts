@@ -9,7 +9,7 @@ import { DecoratorType } from './decorator-type.enum';
 import { FieldValidationErrors } from './field-validation-errors';
 import { IFieldDecoratorConfig } from './field.decorator';
 import { ISubscriptionInfo, IViewModelMetadata } from './view-model-metadata';
-import { UserService } from '../../shared/services/index';
+import { UserService } from '../../shared/services';
 
 const JavascriptTypes = ['string', 'number', 'boolean'];
 

@@ -3,7 +3,7 @@ import { UsersService } from '../../users/shared/services';
 import { MilestoneModel } from '../shared/models/milestone.model';
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { IMilestone } from '../shared/milestones.interface';
-import { Apollo } from 'apollo-angular/';
+import { Apollo } from 'apollo-angular';
 import { FormGroup } from '@angular/forms';
 import { MilestoneService } from '../shared/services/milestone.service';
 import { ModalComponent, SelectionItem } from '../../ng-material-components';

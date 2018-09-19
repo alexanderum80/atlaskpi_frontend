@@ -37,7 +37,9 @@ import {
     StoreHelper,
     TimezoneService,
     UserService,
-    PaginationService
+    PaginationService,
+    FormBuilderTypeSafe,
+    DateService
 } from './services';
 
 import { CollapsableComponent } from './ui/collapsable/collapsable.component';
@@ -112,7 +114,8 @@ import { FileInputComponent } from './ui/file-input/file-input.component';
         TagsComponent,
         FileInputComponent,
         // pipes
-        MomentFormatPipe
+        MomentFormatPipe,
+        ListItemTabularComponent
     ],
     providers: [
         ApiService,
@@ -131,7 +134,9 @@ import { FileInputComponent } from './ui/file-input/file-input.component';
         PaginationService,
         ApolloService,
         SelectPickerService,
-        FileUploadClientService
+        FileUploadClientService,
+        FormBuilderTypeSafe,
+        DateService,
     ],
 })
 export class SharedModule { }

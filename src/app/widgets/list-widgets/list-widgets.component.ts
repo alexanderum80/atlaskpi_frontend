@@ -4,10 +4,10 @@ import { ViewWidgetActivity } from '../../shared/authorization/activities/widget
 import { Activity } from '../../shared/authorization/decorators/component-activity.decorator';
 import { AddWidgetActivity } from '../../shared/authorization/activities/widgets/add-widget.activity';
 import { ListWidgetsViewModel } from './list-widgets.viewmodel';
-import { ItemAction } from './../../shared/models/item-action';
+import { ItemAction } from '../../shared/models/item-action';
 import { Subscription } from 'rxjs/Subscription';
-import { IMutationResponse } from './../../shared/models/mutation-response';
-import { IWidget, WidgetSizeEnum, WidgetSizeMap } from './../shared/models/widget.models';
+import { IMutationResponse } from '../../shared/models/mutation-response';
+import { IWidget, WidgetSizeEnum, WidgetSizeMap } from '../shared/models/widget.models';
 import { widgetsGraphqlActions } from '../shared/graphql/widgets.graphql-actions';
 import { Apollo } from 'apollo-angular';
 import { Router } from '@angular/router';
