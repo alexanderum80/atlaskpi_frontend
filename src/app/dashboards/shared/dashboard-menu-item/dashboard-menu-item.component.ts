@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
-import { MenuService } from '../../shared/services/menu.service';
+import { MenuService } from '../services/menu.service';
 import { MenuItem } from '../models/menu-item.model';
 
 @Component({

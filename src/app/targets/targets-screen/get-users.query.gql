@@ -1,0 +1,10 @@
+query AllUsers {
+    allUsers {
+        _id
+        username
+        profile {
+            firstName
+            lastName
+        }
+    }
+}

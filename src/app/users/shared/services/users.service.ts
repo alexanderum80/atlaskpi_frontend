@@ -1,5 +1,5 @@
 
-import { IPermission } from '../../../permissions/shared/models/index';
+import { IPermission } from '../../../permissions/shared/models';
 import { FormGroup } from '@angular/forms';
 import { INewUser } from '../models';
 import { ApolloQueryResult } from 'apollo-client';

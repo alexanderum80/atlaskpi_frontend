@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { ViewModel } from '../../../../ng-material-components/viewModels/view-model';
-import { IUserInfo } from '../../../../shared/models/index';
+import { IUserInfo } from '../../../../shared/models';
 import { UserService } from '../../../../shared/services/user.service';
 import { Injectable } from '@angular/core';
 import introJs from 'intro.js/intro.js';

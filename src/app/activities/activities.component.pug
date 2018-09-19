@@ -3,8 +3,6 @@
     a ACTIVITY FEED
 
   .activity-feed-body
-    div(*ngIf="vm.isThereYesterdayTarget")
-      kpi-targets-activity(*ngFor="let target of vm.yesterdayTarget", [target]="target")
     div(*ngIf="vm.isThereUserActivity")
       kpi-users-activity([activity]="activity", *ngFor="let activity of vm.usersActivity")
     kpi-trends-sales-activity(*ngIf="vm.isThereLastMonthSales && vm.isThereMonthAvgSales", [lastMonthSales]="vm.lastMonthSales", [monthAvgSales]="vm.monthAvgSales")

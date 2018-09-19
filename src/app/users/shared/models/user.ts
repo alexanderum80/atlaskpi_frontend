@@ -1,4 +1,4 @@
-import { IPermission } from '../../../permissions/shared/models/index';
+import { IPermission } from '../../../permissions/shared/models';
 
 export interface IUserProfile {
     firstName: string;

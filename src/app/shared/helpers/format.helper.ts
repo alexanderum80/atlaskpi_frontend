@@ -1,5 +1,5 @@
 import { SelectionItem } from '../../ng-material-components';
-import { roundWithDecimals } from '../extentions/index';
+import { roundWithDecimals } from '../extentions';
 
 export enum FormatEnum {
     Undefined,

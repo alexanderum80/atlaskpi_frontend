@@ -4,8 +4,8 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { IResultGroup } from '../shared/models/result-groups';
 import { IResultDetails } from '../shared/models/result-details';
 import { GlobalSearchComponent } from '../global-search.component';
-import { EditUserComponent } from '../../../users/edit-user/index';
-import { IManageUsers } from '../../../users/shared/index';
+import { EditUserComponent } from '../../../users/edit-user';
+import { IManageUsers } from '../../../users/shared';
 import { IRole } from '../../../roles/shared/role';
 import { EditRoleComponent } from '../../../roles/edit-role/edit-role.component';
 

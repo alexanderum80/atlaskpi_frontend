@@ -3,7 +3,7 @@ import { pull } from 'lodash';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 
-import { IUser } from '../../../users/shared/models/index';
+import { IUser } from '../../../users/shared/models';
 import { IChart } from '../models';
 
 @Injectable()

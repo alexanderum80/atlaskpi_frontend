@@ -6,7 +6,7 @@ import { ComplexField, Field, OnFieldChanges, ViewModel } from '../../ng-materia
 import { ValueFormatHelper } from '../../shared/helpers/format.helper';
 import { IDateRangeItem } from '../../shared/models';
 import { IWidget } from '../shared/models/widget';
-import { IWidgetData } from './../widget-preview/widget-preview.viewmodel';
+import { IWidgetData } from '../widget-preview/widget-preview.viewmodel';
 
 
 const widgetTypeList: SelectionItem[] = [{

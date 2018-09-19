@@ -37,6 +37,7 @@ import { UsersModule } from './users/users.module';
 import { WidgetsModule } from './widgets/widgets.module';
 import { Widgets2Module } from './widgets2/widgets2.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { TargetsModule } from './targets/targets.module';
 
 @NgModule({
     declarations: [
@@ -78,6 +79,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
         ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
         // for upload image
         // SimpleImageUploadModule
+
+        TargetsModule
     ],
     providers: [
         WindowService,

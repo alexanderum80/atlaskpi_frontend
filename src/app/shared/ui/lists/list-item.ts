@@ -6,4 +6,5 @@ export interface IListItem {
     subtitle?: string;
     extras?: any;
     visible?: boolean;
+    selected?: boolean;
 }

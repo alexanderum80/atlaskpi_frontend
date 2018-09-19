@@ -1,7 +1,7 @@
 import { AddSlideshowActivity } from '../../shared/authorization/activities/slideshows/add-slideshow.activity';
 import { Activity } from '../../shared/authorization/decorators/component-activity.decorator';
 import { Subscription } from 'rxjs/Subscription';
-import { GenericSelectionItem, GenericSelectionService } from './../../shared/services/generic-selection.service';
+import { GenericSelectionItem, GenericSelectionService } from '../../shared/services/generic-selection.service';
 import { IGenericSelectionItem } from '../../shared/services/generic-selection.service';
 import { DialogResult } from '../../shared/models/dialog-result';
 import { ShowChartSlideshowComponent } from '../show-chart-slideshow/show-chart-slideshow.component';
