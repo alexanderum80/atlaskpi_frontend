@@ -4,7 +4,6 @@ query AllUsers {
         username
         roles
         profile {
-            _id
             firstName
             lastName
             lastName

@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { SelectionItem } from '../../ng-material-components';
 import { DialogResult } from '../../shared/models/dialog-result';
 import { IWidget } from '../shared/models';
-import { ValueFormatHelper } from './../../shared/helpers/format.helper';
+import { ValueFormatHelper } from '../../shared/helpers/format.helper';
 import { WidgetsFormService } from './widgets-form.service';
 import {
     IDatePickerConfig,

@@ -3,11 +3,9 @@ query AllUsers {
         _id
         username
         roles {
-            _id
             name
         }
         profile {
-            _id
             firstName
             lastName
             timezone

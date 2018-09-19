@@ -13,8 +13,6 @@ import {
 
 import { IAmounts, ISales, IUsersActivity } from './shared/models/activity-models';
 import { IEmployee } from '../employees/shared/models/employee.model';
-import { ITarget } from '../charts/chart-view/set-goal/shared/targets.interface';
-import { UsersModule } from '../users/users.module';
 import { isEmpty } from 'lodash';
 
 interface IFilter {
@@ -31,7 +29,6 @@ export class ActivitiesViewModel extends ViewModel<IFilter> {
   monthAvgExpenses: IAmounts;
   yesterdayExpenses: IAmounts;
   employeeSales: IEmployee;
-  yesterdayTarget: ITarget;
   targetSales: IAmounts;
   usersActivity: IUsersActivity;
 
@@ -96,10 +93,6 @@ export class ActivitiesViewModel extends ViewModel<IFilter> {
 
   updateEmployeeSales(data: IEmployee) {
     this.employeeSales = data;
-  }
-
-  updateYesterdayTarget(data: ITarget) {
-    this.yesterdayTarget = data;
   }
 
   updateTargetSales(data: IAmounts) {
@@ -170,14 +163,6 @@ export class ActivitiesViewModel extends ViewModel<IFilter> {
 
   get isThereYesterdayExpenses() {
     if (this.yesterdayExpenses) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  get isThereYesterdayTarget() {
-    if (this.yesterdayTarget) {
       return true;
     } else {
       return false;

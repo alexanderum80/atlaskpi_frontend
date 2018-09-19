@@ -13,7 +13,7 @@ import { FormAppointmentComponent } from './form-appointment/form-appointment.co
 import { ListAppointmentComponent } from './list-appointment/list-appointment.component';
 import { AppointmentGuardService } from './shared/services/appointment-guard.service';
 import { SidebarCalendarComponent } from './sidebar-calendar/sidebar-calendar.component';
-import { SharedModule } from '../shared/index';
+import { SharedModule } from '../shared';
 import { AppointmentFormComponent } from './appointment-form/appointment-form.component';
 import { EditAppointmentComponent } from './edit-appointment/edit-appointment.component';
 

@@ -1,4 +1,4 @@
-import { IChartDateRange } from './../../../shared/models/date-range';
+import { IChartDateRange } from '../../../shared/models/date-range';
 export interface IWidget {
     name: string;
 }

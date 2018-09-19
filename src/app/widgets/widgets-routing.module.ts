@@ -2,7 +2,7 @@ import { WidgetAlertComponent } from './widget-alert/widget-alert.component';
 import { EditWidgetComponent } from './edit-widget/edit-widget.component';
 import { NewWidgetComponent } from './new-widget/new-widget.component';
 import { ListWidgetsComponent } from './list-widgets/list-widgets.component';
-import { AuthGuard } from './../shared/services/auth-guard.service';
+import { AuthGuard } from '../shared/services/auth-guard.service';
 import { WidgetsComponent } from './widgets.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';

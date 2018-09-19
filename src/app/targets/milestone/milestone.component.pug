@@ -1,0 +1,8 @@
+
+kpi-new-milestones-target(*ngIf="isEmpty")
+
+app-milestone-item([fg]="fg", [userList]="userList", [index]="i", *ngFor="let fg of fa.controls; let i = index")
+
+div(*ngIf="showAddMilestone", layout="row", layout-align="end center")
+    div(flex-initial)
+        bw-button.m-t-20(color="green", title="Add", icon="plus", (clicked)="add()")

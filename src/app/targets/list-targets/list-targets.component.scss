@@ -1,0 +1,31 @@
+.target-list {
+    .target-item {
+        cursor: pointer;
+        padding: 15px;
+        line-height: normal;
+        font-size: 14px;
+        overflow-y: auto;
+
+        &.selected { background-color: white; }
+    }
+}
+
+
+button {
+    // position: absolute;
+    left: 15px;
+    bottom: 15px;
+
+    i {
+        font-size: 20px;
+    }
+
+}
+
+.list-item-tabular {
+        margin-left: 20px;
+}
+
+.target-list {
+    font-size: 10px !important;
+}

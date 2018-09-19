@@ -1,0 +1,16 @@
+.target-list.h-100.overflow-auto(flex, layout="column")
+    .m-20(flex-initial, layout="row")
+        .m-r-10(flex="10")
+            i.zmdi.zmdi-gps 
+        div(flex="80") TARGETS MANAGER
+
+    .m-t-10(*ngIf="targetList", flex)
+        .target-item(*ngFor="let item of targetList", [class.selected]="selected === item", layout="row", (click)="select(item)")
+            //- title & subtitle
+            div(flex, style="margin: auto;")
+                h2.title {{ selected === item ? fg.value.name : item.name }}
+            div(flex-initial)
+                bw-actions([actionItems]="targetActionList", (actionClicked)="actionClicked($event, item)")
+
+    button.btn.btn-float.waves-effect.bgm-blue((click)="add()")
+        i.zmdi.zmdi-plus

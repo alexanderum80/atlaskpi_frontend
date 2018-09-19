@@ -20,12 +20,13 @@ import { PlaygroundComponent } from './playground/playground.component';
 import { ListRolesComponent } from './roles/list-roles/list-roles.component';
 import { SettingsComponent } from './settings/settings.component';
 import { AuthGuard } from './shared/services';
-import { ListUsersComponent } from './users/list-users/index';
+import { ListUsersComponent } from './users/list-users';
 import { StartComponent } from './users/start/start.component';
 import { UsersComponent } from './users/users';
 import { ListWidgetsComponent } from './widgets/list-widgets/list-widgets.component';
 import { WidgetsComponent } from './widgets/widgets.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
+import { FormTargetsComponent } from './targets/form-targets/form-targets.component';
 
 const routes: Routes = [
   { path: 'unauthorized', component: UnauthorizedComponent },
@@ -50,7 +51,8 @@ const routes: Routes = [
   { path: 'appointments', component: AppointmentsComponent, canActivate: [AuthGuard] },
   { path: 'widgets', component: ListWidgetsComponent, canActivate: [AuthGuard] },
   { path: 'playground', component: PlaygroundComponent },
-  { path: 'widgets2', component: WidgetsComponent }
+  { path: 'widgets2', component: WidgetsComponent },
+  { path: 'targets', component: FormTargetsComponent}
 ];
 
 @NgModule({

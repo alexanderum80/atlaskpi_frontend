@@ -101,5 +101,4 @@ bw-card.chart-view.full-height.chart-card.p-relative([depth]="1", [class.maximiz
 
     bw-button.closeDescription(*ngIf="showDescription", flex-none, color="blue", icon="arrow-left", title="BACK", class="normal", (clicked)="closeDescription()" )
 
-    div.p-absolute(*ngIf="setGoal")
-        kpi-set-goal([chartData]="chartData", (done)="closeOverlay($event)", (targetOverlay)="targetOverlay($event)")
+    app-targets-screen(*ngIf="targetsVisible", [chart]="chartData", (closed)="onCloseTargets($event)")

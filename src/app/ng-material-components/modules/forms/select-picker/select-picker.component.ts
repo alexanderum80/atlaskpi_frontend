@@ -22,7 +22,7 @@ import { SelectionItem } from '../../../models/selection-item';
 import { InputBase } from '../input-base/input-base.component';
 import { processPolyfills } from './polyfills';
 import { MouseEvent } from '@agm/core/services/google-maps-types';
-import { ISelectableItem } from '../../../../shared/models/index';
+import { ISelectableItem } from '../../../../shared/models';
 import { ScrollEvent } from 'ngx-scroll-event';
 import SweetAlert from 'sweetalert2';
 

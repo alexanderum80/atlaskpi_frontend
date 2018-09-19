@@ -1,12 +1,8 @@
 import { ApolloService } from '../../shared/services/apollo.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { IUsersActivity } from '../shared/models/activity-models';
-import { ITarget } from '../../charts/chart-view/set-goal/shared/targets.interface';
 import * as moment from 'moment';
 import { isEmpty, isNumber, pick } from 'lodash';
-
-const targetById = require('graphql-tag/loader!../shared/querys/target-by-id.gql');
-const targetAmountQuery = require('graphql-tag/loader!./target-amount.query.gql');
 
 enum EnumActivityAction {
   CREATE = 'created',
@@ -19,7 +15,6 @@ enum EnumActivityType {
   ROLE = 'Role',
   USER = 'User'
 }
-
 
 @Component({
   selector: 'kpi-users-activity',
@@ -91,37 +86,6 @@ export class UsersActivityComponent implements OnInit {
     });
     let data = payload.split(':{');
 
-    if (this.type === 'Target') {
-      if (this.action === 'created') {
-        data = data[2].split(',');
-        data = data[0].split(':');
-        const targetName = data[1].replace(/"/g, '');
-
-        if (this.activity && this.activity.payload) {
-          const targetPayload: string = this.activity.payload;
-
-          if (typeof targetPayload === 'string') {
-            const parsedPayload = JSON.parse(targetPayload);
-            this.processCreateTarget(parsedPayload);
-          }
-        }
-      }
-      if (this.action === 'modified') {
-        data = data[1].split(',');
-        data = data[0].split(':');
-        const targetId = data[1].replace(/"/g, '');
-
-        this.getTargetById(targetId);
-      }
-      if (this.action === 'deleted') {
-        data = data[data.length - 1].split(',');
-        data = data[0].split(':');
-        const targetId = data[1].replace(/"/g, '');
-
-        this.getTargetById(targetId);
-      }
-    }
-
     if (this.type === 'Role') {
       if (data[2]) {
         data = data[2].split(':');
@@ -157,55 +121,6 @@ export class UsersActivityComponent implements OnInit {
     return chunks.map(c => {
         return c.substr(0, 1).toUpperCase();
     }).join('');
-  }
-
-  getTargetById(id: string) {
-    const that = this;
-
-    this._apolloService.networkQuery < ITarget > (targetById, { id: id })
-    .then(target => {
-        if (isEmpty(target.findTargetByName)) {
-          return;
-        }
-
-        if (target.findTargetById._id !== '') {
-        that.updateTargetData(target.findTargetById);
-      }
-    });
-  }
-
-  processCreateTarget(payload: any) {
-    if (isEmpty(payload) || !payload.variables || !payload.variables.data) {
-      return;
-    }
-
-    const that = this;
-    const data = payload.variables.data;
-    const input = pick(
-      data,
-      [
-        'amount', 'amountBy', 'datepicker', 'period',
-        'vary', 'nonStackName', 'stackName', 'chart'
-      ]
-    );
-
-    this._apolloService.networkQuery(targetAmountQuery, { input: input})
-      .then(response => {
-        const responseAmount: number = (response && !isEmpty(response.targetAmount)) ? response.targetAmount.amount : 0;
-        const targetAmount: number = isNumber(data.target) ? data.target : responseAmount;
-        data.target = targetAmount;
-
-        that.updateTargetData(data);
-      });
-  }
-
-  updateTargetData(target: ITarget) {
-    const that = this;
-
-    that.targetName = target.name;
-    that.targetDate = moment(target.datepicker).toDate();
-    that.targetAmount = target.target;
-    that.targetStackName = target.nonStackName || target.stackName;
   }
 
   articleAnUser(activity: any) {

@@ -19,8 +19,8 @@ import { IDay } from '../../ng-material-components/modules/forms/date-picker/day
 import { StoreHelper } from '../../shared/services';
 import { ApolloService } from '../../shared/services/apollo.service';
 import { IAppointment } from '../shared/models/appointment.model';
-import { cleanAppointemntsProviderId } from './../../shared/helpers/appointments.helper';
-import { Store } from './../../shared/services/store.service';
+import { cleanAppointemntsProviderId } from '../../shared/helpers/appointments.helper';
+import { Store } from '../../shared/services/store.service';
 
 const appointmentsByDate = require('graphql-tag/loader!./appointments-by-date.gql');
 const AppointmentProvidersListQuery = require('graphql-tag/loader!./appointment-providers-list.query.gql');

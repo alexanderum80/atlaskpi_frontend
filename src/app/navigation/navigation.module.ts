@@ -6,11 +6,11 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
 import { ChartsModule } from '../charts';
-import { DataSourceModule } from '../data-source/';
+import { DataSourceModule } from '../data-source';
 import { KpisModule } from '../kpis/kpis.module';
 import { MaterialFormsModule, MaterialUserInterfaceModule } from '../ng-material-components';
 import { RolesModule } from '../roles/roles.module';
-import { SettingsModule } from '../settings/';
+import { SettingsModule } from '../settings';
 import { FooterComponent } from './footer/footer.component';
 import { GlobalSearchComponent } from './global-search/global-search.component';
 import { HeaderComponent } from './header/header.component';
