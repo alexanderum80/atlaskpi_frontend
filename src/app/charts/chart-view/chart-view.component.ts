@@ -1,42 +1,36 @@
-import { predefinedColors } from './../shared/ui/chart-format-info/material-colors';
-import { DownloadChartActivity } from '../../shared/authorization/activities/charts/download-chart.activity';
-import { CompareOnFlyActivity } from '../../shared/authorization/activities/charts/compare-on-fly-chart.activity';
-import {
-    ChangeSettingsOnFlyActivity,
-} from '../../shared/authorization/activities/charts/change-settings-on-fly-chart.activity';
-import { IChartDateRange } from '../../shared/models/index';
-import { Subscription } from 'rxjs/Subscription';
-import { ViewTargetActivity } from '../../shared/authorization/activities/targets/view-target.activity';
-import { AddTargetActivity } from '../../shared/authorization/activities/targets/add-target.activity';
-import { TableModeService } from './table-mode/table-mode.service';
-import { ToSelectionItemList } from '../../shared/extentions';
-import { parseComparisonDateRange, parsePredefinedDate } from '../../shared/models';
-import { MilestoneService } from '../../milestones/shared/services/milestone.service';
-import { TargetService } from './set-goal/shared/target.service';
-import { Component, Input, OnDestroy, OnInit, ViewChild, AfterContentInit, ChangeDetectionStrategy } from '@angular/core';
+import { AfterContentInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Chart } from 'angular-highcharts';
 import { Apollo, QueryRef } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { Options } from 'highcharts';
-import { get as _get, pick, isEmpty, isString, isNumber, includes } from 'lodash';
+import { get as _get, isEmpty, isNumber, isString, pick } from 'lodash';
 import * as moment from 'moment';
+import { Subscription } from 'rxjs/Subscription';
+import SweetAlert from 'sweetalert2';
 
 import { FormatterFactory, yAxisFormatterProcess } from '../../dashboards/shared/extentions/chart-formatter.extention';
-import { PredefinedDateRanges } from '../../shared/models/date-range';
+import { MilestoneService } from '../../milestones/shared/services/milestone.service';
 import { MenuItem } from '../../ng-material-components';
-import { IDateRangeItem } from '../../shared/models/date-range';
+import {
+    ChangeSettingsOnFlyActivity,
+} from '../../shared/authorization/activities/charts/change-settings-on-fly-chart.activity';
+import { CompareOnFlyActivity } from '../../shared/authorization/activities/charts/compare-on-fly-chart.activity';
+import { DownloadChartActivity } from '../../shared/authorization/activities/charts/download-chart.activity';
+import { SeeInfoActivity } from '../../shared/authorization/activities/charts/see-info-chart.activity';
+import { AddTargetActivity } from '../../shared/authorization/activities/targets/add-target.activity';
+import { ViewTargetActivity } from '../../shared/authorization/activities/targets/view-target.activity';
+import { parseComparisonDateRange, parsePredefinedDate } from '../../shared/models';
+import { IChartDateRange } from '../../shared/models';
+import { IDateRangeItem, PredefinedDateRanges } from '../../shared/models/date-range';
 import { DialogResult } from '../../shared/models/dialog-result';
+import { ApolloService } from '../../shared/services/apollo.service';
 import { BrowserService } from '../../shared/services/browser.service';
 import { CommonService } from '../../shared/services/common.service';
 import { OverlayComponent } from '../../shared/ui/overlay/overlay.component';
 import { DrillDownService } from '../shared/services/drilldown.service';
-import { SetGoalComponent } from './set-goal';
+import { predefinedColors } from './../shared/ui/chart-format-info/material-colors';
 import { ChartViewViewModel } from './chart-view.viewmodel';
-import SweetAlert from 'sweetalert2';
-import { ApolloService } from '../../shared/services/apollo.service';
-import {SeeInfoActivity} from '../../shared/authorization/activities/charts/see-info-chart.activity';
-import { debug } from 'util';
-import { FormTargetsComponent } from '../../targets/form-targets/form-targets.component';
+import { TableModeService } from './table-mode/table-mode.service';
 
 const Highcharts = require('highcharts/js/highcharts');
 
@@ -119,7 +113,7 @@ export interface IRunRate {
     templateUrl: './chart-view.component.pug',
     styleUrls: ['./chart-view.component.scss'],
     providers: [
-        DrillDownService, CommonService, TargetService, MilestoneService,
+        DrillDownService, CommonService, MilestoneService,
         ChartViewViewModel, ViewTargetActivity, AddTargetActivity,
         ChangeSettingsOnFlyActivity, CompareOnFlyActivity,
         SeeInfoActivity, DownloadChartActivity
@@ -131,8 +125,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     @Input() dateRanges: IDateRangeItem[] = [];
     @Input() isFromDashboard = false;
     @ViewChild(OverlayComponent) overlay: OverlayComponent;
-    @ViewChild(SetGoalComponent) goalComponent: SetGoalComponent;
-
+    
     private _subscription: Subscription[] = [];
 
     chart: any; // Chart;
@@ -234,7 +227,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         private _broserService: BrowserService,
         private _drillDownSvc: DrillDownService,
         private _commonService: CommonService,
-        private _targetService: TargetService,
         private _tableModeService: TableModeService,
         public vm: ChartViewViewModel,
         public addTargetActivity: AddTargetActivity,
@@ -446,7 +438,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
 
         CommonService.unsubscribe([
             ...this._subscription,
-            ...this._targetService.subscriptions
         ]);
     }
 
@@ -720,26 +711,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 break;
 
             case 'set-target':
-                // if (this.currentNode.rootChart &&
-                //     this.chartData.chartDefinition.chart.type !== 'pie') {
-                //     if (this.setGoal) {
-                //         this._targetService.setChartId(this.chartData._id);
-                //         this._targetService.updatePeriodTypes((<any>this.chartData).targetExtraPeriodOptions);
-                //         this._targetService.setChartInfo({
-                //             dateRange: this.chartData.dateRange,
-                //             frequency: this.chartData.frequency
-                //         });
-                //         setTimeout(() => {
-                //             if (this.goalComponent) {
-                //                 this.goalComponent.updateTarget(this.chartData.targetList);
-                //                 this.goalComponent.open();
-                //             }
-                //             this._getStackCategories(this.chart.options, this.chartData);
-                //         }, 0);
-                //     } else {
-                //         this._targetNotAuthorizedMessage();
-                //     }
-                // }
                 this.targetsVisible = true;
                 break;
 
@@ -1023,9 +994,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 Object.assign({},
                 pick(this.chartData, ['frequency', 'groupings']))
             );
-            if (this.goalComponent) {
-                this.goalComponent.updateTarget(( < any > this.chartData).targetList);
-            }
 
             this.drillUpAnimation = 'fadeOutLeft';
 
@@ -1133,9 +1101,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         this.processChartNode(rawChart, this.chart, this.chartData);
         if (this.chartData && rawChart && rawChart.targetList) {
             this.chartData.targetList = rawChart.targetList;
-        }
-        if (this.goalComponent) {
-            this.goalComponent.updateTarget(( < any > this.chartData).targetList);
         }
         this.enableDrillDown();
         this.chartIsEmpty();
@@ -1430,7 +1395,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 selected: false,
                 disabled: false
             }];
-            this.goalComponent.stackCategories(null, nonStackCategories);
             return;
         }
         let categories = this._isStacked(groupings, chartData) ?
@@ -1477,9 +1441,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             }
         }
 
-        if (this.setGoal) {
-            this.goalComponent.stackCategories(categories, nonStackCategories);
-        }
     }
 
     private _isStacked(groupings: string[], chartData: any) {

@@ -25,6 +25,8 @@ export interface ChartData {
   frequency?: string;
   dateRange?: IChartDateRange[];
   xAxisSource: string;
+  comparison: string[];
+  groupings: string[];
 }
 
 export enum ChartType {

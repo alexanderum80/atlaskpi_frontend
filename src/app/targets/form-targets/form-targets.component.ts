@@ -19,7 +19,9 @@ export class FormTargetsComponent {
     @Input()
     userList: IListItem[];
     @Input()
-    displayForField: boolean;
+    appliesToList: IListItem[];
+    @Input()
+    displayAppliesToField: boolean;
 
     @Output()
     save = new EventEmitter();

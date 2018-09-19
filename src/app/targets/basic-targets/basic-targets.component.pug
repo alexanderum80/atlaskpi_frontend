@@ -6,12 +6,12 @@ div(layout="column")
     //- name
     div(flex)
         bw-text-box([fg]="fg", field="name", label="Name", leftIcon="local-offer")   
-    .m-t-15(*ngIf="displayForField", flex)
+    .m-t-15(*ngIf="displayAppliesToField", flex)
         bw-select-picker(flex
-            [fg]="fg", 
+            [fg]="fg.controls['appliesTo']", 
             field="appliesTo",
             label="I would like to set a target for",
-            [items]="groupingsList",
+            [items]="appliesToList",
             leftIcon="group-work"
         )
 
@@ -31,13 +31,12 @@ div(layout="column")
         .m-t-35.m-l-10.text-center(flex-initial)
             bw-button-group([options]="valueOptions", type="default", [activeOption]="fg.controls['unit'].value", (optionSelected)="onOptionSelected($event)")
     
-    .m-t-15(flex, layout="row")
-        .m-l-10(flex="50", *ngIf="showBasedOn")
-            bw-select-picker(flex,
-                [fg]="fg", 
-                field="compareTo",
-                label="Based on",
-                [items]="baseOnList",
-                leftIcon="calendar-alt",
-                noneSelectedText="{{nodoSelectedTextCompareTo || 'NOTHING SELECTED'}}"
-            )
+    div(flex, *ngIf="showBasedOn")
+        bw-select-picker(
+            [fg]="fg", 
+            field="compareTo",
+            label="Based on",
+            [items]="baseOnList",
+            leftIcon="calendar-alt",
+            noneSelectedText="{{nodoSelectedTextCompareTo || 'NOTHING SELECTED'}}"
+        )

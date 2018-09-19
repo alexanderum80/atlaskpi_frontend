@@ -13,7 +13,6 @@ import { MaterialFormsModule, MaterialUserInterfaceModule } from '../ng-material
 import { SharedModule } from '../shared';
 import { TargetsModule } from '../targets/targets.module';
 import { AutoRendereableChartComponent } from './auto-rendereable-chart/auto-rendereable-chart.component';
-import { ChartInspectorComponent } from './chart-inspector/chart-inspector.component';
 import { ChartTestComponent } from './chart-test/chart-test.component';
 import { ChartViewDashboardComponent } from './chart-view-dashboard/chart-view-dashboard.component';
 import { ChartViewMiniComponent } from './chart-view-mini/chart-view-mini.component';
@@ -75,7 +74,6 @@ export function highchartsModules() {
         ChartGalleryItemComponent,
         ChartFormatInfoComponent,
         ChartTypeComponent,
-        ChartInspectorComponent,
         ChartItemDetailsComponent,
         EditChartComponent,
         ChartFormComponent,

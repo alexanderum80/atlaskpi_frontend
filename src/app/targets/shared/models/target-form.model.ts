@@ -1,4 +1,4 @@
-import { ITarget, ITargetSource, ITargetUser } from './target';
+import { ITarget, ITargetSource, ITargetUser, ITargetAppliesTo } from './target';
 import { Validators, FormArray } from '@angular/forms';
 import { FormGroupTypeSafe, FormBuilderTypeSafe } from '../../../shared/services';
 import { ITargetNotificationConfig, IMilestone } from './targets.model';
@@ -85,7 +85,10 @@ export class TargetFormModel {
         this._form = this.builder.group<ITarget>({
             _id: [null],
             active: [null, Validators.required],
-            appliesTo: [null],
+            appliesTo: this.builder.group<ITargetAppliesTo>({
+                field: [null],
+                value: [null],
+            }),
             compareTo: [null],
             name: [null, Validators.required],
             notificationConfig: this.builder.group<ITargetNotificationConfig>({

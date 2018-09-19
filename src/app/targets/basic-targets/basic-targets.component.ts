@@ -14,13 +14,13 @@ export class BasicTargetsComponent implements OnInit, OnDestroy {
     @Input()
     fg: FormGroupTypeSafe<ITarget>;
     @Input()
-    groupingsList: IListItem[] = [];
+    appliesToList: IListItem[] = [];
     @Input()
     objectiveList: IListItem[];
     @Input()
     baseOnList: IListItem[];
     @Input()
-    displayForField: boolean;
+    displayAppliesToField: boolean;
 
     showBasedOn: boolean;
 

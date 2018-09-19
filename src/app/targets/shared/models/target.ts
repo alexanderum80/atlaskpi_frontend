@@ -39,13 +39,18 @@ export interface ITargetNotificationConfig {
     users: ITargetUser[];
 }
 
+export interface ITargetAppliesTo {
+    field: string;
+    value: string;
+}
+
 export interface ITarget {
     _id?: string;
     name: string;
     source: ITargetSource;
     compareTo: string;
     type: TargetTypeEnum;
-    appliesTo?: string;
+    appliesTo?: ITargetAppliesTo;
     value: number;
     unit: TargetValueUnitEnum;
     notificationConfig: ITargetNotificationConfig;

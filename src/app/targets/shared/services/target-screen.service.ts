@@ -15,22 +15,8 @@ import { select } from 'async';
 @Injectable()
 export class TargetScreenService {
 
-    private _targetList: ITarget[];
-    set targetList(val: ITarget[]) {
-        // val.map(t => {
-        //     if (t.milestones) {
-        //         t.milestones.forEach(m => {
-        //             if (m.dueDate) {
-        //                 m.dueDate = new Date(m.dueDate);
-        //             }
-        //         });
-        //     }
-        // });
-        this._targetList = val;
-    }
-    get targetList(): ITarget[] {
-        return this._targetList;
-    }
+    targetList: ITarget[];
+    appliesToList: IListItem[];
 
     objectiveList: IListItem[] = [
         { id: 'increase', title: 'Increase' },
@@ -38,7 +24,7 @@ export class TargetScreenService {
         { id: 'fixed', title: 'Fixed' },
     ];
     baseOnList: IListItem[];
-    displayForField: boolean;
+    displayAppliesToField: boolean;
 
     get userList(): IBasicUser[] {
         return this._userList;
@@ -71,8 +57,8 @@ export class TargetScreenService {
 
     initialize(chart: ChartData) {
         this.chart = chart;
-        this.displayForField = !isEmpty(this.chart.xAxisSource) && this.chart.xAxisSource !== 'frequency';
-        this.baseOnList = this.getBasedOnList();
+
+        this.processLists();
 
         this._formModel = new TargetFormModel(this.builder);
     }
@@ -187,7 +173,23 @@ export class TargetScreenService {
         this.selectTarget(target);
     }
 
+    private processLists() {
+        const xAxisIsFrequency = this.chart.frequency && (this.chart.xAxisSource === '' || this.chart.xAxisSource === 'frequency');
+        const xAxisIsGroupings =
+            (this.chart.groupings && this.chart.groupings.length)
+            && (!this.chart.frequency || (this.chart.frequency && this.chart.xAxisSource !== 'frequency'));
+
+        this.displayAppliesToField = !xAxisIsFrequency || xAxisIsGroupings;
+
+        this.baseOnList = this.getBasedOnList();
+        this.appliesToList = this.chart.chartDefinition.xAxis.categories.map(c => ({ id: c, title: c }));
+    }
+
     private getBasedOnList(): IListItem[] {
+        if (this.displayAppliesToField) {
+            return [{ id: 'previous period', title: 'Previous Period' }];
+        }
+
         const getList = (name: string) => {
             const lower = name.toLowerCase();
             return [
@@ -209,9 +211,8 @@ export class TargetScreenService {
                 case FrequencyEnum.Weekly:
                     return getList('Week');
                 case FrequencyEnum.Yearly:
-                    const lower = 'year';
                     return [
-                        { id: `last ${lower}`, title: `Last Year` },
+                        { id: `last year`, title: `Last Year` },
                         { id: `two years ago`, title: `Two years ago` },
                         { id: `three years ago`, title: `Three years ago` },
                     ];
@@ -223,7 +224,7 @@ export class TargetScreenService {
         const res = await SweetAlert({
             title: 'Are you sure?',
             text: `You are about to lose the changes you made to the current target. Do you want to continue?`,
-            type: 'warning',
+            type: 'info',
             showConfirmButton: true,
             showCancelButton: true
         });
