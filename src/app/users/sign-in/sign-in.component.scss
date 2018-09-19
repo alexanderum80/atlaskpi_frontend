@@ -1,7 +1,7 @@
 @import "../../../assets/styles/declaration";
 @import "../../../assets/styles/themes/cosmetic-mixins";
 .sign-in-container {
-    padding: 40px 70px;
+    padding: 40px 40px;
     @include transition(all 0.4s ease-in-out 0s);
     img.logo {
         height: 40px;

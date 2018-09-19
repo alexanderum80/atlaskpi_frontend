@@ -1,5 +1,5 @@
 import { BaseModel, ModelCreationResult } from '../../../guides/model-demo';
-import { IChartDateRange } from './../../../shared/models/date-range';
+import { IChartDateRange } from '../../../shared/models/date-range';
 import * as validate from 'validate.js';
 
 export enum WidgetTypeEnum {

@@ -1,6 +1,6 @@
 form#login-form(flex, [formGroup]="fg", (ngSubmit)="signIn($event)")
     .sign-in-container.h-100(
-        layout="column", layout-align="center center",
+        layout="column", layout-align="center",
         [class.mobile]="mobile")
         //-logo
         .m-b-20(flex)
@@ -22,10 +22,10 @@ form#login-form(flex, [formGroup]="fg", (ngSubmit)="signIn($event)")
         .w-100.m-t-10.m-r-15.text-right(flex)
             a(href="#", (click)="forgotPassword($event)") Forgot Password
         //-action
-        .w-100.m-t-15.m-r-15.m-l-15.text-center(flex)
+        .w-100.m-t-35.text-center(flex)
             bw-button#sign-in(color="blue", title="SIGN IN", class="normal", [rounded]="true", (clicked)="signIn($event)",
                         [disabled]="!canSignIn", type="submit", [block]="true" )
         //-link to signup
-        .w-100.m-t-10.m-r-15.m-l-15.text-center(flex)
+        .w-100.m-t-15.text-center(flex)
             bw-button#sign-up(color="white", title="CREATE ACCOUNT", class="normal", [rounded]="true", (clicked)="goToSignup($event)", [block]="true" )
                

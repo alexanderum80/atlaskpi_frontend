@@ -14,7 +14,7 @@ import { ListLocationsComponent } from './list-locations/list-locations.componen
 import { AddLocationComponent } from './add-location/add-location.component';
 import { EditLocationComponent } from './edit-location/edit-location.component';
 import { LocationFormComponent } from './location-form/location-form.component';
-import { SharedModule } from '../shared/index';
+import { SharedModule } from '../shared';
 
 
 @NgModule({

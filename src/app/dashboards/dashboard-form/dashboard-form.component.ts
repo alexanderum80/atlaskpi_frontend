@@ -22,10 +22,10 @@ import { ListWidgetsQueryResponse } from '../../widgets/shared/models';
 import { dashboardGraphqlActions } from '../shared/graphql';
 import { Dashboard, IDashboard } from '../shared/models';
 import { MenuService } from '../shared/services';
-import { IUserInfo } from './../../shared/models/user';
-import { GenericSelectionItem, IGenericSelectionItem } from './../../shared/services/generic-selection.service';
-import { UserService } from './../../shared/services/user.service';
-import { IWidget, WidgetSizeEnum, WidgetSizeMap } from './../../widgets/shared/models/widget.models';
+import { IUserInfo } from '../../shared/models/user';
+import { GenericSelectionItem, IGenericSelectionItem } from '../../shared/services/generic-selection.service';
+import { UserService } from '../../shared/services/user.service';
+import { IWidget, WidgetSizeEnum, WidgetSizeMap } from '../../widgets/shared/models/widget.models';
 
 const dashboardByNameQuery = require('graphql-tag/loader!../shared/graphql/dashboard-by-name.gql');
 

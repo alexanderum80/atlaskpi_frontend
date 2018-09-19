@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { ActivitiesRoutingModule } from './activities-routing.module';
 import { ActivitiesComponent } from './activities.component';
-import { TargetsActivityComponent } from './targets-activity/targets-activity.component';
 import { UsersActivityComponent } from './users-activity/users-activity.component';
 import { TrendsSalesActivityComponent } from './trends-sales-activity/trends-sales-activity.component';
 import { CountsActivityComponent } from './counts-activity/counts-activity.component';
@@ -19,7 +18,6 @@ import { TrendsExpensesActivityComponent } from './trends-expenses-activity/tren
   ],
   declarations: [
     ActivitiesComponent,
-    TargetsActivityComponent,
     UsersActivityComponent,
     TrendsSalesActivityComponent,
     CountsActivityComponent,

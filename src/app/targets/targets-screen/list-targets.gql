@@ -1,0 +1,31 @@
+query targetsBySource($source: SourceNewInput!) {
+  targetBySource(source: $source) {
+    _id
+    name
+    source {
+      type
+      identifier
+    }
+    compareTo
+    type
+    appliesTo {
+        field
+        value
+    }
+    value
+    unit
+    notificationConfig{
+      users {
+        identifier
+        deliveryMethods
+      }
+    }
+    milestones {
+      task
+      dueDate
+      status
+      responsible
+    }
+    active
+  }
+}

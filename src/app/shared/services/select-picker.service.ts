@@ -7,11 +7,11 @@ import {
 import gql from 'graphql-tag';
 import {
     SelectionItem
-} from '../../ng-material-components/index';
+} from '../../ng-material-components';
 import {
     ICountry,
     IState
-} from '../models/index';
+} from '../models';
 
 
 const countriesQuery = gql `

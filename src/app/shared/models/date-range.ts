@@ -154,7 +154,7 @@ export const quarterMonths = {
 
 const thisQuarter = moment().quarter();
 
-export function parsePredifinedDate(textDate: string): IDateRange {
+export function parsePredefinedDate(textDate: string): IDateRange {
 
     switch (textDate) {
         case PredefinedDateRanges.allTimes:
@@ -329,7 +329,7 @@ export function parseComparisonDateRange(value: string, customDateRange?: IDateR
             to: moment(customDateRange.to).toDate()
         };
     } else {
-        firstDateRange = parsePredifinedDate(comparisonTokens[0]);
+        firstDateRange = parsePredefinedDate(comparisonTokens[0]);
     }
 
     // check if undefined
@@ -432,7 +432,7 @@ export class ChartDateRangeModel {
 
     constructor(obj: IChartDateRange) {
         if (obj.predefined) {
-            this._parsedDateRange = parsePredifinedDate(obj.predefined);
+            this._parsedDateRange = parsePredefinedDate(obj.predefined);
         }
         if (this._parsedDateRange !== undefined) { return; }
 

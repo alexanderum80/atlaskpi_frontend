@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { IWidget } from '../shared/models/index';
+import { IWidget } from '../shared/models';
 import { Apollo } from 'apollo-angular';
 import { widgetsGraphqlActions } from '../shared/graphql/widgets.graphql-actions';
 import { ENGINE_METHOD_PKEY_ASN1_METHS } from 'constants';

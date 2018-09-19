@@ -3,4 +3,4 @@
         kpi-chart-slideshow-form(flex, [hidden]="inPreview", [fg]="fg", (dialogResult)="onDialogResult($event)")
 
 div(*ngIf="inPreview")
-    kpi-show-chart-slideshow([slideshow]="slideshow", (onPresentationStopped)="stopPreview()")
+    kpi-show-chart-slideshow([slideshow]="slideshow", ()="stopPreview()")

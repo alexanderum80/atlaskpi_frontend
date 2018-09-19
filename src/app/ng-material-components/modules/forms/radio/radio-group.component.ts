@@ -1,5 +1,5 @@
 import { SubmitableFormGroup } from '../../../models';
-import { OnInit } from '@angular/core/core';
+import { OnInit } from '@angular/core';
 // from here: https://github.com/pleerock/ng2-radio-group
 
 import { AfterViewInit, Component, ElementRef, Input } from '@angular/core';

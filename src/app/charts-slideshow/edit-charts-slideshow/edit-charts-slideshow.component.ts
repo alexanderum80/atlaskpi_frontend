@@ -24,7 +24,7 @@ import {
     GenericSelectionItem,
     GenericSelectionService,
     IGenericSelectionItem,
-} from './../../shared/services/generic-selection.service';
+} from '../../shared/services/generic-selection.service';
 
 
 const SlideshowById = require('graphql-tag/loader!../shared/graphql/chart-slideshow-by-id.query.gql');

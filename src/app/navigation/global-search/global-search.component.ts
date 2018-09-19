@@ -1,11 +1,11 @@
 import { CommonService } from '../../shared/services/common.service';
-import { Store } from './../../shared/services/store.service';
+import { Store } from '../../shared/services/store.service';
 import { Router } from '@angular/router';
 import { AppStateService } from '../../shared/services/app-state.service';
-import { IChart } from './../../charts/shared/models/chart.models';
+import { IChart } from '../../charts/shared/models/chart.models';
 import { IChartInput } from '../../charts/shared/models';
-import { CreateChartMutation } from './../../charts/shared/graphql/charts.gql';
-import { IMutationResponse } from './../../shared/models/mutation-response';
+import { CreateChartMutation } from '../../charts/shared/graphql/charts.gql';
+import { IMutationResponse } from '../../shared/models/mutation-response';
 import { Subscription } from 'rxjs/Subscription';
 import { FormGroup } from '@angular/forms';
 import { Component, OnDestroy, OnInit, Input, Output, EventEmitter, ElementRef, AfterViewInit } from '@angular/core';

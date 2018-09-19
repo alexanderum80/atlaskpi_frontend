@@ -1,7 +1,7 @@
 import { CommonService } from '../../../shared/services/common.service';
 import { AuthenticationService } from '../../../shared/services';
 import { SelectionItem } from '../../../ng-material-components';
-import { IUserProfile } from '../../../shared/models/index';
+import { IUserProfile } from '../../../shared/models';
 import { ApolloQueryResult } from 'apollo-client';
 import { UsersService } from '../../shared/services';
 import { FormGroup } from '@angular/forms';
