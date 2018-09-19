@@ -1,20 +1,4 @@
 {
-<<<<<<< HEAD
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}\\--disable-host-check",
-            "preLaunchTask": "tsc: build - tsconfig.json",
-            "outFiles": [
-                "${workspaceFolder}/dist/out-tsc/**/*.js"
-            ]
-=======
     "version": "0.2.0",
     "configurations": [
 
@@ -36,7 +20,6 @@
             "name": "Attach to Chrome",
             "port": 9222,
             "webRoot": "${workspaceFolder}"
->>>>>>> e05f2e44f6eb1591de07e2cf86e702cf7919b3cf
         }
     ]
 }
