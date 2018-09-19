@@ -85,7 +85,7 @@ export class TargetScreenService {
             type: v.type,
             unit: v.unit,
             value: +(v.value.toString().replace(',', '')) || 0,
-            appliesTo: v.appliesTo,
+            appliesTo: v.appliesTo.value ? { field: this.chart.groupings[0], value: v.appliesTo.value } : undefined,
             active: Boolean(v.active),
             notificationConfig: {
                 users: v.notificationConfig.users.map(u => {

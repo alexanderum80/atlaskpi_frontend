@@ -9,7 +9,7 @@ div(layout="column")
     .m-t-15(*ngIf="displayAppliesToField", flex)
         bw-select-picker(flex
             [fg]="fg.controls['appliesTo']", 
-            field="appliesTo",
+            field="value",
             label="I would like to set a target for",
             [items]="appliesToList",
             leftIcon="group-work"
