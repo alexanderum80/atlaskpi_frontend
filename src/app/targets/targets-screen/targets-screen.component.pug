@@ -1,0 +1,22 @@
+bw-modal(*ngIf="ready$ | async", #targetModal, size="lg", [openOnInit]="true", (onClose)="close()", (onDismiss)="close()")
+    bw-modal-body
+        .targets-form.h-100(flex, layout="row")
+            .left-side.overflow-auto(flex="30", *ngIf="!model.isEmpty")
+                app-list-targets.overflow-auto(
+                    flex,
+                    [targetList]="model.targetList",
+                    [selected]="model.selected",
+                    [fg]="model.form",
+                    (remove)="remove($event)"
+                )
+            .bgm-white(flex)
+                app-form-targets(
+                    [fg]="model.form",
+                    [objectiveList]="model.objectiveList",
+                    [baseOnList]="model.baseOnList",
+                    [userList]="model.userItemList",
+                    [appliesToList]="model.appliesToList",
+                    [displayAppliesToField]="model.displayAppliesToField",
+                    (save)="save()",
+                    (cancel)="cancel()"
+                )

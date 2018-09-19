@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { toArray } from 'lodash';
 
 import { SelectionItem } from '../../../ng-material-components';
-import { FrequencyEmployeeTable, FrequencyTable } from './../../models/frequency';
+import { FrequencyEmployeeTable, FrequencyTable } from '../../models/frequency';
 
 @Component({
     selector: 'kpi-kpi-frequency-picker',

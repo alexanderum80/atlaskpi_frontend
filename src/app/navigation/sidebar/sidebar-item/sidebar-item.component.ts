@@ -4,7 +4,7 @@ import {
 } from '../../../shared/models';
 import {
     OnDestroy
-} from '@angular/core/core';
+} from '@angular/core';
 import { ISidebarItemSearchResult, SidebarService } from '../sidebar.service';
 import { Component, Input, NgZone, OnInit } from '@angular/core';
 import { MenuItem } from '../../../ng-material-components';
@@ -68,7 +68,7 @@ export class SidebarItemComponent implements OnInit, OnDestroy {
 
     get showListDashboardItem(): boolean {
         if (!this.vm || isEmpty(this.vm.list_item)) {
-            return false;
+            return true;
         }
 
         return this.menuItem && this.menuItem.id === 'dashboard';

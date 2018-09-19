@@ -1,5 +1,5 @@
 
-import { IdName, IDateRangeItem } from '../../shared/models/index';
+import { IdName, IDateRangeItem } from '../../shared/models';
 
 export interface IListChartResponse {
     listCharts: { data: any[] };

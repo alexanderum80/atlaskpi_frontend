@@ -3,21 +3,17 @@ query User {
         _id
         username
         roles {
-            _id
             name
             permissions {
-                _id
                 action
                 subject
             }
         }
         emails {
-            _id
             address
             verified
         }
         profile {
-            _id
             firstName
             middleName
             lastName

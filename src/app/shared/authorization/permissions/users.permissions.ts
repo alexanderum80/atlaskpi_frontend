@@ -1,5 +1,5 @@
 import { ActionsMap as A, CrudActions, CommentActions } from './actions.map';
-import { IPermission } from '../../../permissions/shared/models/index';
+import { IPermission } from '../../../permissions/shared/models';
 
 export const UserSubject = 'users';
 

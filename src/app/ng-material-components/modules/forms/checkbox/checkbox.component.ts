@@ -1,8 +1,8 @@
+import { Component, ElementRef, Input, OnInit } from '@angular/core';
+
 import { SubmitableFormGroup } from '../../../models';
-import { Component, Input, OnInit, ElementRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { InputBase } from '../input-base/input-base.component';
 import { TypeEnum } from '../../../models/type-enum';
+import { InputBase } from '../input-base/input-base.component';
 
 /**
  * Encapsulate checkbox control functionality
@@ -38,9 +38,4 @@ export class CheckboxComponent extends InputBase implements OnInit {
     public ngOnInit(): void {
         this.onInit();
     }
-
-    public ngOnDestroy(): void {
-
-    }
-
 }

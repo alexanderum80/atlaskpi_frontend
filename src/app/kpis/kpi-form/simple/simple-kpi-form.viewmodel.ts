@@ -17,7 +17,7 @@ import { TagsViewModel } from '../../../shared/view-models/tags.viewmodel';
 import { FilterViewModel } from '../shared/filter.viewmodel';
 import { SimpleKpiExpressionViewModel } from '../shared/simple-kpi-expression.viewmodel';
 import { IKPIPayload } from '../shared/simple-kpi-payload';
-import { getAggregateFunctions } from './../../../shared/domain/kpis/functions';
+import { getAggregateFunctions } from '../../../shared/domain/kpis/functions';
 
 export const KPINAMEREGULAREXPRESSION = /^([a-zA-Z0-9\*\-\(\)\$\&\:#%] *){5,}$/;
 const expressionNumericFieldQuery = require('graphql-tag/loader!./get-expression-fields.query.gql');

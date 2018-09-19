@@ -12,7 +12,7 @@ import { ListBusinessUnitsComponent } from './list-business-units/list-business-
 import { AddBusinessUnitComponent } from './add-business-unit/add-business-unit.component';
 import { EditBusinessUnitComponent } from './edit-business-unit/edit-business-unit.component';
 import { BusinessUnitFormComponent } from './business-unit-form/business-unit-form.component';
-import { SharedModule } from '../shared/index';
+import { SharedModule } from '../shared';
 
 @NgModule({
   imports: [

@@ -1,5 +1,5 @@
 import { SelectPickerComponent } from '../../ng-material-components/modules/forms/select-picker/select-picker.component';
-import { IUserInfo } from '../../shared/models/index';
+import { IUserInfo } from '../../shared/models';
 import { UserService } from '../../shared/services/user.service';
 import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
@@ -18,8 +18,8 @@ import { ViewAppointmentActivity } from '../../shared/authorization/activities/a
 import { Activity } from '../../shared/authorization/decorators/component-activity.decorator';
 import { StoreHelper } from '../../shared/services';
 import { IAppointment } from '../shared/models/appointment.model';
-import { cleanAppointemntsProviderId } from './../../shared/helpers/appointments.helper';
-import { Store } from './../../shared/services/store.service';
+import { cleanAppointemntsProviderId } from '../../shared/helpers/appointments.helper';
+import { Store } from '../../shared/services/store.service';
 import { CustomDateFormatter } from './custom-date-formatter.provider';
 import { generateTimeZoneOptions } from '../../shared/helpers/timezone.helper';
 

@@ -1,0 +1,12 @@
+mutation CreateTargetNew ($data: TargetNewInput!) {
+  createTargetNew(TargetInput: $data) {
+    success
+    entity {
+        _id
+    }
+    errors {
+      field
+      errors
+    }
+  }
+}

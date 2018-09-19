@@ -23,7 +23,10 @@ export interface ChartData {
   targetList?: any[];
   title?: string;
   frequency?: string;
-  dateRange?: IChartDateRange;
+  dateRange?: IChartDateRange[];
+  xAxisSource: string;
+  comparison: string[];
+  groupings: string[];
 }
 
 export enum ChartType {

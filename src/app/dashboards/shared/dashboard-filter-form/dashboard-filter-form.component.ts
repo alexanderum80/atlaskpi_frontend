@@ -3,8 +3,8 @@ import { ApolloService } from '../../../shared/services/apollo.service';
 import { UserService } from '../../../shared/services';
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { DashboardService } from '../../index';
-import { SelectionItem } from '../../../ng-material-components/index';
+import { DashboardService } from '../..';
+import { SelectionItem } from '../../../ng-material-components';
 
 const usersQuery = require('graphql-tag/loader!../../../users/shared/graphql/get-all-users.gql');
 
