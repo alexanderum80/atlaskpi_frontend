@@ -7,22 +7,19 @@ import { get as _get, isEmpty, isNumber, isString, pick } from 'lodash';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs/Subscription';
 import SweetAlert from 'sweetalert2';
-
 import { FormatterFactory, yAxisFormatterProcess } from '../../dashboards/shared/extentions/chart-formatter.extention';
 import { MilestoneService } from '../../milestones/shared/services/milestone.service';
 import { MenuItem } from '../../ng-material-components';
-import {
-    ChangeSettingsOnFlyActivity,
-} from '../../shared/authorization/activities/charts/change-settings-on-fly-chart.activity';
+import { ChangeSettingsOnFlyActivity } from '../../shared/authorization/activities/charts/change-settings-on-fly-chart.activity';
 import { CompareOnFlyActivity } from '../../shared/authorization/activities/charts/compare-on-fly-chart.activity';
 import { DownloadChartActivity } from '../../shared/authorization/activities/charts/download-chart.activity';
 import { SeeInfoActivity } from '../../shared/authorization/activities/charts/see-info-chart.activity';
 import { AddTargetActivity } from '../../shared/authorization/activities/targets/add-target.activity';
 import { ViewTargetActivity } from '../../shared/authorization/activities/targets/view-target.activity';
-import { parseComparisonDateRange, parsePredefinedDate } from '../../shared/models';
-import { IChartDateRange } from '../../shared/models';
+import { IChartDateRange, parseComparisonDateRange, parsePredefinedDate } from '../../shared/models';
 import { IDateRangeItem, PredefinedDateRanges } from '../../shared/models/date-range';
 import { DialogResult } from '../../shared/models/dialog-result';
+import { IChartTop } from '../../shared/models/top-n-records';
 import { ApolloService } from '../../shared/services/apollo.service';
 import { BrowserService } from '../../shared/services/browser.service';
 import { CommonService } from '../../shared/services/common.service';
@@ -31,6 +28,7 @@ import { DrillDownService } from '../shared/services/drilldown.service';
 import { predefinedColors } from './../shared/ui/chart-format-info/material-colors';
 import { ChartViewViewModel } from './chart-view.viewmodel';
 import { TableModeService } from './table-mode/table-mode.service';
+
 
 const Highcharts = require('highcharts/js/highcharts');
 
@@ -74,6 +72,9 @@ export interface ChartData {
     description: string;
     group: string;
     kpis: any[];
+    top: IChartTop;
+    sortingCriteria: string;
+    sortingOrder: string;
     chartDefinition: Options;
     targetList?: any[];
     futureTarget?: boolean;
@@ -150,8 +151,9 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     filterData: any[];
     isDataOnFly = false;
     chartOnFly: Chart;
-    isSettingsOnFly = false;
-    
+    N_Result: any;
+    formatSortingCrit: any;
+
     rootNode: IChartTreeNode;
     currentNode: IChartTreeNode;
 
@@ -294,6 +296,35 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         if (this.chartData.comparison && this.chartData.comparison.length > 0) {
             this.getComparisonValue();
             this.getComparisonDateRange();
+        }
+
+        if (this.chartData.top) {
+            
+            if (this.chartData.top.predefined ) {
+                
+                if (this.chartData.top.predefined === 'other') {
+                    this.N_Result = this.chartData.top.custom;
+                } else {
+                    this.N_Result = this.chartData.top.predefined.substr(4,3);
+                }
+            }
+        }
+
+        if (this.chartData.sortingCriteria && this.chartData.sortingOrder ) {
+
+            let scValue = this.chartData.sortingCriteria;
+
+            for (let i = 0;  i < scValue.length; i++) {
+                
+                if (scValue[i] === scValue[i].toUpperCase()) {
+                    this.formatSortingCrit = this.chartData.sortingCriteria.replace(scValue[i], ' ' + scValue[i].toLocaleLowerCase())
+                }
+            }
+
+            if (!this.formatSortingCrit) {
+
+                this.formatSortingCrit = scValue;
+            }
         }
 
         if (this.chartData && this.chartData.chartDefinition && this.chartData.chartDefinition.chart) {
@@ -508,8 +539,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     closeSettingOnFly() {
-        this.isSettingsOnFly = !this.isSettingsOnFly;
-        this._isSettingsOnFly();
+        // this.isSettingsOnFly = !this.isSettingsOnFly;
+        // this._isSettingsOnFly();
         const that = this;
         const predefined = this.currentNode.parent.dateRange[0].predefined || null;
         const groupings = this.currentNode.parent.groupings;
@@ -962,8 +993,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     closeOverlay(result: DialogResult) {
-        this.isSettingsOnFly = !this.isSettingsOnFly;
-        this._isSettingsOnFly();
+        // this.isSettingsOnFly = !this.isSettingsOnFly;
+        // this._isSettingsOnFly();
         this.actionItemsTarget = undefined;
         this.overlay.hide();
         this._refreshTarget(result);
@@ -1291,7 +1322,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                this.chartData.chartDefinition.chart) ? true : false;
     }
 
-    private _isSettingsOnFly() {
+    isSettingsOnFly() {
         return   this.currentNode && this.currentNode.isDataOnFly && !this.drilledDown;
     }
 
