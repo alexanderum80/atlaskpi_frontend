@@ -142,7 +142,36 @@ export const PredefinedComparisonDateRanges = {
     customTwoYearsAgo: 'two years ago',
     customThreeYearsAgo: 'three years ago',
     customFourYearsAgo: 'four years ago',
-    customFiveYearsAgo: 'five years ago'
+    customFiveYearsAgo: 'five years ago',
+    twoYearsAgo: '2 years ago',
+    threeYearsAgo: '3 years ago',
+    fourYearsAgo: '4 years ago',
+    fiveYearsAgo: '5 years ago',
+    sixYearsAgo: '6 years ago',
+    sevenYearsAgo: '7 years ago',
+    eightYearsAgo: '8 years ago',
+    nineYearsAgo: '9 years ago',
+    tenYearsAgo: '10 years ago',
+    elevenYearsAgo: '11 years ago',
+    twelveYearsAgo: '12 years ago',
+    thirteenYearsAgo: '13 years ago',
+    fourteenYearsAgo: '14 years ago',
+    fifteenYearsAgo: '15 years ago',
+    sixteenYearsAgo: '16 years ago',
+    seventeenYearsAgo: '17 years ago',
+    eighteenYearsAgo: '18 years ago',
+    nineteenYearsAgo: '19 years ago',
+    twentyYearsAgo: '20 years ago',
+    twentyoneYearsAgo: '21 years ago',
+    twentytwoYearsAgo: '22 years ago',
+    twentythreeYearsAgo: '23 years ago',
+    twentyfourYearsAgo: '24 years ago',
+    twentyfiveYearsAgo: '25 years ago',
+    twentysixYearsAgo: '26 years ago',
+    twentysevenYearsAgo: '27 years ago',
+    twentyeightYearsAgo: '28 years ago',
+    twentynineYearsAgo: '29 years ago',
+    thirtyYearsAgo: '30 years ago',
 };
 
 export const quarterMonths = {
@@ -337,9 +366,7 @@ export function parseComparisonDateRange(value: string, customDateRange?: IDateR
     if (!firstDateRange) {
         firstDateRange = {};
     }
-
     switch (comparisonTokens[1]) {
-
         // today cases
         case 'yesterday':
             return backInTime(firstDateRange, 1, 'day');
@@ -365,16 +392,74 @@ export function parseComparisonDateRange(value: string, customDateRange?: IDateR
         case 'threeYearsAgo':
             return backInTime(firstDateRange, 3, 'year');
 
+        case 'fourYearsAgo':
+            return backInTime(firstDateRange, 4, 'year');
+        case 'fiveYearsAgo':
+            return backInTime(firstDateRange, 5, 'year');
+        case 'sixYearsAgo':
+            return backInTime(firstDateRange, 6, 'year');
+        case 'sevenYearsAgo':
+            return backInTime(firstDateRange, 7, 'year');
+        case 'eightYearsAgo':
+            return backInTime(firstDateRange, 8, 'year');
+        case 'nineYearsAgo':
+            return backInTime(firstDateRange, 9, 'year');
+        case 'tenYearsAgo':
+            return backInTime(firstDateRange, 10, 'year');
+        case 'elevenYearsAgo':
+            return backInTime(firstDateRange, 11, 'year');
+        case 'twelveYearsAgo':
+            return backInTime(firstDateRange, 12, 'year');
+        case 'thirteenYearsAgo':
+            return backInTime(firstDateRange, 13, 'year');
+        case 'fourteenYearsAgo':
+            return backInTime(firstDateRange, 14, 'year');
+        case 'fifteenYearsAgo':
+            return backInTime(firstDateRange, 15, 'year');
+        case 'sixteenYearsAgo':
+            return backInTime(firstDateRange, 16, 'year');
+        case 'seventeenYearsAgo':
+            return backInTime(firstDateRange, 17, 'year');
+        case 'eighteenYearsAgo':
+            return backInTime(firstDateRange, 18, 'year');
+        case 'nineteenYearsAgo':
+            return backInTime(firstDateRange, 19, 'year');
+        case 'twentyYearsAgo':
+            return backInTime(firstDateRange, 20, 'year');
+        case 'twentyoneYearsAgo':
+            return backInTime(firstDateRange, 21, 'year');
+        case 'twentytwoYearsAgo':
+            return backInTime(firstDateRange, 22, 'year');
+        case 'twentythreeYearsAgo':
+            return backInTime(firstDateRange, 23, 'year');
+        case 'twentyfourYearsAgo':
+            return backInTime(firstDateRange, 24, 'year');
+        case 'twentyfiveYearsAgo':
+            return backInTime(firstDateRange, 25, 'year');
+        case 'twentysixYearsAgo':
+            return backInTime(firstDateRange, 26, 'year');
+        case 'twentysevenYearsAgo':
+            return backInTime(firstDateRange, 27, 'year');
+        case 'twentyeightYearsAgo':
+            return backInTime(firstDateRange, 28, 'year');
+        case 'twentynineYearsAgo':
+            return backInTime(firstDateRange, 29, 'year');
+        case 'thirtyYearsAgo':
+            return backInTime(firstDateRange, 30, 'year');
         case 'lastQuarter':
             // TODO: we have to calculate the previous Q, just back in time 90 days for now
             return backInTime(firstDateRange, 90, 'days');
 
         case 'previousPeriod':
             return previousPeriod(firstDateRange);
-
+        default :
+            if (comparisonTokens[1].endsWith('YearsAgo')) {
+                const timeBack = comparisonTokens[1].substr(0, comparisonTokens[1].indexOf('YearsAgo'));
+                return backInTime(firstDateRange, <any>timeBack, 'year');
+            } else {
+                return null;
+            }
     }
-
-    return null;
 }
 
 export function backInTime(dateRange: IDateRange, amount: any, timespan: string): IDateRange {

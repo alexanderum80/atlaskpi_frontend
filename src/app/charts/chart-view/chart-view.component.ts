@@ -16,9 +16,10 @@ import { DownloadChartActivity } from '../../shared/authorization/activities/cha
 import { SeeInfoActivity } from '../../shared/authorization/activities/charts/see-info-chart.activity';
 import { AddTargetActivity } from '../../shared/authorization/activities/targets/add-target.activity';
 import { ViewTargetActivity } from '../../shared/authorization/activities/targets/view-target.activity';
-import { IChartDateRange, parseComparisonDateRange, parsePredefinedDate } from '../../shared/models';
+import { parseComparisonDateRange, parsePredefinedDate } from '../../shared/models';
 import { IDateRangeItem, PredefinedDateRanges } from '../../shared/models/date-range';
 import { DialogResult } from '../../shared/models/dialog-result';
+import { IChartDateRange } from '../../shared/models/index';
 import { IChartTop } from '../../shared/models/top-n-records';
 import { ApolloService } from '../../shared/services/apollo.service';
 import { BrowserService } from '../../shared/services/browser.service';
@@ -38,6 +39,7 @@ const ChartQuery = gql`
      }
 `;
 
+const kpiOldestDateQuery = require('graphql-tag/loader!../shared/ui/chart-basic-info/kpi-get-oldestDate.gql');
 export enum frequencyEnum {
     Daily = 'daily',
     Weekly = 'weekly',
@@ -158,7 +160,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     currentNode: IChartTreeNode;
 
     comparisonDateRange: any[] = [];
-    comparisonValue: string;
+    comparisonValue: string[] = [];
+    loadedComparisonData = false;
     isDateRangeInPresent = false;
     isfrequencyToRunRate = false;
     isTargets = false;
@@ -413,10 +416,11 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         };
 
         this.currentNode = this.rootNode;
-
-        setTimeout(() => {
+        if (this.currentNode.definition.chart.type === 'pie') {
+            this.loadedComparisonData = true;
+        } else {
             this._updateComparisonOptions();
-        }, 1000);
+        }
     }
 
     getDateRangeInPresent(): boolean {
@@ -475,19 +479,30 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     getComparisonValue() {
         const dateRange = this.dateRanges.find(d => d.dateRange.predefined === this.chartData.dateRange[0].predefined);
         if (!dateRange) { return; }
-        const comparison = dateRange.comparisonItems.find(c => c.key === this.chartData.comparison[0]);
-        this.comparisonValue = comparison.value;
+        this.comparisonValue = [];
+        this.chartData.comparison.map( comp => {
+            const comparison = dateRange.comparisonItems.find(c => c.key === comp);
+            if (!comparison) {
+                this.comparisonValue.push(comp.substr(0, comp.indexOf('YearsAgo')) + ' years ago');
+            } else {
+                this.comparisonValue.push(comparison.value);
+            }
+        });
     }
 
     getComparisonDateRange() {
-        const comparison: string[] = [];
-        comparison.push(this.chartData.dateRange[0].predefined);
-        comparison.push(this.chartData.comparison[0]);
+        if (!this.chartData.comparison) { return; }
+        let comparison: string[] = [];
         let customDateRange;
         if (this.chartData.dateRange[0].predefined === 'custom') {
             customDateRange = this.chartData.dateRange[0].custom;
         }
-        this.comparisonDateRange = <any>parseComparisonDateRange(<any>comparison, customDateRange);
+        this.chartData.comparison.map(comp => {
+            comparison = [];
+            comparison.push(this.chartData.dateRange[0].predefined);
+            comparison.push(comp);
+            this.comparisonDateRange.push(<any>parseComparisonDateRange(<any>comparison, customDateRange));
+        });
     }
 
     setSettingsOnFly(predefinedDateRange: string, dateRange: DateRange, frequency: string, groupings: string) {
@@ -598,7 +613,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         if (!this.chart.options.plotOptions.series) {
             this.chart.options.plotOptions.series = {};
         }
-
         this.chart.options.plotOptions.series = Object.assign(this.chart.options.plotOptions.series, {
             point: {
                 events: {
@@ -608,7 +622,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                             const isYear: boolean = moment(this.category, 'YYYY', true).isValid();
                             const checkYear = isYear ? this.category : null;
                             const year = that.currentNode.year || checkYear;
-
                             const dateRange = that._drillDownSvc.getDateRangeForDrillDown(that.currentNode);
                             const customDateRange = that._drillDownSvc.getDrillDownDateRange(
                                 this.category, dateRange, year, that.chartData.frequency
@@ -617,10 +630,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                             const comparisonForDrillDown: string[] = that._drillDownSvc.getComparisonForDrillDown(
                                 that.comparisonValue, that.currentNode.dateRange
                             );
-
                             let frequency = that._drillDownSvc.getFrequencyType(this.category);
                             frequency = frequency ? (frequency === 'quarterly' ? 'monthly' : frequency) : null;
-
                             const chartQueryVariables = {
                                 id: that.chartData._id,
                                 input: {
@@ -642,7 +653,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                                 data
                             }) => {
                                 const rawChart: ChartData = JSON.parse((<any>data).chart);
-
                                 // show message when the chart has no data
                                 if (rawChart.chartDefinition) {
                                     const noData = that._noChartDataMessage(rawChart.chartDefinition.series);
@@ -720,7 +730,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             Object.assign({},
             pick(this.chartData, ['frequency', 'groupings']))
         );
-
         switch (item.id) {
             case 'comparison':
                 return this._handleComparisonAction(item);
@@ -730,6 +739,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                     this.descriptionAnimation = 'fadeOut';
                     setTimeout(() => this.showDescription = false, 1000);
                 } else {
+                    this.getComparisonDateRange()
                     this.showDescription = true;
                     this.descriptionAnimation = 'fadeIn';
                 }
@@ -1011,13 +1021,13 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
 
     drillup() {
         const that = this;
-
         if (this.currentNode.parent) {
             this.title = this.currentNode.parent.title;
             this.chartData.targetList = this.currentNode.parent.targetList;
             this.chartData.dateRange = this.currentNode.parent.dateRange;
             this.chartData.groupings = this.currentNode.parent.groupings;
             this.chartData.frequency = this.currentNode.parent.frequency;
+            this.chartData.comparison = this.currentNode.parent.comparison;
 
             this.chart = new Chart(this.currentNode.parent.definition);
             this._tableModeService.setChart(this.chart);
@@ -1027,15 +1037,19 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             );
 
             this.drillUpAnimation = 'fadeOutLeft';
-
+            if (!this.currentNode.parent.isCompared) {
+                that.comparisonValue = [];
+            } else {
+                that.getComparisonValue();
+            }
             setTimeout(function () {
                 that.chartData.targetList = that.currentNode.parent.targetList;
                 that.currentNode = that.currentNode.parent;
                 that.drillUpAnimation = 'fadeInLeft';
             }, 500);
         }
-
         this._updateComparisonOptions();
+        this.getComparisonDateRange();
     }
 
     showFutureTargets() {
@@ -1197,7 +1211,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
 
         this.currentNode = this.rootNode;
     }
-
 
     getDateRange(custom: any) {
         if (custom.from && custom.to) {
@@ -1521,28 +1534,35 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 }
                 return;
             }
-
-            const childrens = dateRange.comparisonItems.map(item => {
-                return {
+            const kpi_id = this.chartData.kpis[0]._id;
+            this._apolloService.networkQuery < string > (kpiOldestDateQuery, {id: kpi_id })
+            .then(kpis => {
+                compareAction.children = this.updateComparisonData(dateRange , kpis.getKpiOldestDate);
+                this.loadedComparisonData = true;
+            });
+        }
+    }
+    private updateComparisonData(dateRange: any, yearOldestDate: string): any[] {
+        const itemsComparison = [dateRange, ''];
+        const childrens = [];
+        dateRange.comparisonItems.map(item => {
+            itemsComparison[1] = item.key;
+            const yearofDateFrom = parseComparisonDateRange(<any>itemsComparison, itemsComparison[0]).from.getFullYear();
+            if (yearofDateFrom >= parseInt(yearOldestDate, 0)) {
+                childrens.push({
                     id: 'comparison',
                     title: item.value,
                     payload: item.key
-                };
-            });
-
-            if (compareAction) {
-                compareAction.children = childrens.length > 0 ?
-                childrens :
-                emptyChildrens;
+                });
             }
-        }
+        });
+        return childrens.length > 0 ? childrens : undefined;
     }
 
     private _handleComparisonAction(item: any) {
         if (!item || !item.payload) {
             return;
         }
-
         const that = this;
         const variables = {
             id: this.chartData._id,
