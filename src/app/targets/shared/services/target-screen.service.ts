@@ -179,14 +179,19 @@ export class TargetScreenService {
             (this.chart.groupings && this.chart.groupings.length)
             && (!this.chart.frequency || (this.chart.frequency && this.chart.xAxisSource !== 'frequency'));
 
-        this.displayAppliesToField = !xAxisIsFrequency || xAxisIsGroupings;
+        this.displayAppliesToField = (this.chart.frequency || (this.chart.groupings && this.chart.groupings.filter(g => g !== '').length))
+            && (!xAxisIsFrequency || xAxisIsGroupings);
 
         this.baseOnList = this.getBasedOnList();
         this.appliesToList = this.chart.chartDefinition.xAxis.categories.map(c => ({ id: c, title: c }));
     }
 
     private getBasedOnList(): IListItem[] {
-        if (this.displayAppliesToField) {
+        const noFrequencyOrGrouping =
+            !this.chart.frequency
+            && (!this.chart.groupings || !this.chart.groupings.filter(g => g !== '').length);
+
+        if (noFrequencyOrGrouping || this.displayAppliesToField) {
             return [{ id: 'previous period', title: 'Previous Period' }];
         }
 
