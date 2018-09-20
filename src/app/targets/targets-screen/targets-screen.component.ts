@@ -74,13 +74,7 @@ export class TargetsScreenComponent implements OnInit {
             this.model.updateNewModel(result.entity._id);
         }
 
-        SweetAlert({
-            title: 'Confirmation',
-            text: `All changes have been saved`,
-            type: 'warning',
-            showConfirmButton: true
-        });
-
+        this.closed.emit();
     }
 
     async remove(target: ITarget) {

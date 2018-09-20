@@ -111,6 +111,9 @@ export class TargetScreenService {
     }
 
     addTarget() {
+        this._formModel.update(null);
+        this.form.reset();
+
         const newTarget = getNewTarget(this.userService.user._id);
         this.targetList.push(newTarget);
         this.selectTarget(newTarget);
