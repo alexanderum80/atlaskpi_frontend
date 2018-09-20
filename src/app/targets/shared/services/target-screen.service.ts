@@ -193,9 +193,9 @@ export class TargetScreenService {
         const getList = (name: string) => {
             const lower = name.toLowerCase();
             return [
-                { id: `last ${lower}`, title: `Last ${name}` },
-                { id: `same ${lower} last year`, title: `Same ${name}, last year` },
-                { id: `same ${lower} 2 years ago`, title: `Same ${name}, 2 years ago` },
+                { id: `previous`, title: `Last ${name}` },
+                { id: `oneYearAgo`, title: `Same ${name}, last year` },
+                { id: `twoYearsAgo`, title: `Same ${name}, 2 years ago` },
             ];
         };
 
@@ -212,9 +212,9 @@ export class TargetScreenService {
                     return getList('Week');
                 case FrequencyEnum.Yearly:
                     return [
-                        { id: `last year`, title: `Last Year` },
-                        { id: `two years ago`, title: `Two years ago` },
-                        { id: `three years ago`, title: `Three years ago` },
+                        { id: `oneYearAgo`, title: `Last Year` },
+                        { id: `twoYearsAgo`, title: `Two years ago` },
+                        { id: `threeYearsAgo`, title: `Three years ago` },
                     ];
             }
         }
