@@ -25,9 +25,12 @@ export class UserToken implements IUserToken {
     fullName: string;
 
     constructor(info: IUserToken) {
-        if (!info.access_token || !info.expires) { throw new Error('Invalid token'); };
-        this.issued = moment(info['issued']);
-        this.expires = moment(info['expires']);
+        if (!info || !info.access_token || !info.expires) { throw new Error('Invalid token'); }
+
+        const parseDateAsString = moment(info['issued']).isValid();
+
+        this.issued = parseDateAsString ? moment(info['issued']) : moment(Number(info['issued']));
+        this.expires = parseDateAsString ? moment(info['expires']) : moment(Number(info['issued']));
         this.access_token = info['access_token'];
 
         this.subdomain = info.subdomain;
