@@ -73,8 +73,11 @@ export class TargetScreenService {
 
     getData() {
         const v = this._formModel.form.value;
+        console.dir(v);
 
-        return {
+        const value = +(<any>v.value).replace(/,/g, '');
+
+        const target = {
             _id: v._id,
             name: v.name,
             source: {
@@ -84,7 +87,7 @@ export class TargetScreenService {
             compareTo: v.compareTo,
             type: v.type,
             unit: v.unit,
-            value: +(v.value.toString().replace(',', '')) || 0,
+            value: value,
             appliesTo: v.appliesTo.value ? { field: this.chart.groupings[0], value: v.appliesTo.value } : undefined,
             active: Boolean(v.active),
             notificationConfig: {
@@ -102,6 +105,9 @@ export class TargetScreenService {
                 status: m.status
             })),
         } as ITarget;
+
+        console.dir(target);
+        return target;
     }
 
     addTarget() {

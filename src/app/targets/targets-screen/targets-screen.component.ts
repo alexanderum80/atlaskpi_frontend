@@ -68,6 +68,7 @@ export class TargetsScreenComponent implements OnInit {
 
         const res = await this.apollo.mutate({ mutation, variables }).toPromise();
         const result = data._id ? res.data.updateTargetNew : res.data.createTargetNew;
+        this.model.form.markAsPristine();
 
         if (res.data.createTargetNew && res.data.createTargetNew.success) {
             this.model.updateNewModel(result.entity._id);

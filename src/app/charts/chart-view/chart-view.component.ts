@@ -797,10 +797,11 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         this.targetsVisible = false;
         // }
 
-        const refresh = {
-            refresh: true,
-        };
-        this.targetOverlay(refresh);
+        // const refresh = {
+        //     refresh: true,
+        // };
+        // this.targetOverlay(refresh);
+        this.closeRunRate();
     }
 
 
