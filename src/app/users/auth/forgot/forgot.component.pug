@@ -2,28 +2,28 @@ kpi-overlay([active]="true", openEffect="none", [opacity]="0.7")
 
 .h-100.p-relative(layout="row", layout-padding, layout-align="center center", style="z-index: 10")
     div(flex="45", flex-md="50", flex-sm="80", flex-xs="90")
-        .h-100(layout="column", layout-padding, layout-align="center center")
+        .h-100(layout="column", layout-padding)
             div(flex)
                 bw-card([depth]="4")
                     //- card-header
                     //-     h1.header Login
                     bw-card-body
-                        div(layout="column", layout-align="center center")
+                        div(layout="column")
                             //- image
-                            div.p-5(flex)
+                            div.p-5.text-center(flex)
                                 img.signin.logo.p-20([style.height.px]="80", src="/assets/img/logos/logo.png")
                             
                             div(*ngIf="!emailSent", flex)
-                                div(layout="column", layout-align="center center")
+                                div(layout="column")
                                     //- forgot password text
                                     div.p-10(flex)
                                         p.lead.text-center
                                             | Forgot your Password?
                                     
                                     div(flex)
-                                        div(layout="row", layout-align="center center")
+                                        div(layout="row")
                                             //- company name
-                                            div(*ngIf="showCompany", flex="60")
+                                            div(*ngIf="showCompany", flex)
                                                 bw-text-box([fg]="fg", leftIcon="home", field="companyName", label="Company Name", [required]="true")
                                         div(layout="row", layout-align="center center")
                                             //- email
@@ -31,7 +31,7 @@ kpi-overlay([active]="true", openEffect="none", [opacity]="0.7")
                                                 bw-email([fg]="fg", [required]="true", field="email", label="Email Address")
 
                                     //- button
-                                    div(flex)
+                                    .text-center(flex)
                                         bw-button(
                                             color="blue",
                                             title="Send",
@@ -42,9 +42,9 @@ kpi-overlay([active]="true", openEffect="none", [opacity]="0.7")
                                 )
                             //- sent email text
                             div(*ngIf="emailSent", flex)
-                                p.lead.p-5.m-t-10(flex="100")
+                                p.lead.p-5.m-t-10(flex)
                                     | An email was sent to your address, follow the steps to complete the process.
 
-                            .p-20(flex)
+                            .p-20.text-center(flex)
                                 bw-button([simple]="true", color="blue", title="Back to Sign In", (clicked)="backToSignIn()")
                                                 
