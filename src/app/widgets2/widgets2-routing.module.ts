@@ -1,4 +1,4 @@
-import { WidgetsComponent } from '../widgets2/widgets.component';
+import { WidgetsComponent } from './widgets.component';
 import {
     EmptyWidgetListComponent
 } from './empty-widget-list/empty-widget-list.component';

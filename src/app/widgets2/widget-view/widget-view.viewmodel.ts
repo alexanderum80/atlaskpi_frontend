@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { MenuItem } from '../../ng-material-components';
 import { Field, ViewModel } from '../../ng-material-components/viewModels';
-import { INumericWidgetData, IWidgetViewData } from './../shared/models/widget';
-import { IWidgetData } from './../widget-preview/widget-preview.viewmodel';
+import { INumericWidgetData, IWidgetViewData } from '../shared/models/widget';
+import { IWidgetData } from '../widget-preview/widget-preview.viewmodel';
 
 @Injectable()
 export class WidgetViewViewModel extends ViewModel < IWidgetViewData > {

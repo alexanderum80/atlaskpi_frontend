@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import { IChartGalleryItem } from '../../models';
-import { ChartGalleryService } from '../../services/';
+import { ChartGalleryService } from '../../services';
 
 @Component({
   selector: 'kpi-chart-gallery',

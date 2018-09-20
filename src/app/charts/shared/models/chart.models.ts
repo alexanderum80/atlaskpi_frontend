@@ -23,7 +23,10 @@ export interface ChartData {
   targetList?: any[];
   title?: string;
   frequency?: string;
-  dateRange?: IChartDateRange;
+  dateRange?: IChartDateRange[];
+  xAxisSource: string;
+  comparison: string[];
+  groupings: string[];
 }
 
 export enum ChartType {
@@ -213,7 +216,7 @@ export class ChartModel {
       proxyChartModel.sortingCriteria = fg.value.sortingCriteria;
       proxyChartModel.sortingOrder = fg.value.sortingOrder;
       proxyChartModel.xAxisSource = fg.value.xAxisSource;
-      proxyChartModel.comparison = fg.value.comparison && !isEmpty(fg.value.comparison) ? fg.value.comparison : null;
+      proxyChartModel.comparison = fg.value.comparison && !isEmpty(fg.value.comparison) ? fg.value.comparison.split('|') : null;
       proxyChartModel.dashboards = fg.value.dashboards ? fg.value.dashboards.split('|').map(d => d.trim()) : [];
 
       // fill legend object
@@ -294,7 +297,7 @@ export class ChartModel {
         grouping: this.groupings ? this.groupings[0] || undefined : undefined,
         kpi: this.kpis ? this.kpis[0]._id || undefined : undefined,
         xAxisSource: this.xAxisSource || '',
-        comparison: this.comparison ? this.comparison[0] || undefined : undefined,
+        comparison: this.comparison ? this.comparison.map(c => c).join('|') : undefined,
         dashboards: this.dashboards ? this.dashboards.map(d => d._id).join('|') : undefined,
 
         // chart format info

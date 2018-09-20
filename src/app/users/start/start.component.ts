@@ -2,7 +2,7 @@ import { LocalStorageService } from '../../shared/services/local-storage.service
 import { WindowService } from '../../shared/services/window.service';
 import { BrowserService } from '../../shared/services/browser.service';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { AuthenticationService } from '../../shared/services/';
+import { AuthenticationService } from '../../shared/services';
 
 const ViewsMap = {
     Signin: 'signIn',

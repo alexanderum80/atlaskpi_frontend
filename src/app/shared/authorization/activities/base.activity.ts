@@ -1,7 +1,7 @@
 import { IRole } from '../../../roles/shared/role';
 import { IActivity } from '../activity';
-import { IPermission } from '../../../permissions/shared/models/index';
-import { IUserInfo } from '../../models/index';
+import { IPermission } from '../../../permissions/shared/models';
+import { IUserInfo } from '../../models';
 import { lowerCase } from 'change-case';
 
 export abstract class BaseActivity {

@@ -9,7 +9,7 @@ import { ApolloService } from '../../shared/services/apollo.service';
 import { CommonService } from '../../shared/services/common.service';
 import { ComplexKpiFormComponent } from '../kpi-form/complex/complex-kpi-form.component';
 import { SimpleKpiFormComponent } from '../kpi-form/simple/simple-kpi-form.component';
-import { ExternalSourceKpiFormComponent } from './../kpi-form/external-source/external-source-kpi-form.component';
+import { ExternalSourceKpiFormComponent } from '../kpi-form/external-source/external-source-kpi-form.component';
 import { EditKpiViewModel } from './edit-kpi.component.viewmodel';
 
 const kpiQuery = require('graphql-tag/loader!./kpi.gql');

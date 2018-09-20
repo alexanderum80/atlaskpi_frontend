@@ -1,6 +1,6 @@
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ReactiveFormsModule } from '@angular/forms';
-import { SharedModule } from '../shared/index';
+import { SharedModule } from '../shared';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialFormsModule, MaterialUserInterfaceModule } from '../ng-material-components';

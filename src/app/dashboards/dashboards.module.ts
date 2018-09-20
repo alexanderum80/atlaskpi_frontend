@@ -1,7 +1,7 @@
-import { SocialWidgetsModule } from './../social-widgets/social-widgets.module';
+import { SocialWidgetsModule } from '../social-widgets/social-widgets.module';
 import { ChartMiniComponent } from './chart-mini';
 import { WidgetsModule } from '../widgets';
-import { SharedModule } from '../shared/index';
+import { SharedModule } from '../shared';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 

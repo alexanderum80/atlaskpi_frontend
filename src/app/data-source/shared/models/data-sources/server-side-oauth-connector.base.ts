@@ -6,7 +6,7 @@ import {
 import {
     environment
 } from '../../../../../environments/environment';
-import { getHostname } from '../../../../shared/extentions/index';
+import { getHostname } from '../../../../shared/extentions';
 
 export function getConnectorId(type: ConnectorTypeEnum): string {
     switch (type) {

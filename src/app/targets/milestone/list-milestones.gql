@@ -1,0 +1,10 @@
+query milestoneByTarget($target: String!) {
+  milestonesByTarget(target: $target) {
+    _id
+    target
+    task
+    dueDate
+    status
+    responsible 
+  }
+}

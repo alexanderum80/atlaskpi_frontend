@@ -1,6 +1,7 @@
+import { SelectionItem } from './../../../../ng-material-components/models/selection-item';
 import { Apollo } from 'apollo-angular';
 import { ViewModel } from '../../../../ng-material-components/viewModels/view-model';
-import { IUserInfo } from '../../../../shared/models/index';
+import { IUserInfo } from '../../../../shared/models';
 import { UserService } from '../../../../shared/services/user.service';
 import { Injectable } from '@angular/core';
 import introJs from 'intro.js/intro.js';
@@ -61,6 +62,7 @@ export class ChartBasicInfoViewModel extends ViewModel<any> {
 
     private _introConfig: any;
     private tourVisits: number;
+    private _comparisonList: SelectionItem[] = [];
 
     constructor(userService: UserService, private _apollo: Apollo) {
         super(userService);
@@ -106,6 +108,13 @@ export class ChartBasicInfoViewModel extends ViewModel<any> {
 
     get showChartTour(): boolean {
         return this._user.preferences.chart.showTour;
+    }
+
+    get comparisonList() {
+        return this._comparisonList;
+    }
+    set comparisonList(value: any) {
+        this._comparisonList = value;
     }
 
 }

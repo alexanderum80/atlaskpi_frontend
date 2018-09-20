@@ -32,5 +32,5 @@
     .charts.flex(layout="row", layout-wrap, [attr.layout-padding]="!isMobile")
         .space-charts(*ngFor="let chart of charts", flex-xs="100", flex-gt-xs="100", flex-gt-sm="50", flex-gt-lg="33")
             kpi-chart-view(*ngIf="viewChart()",[chartData]="chart", [dateRanges]="dateRanges", [isFromDashboard]="isFromDashboard")
-
+            
 kpi-widget-alert(#widgetAlert)

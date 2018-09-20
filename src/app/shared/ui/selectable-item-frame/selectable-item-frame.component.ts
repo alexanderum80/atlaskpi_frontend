@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs/Subscription';
-import { GenericSelectionService } from './../../services/generic-selection.service';
+import { GenericSelectionService } from '../../services/generic-selection.service';
 import { AfterViewInit, Component, HostBinding, Input, OnInit, OnDestroy } from '@angular/core';
 
 @Component({

@@ -14,7 +14,7 @@ import {
   OnDestroy
 } from '@angular/core';
 import {IMilestone} from '../shared/milestones.interface';
-import { Apollo } from 'apollo-angular/';
+import { Apollo } from 'apollo-angular';
 import { FormGroup } from '@angular/forms';
 import { MilestoneService } from '../shared/services/milestone.service';
 import { Subscription } from 'rxjs/Subscription';

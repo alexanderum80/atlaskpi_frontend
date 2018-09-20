@@ -114,6 +114,9 @@
     &.open {
         z-index: 5;
     }
+    &>ul {
+        max-height: 450px;
+    }
 }
 
 

@@ -12,7 +12,17 @@
     height: 100%;
     background-color: white;
     z-index: 1200;
-    overflow: auto;
+    overflow: scroll;
+    .chart-container {
+        width: 100%;
+        height: 455px;
+        overflow-y: scroll;
+    }
+    .chart-container-max {
+        width: 100%;
+        height: 555px;
+        overflow-y: scroll;
+    }
     .chart-description-title {
         height: 40px;
         width: 100%;
@@ -34,6 +44,12 @@
             .bold {
                 font-weight: bold;
             }
+            .size {
+                text-transform: capitalize;
+            }
+        }
+        .rotate {
+            transform: rotate(-90deg);
         }
     }
 }
@@ -174,7 +190,6 @@ div.chart-title {
     z-index: 1;
     background-color: gray;
 }
-
 .content {
    margin-top: 10px;
    max-width: 440px;
