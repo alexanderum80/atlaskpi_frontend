@@ -118,14 +118,6 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
                                 item.criteria = moment(item.criteria).format('MM/DD/YYYY');
                                 break;
 
-                            case 'Number':
-                                item.criteria = Number(item.criteria);
-                                break;
-
-                            case 'Boolean':
-                                item.criteria = Boolean(item.criteria);
-                                break;
-
                             default:
                                 item.criteria = String(item.criteria);
                                 break;
@@ -140,8 +132,8 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             if (cleanModel.tags) {
                 cleanModel.tags = cleanModel.tags.map(t => ({ value: t, display: t })) as any;
             }
-            this.onInit(cleanModel);
             this._queryFields(dataSourceValue, sourceCollectionValue || []);
+            this.onInit(cleanModel);
             this._cdr.detectChanges();
         } else {
             this.onInit(model);
@@ -266,6 +258,8 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
                 'source': this.fg.get('source').value
             });
         }
+
+        this._cdr.markForCheck();
     }
 
     hasFormControls(fg: FormGroup): boolean {
@@ -298,6 +292,8 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         if (this.source) {
             this.getDataSourceList(this.source);
         }
+
+        this._cdr.markForCheck();
     }
 
     updateExpressionFields(fieldList: IDataSourceField[]): void {
@@ -355,6 +351,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
 
     updateTags(tags: ITag[]) {
         this._tags = tags.map(t => ({ value: t.name, display: t.name }));
+        this._cdr.markForCheck();
     }
 
     updateExistDuplicatedName(exist: boolean) {
@@ -378,6 +375,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             }
         }).subscribe(({ data }) => {
             that.updateExpressionFields(data.kpiExpressionFields);
+            this._cdr.markForCheck();
         });
     }
 
@@ -503,12 +501,14 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         if (!this._selectedDataSource) { return; }
 
         if (value['expression.function'] && value['expression.function'].toLowerCase() === 'count' ) {
-            return this.numericFields = this._selectedDataSource.fields.map(f =>
+            this.numericFields = this._selectedDataSource.fields.map(f =>
                 new SelectionItem(f.path, f.name.toUpperCase()));
         } else {
             this.numericFields = this._selectedDataSource.fields.filter(f => f.type === 'Number')
                 .map(f => new SelectionItem(f.path, f.name.toUpperCase()));
         }
+
+        this._cdr.markForCheck();
     }
 
     @OnFieldChanges({ name: 'expression.operator' })
@@ -518,5 +518,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         if (isEmpty(operator)) {
             this.expression.value = null;
         }
+
+        this._cdr.markForCheck();
     }
 }
