@@ -7,11 +7,11 @@ form#searchlink.col.s12.search-box-container((click)="showGlobalSearch()")
     i.zmdi.zmdi-close
   form
     .popup-search
-         bw-text-box([fg]="fg", field="query", label="Start typing here to search across the entire app", leftIcon="search", (keydown.enter)="$event.preventDefault()")
+         bw-text-box.w-100([fg]="fg", field="query", label="Type to search", leftIcon="search", (keydown.enter)="$event.preventDefault()")
 
   .example
     p.lead.text-center In case you want to create chart using natural language, here is an example:
-    small.text-center "give me last year sales grouped by business unit with a monthly frequency on a bar chart"
+    p.text-center "give me last year sales grouped by business unit with a monthly frequency on a bar chart"
 
   #chart-container(*ngIf="chart", style="width: 70%")
     kpi-chart-view([chartData]="chart")

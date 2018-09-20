@@ -140,7 +140,7 @@ body.light {
         -o-transform: translate(0px, -100%) scale(0, 0);
         -ms-transform: translate(0px, -100%) scale(0, 0);
         transform: translate(0px, -100%) scale(0, 0);
-        @include flex-box(column, start, center);
+        // @include flex-box(column, start, center);
         opacity: 0;
         padding: 20% 10%;
         box-sizing: border-box;
