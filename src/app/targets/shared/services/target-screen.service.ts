@@ -183,18 +183,21 @@ export class TargetScreenService {
     }
 
     private processLists() {
+        this.decideIfAppliesToShouldShow();
+        this.baseOnList = this.getBasedOnList();
+        this.appliesToList = this.chart.chartDefinition.xAxis.categories.map(c => ({ id: c, title: c }));
+    }
+
+    private decideIfAppliesToShouldShow() {
         const xAxisIsFrequency = this.chart.frequency && (this.chart.xAxisSource === '' || this.chart.xAxisSource === 'frequency');
         const xAxisIsGroupings =
             (this.chart.groupings && this.chart.groupings.length)
             && (!this.chart.frequency || (this.chart.frequency && this.chart.xAxisSource !== 'frequency'));
 
         this.displayAppliesToField = this.chart.dateRange[0].predefined !== 'all times'
-            && (this.chart.frequency
-            || (this.chart.groupings && this.chart.groupings.filter(g => g !== '').length))
-            && (!xAxisIsFrequency || xAxisIsGroupings);
-
-        this.baseOnList = this.getBasedOnList();
-        this.appliesToList = this.chart.chartDefinition.xAxis.categories.map(c => ({ id: c, title: c }));
+            && (this.chart.frequency || (this.chart.groupings && this.chart.groupings.filter(g => g !== '').length))
+            && !xAxisIsFrequency
+            && xAxisIsGroupings;
     }
 
     private getBasedOnList(): IListItem[] {
