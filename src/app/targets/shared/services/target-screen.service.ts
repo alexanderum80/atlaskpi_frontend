@@ -188,7 +188,9 @@ export class TargetScreenService {
             (this.chart.groupings && this.chart.groupings.length)
             && (!this.chart.frequency || (this.chart.frequency && this.chart.xAxisSource !== 'frequency'));
 
-        this.displayAppliesToField = (this.chart.frequency || (this.chart.groupings && this.chart.groupings.filter(g => g !== '').length))
+        this.displayAppliesToField = this.chart.dateRange[0].predefined !== 'all times'
+            && (this.chart.frequency
+            || (this.chart.groupings && this.chart.groupings.filter(g => g !== '').length))
             && (!xAxisIsFrequency || xAxisIsGroupings);
 
         this.baseOnList = this.getBasedOnList();
@@ -205,7 +207,6 @@ export class TargetScreenService {
         }
 
         const getList = (name: string) => {
-            const lower = name.toLowerCase();
             return [
                 { id: `previous`, title: `Last ${name}` },
                 { id: `oneYearAgo`, title: `Same ${name}, last year` },

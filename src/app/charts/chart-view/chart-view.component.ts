@@ -1646,7 +1646,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     private _disableTargetOption(): void {
-        if (!this._hasSeries() || this._hasDaily() || this._isChartTypePie() || this._isDateRangeInPast()) {
+        if (!this._hasSeries() || this._hasDaily() || this._isChartTypePie() || this._isDateRangeInPast() || this._isAllTimesNotYearly()) {
             this._commonService.disableChildrenActionItems(this.actionItems, ['set-target']);
         } else if (!this.createTarget) {
             this._commonService.disableChildrenActionItems(this.actionItems, ['set-target'], !this.createTarget);
@@ -1675,7 +1675,12 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     private _hasDaily(): boolean {
-        return this.chartData.frequency === 'daily' ? true : false;
+        return this.chartData.frequency === 'daily';
+    }
+
+    private _isAllTimesNotYearly(): boolean {
+        return this.chartData.dateRange[0].predefined === 'all times'
+            && (this.chartData.frequency !== 'yearly' || this.chartData.xAxisSource !== 'frequency');
     }
 
     private _hasFrequency(): boolean {
