@@ -467,9 +467,14 @@ export class SelectPickerComponent extends InputBase implements OnChanges, OnDes
             this._markForReset = false;
         }
 
+        if (!this.control.value) {
+            this._clonedItems.forEach(i => i.selected = false);
+        }
+
         if (!filter || filter === '') {
             // return items that are not selected
-            this.filteredItems = this._clonedItems.filter(c => !c.selected).slice(this._resultsUpIndex, this._resultsDownIndex);
+            this.filteredItems = this._clonedItems.filter(c => !c.selected)
+                .slice(this._resultsUpIndex, this._resultsDownIndex);
         } else {
             // filter selected items
             
