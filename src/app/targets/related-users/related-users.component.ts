@@ -17,7 +17,7 @@ export class RelatedUsersComponent {
     @Input()
     userList: IListItem[];
 
-    users = (this.fg.get('notificationConfig.users') as FormArray).controls;
+    get users() { return (this.fg.get('notificationConfig.users') as FormArray).controls; }
 
     constructor(private targetScreenService: TargetScreenService) { }
 
