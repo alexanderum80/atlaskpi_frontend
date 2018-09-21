@@ -255,7 +255,8 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         if (this.hasFormControls(this.fg)) {
             this._updateExpressionNumericFields({
                 'expression.dataSource': this.fg.get('expression').get('dataSource').value,
-                'source': this.fg.get('source').value
+                'source': this.fg.get('source').value,
+                'expression.function': this.fg.get('expression').get('function').value,
             });
         }
 
@@ -455,8 +456,9 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     //     }
     // }
 
-    @OnFieldChanges([{ name: 'expression.dataSource' }, { name: 'source' }])
-    private _updateExpressionNumericFields(value: { 'expression.dataSource': string, 'source': string }) {
+    @OnFieldChanges([{ name: 'expression.dataSource' }, { name: 'source' }, { name: 'expression.function' }])
+    private _updateExpressionNumericFields(value: { 'expression.dataSource': string, 'source': string,
+                                                    'expression.function': string }) {
         const { 'expression.dataSource': dataSourceValue = null, source: sourceValue = null } = value;
 
         let dataSource: IDataSource;
@@ -482,9 +484,16 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
                 }
             }
 
-            this.numericFields =
-                dataSource.fields   .filter(f => f.type === 'Number')
-                                    .map(f => new SelectionItem(f.path, f.name.toUpperCase()));
+            // this.numericFields =
+            //     dataSource.fields   .filter(f => f.type === 'Number')
+            //                         .map(f => new SelectionItem(f.path, f.name.toUpperCase()));
+            if (value['expression.function'] && value['expression.function'].toLowerCase() === 'count' ) {
+                this.numericFields = this._selectedDataSource.fields.map(f =>
+                    new SelectionItem(f.path, f.name.toUpperCase()));
+            } else {
+                this.numericFields = this._selectedDataSource.fields.filter(f => f.type === 'Number')
+                    .map(f => new SelectionItem(f.path, f.name.toUpperCase()));
+            }
         }
 
         const source: string = sourceValue || this.source;
