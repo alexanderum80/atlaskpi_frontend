@@ -185,13 +185,7 @@ export class TargetScreenService {
     private processLists() {
         this.decideIfAppliesToShouldShow();
         this.baseOnList = this.getBasedOnList();
-        this.appliesToList = this.chart.chartDefinition.xAxis.categories.map(c => {
-            if (c.length) {
-                return { id: c[0], title: c[0] };
-            } else {
-                return { id: c, title: c };
-            }
-        });
+        this.appliesToList = this.chart.chartDefinition.xAxis.categories.map(c => ({ id: c, title: c }));
     }
 
     private decideIfAppliesToShouldShow() {
