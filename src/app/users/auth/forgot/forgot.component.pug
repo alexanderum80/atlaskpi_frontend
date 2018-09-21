@@ -21,9 +21,9 @@ kpi-overlay([active]="true", openEffect="none", [opacity]="0.7")
                                             | Forgot your Password?
                                     
                                     div(flex)
-                                        div(layout="row")
+                                        div(layout="row", layout-align="center center")
                                             //- company name
-                                            div(*ngIf="showCompany", flex)
+                                            div(*ngIf="showCompany", flex="60")
                                                 bw-text-box([fg]="fg", leftIcon="home", field="companyName", label="Company Name", [required]="true")
                                         div(layout="row", layout-align="center center")
                                             //- email
