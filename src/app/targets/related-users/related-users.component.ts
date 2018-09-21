@@ -4,6 +4,7 @@ import { FormGroupTypeSafe } from '../../shared/services';
 import { IListItem } from '../../shared/ui/lists/list-item';
 import { ITarget } from '../shared/models/target';
 import { TargetScreenService } from '../shared/services/target-screen.service';
+import { FormArray } from '@angular/forms';
 
 @Component({
   selector: 'app-related-users',
@@ -15,6 +16,8 @@ export class RelatedUsersComponent {
     fg: FormGroupTypeSafe<ITarget>;
     @Input()
     userList: IListItem[];
+
+    users = (this.fg.get('notificationConfig.users') as FormArray).controls;
 
     constructor(private targetScreenService: TargetScreenService) { }
 

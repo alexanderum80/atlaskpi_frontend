@@ -10,7 +10,7 @@
                 i.zmdi.zmdi-smartphone-android
             .fixed-column.text-center(flex-initial) &nbsp;    
 
-    div(flex, layout="row", *ngFor="let item of fg.get('notificationConfig.users').controls; let i=index")
+    div(flex, layout="row", *ngFor="let item of users; let i=index")
             .text-center.m-r-10(flex)
                 .m-t--20
                     bw-select-picker([fg]="item", 
