@@ -231,6 +231,7 @@ export class SidebarService {
         if (!dashboards || !dashboards.length) {
             return;
         }
+
         this._itemsNotVisibles = 0;
         items[0].children = dashboards.map(d => {
             // check if the current root is relarted to the dashboards
