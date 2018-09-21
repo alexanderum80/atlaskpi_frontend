@@ -4,6 +4,7 @@ import { FormGroupTypeSafe } from '../../shared/services';
 import { IListItem } from '../../shared/ui/lists/list-item';
 import { Subscription } from 'apollo-client/util/Observable';
 import { ITarget, TargetTypeEnum } from '../shared/models/target';
+import { Validators } from '@angular/forms';
 
 @Component({
     selector: 'app-basic-targets',
@@ -39,6 +40,7 @@ export class BasicTargetsComponent implements OnInit, OnDestroy {
 
         this.typeSub = this.fg.getSafe(f => f.type).valueChanges.subscribe(type => {
             this.updateUnitControl(type);
+            this.updateCompareToControl(type);
         });
 
         this.updateUnitControl(this.fg.value.type);
@@ -70,5 +72,17 @@ export class BasicTargetsComponent implements OnInit, OnDestroy {
         } else {
             this.showUnitOptions = true;
         }
+    }
+
+    private updateCompareToControl(type: string) {
+        const compareToCtrl = this.fg.getSafe(f => f.compareTo);
+
+        if (type === 'fixed') {
+            compareToCtrl.setValidators([]);
+        } else {
+            compareToCtrl.setValidators([Validators.required]);
+        }
+
+        this.fg.getSafe(f => f.compareTo).updateValueAndValidity();
     }
 }
