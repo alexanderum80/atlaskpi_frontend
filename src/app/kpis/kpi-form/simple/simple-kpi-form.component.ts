@@ -252,7 +252,6 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
                 this._subscribeToNameChanges();
                 that.vm.initialize(that.model);
 
-                
                 this._subscribeToDataSourceChanges();
                 this._cdr.detectChanges();
             });

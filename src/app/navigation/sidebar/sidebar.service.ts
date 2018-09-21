@@ -228,7 +228,7 @@ export class SidebarService {
         const that = this;
         const items = this._itemsSubject.value;
         let isDashboardRoute = false;
-        if (!dashboards) {
+        if (!dashboards || !dashboards.length) {
             return;
         }
         this._itemsNotVisibles = 0;
