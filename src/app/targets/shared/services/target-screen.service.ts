@@ -7,7 +7,7 @@ import { FormBuilderTypeSafe, FormGroupTypeSafe, UserService } from '../../../sh
 import { IListItem } from '../../../shared/ui/lists/list-item';
 import { getNewTarget, ITarget } from '../models/target';
 import { TargetFormModel } from '../models/target-form.model';
-import { FrequencyEnum } from '../../../shared/models';
+import { FrequencyEnum, PredefinedDateRanges } from '../../../shared/models';
 import { IBasicUser } from '../models/target-user';
 import { select } from 'async';
 
@@ -206,7 +206,31 @@ export class TargetScreenService {
             && (!this.chart.groupings || !this.chart.groupings.filter(g => g !== '').length);
 
         if (noFrequencyOrGrouping || this.displayAppliesToField) {
-            return [{ id: 'previous period', title: 'Previous Period' }];
+            let title = 'Previous Period';
+            const dr = this.chart.dateRange[0];
+
+            if (dr !== 'custom') {
+                switch (dr.predefined) {
+                    case PredefinedDateRanges.thisWeek:
+                    case PredefinedDateRanges.thisWeekToDate:
+                        title = 'Last Week';
+                        break;
+                    case PredefinedDateRanges.thisMonth:
+                    case PredefinedDateRanges.thisMonthToDate:
+                        title = 'Last Month';
+                        break;
+                    case PredefinedDateRanges.thisQuarter:
+                    case PredefinedDateRanges.thisQuarterToDate:
+                        title = 'Last Quarter';
+                        break;
+                    case PredefinedDateRanges.thisYear:
+                    case PredefinedDateRanges.thisYearToDate:
+                        title = 'Last Year';
+                        break;
+                }
+            }
+
+            return [{ id: 'previous period', title }];
         }
 
         const getList = (name: string) => {
