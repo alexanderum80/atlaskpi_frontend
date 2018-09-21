@@ -497,7 +497,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     }
 
     @OnFieldChanges({ name: 'expression.function' })
-    private _updateExpressionFieldsForCountFunction(value: { 'epxression.function': string}) {
+    private _updateExpressionFieldsForCountFunction(value: { 'expression.function': string}) {
         if (!this._selectedDataSource) { return; }
 
         if (value['expression.function'] && value['expression.function'].toLowerCase() === 'count' ) {
