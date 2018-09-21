@@ -10,7 +10,7 @@
                     label="Task Description"
                 )
                 
-            div(flex, *ngIf="!status")
+            div(flex)
                 bw-date-picker([fg]="fg", field="dueDate", label="Date", [required]="true", [config]="datePickerConfig")
             
             //-  responsible
