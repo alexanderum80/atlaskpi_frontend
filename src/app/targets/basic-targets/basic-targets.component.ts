@@ -24,19 +24,29 @@ export class BasicTargetsComponent implements OnInit, OnDestroy {
 
     showBasedOn: boolean;
 
-    valueOptions = [ '%', '#' ];
+    unitOptions = [ '%', '#' ];
+    showUnitOptions = true;
 
     private basedOnSub: Subscription;
+    private typeSub: Subscription;
+
 
     ngOnInit() {
         const typeCtrl = this.fg.getSafe(f => f.type);
         this.basedOnSub = typeCtrl.valueChanges
             .subscribe(t => this.updateBasedOnVisibility(t));
         this.updateBasedOnVisibility(typeCtrl.value);
+
+        this.typeSub = this.fg.getSafe(f => f.type).valueChanges.subscribe(type => {
+            this.updateUnitControl(type);
+        });
+
+        this.updateUnitControl(this.fg.value.type);
     }
 
     ngOnDestroy() {
         this.basedOnSub.unsubscribe();
+        this.typeSub.unsubscribe();
     }
 
     onOptionSelected(val) {
@@ -49,5 +59,16 @@ export class BasicTargetsComponent implements OnInit, OnDestroy {
 
     private updateBasedOnVisibility(val) {
         this.showBasedOn = val !== TargetTypeEnum.fixed;
+    }
+
+    private updateUnitControl(type: string) {
+        const unitCtrl = this.fg.getSafe(f => f.unit);
+
+        if (type === 'fixed') {
+            this.showUnitOptions = false;
+            unitCtrl.setValue('#');
+        } else {
+            this.showUnitOptions = true;
+        }
     }
 }

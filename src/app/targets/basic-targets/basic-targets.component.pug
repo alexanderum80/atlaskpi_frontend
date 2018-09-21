@@ -29,7 +29,7 @@ div(layout="column")
             bw-number.m-r-20([fg]="fg", field="value", label="Value", leftIcon="edit")   
             
         .m-t-35.m-l-10.text-center(flex-initial)
-            bw-button-group([options]="valueOptions", type="default", [activeOption]="fg.controls['unit'].value", (optionSelected)="onOptionSelected($event)")
+            bw-button-group(*ngIf="showUnitOptions", [options]="unitOptions", type="default", [activeOption]="fg.controls['unit'].value", (optionSelected)="onOptionSelected($event)")
     
     div(flex, *ngIf="showBasedOn")
         bw-select-picker(
