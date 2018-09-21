@@ -212,6 +212,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
 
     get selectedDataSource(): IDataSource {
         // return this._selectedDataSource;
+        if (!this.expression) { return; }
         return this._dataSources.find(d => d.name === this.expression.dataSource);
     }
 
@@ -339,7 +340,9 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
                                 })
                                 .map(s => new SelectionItem(s.name, s.description.toUpperCase()));
         if (!this.dataSources.length && !reg.test(item)) {
-            const dataSourceValue: string = (this.expression && this.expression.dataSource) ? this.expression.dataSource : '';
+            const dataSourceValue: string = (this.expression && this.expression.dataSource)
+                ? (this.expression && this.expression.dataSource)
+                : '';
             if (dataSourceValue) {
                 const selectedDataSource: IDataSource = this._dataSources.find(d => d.name === dataSourceValue);
 
@@ -499,7 +502,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         const source: string = sourceValue || this.source;
 
         collectionSourceVar = source ? source.split(/\|/) : [];
-        dataSourceVar = dataSourceValue || this.expression.dataSource;
+        dataSourceVar = dataSourceValue || (this.expression && this.expression.dataSource);
 
         // const dataSource: string = value['expression.dataSource'] || (this.expression ? this.expression.dataSource : '');
         this._queryFields(dataSourceVar, collectionSourceVar);
