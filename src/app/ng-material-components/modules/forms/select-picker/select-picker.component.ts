@@ -188,6 +188,11 @@ export class SelectPickerComponent extends InputBase implements OnChanges, OnDes
         // watch value changes
         this._valueChangeSubscription = this.control.valueChanges.subscribe(data => {
             let newValue = data;
+
+            if (!newValue) {
+                this._cleanSelection();
+            }
+
             if (this.selectedItems.length > this.maxOptions) {
                 SweetAlert({
                     title: 'Selected options limit reached',
@@ -203,6 +208,10 @@ export class SelectPickerComponent extends InputBase implements OnChanges, OnDes
                 if (!data && that.rememberLastValue && !that._valueChangedFromInside) {
                     newValue = this._lastValue;
                 }
+            }
+
+            if (this.control.value) {
+                this._cleanSelection();
             }
 
             that._updateSelection(newValue);
@@ -380,6 +389,10 @@ export class SelectPickerComponent extends InputBase implements OnChanges, OnDes
         this.resetSelectedItems();
     }
 
+    private _cleanSelection() {
+        this._clonedItems.forEach(i => i.selected = false);
+    }
+
     private _updateSelectionWidth() {
         const that = this;
 
@@ -467,9 +480,14 @@ export class SelectPickerComponent extends InputBase implements OnChanges, OnDes
             this._markForReset = false;
         }
 
+        // if (!this.control.value) {
+        //     this._clonedItems.forEach(i => i.selected = false);
+        // }
+
         if (!filter || filter === '') {
             // return items that are not selected
-            this.filteredItems = this._clonedItems.filter(c => !c.selected).slice(this._resultsUpIndex, this._resultsDownIndex);
+            this.filteredItems = this._clonedItems.filter(c => !this.control.value || !c.selected)
+                .slice(this._resultsUpIndex, this._resultsDownIndex);
         } else {
             // filter selected items
             

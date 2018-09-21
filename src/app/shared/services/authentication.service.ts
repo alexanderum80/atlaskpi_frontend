@@ -134,7 +134,7 @@ export class AuthenticationService {
 
     private _updateAuthorizationOnStartup(): void {
         const jsonToken = this._localStorageSvc.userToken;
-        const authenticated = jsonToken !== undefined && !jsonToken.expires.isBefore(moment());
+        const authenticated = jsonToken && !jsonToken.expires.isBefore(moment());
 
         this._authenticated = authenticated;
     }

@@ -22,7 +22,7 @@ export class TargetFormModel {
 
         this._form.patchValueSafe({
             active: t.active !== undefined ? t.active : true,
-            appliesTo: t.appliesTo,
+            appliesTo: t.appliesTo || {} as any,
             compareTo: t.compareTo,
             _id: t._id,
             name: t.name,

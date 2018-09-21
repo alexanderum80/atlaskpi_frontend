@@ -35,7 +35,8 @@ export class LocalStorageService {
     }
 
     set userToken(token: IUserToken) {
-        localStorage.setItem(environment.BEARER_KEY, JSON.stringify(token));
+        const tokenString = JSON.stringify(token);
+        localStorage.setItem(environment.BEARER_KEY, tokenString);
     }
 
     removeUserToken() {

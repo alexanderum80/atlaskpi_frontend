@@ -7,7 +7,7 @@ import { FormBuilderTypeSafe, FormGroupTypeSafe, UserService } from '../../../sh
 import { IListItem } from '../../../shared/ui/lists/list-item';
 import { getNewTarget, ITarget } from '../models/target';
 import { TargetFormModel } from '../models/target-form.model';
-import { FrequencyEnum } from '../../../shared/models';
+import { FrequencyEnum, PredefinedDateRanges } from '../../../shared/models';
 import { IBasicUser } from '../models/target-user';
 import { select } from 'async';
 
@@ -73,8 +73,11 @@ export class TargetScreenService {
 
     getData() {
         const v = this._formModel.form.value;
+        console.dir(v);
 
-        return {
+        const value = +(<any>v.value).replace(/,/g, '');
+
+        const target = {
             _id: v._id,
             name: v.name,
             source: {
@@ -84,7 +87,7 @@ export class TargetScreenService {
             compareTo: v.compareTo,
             type: v.type,
             unit: v.unit,
-            value: +(v.value.toString().replace(',', '')) || 0,
+            value: value,
             appliesTo: v.appliesTo.value ? { field: this.chart.groupings[0], value: v.appliesTo.value } : undefined,
             active: Boolean(v.active),
             notificationConfig: {
@@ -102,9 +105,15 @@ export class TargetScreenService {
                 status: m.status
             })),
         } as ITarget;
+
+        console.dir(target);
+        return target;
     }
 
     addTarget() {
+        this._formModel.update(null);
+        this.form.reset();
+
         const newTarget = getNewTarget(this.userService.user._id);
         this.targetList.push(newTarget);
         this.selectTarget(newTarget);
@@ -174,28 +183,67 @@ export class TargetScreenService {
     }
 
     private processLists() {
+        this.decideIfAppliesToShouldShow();
+        this.baseOnList = this.getBasedOnList();
+        this.appliesToList = this.chart.chartDefinition.xAxis.categories.map(c => {
+            if (c.length) {
+                return { id: c[0], title: c[0] };
+            } else {
+                return { id: c, title: c };
+            }
+        });
+    }
+
+    private decideIfAppliesToShouldShow() {
         const xAxisIsFrequency = this.chart.frequency && (this.chart.xAxisSource === '' || this.chart.xAxisSource === 'frequency');
         const xAxisIsGroupings =
             (this.chart.groupings && this.chart.groupings.length)
             && (!this.chart.frequency || (this.chart.frequency && this.chart.xAxisSource !== 'frequency'));
 
-        this.displayAppliesToField = !xAxisIsFrequency || xAxisIsGroupings;
-
-        this.baseOnList = this.getBasedOnList();
-        this.appliesToList = this.chart.chartDefinition.xAxis.categories.map(c => ({ id: c, title: c }));
+        this.displayAppliesToField = this.chart.dateRange[0].predefined !== 'all times'
+            && (this.chart.frequency || (this.chart.groupings && this.chart.groupings.filter(g => g !== '').length))
+            && !xAxisIsFrequency
+            && xAxisIsGroupings;
     }
 
     private getBasedOnList(): IListItem[] {
-        if (this.displayAppliesToField) {
-            return [{ id: 'previous period', title: 'Previous Period' }];
+        const noFrequencyOrGrouping =
+            !this.chart.frequency
+            && (!this.chart.groupings || !this.chart.groupings.filter(g => g !== '').length);
+
+        if (noFrequencyOrGrouping || this.displayAppliesToField) {
+            let title = 'Previous Period';
+            const dr = this.chart.dateRange[0];
+
+            if (dr !== 'custom') {
+                switch (dr.predefined) {
+                    case PredefinedDateRanges.thisWeek:
+                    case PredefinedDateRanges.thisWeekToDate:
+                        title = 'Last Week';
+                        break;
+                    case PredefinedDateRanges.thisMonth:
+                    case PredefinedDateRanges.thisMonthToDate:
+                        title = 'Last Month';
+                        break;
+                    case PredefinedDateRanges.thisQuarter:
+                    case PredefinedDateRanges.thisQuarterToDate:
+                        title = 'Last Quarter';
+                        break;
+                    case PredefinedDateRanges.thisYear:
+                    case PredefinedDateRanges.thisYearToDate:
+                        title = 'Last Year';
+                        break;
+                }
+            }
+
+            return [{ id: 'previous period', title }];
         }
 
         const getList = (name: string) => {
-            const lower = name.toLowerCase();
             return [
-                { id: `last ${lower}`, title: `Last ${name}` },
-                { id: `same ${lower} last year`, title: `Same ${name}, last year` },
-                { id: `same ${lower} 2 years ago`, title: `Same ${name}, 2 years ago` },
+                { id: `previous`, title: `Last ${name}` },
+                { id: `oneYearAgo`, title: `Same ${name}, last year` },
+                { id: `twoYearsAgo`, title: `Same ${name}, 2 years ago` },
             ];
         };
 
@@ -212,9 +260,9 @@ export class TargetScreenService {
                     return getList('Week');
                 case FrequencyEnum.Yearly:
                     return [
-                        { id: `last year`, title: `Last Year` },
-                        { id: `two years ago`, title: `Two years ago` },
-                        { id: `three years ago`, title: `Three years ago` },
+                        { id: `oneYearAgo`, title: `Last Year` },
+                        { id: `twoYearsAgo`, title: `Two years ago` },
+                        { id: `threeYearsAgo`, title: `Three years ago` },
                     ];
             }
         }
