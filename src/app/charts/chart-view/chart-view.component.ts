@@ -1680,7 +1680,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
 
     private _isAllTimesNotYearly(): boolean {
         return this.chartData.dateRange[0].predefined === 'all times'
-            && (this.chartData.frequency !== 'yearly' || this.chartData.xAxisSource !== 'frequency');
+            && (this.chartData.frequency !== 'yearly' || (this.chartData.xAxisSource !== 'frequency' && this.chartData.xAxisSource !== ''));
     }
 
     private _hasFrequency(): boolean {
