@@ -1,9 +1,0 @@
-query TargetNotification($input: NotificationInput) {
-    targetNotification(input: $input) {
-        success
-        errors {
-            field
-            errors
-        }
-    }
-}

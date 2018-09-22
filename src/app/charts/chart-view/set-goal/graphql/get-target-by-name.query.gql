@@ -1,5 +1,0 @@
-query FindTargetByName($name: String) {
-    findTargetByName(name: $name) {
-        _id
-    }
-}

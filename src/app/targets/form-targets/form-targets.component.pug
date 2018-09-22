@@ -1,0 +1,25 @@
+.h-100(layout="column")
+    .m-r-20.m-l-20.h-100
+        bw-tab-set.w-80
+            bwTab.m-10(heading="Basic", icon="Basic", (select)="setIndex(1)", [active]="isSelected(1)") 
+                app-basic-targets(
+                    [fg]="fg",
+                    [objectiveList]="objectiveList",
+                    [baseOnList]="baseOnList",
+                    [appliesToList]="appliesToList",
+                    [displayAppliesToField]="displayAppliesToField"
+                )
+            bwTab.m-10(heading="Related Users", icon="Related Users", (select)="setIndex(2)", [active]="isSelected(2)") 
+                app-related-users(
+                    [fg]="fg",
+                    [userList]="userList",
+                )
+            bwTab.m-10(heading="milestones", icon="milestones", (select)="setIndex(3)", [active]="isSelected(3)")
+                app-milestones([fa]="fg.get('milestones')", [userList]="userList")
+
+    .m-b-10
+        .text-right.w-100
+            bw-button.m-r-5(*ngIf="canGoBack()", title="Back", color="blue", [simple]="true", icon="arrow-left", (clicked)="goBack()")  
+            bw-button.m-r-5(*ngIf="canGoNext()", title="Next", color="blue", [simple]="true", icon="arrow-right", (clicked)="goNext()")  
+            bw-button.m-r-5(color="blue" title="Save", icon="floppy", class="normal", (clicked)="save.emit()", [disabled]="fg.invalid")
+            bw-button.m-r-5([title]="fg.dirty ? 'Cancel' : 'Close'", color="black", [simple]="true", icon="close", (clicked)="cancel.emit()")

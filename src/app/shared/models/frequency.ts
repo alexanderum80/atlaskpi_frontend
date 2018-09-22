@@ -1,9 +1,9 @@
 export enum FrequencyEnum {
-    Daily,
-    Weekly,
-    Monthly,
-    Quartely,
-    Yearly
+    Daily = 'daily',
+    Weekly = 'weekly',
+    Monthly = 'monthly',
+    Quartely = 'quarterly',
+    Yearly = 'yearly'
 }
 
 export const FrequencyTable = {

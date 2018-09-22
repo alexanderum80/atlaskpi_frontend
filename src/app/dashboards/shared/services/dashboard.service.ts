@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { SelectionItem } from '../../../ng-material-components/index';
+import { SelectionItem } from '../../../ng-material-components';
 
 const Dasboard = gql`
     query Dasboard($id: String!, $dateRange: DateRange!, $frequency: String) {

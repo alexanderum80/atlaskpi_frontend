@@ -4,11 +4,9 @@ query User {
     username
     roles
     emails {
-      _id
       address
     }
     profile {
-      _id
       firstName
       lastName
     }

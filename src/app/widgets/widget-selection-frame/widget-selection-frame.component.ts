@@ -1,5 +1,5 @@
 import { MenuItem } from '../../ng-material-components';
-import { IWidget } from './../shared/models/widget.models';
+import { IWidget } from '../shared/models/widget.models';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 const entranceEffect = 'fadeIn';

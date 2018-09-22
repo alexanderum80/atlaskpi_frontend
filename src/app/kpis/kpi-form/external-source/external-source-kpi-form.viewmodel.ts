@@ -12,7 +12,7 @@ import { IKPI } from '../../../shared/domain/kpis/kpi';
 import { getArithmeticOperatorItems } from '../../../shared/domain/kpis/operators';
 import { FilterViewModel } from '../shared/filter.viewmodel';
 import { SimpleKpiExpressionViewModel } from '../shared/simple-kpi-expression.viewmodel';
-import { UserService } from '../../../shared/services/index';
+import { UserService } from '../../../shared/services';
 import { IKPIPayload } from '../shared/simple-kpi-payload';
 import { IWidgetFormGroupValues } from '../../../widgets/shared/models';
 import { IChartFormValues } from '../../../charts/shared/models/chart.models';

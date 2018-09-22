@@ -228,9 +228,10 @@ export class SidebarService {
         const that = this;
         const items = this._itemsSubject.value;
         let isDashboardRoute = false;
-        if (!dashboards) {
+        if (!dashboards || !dashboards.length) {
             return;
         }
+
         this._itemsNotVisibles = 0;
         items[0].children = dashboards.map(d => {
             // check if the current root is relarted to the dashboards

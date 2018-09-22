@@ -7,7 +7,7 @@ import { WidgetsComponent } from './widgets.component';
 import { MaterialUserInterfaceModule, MaterialFormsModule } from '../ng-material-components';
 import { NewWidgetComponent } from './new-widget/new-widget.component';
 import { WidgetFormComponent } from './widget-form/widget-form.component';
-import { SharedModule } from '../shared/index';
+import { SharedModule } from '../shared';
 import { WidgetViewComponent } from './widget-view/widget-view.component';
 import { WidgetPreviewComponent } from './widget-preview/widget-preview.component';
 import { ChartModule } from 'angular-highcharts';

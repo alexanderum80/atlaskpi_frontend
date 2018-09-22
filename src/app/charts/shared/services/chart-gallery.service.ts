@@ -7,7 +7,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { ChartType } from '../models';
 import { IChartGalleryItem } from '../models';
-import { SelectionItem } from '../../../ng-material-components/index';
+import { SelectionItem } from '../../../ng-material-components';
 import { deCamelCase } from '@swimlane/ngx-datatable/release/utils';
 
 interface IChartGalleryItemWithType {

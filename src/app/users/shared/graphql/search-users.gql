@@ -4,7 +4,6 @@ query SearchUsers($details: PaginationDetails) {
         _id
         roles
         profile {
-            _id
             firstName
             middleName
             lastName

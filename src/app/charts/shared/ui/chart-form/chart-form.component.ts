@@ -30,8 +30,8 @@ import { ChartGalleryService } from '../../services';
 import { TooltipFormats } from '../chart-format-info/tooltip-formats';
 import { CustomFormat } from '../chart-format-info/tooltip-custom-formats';
 import { IChartSize } from '../chart-preview';
-import { chartsGraphqlActions } from './../../graphql/charts.graphql-actions';
-import { SelectedChartsService, IChart } from '../../index';
+import { chartsGraphqlActions } from '../../graphql/charts.graphql-actions';
+import { SelectedChartsService, IChart } from '../..';
 import { ApolloService } from '../../../../shared/services/apollo.service';
 
 import { groupBy, includes } from 'lodash';

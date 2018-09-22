@@ -1,6 +1,6 @@
 form#signup-form(*ngIf="!leadCreated", flex, [formGroup]="fg", (ngSubmit)="signUp()")
     .sign-up-container.h-100(
-        layout="column", layout-align="center center",
+        layout="column", layout-align="center",
         [class.mobile]="mobile",
         [class.creating-account]="creatingAccount",
         [class.account-ready]="accountReady")
@@ -28,7 +28,7 @@ form#signup-form(*ngIf="!leadCreated", flex, [formGroup]="fg", (ngSubmit)="signU
             i.zmdi.zmdi-check-all
                     
         //-company name
-        .form.m-t-15(*ngIf="!authorizationCode", layout="column", layout-align="center center", flex)
+        .form.m-t-15(*ngIf="!authorizationCode", layout="column", layout-align="center", flex)
             .m-15(flex-none)
                 div(layout="row")
                     bw-text-box(flex,
@@ -43,22 +43,22 @@ form#signup-form(*ngIf="!leadCreated", flex, [formGroup]="fg", (ngSubmit)="signU
                         i.zmdi.zmdi-check.m-l-10.c-white
                     .flex-10-nogrow.m-t-15(*ngIf="!accountNameAvailable && signupModel.accountName != undefined")
                         i.zmdi.zmdi-close.m-l-10.m-r-10.c-white
-            //-example data
+            //- example data
             .m-15.text-center(flex-none)
                 div(layout="row")
                     div(flex)
                         bw-text-box([fg]="fg", leftIcon="account-circle", field="firstName", label="First Name", [required]="false", [alt]="true")
                     div(flex)
                         bw-text-box([fg]="fg", field="lastName", label="Last Name", [required]="false", [alt]="true") 
-            //-email
+            //- email
             .m-15(flex-none)
                 bw-email.email([fg]="fg", [required], field="email", label="Email Address", [alt]="true")
             //- error
             div(flex-none)
                 p.lead.c-red(*ngIf="error !== undefined")
                     | {{error}}
-            //-action
-            .m-b-10(flex-none)
+            //- action
+            .m-b-10.text-center(flex-none)
                 bw-button(color="white", title="Sign Up", class="normal", [rounded]="true", (clicked)="signUp()",
                         [disabled]="!formValid", type="submit")
 
@@ -73,7 +73,7 @@ form#signup-form(*ngIf="!leadCreated", flex, [formGroup]="fg", (ngSubmit)="signU
         .links(*ngIf="!creatingAccount && !accountReady")
             .text-center
                 a#have-an-account.c-white(href="#", (click)="goToSignin($event)") Go to Log In
-            .m-t-10(*ngIf="!authorizationCode")
+            .m-t-10.text-center(*ngIf="!authorizationCode")
                 a.c-white(href="#", (click)="switchToAuthorize($event)") I have an authorization code
             .m-t-10(*ngIf="authorizationCode")
                 a.c-white(href="#", (click)="backToSignUp($event)") Back to Sign Up

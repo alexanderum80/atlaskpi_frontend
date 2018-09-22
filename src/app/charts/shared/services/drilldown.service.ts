@@ -1,4 +1,4 @@
-import {IDateRange, parsePredifinedDate} from '../../../shared/models/index';
+import {IDateRange, parsePredefinedDate} from '../../../shared/models';
 import {isEmpty, uniq} from 'lodash';
 import * as moment from 'moment';
 
@@ -594,7 +594,7 @@ export class DrillDownService {
                     switch (dateRange) {
 
                         case PredefinedDateRanges.allTimes:
-                            const years = this._getCustomYears(parsePredifinedDate(PredefinedDateRanges.allTimes));
+                            const years = this._getCustomYears(parsePredefinedDate(PredefinedDateRanges.allTimes));
                             return years.map(y => {
                                 return {
                                     predefined: null,
@@ -757,11 +757,10 @@ export class DrillDownService {
         return dateRange.custom;
     }
 
-    getComparisonForDrillDown(comparisonValue: string, chartDateRange: IChartDateRange[]): string[] {
+    getComparisonForDrillDown(comparisonValue: string[], chartDateRange: IChartDateRange[]): string[] {
         if (!Array.isArray(chartDateRange)) {
             return [];
         }
-
         const isPredefined: boolean = chartDateRange[0].predefined !== 'custom';
         if (!isPredefined) {
             return [];
@@ -776,29 +775,34 @@ export class DrillDownService {
         return this._getComparisonPredefinedDateRange(predefinedDateString, comparisonValue);
     }
 
-    private _getComparisonPredefinedDateRange(predefinedDateString: string, comparisonValue: string): string[] {
-        let predefinedDate: string;
-
-        switch (comparisonValue) {
-            case PredefinedComparisonDateRanges.custom_previousPeriod:
-                predefinedDate = this._previousPeriodComparisonDateRange(predefinedDateString);
-                break;
-
-            case PredefinedComparisonDateRanges.custom_lastYear:
-                predefinedDate = this._lastYearComparisonDateRange(predefinedDateString);
-                break;
-            case PredefinedComparisonDateRanges.custom_2YearsAgo:
-                predefinedDate = this._twoYearsAgoComparisonDateRange(predefinedDateString);
-                break;
-            case PredefinedComparisonDateRanges.custom_3YearsAgo:
-                predefinedDate = this._threeYearsAgoComparisonDateRange(predefinedDateString);
-                break;
-        }
+    private _getComparisonPredefinedDateRange(predefinedDateString: string, comparisonValue: string[]): string[] {
+        const predefinedDate: string[] = [];
+        comparisonValue.map(cv => {
+            switch (cv) {
+                case PredefinedComparisonDateRanges.custom_previousPeriod:
+                    predefinedDate.push(this._previousPeriodComparisonDateRange(predefinedDateString));
+                    break;
+                case PredefinedComparisonDateRanges.custom_lastYear:
+                    predefinedDate.push(this._lastYearComparisonDateRange(predefinedDateString));
+                    break;
+                case PredefinedComparisonDateRanges.custom_2YearsAgo:
+                    predefinedDate.push(this._twoYearsAgoComparisonDateRange(predefinedDateString));
+                    break;
+                case PredefinedComparisonDateRanges.custom_3YearsAgo:
+                    predefinedDate.push(this._threeYearsAgoComparisonDateRange(predefinedDateString));
+                    break;
+                default:
+                predefinedDate.push(this._MorethreeYearsAgoComparisonDateRange(cv));
+                    break;
+            }
+        });
         if (!predefinedDate) {
             return [];
         }
-
-        return [camelCase(predefinedDate)];
+        predefinedDate.map(pd => {
+            pd = camelCase(pd);
+        });
+        return predefinedDate;
     }
 
     private _previousPeriodComparisonDateRange(predefinedDateString: string): string {
@@ -931,7 +935,13 @@ export class DrillDownService {
 
         return threeYearPredefinedDateRange;
     }
-
+    private _MorethreeYearsAgoComparisonDateRange(predefinedDateString: string): string {
+        if (predefinedDateString.includes('YearsAgo')) {
+            return predefinedDateString.substr(0, predefinedDateString.indexOf('YearsAgo')) + ' years ago';
+        } else if (predefinedDateString.includes('years ago')) {
+            return predefinedDateString;
+        }
+    }
     private _yearOfMonth(minusMonth: number) {
         return moment().subtract(minusMonth, 'months').format('YYYY');
     }

@@ -1,3 +1,5 @@
+
+import { ApolloService } from './../../../../shared/services/apollo.service';
 import { OnFieldChanges } from '../../../../ng-material-components/viewModels';
 import 'rxjs/add/operator/debounceTime';
 
@@ -11,7 +13,7 @@ import { Observable } from 'rxjs/Observable';
 
 import {FormGroup, FormControl} from '@angular/forms';
 import { Apollo } from 'apollo-angular';
-import { clone, isEmpty, toArray, find, pick } from 'lodash';
+import { clone, isEmpty, toArray, find, pick, includes, split, map } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 
 import { SelectionItem } from '../../../../ng-material-components';
@@ -21,7 +23,7 @@ import { FrequencyTable } from '../../../../shared/models/frequency';
 import { BrowserService } from '../../../../shared/services/browser.service';
 import { ChartModel } from '../../models';
 import { ChartGalleryService } from '../../services/';
-import { IDateRangeItem } from './../../../../shared/models/date-range';
+import { IDateRangeItem, parseComparisonDateRange } from './../../../../shared/models/date-range';
 import { chartsGraphqlActions } from './../../graphql/charts.graphql-actions';
 import { IKPI } from '../../../../shared/domain/kpis/kpi';
 import { ChartBasicInfoViewModel } from './chart-basic-info.viewmodel';
@@ -31,6 +33,8 @@ import {
 import {PredefinedTopNRecords} from '../../../../shared/models/top-n-records';
 import { title, camelCase } from 'change-case';
 import * as moment from 'moment';
+
+const kpiOldestDateQuery = require('graphql-tag/loader!./kpi-get-oldestDate.gql');
 
 export const RevenueGroupingList: SelectionItem[] = [
     { id: 'location', title: 'Location', selected: false, disabled: false },
@@ -124,8 +128,9 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
 
     constructor(private _chartGalleryService: ChartGalleryService,
                 private _apollo: Apollo,
+                private _apolloService: ApolloService,
                 private _browser: BrowserService,
-                private vm: ChartBasicInfoViewModel) {
+                public vm: ChartBasicInfoViewModel) {
         this._dateRangesQuery();
         toArray(PredefinedDateRanges)
          .forEach(d => { this.dateRangeList.push({ id: d, title: d, selected: false, disabled: false }); });
@@ -212,6 +217,11 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
                    .distinctUntilChanged()
                    .subscribe(v => {
                         that._getGroupingInfo();
+                        const kpi_id = this.fg.value.kpi;
+                        this._apolloService.networkQuery < string > (kpiOldestDateQuery, {id: kpi_id })
+                        .then(kpis => {
+                            this._updateComparisonData(kpis.getKpiOldestDate);
+                        });
                     });
         });
 
@@ -390,18 +400,48 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     private _updateComparisonPicker(dateRangeString: string) {
+
         if (IsNullOrWhiteSpace(dateRangeString)) { return; }
 
         const dateRange = this.dateRanges.find(d => d.dateRange.predefined === dateRangeString);
 
         if (!dateRange) {
             this.comparisonList = [];
+            this.vm.comparisonList = this.comparisonList;
             return [];
         }
 
         this.comparisonList = ToSelectionItemList(dateRange.comparisonItems, 'key', 'value');
+        this.vm.comparisonList = this.comparisonList;
     }
 
+    private _updateComparisonData(yearOldestDate: string) {
+
+        if (this.fg.value.predefinedDateRange === '') { return; }
+        if (!yearOldestDate || yearOldestDate === moment().year().toString()) { return; }
+
+        this.comparisonList = [];
+        const dateRange = this.dateRanges.find(d => d.dateRange.predefined === this.fg.value.predefinedDateRange);
+        const itemsComparison = [this.fg.value.predefinedDateRange, ''];
+        let newItem: SelectionItem = {};
+        for (let i = 0; i < dateRange.comparisonItems.length ; i++) {
+            itemsComparison[1] = dateRange.comparisonItems[i].key;
+            const yearofDateFrom = parseComparisonDateRange(<any>itemsComparison, itemsComparison[0]).from.getFullYear();
+            if (yearofDateFrom >= parseInt(yearOldestDate, 0)) {
+                const thisTitle = dateRange.comparisonItems[i].value.includes('year')
+                ? dateRange.comparisonItems[i].value + ' (' + yearofDateFrom + ')'
+                : dateRange.comparisonItems[i].value;
+                newItem = {
+                    id: dateRange.comparisonItems[i].key,
+                    title: thisTitle,
+                    selected: false,
+                    disabled: false
+                };
+                this.comparisonList.push(newItem);
+            }
+        }
+        this.vm.comparisonList = this.comparisonList;
+    }
   private _dateRangesQuery() {
     const that = this;
     this._subscription.push(this._apollo.watchQuery <{ dateRanges: IDateRangeItem[]}> ({

@@ -1,22 +1,21 @@
-import { CommonService } from '../../shared/services/common.service';
-import {AfterViewInit, Component, ViewChild, OnDestroy, OnInit} from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { ApolloQueryResult } from 'apollo-client';
+import { isEqual, isString, pick } from 'lodash';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { pick, isString, isEqual } from 'lodash';
+import Sweetalert from 'sweetalert2';
 
 import { DialogResult } from '../../shared/models/dialog-result';
-import { TargetService } from '../chart-view/set-goal/shared/target.service';
+import { ApolloService } from '../../shared/services/apollo.service';
+import { CommonService } from '../../shared/services/common.service';
+import { SelectedChartsService } from '../shared';
 import { prepareChartDefinitionForPreview } from '../shared/extentions';
 import { SingleChartQuery, UpdateChartMutation } from '../shared/graphql/charts.gql';
 import { ChartModel, IChart, IUpdateChartResponse, SingleChartResponse } from '../shared/models';
 import { ChartFormComponent } from '../shared/ui/chart-form';
-import Sweetalert from 'sweetalert2';
-import { SelectedChartsService } from '../shared/index';
-import { ApolloService } from '../../shared/services/apollo.service';
 
 
 const Highcharts = require('highcharts/js/highcharts');
@@ -26,7 +25,6 @@ const getChartByTitle = require('graphql-tag/loader!../shared/graphql/get-chart-
   selector: 'kpi-edit-chart',
   templateUrl: './edit-chart.component.pug',
   styleUrls: ['./edit-chart.component.scss'],
-  providers: [TargetService]
 })
 export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
     @ViewChild(ChartFormComponent) private chartFormComponent: ChartFormComponent;
@@ -46,8 +44,7 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
                 private _apolloService: ApolloService,
                 private _router: Router,
                 private _route: ActivatedRoute,
-                private _selectChartService: SelectedChartsService,
-                private _TargetService: TargetService) {
+                private _selectChartService: SelectedChartsService) {
     }
 
     ngOnDestroy() {
@@ -117,10 +114,6 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
             .then(response => {
                 if (response.data.updateChart.success) {
                     this._router.navigateByUrl('/charts/list');
-
-                    if (!this._canRemoveTargetFromChart()) {
-                        this._TargetService.removeTargetFromEditChart(that.id);
-                    }
                 }
 
                 if (response.data.updateChart.errors) {
@@ -149,7 +142,6 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
 
     private _processChartResponse(response: ApolloQueryResult<any>) {
         this.loading = false;
-
         if (!response.data.chart) {
             return this.id = null;
         }

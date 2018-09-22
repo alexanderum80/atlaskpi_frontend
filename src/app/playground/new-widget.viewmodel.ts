@@ -5,7 +5,7 @@ import { SelectionItem } from '../ng-material-components/models';
 import { ArrayField, ComplexField, Field, ViewModel } from '../ng-material-components/viewModels';
 import { OnFieldChanges } from '../ng-material-components/viewModels/on-field-changes.decorator';
 import { ValueFormatHelper } from '../shared/helpers/format.helper';
-import { UserService } from '../shared/services/index';
+import { UserService } from '../shared/services';
 
 const widgetTypeList: SelectionItem[] = [{
         id: 'numeric',

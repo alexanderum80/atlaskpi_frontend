@@ -1,22 +1,18 @@
-import { ActivityFeedActivity } from '../shared/authorization/activities/feed/activity-feed.activity';
-import { UserService } from '../shared/services/user.service';
-import { IUserInfo } from '../shared/models/user';
-import { ITarget } from '../charts/chart-view/set-goal/shared/targets.interface';
-import { IEmployee } from '../employees/shared/models/employee.model';
-import { ApolloService } from '../shared/services/apollo.service';
-import { Component, OnInit, Input } from '@angular/core';
-import { IAmounts, IUsersActivity } from './shared/models/activity-models';
+import { Component, OnInit } from '@angular/core';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
-import { Subscription } from 'rxjs/Subscription';
+
+import { ActivityFeedActivity } from '../shared/authorization/activities/feed/activity-feed.activity';
+import { IUserInfo } from '../shared/models/user';
+import { ApolloService } from '../shared/services/apollo.service';
+import { UserService } from '../shared/services/user.service';
 import { ActivitiesViewModel } from './activities.viewmodel';
-import {IRole} from '../roles/shared/role';
+import { IAmounts } from './shared/models/activity-models';
 
 const salesAmountByDateRangeQuery = require('graphql-tag/loader!./shared/querys/sales-amount-by-dateRange.gql');
 const salesEmployeeByDateRangeQuery = require('graphql-tag/loader!./shared/querys/sales-employee-by-dateRange.gql');
 const monthAvgSalesQuery = require('graphql-tag/loader!./shared/querys/month-avg-sales.gql');
 const expensesAmountByDateRangeQuery = require('graphql-tag/loader!./shared/querys/expenses-amount-by-dateRange.gql');
 const monthAvgExpensesQuery = require('graphql-tag/loader!./shared/querys/month-avg-expenses.gql');
-const employeeByIdQuery = require('graphql-tag/loader!../employees/edit-employee/employee-by-id.gql');
 const targetByDateQuery = require('graphql-tag/loader!./shared/querys/target-by-date.gql');
 const usersActivityByDateRangeQuery = require('graphql-tag/loader!./shared/querys/users-activity-by-dateRange.gql');
 
@@ -60,7 +56,6 @@ export class ActivitiesComponent implements OnInit, AfterViewInit {
     this.getTrendsLastMonthSales();
     this.getYesterdayExpenses();
     this.getTrendsLastMonthExpenses();
-    this.getYesterdayTargets();
     this.getUsersActivities();
   }
 
@@ -148,17 +143,6 @@ export class ActivitiesComponent implements OnInit, AfterViewInit {
           }
         });
       }
-    });
-  }
-
-  getYesterdayTargets() {
-    const that = this;
-
-    this._apolloService.networkQuery < IAmounts > (targetByDateQuery, { date: that.vm.getTodayDate() })
-    .then(target => {
-        if (target.targetByDate.length > 0) {
-          that.vm.updateYesterdayTarget(target.targetByDate);
-        }
     });
   }
 

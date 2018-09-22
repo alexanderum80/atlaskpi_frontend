@@ -1,4 +1,4 @@
-import { ValidateOption } from 'validate.js/validate';
+import { ValidateOption } from 'validate.js';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -10,10 +10,10 @@ import { DialogResult } from '../../shared/models/dialog-result';
 import { CreateChartMutation } from '../shared/graphql/charts.gql';
 import { ChartModel, ISaveChartResponse } from '../shared/models';
 import { ChartFormComponent } from '../shared/ui/chart-form';
-import { Store } from './../../shared/services/store.service';
+import { Store } from '../../shared/services/store.service';
 import { ApolloService } from '../../shared/services/apollo.service';
 import Sweetalert from 'sweetalert2';
-import { IChart, SelectedChartsService } from '../shared/index';
+import { IChart, SelectedChartsService } from '../shared';
 import { FormControl } from '@angular/forms/src/model';
 import { Validators } from '@angular/forms';
 import { FormBuilder } from '@angular/forms';

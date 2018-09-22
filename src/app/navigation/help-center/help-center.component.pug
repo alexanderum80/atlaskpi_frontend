@@ -17,7 +17,7 @@ div(class="modal")
       
       .container-body.text-center(layout="row", layout-padding)
         .container-video.bgm-white
-          video.m-l-20.m-r-20(#viedoPlayer, width="100%", height="100%", poster="./assets/video/poster/poster.png", src="{{video[0].url}}",  autoplay, controls, (ended)="next(video[0].id, true)" )
+          video.m-l-20.m-r-20(#viedoPlayer, width="100%", height="100%", poster="./assets/video/poster/poster.png", src="{{video[0]?.url}}",  autoplay, controls, (ended)="next(video[0].id, true)" )
           
         .container-titles-sx.hidden-xs([class.toggled]="toggled")
            kpi-title-video.border-radius-5(#titleVideo, (selectedEvent)="next(0, false)")

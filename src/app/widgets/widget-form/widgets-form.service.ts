@@ -10,19 +10,19 @@ import { KpisQuery } from '../../charts/shared/graphql';
 import { chartsGraphqlActions } from '../../charts/shared/graphql/charts.graphql-actions';
 import { SelectionItem } from '../../ng-material-components';
 import { IsNullOrWhiteSpace, ToSelectionItemList } from '../../shared/extentions';
-import { IChart } from './../../charts/shared/models/chart.models';
-import { IDateRangeItem } from './../../shared/models/date-range';
-import { widgetsGraphqlActions } from './../shared/graphql/widgets.graphql-actions';
+import { IChart } from '../../charts/shared/models/chart.models';
+import { IDateRangeItem } from '../../shared/models/date-range';
+import { widgetsGraphqlActions } from '../shared/graphql/widgets.graphql-actions';
 import {
     IWidget,
     IWidgetFormGroupValues,
     IWidgetInput,
     WidgetTypeEnum,
     WidgetTypeMap,
-} from './../shared/models/widget.models';
+} from '../shared/models/widget.models';
 import { IKPI } from '../../shared/domain/kpis/kpi';
-import { INumericWidgetAttributes } from '../shared/models/index';
-import { PredefinedDateRanges, IChartDateRange } from '../../shared/models/index';
+import { INumericWidgetAttributes } from '../shared/models';
+import { PredefinedDateRanges, IChartDateRange } from '../../shared/models';
 
 const newWidgetModel = {
   name: 'Sample Widget',

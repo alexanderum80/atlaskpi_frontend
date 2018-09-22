@@ -1,7 +1,7 @@
 import { objectWithoutProperties } from '../../shared/helpers/object.helpers';
 import { IUserInfo } from '../../shared/models/user';
 import {ModalComponent, MenuItem} from '../../ng-material-components';
-import {CommonService} from '../../shared/services/index';
+import {CommonService} from '../../shared/services';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FormArray } from '@angular/forms';
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';

@@ -72,8 +72,8 @@
                 [disabled]="true")
 
     //- top N records
-    .m-10(flex-initial, layout="row")
-        #select-top-records(flex-initial)
+    .m-10(flex, layout="row")
+        #select-top-records(flex)
             bw-select-picker.p-l-35(flex, [fg]="fg",
                 label="Top N Records",
                 leftIcon="trending-up",
@@ -94,9 +94,9 @@
             .m-t-15.m-l-25(layout="row")
                 bw-select-picker(flex, [fg]="fg",
                     field="comparison",
-                    [items]="comparisonList",
-                    dependOnField="predefinedDateRange",
-                    (dependantValueChanged)="updateComparisonList($event)",
+                    [items]="vm.comparisonList",
+                    [multiple]="true",
+                    [maxOptions]="4",
                     noneSelectedText="Select Date Range")
 
     //- Sorting

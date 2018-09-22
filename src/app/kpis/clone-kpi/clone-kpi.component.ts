@@ -7,7 +7,7 @@ import { Activity } from '../../shared/authorization/decorators/component-activi
 import { IKPI } from '../../shared/domain/kpis/kpi';
 import { ApolloService } from '../../shared/services/apollo.service';
 import { CommonService } from '../../shared/services/common.service';
-import { CloneKpiViewModel } from '../clone-kpi/clone-kpi.component.viewmodel';
+import { CloneKpiViewModel } from './clone-kpi.component.viewmodel';
 
 const kpiQuery = require('graphql-tag/loader!./kpi.gql');
 const editMutation = require('graphql-tag/loader!./edit-kpi.gql');
