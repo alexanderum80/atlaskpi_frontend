@@ -1,13 +1,17 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { Router } from '@angular/router';
 import SweetAlert from 'sweetalert2';
+import { ModalComponent } from '../../../ng-material-components/modules/user-interface/modal/modal.component';
 
 import { IDataSource } from '../../../shared/domain/kpis/data-source';
 import { IKPI } from '../../../shared/domain/kpis/kpi';
 import { ApolloService } from '../../../shared/services/apollo.service';
 import { IKPIPayload } from '../shared/simple-kpi-payload';
 import { ComplexKpiFormViewModel } from './complex-kpi-form.viewmodel';
+
+import { IWidget } from '../../../widgets/shared/models';
+
 
 const kpisQuery = require('graphql-tag/loader!../kpis.gql');
 const kpiByName = require('graphql-tag/loader!../kpi-by-name.gql');
@@ -24,9 +28,17 @@ const updateKpiMutation = require('graphql-tag/loader!../update-kpi.mutation.gql
 })
 export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
     @Input() model: IKPI;
+    @ViewChild('previewModal') previewModal: ModalComponent;
+
     payload: IKPIPayload;
     mutation: string;
     resultName: string;
+
+    fromSaveAndVisualize: boolean;
+    currrentKPI: IKPI;
+    widgetModel: IWidget;
+    newWidgetFromKPI: boolean;
+    newChartFromKPI: boolean;
 
     constructor(
         public vm: ComplexKpiFormViewModel,
@@ -56,6 +68,32 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
 
     update(model: IKPI): void {
         this.vm.update(model);
+    }
+
+    private _openVisualizeModal() {
+        this.fromSaveAndVisualize = true;
+        this.save();
+    }
+    
+    _closePreviewModal() {
+        if ( this.newWidgetFromKPI === true || this. newChartFromKPI === true ) {
+            this.previewModal.close();
+        
+        } else {
+        
+            this.previewModal.close();
+            this._goToListKpis();
+        }
+    }
+
+    newWidget() {
+        this.newWidgetFromKPI = true;
+        this._closePreviewModal();
+    }
+    
+    newChart() {
+        this.newChartFromKPI = true;
+        this._closePreviewModal();
     }
 
     save() {
@@ -115,8 +153,23 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
                         confirmButtonText: 'Ok'
                         });
                 }
+                if (this.fromSaveAndVisualize) {
+                    // for widget
+                    this.currrentKPI = res.data[this.resultName].entity;
+                    debugger;
+                    this.vm.valuesPreviewWidget.name = this.currrentKPI.name;
+                    this.vm.valuesPreviewWidget.kpi = this.currrentKPI._id;
+                    this.vm.valuesPreviewWidget.color = this.vm.selectColorWidget();
 
-                this._goToListKpis();
+                    // for chart
+                    this.vm.valuesPreviewChart.name = this.currrentKPI.name;
+                    this.vm.valuesPreviewChart.kpi = this.currrentKPI._id;
+
+                    this.fromSaveAndVisualize = !this.fromSaveAndVisualize;
+                    this.previewModal.open();
+                }else {
+                    this._goToListKpis();
+                }
             });
         });
     }

@@ -1,7 +1,7 @@
 // Angular Import
 import { SelectPickerComponent } from '../../../ng-material-components/modules/forms/select-picker/select-picker.component';
 import { ModalComponent } from '../../../ng-material-components/modules/user-interface/modal/modal.component';
-import { IWidget , IWidgetFormGroupValues } from '../../../widgets/shared/models';
+import { IWidget } from '../../../widgets/shared/models';
 import { WidgetsFormService } from '../../../widgets/widget-form/widgets-form.service';
 
 
@@ -18,8 +18,8 @@ import {
 } from '@angular/core';
 import {Router} from '@angular/router';
 import SweetAlert from 'sweetalert2';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+// import { Observable } from 'rxjs/Observable';
+// import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 import Sweetalert from 'sweetalert2';
@@ -87,8 +87,7 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
         private _apolloService: ApolloService,
         private _apollo: Apollo,
         private _router: Router,
-        private _cdr: ChangeDetectorRef,
-        private _widgetFormService: WidgetsFormService
+        private _cdr: ChangeDetectorRef
 
     ) {}
 
