@@ -36,6 +36,28 @@ export const TooltipFormats: IToolTipFormat[] = [
         }
     },
     {
+        id: 'multiple_low_high',
+        title: 'Multiple (low to high)',
+        definition: {
+            enabled: true,
+            altas_definition_id: 'multiple_low_high',
+            shared: true,
+            useHTML: true,
+            formatter: 'kpi_tooltip_low_high'
+        }
+    },
+    {
+        id: 'multiple_high_low',
+        title: 'Multiple (high to low)',
+        definition: {
+            enabled: true,
+            altas_definition_id: 'multiple_high_low',
+            shared: true,
+            useHTML: true,
+            formatter: 'kpi_tooltip_high_low'
+        }
+    },
+    {
         id: 'multiple_percent',
         title: 'Multiple with Percent',
         definition: {
@@ -47,14 +69,25 @@ export const TooltipFormats: IToolTipFormat[] = [
         }
     },
     {
-        id: 'multiple_sorted',
-        title: 'Multiple sorted',
+        id: 'multiple_percent_low_high',
+        title: 'Multiple with Percent (Low to High)',
         definition: {
             enabled: true,
-            altas_definition_id: 'multiple_sorted',
+            altas_definition_id: 'multiple_percent_low_high',
             shared: true,
             useHTML: true,
-            formatter: 'kpi_tooltip_sorted'
+            formatter: 'kpi_tooltip_multiple_percent_low_high'
+        }
+    },
+    {
+        id: 'multiple_percent_high_low',
+        title: 'Multiple with Percent (High to Low)',
+        definition: {
+            enabled: true,
+            altas_definition_id: 'multiple_percent_high_low',
+            shared: true,
+            useHTML: true,
+            formatter: 'kpi_tooltip_multiple_percent_high_low'
         }
     },
     {
