@@ -47,6 +47,17 @@ export const TooltipFormats: IToolTipFormat[] = [
         }
     },
     {
+        id: 'multiple_sorted',
+        title: 'Multiple sorted',
+        definition: {
+            enabled: true,
+            altas_definition_id: 'multiple_sorted',
+            shared: true,
+            useHTML: true,
+            formatter: 'kpi_tooltip_sorted'
+        }
+    },
+    {
         id: 'pie_percent',
         title: 'Pie with Percent',
         definition: {

@@ -152,7 +152,7 @@ function percent_pie_chart_formatter() {
     };
 }
 
-function tooltip_total(stack?: string) {
+function tooltip_total(stack?: string, sorted?: boolean) {
     const that = this;
     this.exec = function () {
         let tooltip_html = ``;
@@ -160,6 +160,7 @@ function tooltip_total(stack?: string) {
         let targetTotal = 0;
         let calculateComparison;
         let nonTargetPointCount = 0;
+        let points;
 
         if (!stack) {
             stack = this.points[0].series.userOptions.hasOwnProperty('stack') ? this.points[0].series.userOptions.stack : '';
@@ -169,24 +170,33 @@ function tooltip_total(stack?: string) {
             calculateComparison = calculateComparisonDifference(this.points);
         }
 
-        this.points.forEach((point, i) => {
-            if (point.series.userOptions.type === 'spline') {
-                targetTotal += point.y;
+        if(sorted) {
+            points = this.points.sort(function(a, b){
+            return ((a.y < b.y) ? -1 : ((a.y > b.y) ? 1 : 0));
+        });
+         }
+         else{
+             points = this.points;
+         } 
+
+        points.forEach((p, i) => {
+            if (p.series.userOptions.type === 'spline') {
+                targetTotal += p.y;
                 tooltip_html += `
                     <div flex layout="row">
-                        <div flex style="color: ${point.series.color}">${point.series.name}: </div>
-                        <div flex-initial style="color: ${point.series.color}">
-                            <span style="font-weight: bold">${Highcharts.numberFormat(point.y)}</span>
+                        <div flex style="font-weight:bold; color: ${p.color}">${p.series.name}: </div>
+                        <div flex-initial style="color: ${p.color}">
+                            <span style="font-weight: bold">${Highcharts.numberFormat(p.y)}</span>
                         </div>
                     </div>
                 `;
 
-                if (isNumber(point.series.userOptions.percentageCompletion)) {
+                if (isNumber(p.series.userOptions.percentageCompletion)) {
                     tooltip_html += `
                         <div flex layout="row">
-                            <div flex style="color: ${point.series.color}">${point.series.name} (target progress): </div>
-                            <div flex-initial style="color: ${point.series.color}">
-                                <span style="font-weight: bold">${Highcharts.numberFormat(point.series.userOptions.percentageCompletion, 0)}%</span>
+                            <div flex style="color: ${p.series.color}">${p.series.name} (target progress): </div>
+                            <div flex-initial style="color: ${p.series.color}">
+                                <span style="font-weight: bold">${Highcharts.numberFormat(p.series.userOptions.percentageCompletion, 0)}%</span>
                             </div>
                         </div>
                     `;
@@ -195,15 +205,15 @@ function tooltip_total(stack?: string) {
             }
         });
 
-        this.points.forEach((point, i) => {
-            if (point.series.userOptions.type !== 'spline') {
-                total += point.y;
+        points.forEach((p, i) => {
+            if (p.series.userOptions.type !== 'spline') {
+                total += p.y;
                 nonTargetPointCount = nonTargetPointCount + 1;
                 tooltip_html += `
                     <div flex layout="row">
-                        <div flex>${point.series.name}: </div>
+                        <div flex style=" color: ${p.color}">${p.series.name}: </div>
                         <div flex-initial>
-                            <span style="font-weight: bold">${Highcharts.numberFormat(point.y)}</span>
+                            <span style="font-weight: bold">${Highcharts.numberFormat(p.y)}</span>
                         </div>
                     </div>
                 `;
@@ -640,7 +650,9 @@ export function FormatterFactory() {
         // if (name === 'custom') {
         //     formatter = new formatter_percent_with_total();
         // };
-
+        if (name === 'kpi_tooltip_sorted') {
+            formatter = new tooltip_total(stack, true);
+        }
         if (formatter) {
             formatter.name = name;
         } else {
@@ -771,3 +783,28 @@ function getStyle(value: Itypography, align?: string) {
     }
     return style;
 }
+
+// function sorted_tooltip_label_formatter() {
+  
+//     this.exec = function () {
+
+//         let sorted_points = this.points.sort(function(a, b){
+//             return ((a.y < b.y) ? -1 : ((a.y > b.y) ? 1 : 0));
+//         });
+
+//         let tooltip_html = `<b>${this.x}</b>`;
+//         tooltip_html += '<div flex>';
+//         sorted_points.forEach(p => {
+//             let serieName = p.series.name;
+//             if (serieName.length > 10) {
+//                 serieName = `${serieName.substring(0, 12)}... `;
+//             }
+//             tooltip_html += `<div layout="row">`;
+//             tooltip_html += `<div flex style="font-weight:bold; color: ${p.color}">${serieName}: </div>`;
+//             tooltip_html += `<div flex-initial style="text-align: right">${Highcharts.numberFormat(p.y)} USD</div>`;
+//             tooltip_html += `</div>`;
+//         });
+//         tooltip_html += '</div>';
+//         return tooltip_html;
+//     };
+// }
