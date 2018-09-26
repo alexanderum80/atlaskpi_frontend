@@ -69,7 +69,8 @@
                 (dependantValueChanged)="updateXaxisSourceList($event)",
                 [items]="xAxisSourceList",
                 noneSelectedText="NOTHING SELECTED",
-                [disabled]="true")
+                [disabled]="true",
+                [required]="true")
 
     //- top N records
     .m-10(flex, layout="row")

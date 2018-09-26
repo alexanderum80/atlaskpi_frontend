@@ -528,7 +528,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             frequency: this.frequencyToUpdate && this.frequencyToUpdate !== '' ? this.frequencyToUpdate : null,
             xAxisSource: '',
             isDrillDown: false,
-            comparison: []
+            comparison: [],
+            onTheFly: true,
         };
 
         that.chartSubscription = this._apollo.watchQuery<ChartResponse>({
@@ -586,6 +587,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             that.processChartUpdate(data.chart);
         });
 
+        // disable target options when settings on the fly
+        this._commonService.disableChildrenActionItems(this.actionItems, ['set-target']);
     }
 
     isDrillDownAvailable(): boolean {
