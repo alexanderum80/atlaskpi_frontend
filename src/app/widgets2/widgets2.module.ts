@@ -21,6 +21,8 @@ import { ChartModule } from 'angular-highcharts';
     MaterialFormsModule,
     ChartModule
   ],
-  declarations: [EmptyWidgetListComponent, WidgetsComponent, NewWidgetComponent, WidgetFormComponent, WidgetViewComponent, WidgetPreviewComponent]
+  declarations: [EmptyWidgetListComponent, WidgetsComponent, NewWidgetComponent, WidgetFormComponent, WidgetViewComponent, WidgetPreviewComponent
+  ],
+  exports:[WidgetPreviewComponent]
 })
 export class Widgets2Module { }

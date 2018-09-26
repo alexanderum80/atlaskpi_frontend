@@ -20,6 +20,11 @@ import {
   } from '../../ng-material-components/modules/forms/date-picker/date-picker/date-picker-config.model';
 import { ApolloService } from '../../shared/services/apollo.service';
 
+import { IDateRangeItem } from './../../shared/models/date-range';
+import { chartsGraphqlActions } from '../../charts/shared/graphql/charts.graphql-actions';
+
+
+
 const widgetSizeList: SelectionItem[] = [{
         id: 'small',
         title: 'Small'
@@ -121,6 +126,7 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() fg: FormGroup;
     @Input() editMode = false;
     @Input() widgetId: string;
+    @Input() widgetDataFromKPI : any;
     @Output() formResult = new EventEmitter < DialogResult > ();
 
     subs: Subscription[] = [];
@@ -164,18 +170,40 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
         this._subscribeToFormFields();
 
         const widgetData = this._widgetFormService.getWidgetFormValues();
-
-        this.fg.patchValue(widgetData);
+       
+        if (this.widgetDataFromKPI) {
+            widgetData.name = this.widgetDataFromKPI.name;
+            widgetData.size = this.widgetDataFromKPI.size;
+            widgetData.kpi = this.widgetDataFromKPI.kpi;
+            widgetData.color = this.widgetDataFromKPI.color;
+            widgetData.predefinedDateRange = this.widgetDataFromKPI.predefinedDateRange;
+            widgetData.format = this.widgetDataFromKPI.format;
+            widgetData.comparison = this.widgetDataFromKPI.comparison;
+            widgetData.comparisonArrowDirection = this.widgetDataFromKPI.comparisonArrowDirection;
+            
+            this.fg.patchValue(widgetData);
+        
+            this._apolloService.networkQuery < IDateRangeItem[] > (chartsGraphqlActions.dateRanges).then(res => {
+                const dateRanges = res.dateRanges;
+                const listDateRange = dateRanges.find(d => d.dateRange.predefined === widgetData.predefinedDateRange);
+                const listComparison = listDateRange.comparisonItems.map(i => ({ id: i.key, title: i.value }));
+                this.comparisonSelectionList = listComparison;
+            });
+        
+        } else {
+            
+            this.fg.patchValue(widgetData);
+        }
+        
         this._subscribeToServiceObservables();
-
-
+        
         this.fg.get('predefinedDateRange').valueChanges.subscribe(newDateRange => {
             that.updateComparisonItems(newDateRange);
-        });
-
+        
+        })
         that.updateComparisonItems(this.fg.value.predefinedDateRange);
         this.cdr.detectChanges();
-
+        
         this._widgetFormService.updateExistDuplicatedName(false);
         this._subscribeToNameChanges();
     }

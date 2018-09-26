@@ -17,6 +17,8 @@ import { TagsViewModel } from '../../../shared/view-models/tags.viewmodel';
 import { FilterViewModel } from '../shared/filter.viewmodel';
 import { SimpleKpiExpressionViewModel } from '../shared/simple-kpi-expression.viewmodel';
 import { IKPIPayload } from '../shared/simple-kpi-payload';
+import { IWidgetFormGroupValues } from '../../../widgets/shared/models';
+import { IChartFormValues } from '../../../charts/shared/models/chart.models';
 import { getAggregateFunctions } from '../../../shared/domain/kpis/functions';
 
 export const KPINAMEREGULAREXPRESSION = /^([a-zA-Z0-9\*\-\(\)\$\&\:#%] *){5,}$/;
@@ -43,6 +45,35 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     sourceItems: SelectionItem[];
     consSourceValue: string;
     consSourceValues: string[] = [];
+    valuesPreviewWidget : IWidgetFormGroupValues = {
+        name: '',
+        description: '',
+        type: 'numeric',
+        size: 'big',
+        order: '4',
+        color: '',
+        kpi: '',
+        predefinedDateRange: 'this year',
+        format: 'dollar',
+        comparison: 'previousPeriod',
+        comparisonArrowDirection: 'up'
+      };
+      
+      valuesPreviewChart : IChartFormValues = {
+        name: '',
+        description: '',
+        dashboards: '',
+        group: 'pre-defined',
+        frequency: 'monthly',
+        grouping: 'location.name',
+        tooltipEnabled: true,
+        predefinedTooltipFormat: 'multiple_percent',
+        kpi: '',
+        legendEnabled: false,
+        predefinedDateRange: 'this year',
+        invertAxisEnabled: false,
+        seriesDataLabels: false
+      };
 
     constructor(private _apollo: Apollo, private _cdr: ChangeDetectorRef ) {
         super(null);
@@ -233,13 +264,14 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         return this.fg.controls['source'].setValue(this.consSourceValue);
     }
 
+    
     resetItemSource() {
         if (this.sourceItems) {
             this.vmSource.resetSelectedItems();
             this.sourceItems = this.consSourceValues.map(s => new SelectionItem(s, s));
         }
     }
-
+    
     updateDataSources(dataSources: IDataSource[]) {
         if (!dataSources || this._dataSources === dataSources) {
             return;
@@ -251,7 +283,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         this.dataSources = dataSources.filter(s => !s.externalSource).map(s => new SelectionItem(s.name, s.description.toUpperCase()));
 
         this.updateItemSources(dataSources);
-
+        
         // once the data source list its update I need to make sure I update the fields
         if (this.hasFormControls(this.fg)) {
             this._updateExpressionNumericFields({
@@ -263,7 +295,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
 
         this._cdr.markForCheck();
     }
-
+    
     hasFormControls(fg: FormGroup): boolean {
         return (fg && !isEmpty(fg.controls)) ? true : false;
     }
@@ -277,9 +309,9 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
 
         sources = uniq(sources);
         this.sourceItems = sources.map(s => new SelectionItem(s, s));
-
+        
         let nonExistItems: string[] = [];
-
+        
         if (isString(this.source)) {
             const arraySourceValues: string[] = this.source.split(/\|/);
             const sourceItemIds = this.sourceItems.map(s => s.id);
@@ -290,7 +322,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             const addMissingSelectedItems = nonExistItems.map(n => new SelectionItem(n, n));
             this.sourceItems = this.sourceItems.concat(addMissingSelectedItems);
         }
-
+        
         if (this.source) {
             this.getDataSourceList(this.source);
         }
@@ -303,7 +335,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             this.numericFields = [];
             return;
         }
-
+        
         // filter out fields that does not exist in collection
         // return field that does not exist in collection, but does for edit kpi
         const exp = this.expression;
@@ -316,18 +348,18 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
                 // return true if the expression is already using this field
                 (exp.field === f.path);
         });
-
+        
         this.numericFields = availableFields.map(f => new SelectionItem(f.path, f.name.toUpperCase()));
     }
-
+    
     getDataSourceList(item: any): void {
         const reg: RegExp = /\|/;
         if (!item) {
             this.dataSources = this._dataSources.filter(s => !s.externalSource)
                                                 .map(s => new SelectionItem(s.name, s.description.toUpperCase()));
-            return;
+                                                return;
         }
-
+        
         this.dataSources = this._dataSources
                                 .filter((dSource: IDataSource) => {
                                     // multiple selection
@@ -352,20 +384,20 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             }
         }
     }
-
+    
     updateTags(tags: ITag[]) {
         this._tags = tags.map(t => ({ value: t.name, display: t.name }));
         this._cdr.markForCheck();
     }
-
+    
     updateExistDuplicatedName(exist: boolean) {
         this.existDuplicatedName = exist;
     }
-
+    
     getExistDuplicatedName() {
         return this.existDuplicatedName;
     }
-
+    
     private _queryFields(dataSource: string, collectionSource?: string[]): void {
         const that = this;
         this._apollo.query<{ kpiExpressionFields: IDataSourceField[]}>({
@@ -397,28 +429,53 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             return temp;
         }) as IDataSource[];
     }
-
+    
+    selectColorWidget() {
+        
+        switch (Math.round(Math.random()*10)) {
+            case 0:
+                return 'white';
+            case 1:
+                return 'orange';
+            case 2:
+                return 'blue';
+            case 3:
+                return 'green';
+            case 4:
+                return 'light-green';
+            case 5:
+                return 'sei-green';
+            case 6:
+                return 'purple';
+            case 7:
+                return 'light-purple';
+            case 8: 
+                return "pink";
+            default:
+                return 'white';
+        }
+    }
     // @OnFieldChanges([{ name: 'expression.dataSource' }, { name: 'source' }])
     // private _updateExpressionNumericFields(value: { 'expression.dataSource': string, 'source': string}) {
     //     // this.expressionFieldSubject.next(value['expression.dataSource']);
-        // const dSource = this._dataSources.find(d => d.name === value['expression.dataSource']);
+    // const dSource = this._dataSources.find(d => d.name === value['expression.dataSource']);
 
-        // reset selected items for expression.field
-        // const { currentValue, previousValue } = this._expressionFieldValuesTracker;
+    // reset selected items for expression.field
+    // const { currentValue, previousValue } = this._expressionFieldValuesTracker;
         // if ((previousValue !== undefined) && (previousValue !== currentValue)) {
-        //     this.numericFieldSelector.resetSelectedItems();
+            //     this.numericFieldSelector.resetSelectedItems();
         // }
-
+        
         // if (dSource) {
-        //     this._selectedDataSource = dSource;
+            //     this._selectedDataSource = dSource;
         // }
-
+        
         // const dataSource: string = value['expression.dataSource'] || (this.expression ? this.expression.dataSource : '');
         // const source: string = value['source'] || this.source;
 
-
+        
         // if (dataSource) {
-        //     const that = this;
+            //     const that = this;
 
         //     const collectionSource = source ? source.split(/\|/) : [];
 

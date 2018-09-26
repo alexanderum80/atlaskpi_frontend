@@ -28,6 +28,7 @@ const getWidgetByTitle = require('graphql-tag/loader!../shared/graphql/get-widge
 
 export class NewWidgetComponent implements OnInit, OnDestroy {
   @Input() isFromDashboard = false;
+  @Input() widgetDataFromKPI : any;
   @Output() result = new EventEmitter();
   fg: FormGroup = new FormGroup({});
 
@@ -65,8 +66,12 @@ export class NewWidgetComponent implements OnInit, OnDestroy {
     if (this.isFromDashboard) {
         this.result.emit('widgets');
     } else {
-        this._router.navigateByUrl('/widgets');
-    }
+        if (this.widgetDataFromKPI) {
+          this._router.navigateByUrl('/kpis/list');
+        } else {
+          this._router.navigateByUrl('/widgets');
+        }
+    }    
   }
 
   saveWidget() {

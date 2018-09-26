@@ -92,7 +92,6 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         }
 
         const widgetPreviewChanges = changes['widgetPreview'];
-
         if (widgetPreviewChanges) {
             if (widgetPreviewChanges.currentValue) {
                 const infoItem: MenuItem = Object.assign({}, this.actionInfoItem);

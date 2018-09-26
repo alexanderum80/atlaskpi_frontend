@@ -13,3 +13,30 @@
     opacity: 0.5;
     pointer-events: none;
 }
+
+.new-chart-from-kpi {
+    max-width: 99%;
+    margin: auto;
+}
+
+.new-widget-from-kpi {
+    max-width: 1100px;
+    margin: auto;
+}
+.iconzoom {
+    position: relative;
+    zoom: 2;
+    margin-top: -4px;
+    margin-left: -6px;
+}
+.title {
+    position: relative;
+    margin-top: -20px;
+    margin-left: 20px;
+    font-size: 17px;
+}
+.ligth {
+    &:hover {
+        border: 2px solid #2196f3;
+}
+}

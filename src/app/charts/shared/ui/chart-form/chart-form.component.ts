@@ -68,6 +68,38 @@ const initialDefinition = {
     }
 };
 
+const chartDefinitionFromKPI = {
+    chart: {
+        type: 'column'
+    },
+    title: undefined,
+    plotOptions: {
+        column: {
+            dataLabels: {
+                enabled: true,
+                format: '{point.name}:<br/> <b>{point.y:,.2f} ({point.percentage:.2f}%)</b>'
+            },
+            showInLegend: true,
+            stacking: "normal"
+        }
+    },
+    tooltip: {
+        altas_definition_id: "multiple_percent",
+        enabled: true,
+        formatter: "kpi_tooltip_with_percentage_and_total",
+        shared: true,
+        useHTML: true
+    },
+    series: [],
+    exporting: {
+        enabled: false
+    },
+    credits: {
+        enabled: false,
+        href: 'http://www.atlaskpi.com',
+        text: 'Powered by AtlasKPI'
+    }
+};
 const ChartTypes = [{
     id: 1,
     title: 'Line'
@@ -110,6 +142,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     @Input() fg: FormGroup;
     @Input() chartModel: ChartModel;
     @Input() chartId: string;
+    @Input() chartDataFromKPI: any;
     @Output() result = new EventEmitter < DialogResult > ();
     @ViewChild(ChartFormatInfoComponent) ChartFormatInfo: ChartFormatInfoComponent;
 
@@ -245,6 +278,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                     this.chartDefinition.chart &&
                     this.chartDefinition.chart.type) {
                     this._galleryService.updateToolTipList(this.chartDefinition.chart.type);
+
                 }
                 this.canSave = this.formValid;
                 // x axis
@@ -283,8 +317,8 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
     updateFormFields() {
         const that = this;
-        const values = this.chartModel.toChartFormValues();
-
+        const values = this.chartDataFromKPI ? this.chartDataFromKPI : this.chartModel.toChartFormValues();
+        
         this.ChartFormatInfo.defaultChartColors();
 
         this._subscription.push(
@@ -298,13 +332,16 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
                 that.isEdit = true;
             // this.chartType = this.chartModel.type;
-                that.chartDefinition = that.chartModel.chartDefinition;
-
+                that.chartDefinition = this.chartDataFromKPI ? chartDefinitionFromKPI : that.chartModel.chartDefinition;
                 that._galleryService.updateToolTipList(that.chartDefinition.chart.type);
-                that.chartType = that.chartDefinition ?
-                                    (that.chartModel.type || that.chartDefinition.chart.type) :
-                                    initialDefinition.chart.type;
-
+                
+                if (that.chartDefinition && !this.chartDataFromKPI) {
+                    that.chartType = (that.chartModel.type || that.chartDefinition.chart.type)
+                } else {
+                    that.chartType = (that.chartDefinition && this.chartDataFromKPI) ? 
+                        chartDefinitionFromKPI.chart.type : 
+                        initialDefinition.chart.type;
+                }
                 // Update formgroup
                 setTimeout(function () {
                     // in this stage we are updating controls with no dependency
@@ -378,7 +415,6 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                         that.fg.controls['predefinedTooltipFormat'].setValue(values.predefinedTooltipFormat);
                     }
                 }, 800);
-
                 setTimeout(() => {
                     that.fg.controls['xAxisSource'].setValue(values.xAxisSource);
                     if (that.fg.controls['grouping']) {
