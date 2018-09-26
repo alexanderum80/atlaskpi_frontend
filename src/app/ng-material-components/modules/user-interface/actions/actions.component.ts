@@ -14,7 +14,7 @@ import { ActionsService } from './actions.service';
     </ul>
   `,
 })
-export class ActionsComponent implements OnInit, OnChanges {
+export class ActionsComponent implements OnInit {
     @Input() public actionItems: MenuItem[];
     @Input() public alt = false;
     @Input() public showBig = false;
