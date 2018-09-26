@@ -76,14 +76,7 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
     }
     
     _closePreviewModal() {
-        if ( this.newWidgetFromKPI === true || this. newChartFromKPI === true ) {
-            this.previewModal.close();
-        
-        } else {
-        
-            this.previewModal.close();
-            this._goToListKpis();
-        }
+        this.previewModal.close();
     }
 
     newWidget() {
@@ -156,7 +149,7 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
                 if (this.fromSaveAndVisualize) {
                     // for widget
                     this.currrentKPI = res.data[this.resultName].entity;
-                    debugger;
+
                     this.vm.valuesPreviewWidget.name = this.currrentKPI.name;
                     this.vm.valuesPreviewWidget.kpi = this.currrentKPI._id;
                     this.vm.valuesPreviewWidget.color = this.vm.selectColorWidget();

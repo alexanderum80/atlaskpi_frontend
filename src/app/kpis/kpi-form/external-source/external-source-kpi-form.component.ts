@@ -65,14 +65,7 @@ export class ExternalSourceKpiFormComponent implements OnInit, AfterViewInit {
     }
     
     _closePreviewModal() {
-        if ( this.newWidgetFromKPI === true || this. newChartFromKPI === true ) {
-            this.previewModal.close();
-        
-        } else {
-        
-            this.previewModal.close();
-            this._goToListKpis();
-        }
+        this.previewModal.close();        
     }
     
     newWidget() {

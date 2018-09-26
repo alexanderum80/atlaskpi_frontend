@@ -107,14 +107,7 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
     }
     
     _closePreviewModal() {
-        if ( this.newWidgetFromKPI === true || this. newChartFromKPI === true ) {
-            this.previewModal.close();
-        
-        } else {
-        
-            this.previewModal.close();
-            this._goToListKpis();
-        }
+        this.previewModal.close();      
     }
     
     newWidget() {

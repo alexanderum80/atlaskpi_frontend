@@ -36,6 +36,7 @@ export class ComplexKpiFormViewModel extends ViewModel<IKPI> {
       valuesPreviewChart : IChartFormValues = {
         name: '',
         description: '',
+        dashboards: '',
         group: 'pre-defined',
         frequency: 'monthly',
         grouping: '',

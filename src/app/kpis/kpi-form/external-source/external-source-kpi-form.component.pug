@@ -86,11 +86,11 @@
                     
                     //- save & visualize
                     div(flex-initial)
-                        bw-button.m-r-10(title="SAVE & VISUALIZE", icon="eye", color="green", (clicked)="_openVisualizeModal()", [disabled]="!vm.fg.valid || vm.fg.pristine")
+                        bw-button.m-r-10(title="SAVE & VISUALIZE", icon="eye", color="green", (clicked)="_openVisualizeModal()", [disabled]="!vm.fg.valid")
 
                     //- save
                     div(flex-initial)
-                        bw-button(title="Save", icon="check", color="blue", (clicked)="save()", [disabled]="!vm.fg.valid || vm.fg.pristine")
+                        bw-button(title="Save", icon="check", color="blue", (clicked)="save()", [disabled]="!vm.fg.valid")
 
                     //- cancel
                     div(flex-intial)
