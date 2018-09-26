@@ -49,6 +49,7 @@ export class ExternalSourceKpiFormViewModel extends ViewModel<IKPI> {
       valuesPreviewChart : IChartFormValues = {
         name: '',
         description: '',
+        dashboards: '',
         group: 'pre-defined',
         frequency: 'monthly',
         grouping: 'location.name',
