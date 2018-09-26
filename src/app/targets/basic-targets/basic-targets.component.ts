@@ -72,6 +72,7 @@ export class BasicTargetsComponent implements OnInit, OnDestroy {
             unitCtrl.setValue('#');
         } else {
             this.showUnitOptions = true;
+            unitCtrl.setValue('%');
         }
     }
 

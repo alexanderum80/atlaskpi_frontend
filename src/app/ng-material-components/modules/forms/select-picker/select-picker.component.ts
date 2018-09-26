@@ -391,6 +391,8 @@ export class SelectPickerComponent extends InputBase implements OnChanges, OnDes
 
     private _cleanSelection() {
         this._clonedItems.forEach(i => i.selected = false);
+        this.selectedItems = [];
+        this._updateSelectionText();
     }
 
     private _updateSelectionWidth() {
