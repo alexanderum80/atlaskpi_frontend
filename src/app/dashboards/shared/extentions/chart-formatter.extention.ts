@@ -161,12 +161,18 @@ function tooltip_total(stack?: string, sorting?: string) {
         let calculateComparison;
         let nonTargetPointCount = 0;
         let points;
+        let totalStacks = new Set();
+
+        this.points.forEach(p => {
+            if(p.series.userOptions.hasOwnProperty('stack'))
+                totalStacks.add(p.series.userOptions.stack);          
+        });
 
         if (!stack) {
             stack = this.points[0].series.userOptions.hasOwnProperty('stack') ? this.points[0].series.userOptions.stack : '';
         }
 
-        if (stack) {
+        if (totalStacks.size == 1 || (totalStacks.size == 2 && totalStacks.has("main"))) {
             calculateComparison = calculateComparisonDifference(this.points);
         }
         //- beatriz code begins
@@ -241,7 +247,7 @@ function tooltip_total(stack?: string, sorting?: string) {
                         </div>
                 `;
             }
-        } else {
+        } if(calculateComparison) {
             tooltip_html += `
                     <div flex layout="row">
                         <div flex>Difference: </div>
@@ -266,6 +272,7 @@ function tooltip_point_percentaje_total_formatter(stack?: string, sorting? :stri
         let calculateComparison;
         let nonTargetPointCount = 0;
         let points;
+        let totalStacks = new Set();
 
         this.points.forEach(point => {
             if (point.series.userOptions.type !== 'spline') {
@@ -275,11 +282,16 @@ function tooltip_point_percentaje_total_formatter(stack?: string, sorting? :stri
             }
         });
 
+        this.points.forEach(p => {
+            if(p.series.userOptions.hasOwnProperty('stack'))
+                totalStacks.add(p.series.userOptions.stack);          
+        });
+
         if (!stack) {
             stack = this.points[0].series.userOptions.hasOwnProperty('stack') ? this.points[0].series.userOptions.stack : '';
         }
 
-        if (stack) {
+        if (totalStacks.size == 1 || (totalStacks.size == 2 && totalStacks.has("main"))) {
             calculateComparison = calculateComparisonDifference(this.points);
         }
 
@@ -356,7 +368,7 @@ function tooltip_point_percentaje_total_formatter(stack?: string, sorting? :stri
                 `;
             }
             return custom_tooltip_html;
-        } else {
+        } if(calculateComparison) {
             custom_tooltip_html += `
                 <div flex layout="row">
                 <div flex>Difference: </div>
@@ -365,8 +377,9 @@ function tooltip_point_percentaje_total_formatter(stack?: string, sorting? :stri
                 </div>
                 </div>
             `;
-            return custom_tooltip_html;
         }
+        return custom_tooltip_html;
+
     };
 }
 
