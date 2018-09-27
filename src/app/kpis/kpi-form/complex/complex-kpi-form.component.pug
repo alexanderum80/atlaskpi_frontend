@@ -77,7 +77,7 @@
 
 bw-modal(#previewModal, (onDismiss)="_closePreviewModal()", (onClosed)="_closePreviewModal()", size="md")
     div(layout="row", layout-align="end", flex-none)
-        bw-button.iconzoom(icon="close", color="black", [simple]="true", (clicked)="_closePreviewModal()")
+        bw-button.iconzoom(icon="close", title="Go to kpi list", color="black", [simple]="true", (clicked)="_closePreviewModal()")
     div(layout="row", layout-align="start", flex-none)
         h2.title I would like to visualize my kpi in a:
     bw-modal-body

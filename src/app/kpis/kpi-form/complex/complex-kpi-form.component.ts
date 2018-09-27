@@ -23,7 +23,7 @@ const updateKpiMutation = require('graphql-tag/loader!../update-kpi.mutation.gql
 @Component({
     selector: 'kpi-complex-kpi-form',
     templateUrl: './complex-kpi-form.component.pug',
-    styleUrls: [ './complex-kpi-form.component.scss' ],
+    styleUrls: ['./complex-kpi-form.component.scss'],
     providers: [ComplexKpiFormViewModel]
 })
 export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
@@ -44,7 +44,7 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
         public vm: ComplexKpiFormViewModel,
         private _apolloService: ApolloService,
         private _router: Router,
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         const that = this;
@@ -74,16 +74,21 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
         this.fromSaveAndVisualize = true;
         this.save();
     }
-    
+
     _closePreviewModal() {
-        this.previewModal.close();
+        if (this.newWidgetFromKPI === true || this.newChartFromKPI === true) {
+            this.previewModal.close();
+        } else {
+            this.previewModal.close();
+            this._goToListKpis();
+        }
     }
 
     newWidget() {
         this.newWidgetFromKPI = true;
         this._closePreviewModal();
     }
-    
+
     newChart() {
         this.newChartFromKPI = true;
         this._closePreviewModal();
@@ -109,7 +114,7 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
 
         if (!this.vm.validExpression()) {
             const message: string = 'Your KPI expression is invalid. At this point, we only allow KPIs' +
-                            ', and operations (i.e. / * + -) between them such as, @{Revenue}-@{Expenses}';
+                ', and operations (i.e. / * + -) between them such as, @{Revenue}-@{Expenses}';
             return SweetAlert({
                 text: message,
                 type: 'error',
@@ -119,7 +124,7 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
         }
 
 
-        this._apolloService.networkQuery < IKPI[] > (kpiByName, { name: that.payload.input.name }).then(d => {
+        this._apolloService.networkQuery<IKPI[]>(kpiByName, { name: that.payload.input.name }).then(d => {
             if ((d.kpiByName && that.resultName === 'createKPI') ||
                 (d.kpiByName && that.resultName === 'updateKPI' && d.kpiByName._id !== that.payload.id)) {
 
@@ -137,33 +142,33 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
             }
 
             this._apolloService.mutation<any>(that.mutation, that.payload)
-            .then(res => {
-                if (res.data[that.resultName].errors) {
-                    return SweetAlert({
-                        title: 'Some errors were found while saving this KPI. Please try again later',
-                        type: 'error',
-                        showConfirmButton: true,
-                        confirmButtonText: 'Ok'
+                .then(res => {
+                    if (res.data[that.resultName].errors) {
+                        return SweetAlert({
+                            title: 'Some errors were found while saving this KPI. Please try again later',
+                            type: 'error',
+                            showConfirmButton: true,
+                            confirmButtonText: 'Ok'
                         });
-                }
-                if (this.fromSaveAndVisualize) {
-                    // for widget
-                    this.currrentKPI = res.data[this.resultName].entity;
+                    }
+                    if (this.fromSaveAndVisualize) {
+                        // for widget
+                        this.currrentKPI = res.data[this.resultName].entity;
 
-                    this.vm.valuesPreviewWidget.name = this.currrentKPI.name;
-                    this.vm.valuesPreviewWidget.kpi = this.currrentKPI._id;
-                    this.vm.valuesPreviewWidget.color = this.vm.selectColorWidget();
+                        this.vm.valuesPreviewWidget.name = this.currrentKPI.name;
+                        this.vm.valuesPreviewWidget.kpi = this.currrentKPI._id;
+                        this.vm.valuesPreviewWidget.color = this.vm.selectColorWidget();
 
-                    // for chart
-                    this.vm.valuesPreviewChart.name = this.currrentKPI.name;
-                    this.vm.valuesPreviewChart.kpi = this.currrentKPI._id;
+                        // for chart
+                        this.vm.valuesPreviewChart.name = this.currrentKPI.name;
+                        this.vm.valuesPreviewChart.kpi = this.currrentKPI._id;
 
-                    this.fromSaveAndVisualize = !this.fromSaveAndVisualize;
-                    this.previewModal.open();
-                }else {
-                    this._goToListKpis();
-                }
-            });
+                        this.fromSaveAndVisualize = !this.fromSaveAndVisualize;
+                        this.previewModal.open();
+                    } else {
+                        this._goToListKpis();
+                    }
+                });
         });
     }
 
@@ -181,28 +186,28 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
             showConfirmButton: true,
             showCancelButton: true
         })
-        .then((res) => {
-            if (res.dismiss !== 'cancel' as any) {
-                that._goToListKpis();
-            }
-        });
+            .then((res) => {
+                if (res.dismiss !== 'cancel' as any) {
+                    that._goToListKpis();
+                }
+            });
     }
 
     private _subscribeToNameChanges() {
         this.vm.fg.controls['name'].valueChanges.subscribe(n => {
-            const nameInput = n.trim(); 
-            
+            const nameInput = n.trim();
+
             if (nameInput === '') {
-                this.vm.fg.controls['name'].setErrors({required: true});
+                this.vm.fg.controls['name'].setErrors({ required: true });
             } else {
                 if (this.vm.getExistDuplicatedName() === true) {
-                    this._apolloService.networkQuery < IKPI > (kpiByName, { name: nameInput }).then(d => {
+                    this._apolloService.networkQuery<IKPI>(kpiByName, { name: nameInput }).then(d => {
                         if (!((d.kpiByName && this.resultName === 'createKPI') ||
                             (d.kpiByName && this.resultName === 'updateKPI' && d.kpiByName._id !== this.payload.id))) {
 
                             this.vm.fg.controls['name'].setErrors(null);
                         } else {
-                            this.vm.fg.controls['name'].setErrors({forbiddenName: true});
+                            this.vm.fg.controls['name'].setErrors({ forbiddenName: true });
                         }
                     });
                 }
