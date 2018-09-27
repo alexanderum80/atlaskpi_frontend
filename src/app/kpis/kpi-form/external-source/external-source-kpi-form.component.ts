@@ -1,4 +1,7 @@
 import { SelectPickerComponent } from '../../../ng-material-components/modules/forms/select-picker/select-picker.component';
+import { ModalComponent } from '../../../ng-material-components/modules/user-interface/modal/modal.component';
+import { IWidget } from '../../../widgets/shared/models';
+
 import { Component, Input, ViewChild, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import SweetAlert from 'sweetalert2';
@@ -16,13 +19,14 @@ const updateExternalSourceKpiMutation = require('graphql-tag/loader!./update-ext
 const getKPIByName = require('graphql-tag/loader!../kpi-by-name.gql');
 
 @Component({
-  selector: 'kpi-external-source-kpi-form',
-  templateUrl: './external-source-kpi-form.component.pug',
-  styleUrls: [ './external-source-kpi-form.component.scss'],
-  providers: [ExternalSourceKpiFormViewModel]
+    selector: 'kpi-external-source-kpi-form',
+    templateUrl: './external-source-kpi-form.component.pug',
+    styleUrls: ['./external-source-kpi-form.component.scss'],
+    providers: [ExternalSourceKpiFormViewModel]
 })
 export class ExternalSourceKpiFormComponent implements OnInit, AfterViewInit {
     @Input() model: IKPI;
+    @ViewChild('previewModal') previewModal: ModalComponent;
 
     @ViewChild('numericFieldSelector') set content(content: SelectPickerComponent) {
         if (content) {
@@ -34,11 +38,17 @@ export class ExternalSourceKpiFormComponent implements OnInit, AfterViewInit {
     mutation: string;
     resultName: string;
 
+    fromSaveAndVisualize: boolean;
+    currrentKPI: IKPI;
+    widgetModel: IWidget;
+    newWidgetFromKPI: boolean;
+    newChartFromKPI: boolean;
+
     constructor(
         public vm: ExternalSourceKpiFormViewModel,
         private _apolloService: ApolloService,
         private _router: Router
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.vm.initialize(this.model);
@@ -47,6 +57,30 @@ export class ExternalSourceKpiFormComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit() {
         this._subscribeToNameChanges();
+    }
+
+    private _openVisualizeModal() {
+        this.fromSaveAndVisualize = true;
+        this.save();
+    }
+
+    _closePreviewModal() {
+        if (this.newWidgetFromKPI === true || this.newChartFromKPI === true) {
+            this.previewModal.close();
+        } else {
+            this.previewModal.close();
+            this._goToListKpis();
+        }
+    }
+
+    newWidget() {
+        this.newWidgetFromKPI = true;
+        this._closePreviewModal();
+    }
+
+    newChart() {
+        this.newChartFromKPI = true;
+        this._closePreviewModal();
     }
 
     save() {
@@ -62,10 +96,10 @@ export class ExternalSourceKpiFormComponent implements OnInit, AfterViewInit {
                 type: 'error',
                 showConfirmButton: true,
                 confirmButtonText: 'Got it!'
-              });
+            });
         }
 
-        this._apolloService.networkQuery < IKPI > (getKPIByName, { name: this.payload.input.name }).then(d => {
+        this._apolloService.networkQuery<IKPI>(getKPIByName, { name: this.payload.input.name }).then(d => {
             if ((d.kpiByName && this.resultName === 'createKPI') ||
                 (d.kpiByName && this.resultName === 'updateKPI' && d.kpiByName._id !== this.payload.id)) {
 
@@ -82,19 +116,35 @@ export class ExternalSourceKpiFormComponent implements OnInit, AfterViewInit {
                 });
             }
 
-        this._apolloService.mutation<any>(this.mutation, this.payload)
-            .then(res => {
-                if (res.data[this.resultName].errors) {
-                    return SweetAlert({
-                        title: 'Some errors were found while saving this KPI. Please try again later',
-                        type: 'error',
-                        showConfirmButton: true,
-                        confirmButtonText: 'Ok'
-                      });
-                }
+            this._apolloService.mutation<any>(this.mutation, this.payload)
+                .then(res => {
+                    if (res.data[this.resultName].errors) {
+                        return SweetAlert({
+                            title: 'Some errors were found while saving this KPI. Please try again later',
+                            type: 'error',
+                            showConfirmButton: true,
+                            confirmButtonText: 'Ok'
+                        });
+                    }
 
-                this._router.navigateByUrl('/kpis/list');
-            });
+                    if (this.fromSaveAndVisualize) {
+                        // for widget
+                        this.currrentKPI = res.data[this.resultName].entity;
+                        this.vm.valuesPreviewWidget.name = this.currrentKPI.name;
+                        this.vm.valuesPreviewWidget.kpi = this.currrentKPI._id;
+                        this.vm.valuesPreviewWidget.color = this.vm.selectColorWidget();
+
+                        // for chart
+                        this.vm.valuesPreviewChart.name = this.currrentKPI.name;
+                        this.vm.valuesPreviewChart.kpi = this.currrentKPI._id;
+
+                        this.fromSaveAndVisualize = !this.fromSaveAndVisualize;
+                        this.previewModal.open();
+
+                    } else {
+                        this._router.navigateByUrl('/kpis/list');
+                    }
+                });
         });
     }
 
@@ -112,11 +162,11 @@ export class ExternalSourceKpiFormComponent implements OnInit, AfterViewInit {
             showConfirmButton: true,
             showCancelButton: true
         })
-        .then((res) => {
-            if (res.dismiss !== 'cancel' as any) {
-                that._goToListKpis();
-            }
-        });
+            .then((res) => {
+                if (res.dismiss !== 'cancel' as any) {
+                    that._goToListKpis();
+                }
+            });
     }
 
     private _subscribeToNameChanges() {
@@ -124,16 +174,16 @@ export class ExternalSourceKpiFormComponent implements OnInit, AfterViewInit {
             const nameInput = n.trim();
 
             if (nameInput === '') {
-                this.vm.fg.controls['name'].setErrors({required: true});
+                this.vm.fg.controls['name'].setErrors({ required: true });
             } else {
                 if (this.vm.getExistDuplicatedName() === true) {
-                    this._apolloService.networkQuery < IKPI > (getKPIByName, { name: nameInput }).then(d => {
+                    this._apolloService.networkQuery<IKPI>(getKPIByName, { name: nameInput }).then(d => {
                         if (!((d.kpiByName && this.resultName === 'createKPI') ||
                             (d.kpiByName && this.resultName === 'updateKPI' && d.kpiByName._id !== this.payload.id))) {
 
                             this.vm.fg.controls['name'].setErrors(null);
                         } else {
-                            this.vm.fg.controls['name'].setErrors({forbiddenName: true});
+                            this.vm.fg.controls['name'].setErrors({ forbiddenName: true });
                         }
                     });
                 }
@@ -146,11 +196,11 @@ export class ExternalSourceKpiFormComponent implements OnInit, AfterViewInit {
     }
 
     private _getExternalDataSources() {
-      const that = this;
+        const that = this;
 
-      this._apolloService.networkQuery<{ externalDataSources: IExternalDataSource[] }>(externalDataSourcesQuery)
-          .then(res => {
-              that.vm.updateDataSources(res.externalDataSources);
-          });
+        this._apolloService.networkQuery<{ externalDataSources: IExternalDataSource[] }>(externalDataSourcesQuery)
+            .then(res => {
+                that.vm.updateDataSources(res.externalDataSources);
+            });
     }
 }

@@ -152,7 +152,7 @@ function percent_pie_chart_formatter() {
     };
 }
 
-function tooltip_total(stack?: string) {
+function tooltip_total(stack?: string, sorting?: string) {
     const that = this;
     this.exec = function () {
         let tooltip_html = ``;
@@ -160,33 +160,59 @@ function tooltip_total(stack?: string) {
         let targetTotal = 0;
         let calculateComparison;
         let nonTargetPointCount = 0;
+        let points;
+        let totalStacks = new Set();
+
+        this.points.forEach(p => {
+            if(p.series.userOptions.hasOwnProperty('stack'))
+                totalStacks.add(p.series.userOptions.stack);          
+        });
 
         if (!stack) {
             stack = this.points[0].series.userOptions.hasOwnProperty('stack') ? this.points[0].series.userOptions.stack : '';
         }
 
-        if (stack) {
+        if (totalStacks.size == 1 || (totalStacks.size == 2 && totalStacks.has("main"))) {
             calculateComparison = calculateComparisonDifference(this.points);
         }
+        //- beatriz code begins
+        //- to show the values in the tooltip sorted low to high 
+        if(sorting === 'low_high') {
+            points = this.points.sort(function(a, b){
+            return ((a.y < b.y) ? -1 : ((a.y > b.y) ? 1 : 0));
+        });
+         }
+         //- to show the values in the tooltip sorted high to low 
+         else if(sorting === 'high_low'){
+            points = this.points.sort(function(a, b){
+            return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));
+            })
+        }
+        // no sorting 
+         else{
+             points = this.points;
+         } 
 
-        this.points.forEach((point, i) => {
-            if (point.series.userOptions.type === 'spline') {
-                targetTotal += point.y;
+         //- end beatriz code
+
+        points.forEach((p, i) => {
+            if (p.series.userOptions.type === 'spline') {
+                targetTotal += p.y;
                 tooltip_html += `
                     <div flex layout="row">
-                        <div flex style="color: ${point.series.color}">${point.series.name}: </div>
-                        <div flex-initial style="color: ${point.series.color}">
-                            <span style="font-weight: bold">${Highcharts.numberFormat(point.y)}</span>
+                        <div flex style="font-weight:bold; color: ${p.color}">${p.series.name}: </div>
+                        <div flex-initial style="color: ${p.color}">
+                            <span style="font-weight: bold">${Highcharts.numberFormat(p.y)}</span>
                         </div>
                     </div>
                 `;
 
-                if (isNumber(point.series.userOptions.percentageCompletion)) {
+                if (isNumber(p.series.userOptions.percentageCompletion)) {
                     tooltip_html += `
                         <div flex layout="row">
-                            <div flex style="color: ${point.series.color}">${point.series.name} (target progress): </div>
-                            <div flex-initial style="color: ${point.series.color}">
-                                <span style="font-weight: bold">${Highcharts.numberFormat(point.series.userOptions.percentageCompletion, 0)}%</span>
+                            <div flex style="color: ${p.series.color}">${p.series.name} (target progress): </div>
+                            <div flex-initial style="color: ${p.series.color}">
+                                <span style="font-weight: bold">${Highcharts.numberFormat(p.series.userOptions.percentageCompletion, 0)}%</span>
                             </div>
                         </div>
                     `;
@@ -195,15 +221,15 @@ function tooltip_total(stack?: string) {
             }
         });
 
-        this.points.forEach((point, i) => {
-            if (point.series.userOptions.type !== 'spline') {
-                total += point.y;
+        points.forEach((p, i) => {
+            if (p.series.userOptions.type !== 'spline') {
+                total += p.y;
                 nonTargetPointCount = nonTargetPointCount + 1;
                 tooltip_html += `
                     <div flex layout="row">
-                        <div flex>${point.series.name}: </div>
+                        <div flex style=" color: ${p.color}">${p.series.name}: </div>
                         <div flex-initial>
-                            <span style="font-weight: bold">${Highcharts.numberFormat(point.y)}</span>
+                            <span style="font-weight: bold">${Highcharts.numberFormat(p.y)}</span>
                         </div>
                     </div>
                 `;
@@ -214,14 +240,14 @@ function tooltip_total(stack?: string) {
             if (nonTargetPointCount) {
                 tooltip_html += `
                         <div flex layout="row">
-                            <div flex>Total: </div>
+                            <div flex style="font-weight: bold">Total: </div>
                             <div flex-initial>
                                 <span style="font-weight: bold">${Highcharts.numberFormat(total || targetTotal)}</span>
                             </div>
                         </div>
                 `;
             }
-        } else {
+        } if(calculateComparison) {
             tooltip_html += `
                     <div flex layout="row">
                         <div flex>Difference: </div>
@@ -236,7 +262,7 @@ function tooltip_total(stack?: string) {
     };
 }
 
-function tooltip_point_percentaje_total_formatter(stack?: string) {
+function tooltip_point_percentaje_total_formatter(stack?: string, sorting? :string) {
     this.exec = function () {
 
         let custom_tooltip_html = ``;
@@ -245,6 +271,8 @@ function tooltip_point_percentaje_total_formatter(stack?: string) {
         let targetTotal = 0;
         let calculateComparison;
         let nonTargetPointCount = 0;
+        let points;
+        let totalStacks = new Set();
 
         this.points.forEach(point => {
             if (point.series.userOptions.type !== 'spline') {
@@ -254,21 +282,46 @@ function tooltip_point_percentaje_total_formatter(stack?: string) {
             }
         });
 
+        this.points.forEach(p => {
+            if(p.series.userOptions.hasOwnProperty('stack'))
+                totalStacks.add(p.series.userOptions.stack);          
+        });
+
         if (!stack) {
             stack = this.points[0].series.userOptions.hasOwnProperty('stack') ? this.points[0].series.userOptions.stack : '';
         }
 
-        if (stack) {
+        if (totalStacks.size == 1 || (totalStacks.size == 2 && totalStacks.has("main"))) {
             calculateComparison = calculateComparisonDifference(this.points);
         }
 
-        this.points.forEach(point => {
+             //- beatriz code begins
+        //- to show the values in the tooltip sorted low to high 
+        if(sorting === 'low_high') {
+            points = this.points.sort(function(a, b){
+            return ((a.y < b.y) ? -1 : ((a.y > b.y) ? 1 : 0));
+        });
+         }
+         //- to show the values in the tooltip sorted high to low 
+         else if(sorting === 'high_low'){
+            points = this.points.sort(function(a, b){
+            return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));
+            })
+        }
+        // no sorting 
+         else{
+             points = this.points;
+         } 
+
+         //- end beatriz code
+
+        points.forEach(point => {
             if (point.series.userOptions.type === 'spline') {
                 const targetPercent = ((point.y / targetTotal) * 100);
                 custom_tooltip_html += `
                     <div flex layout="row">
-                    <div flex style="color: ${point.series.color}">${point.series.name}:  </div>
-                    <div flex-initial style="color: ${point.series.color}">
+                    <div flex style="color: ${point.color}">${point.series.name}:  </div>
+                    <div flex-initial style="color: ${point.color}">
                         <span style="font-weight: bold">${Highcharts.numberFormat(point.y)} (${Highcharts.numberFormat(targetPercent)}%)</span>
                     </div>
                     </div>
@@ -276,8 +329,8 @@ function tooltip_point_percentaje_total_formatter(stack?: string) {
                 if (isNumber(point.series.userOptions.percentageCompletion)) {
                     custom_tooltip_html += `
                         <div flex layout="row">
-                            <div flex style="color: ${point.series.color}">${point.series.name} (target progress): </div>
-                            <div flex-initial style="color: ${point.series.color}">
+                            <div flex style="color: ${point.color}">${point.series.name} (target progress): </div>
+                            <div flex-initial style="color: ${point.color}">
                                 <span style="font-weight: bold">${Highcharts.numberFormat(point.series.userOptions.percentageCompletion, 0)}%</span>
                             </div>
                         </div>
@@ -288,13 +341,13 @@ function tooltip_point_percentaje_total_formatter(stack?: string) {
             }
         });
 
-        this.points.forEach(point => {
+        points.forEach(point => {
             if (point.series.userOptions.type !== 'spline') {
                 const percentage = ((point.y / total) * 100);
                 nonTargetPointCount = nonTargetPointCount + 1;
                 custom_tooltip_html += `
                     <div flex layout="row">
-                    <div flex>${point.series.name}:  </div>
+                    <div flex style="color: ${point.color}">${point.series.name}:  </div>
                     <div flex-initial>
                         <span style="font-weight: bold">${Highcharts.numberFormat(point.y)} (${Highcharts.numberFormat(percentage)}%)</span>
                     </div>
@@ -307,7 +360,7 @@ function tooltip_point_percentaje_total_formatter(stack?: string) {
             if (nonTargetPointCount) {
                 custom_tooltip_html += `
                     <div flex layout="row">
-                    <div flex>Total: </div>
+                    <div flex style="font-weight: bold">Total: </div>
                     <div flex-initial>
                         <span style="font-weight: bold">${Highcharts.numberFormat(total || targetTotal)} (100.00%)</span>
                     </div>
@@ -315,7 +368,7 @@ function tooltip_point_percentaje_total_formatter(stack?: string) {
                 `;
             }
             return custom_tooltip_html;
-        } else {
+        } if(calculateComparison) {
             custom_tooltip_html += `
                 <div flex layout="row">
                 <div flex>Difference: </div>
@@ -324,8 +377,9 @@ function tooltip_point_percentaje_total_formatter(stack?: string) {
                 </div>
                 </div>
             `;
-            return custom_tooltip_html;
         }
+        return custom_tooltip_html;
+
     };
 }
 
@@ -344,7 +398,7 @@ function percent_with_total() {
             </div>
 
             <div flex layout="row">
-            <div flex>Total: </div>
+            <div flex style="font-weight: bold">Total: </div>
             <div flex-initial>
                 <span style="font-weight: bold">${Highcharts.numberFormat(this.total)}</span>
             </div>
@@ -603,6 +657,7 @@ function custom(formatter: ICustomFormat) {
 
 
 export function FormatterFactory() {
+
     this.getFormatter = function (name, stack?: string) {
         let formatter;
 
@@ -622,8 +677,24 @@ export function FormatterFactory() {
             formatter = new tooltip_point_percentaje_total_formatter(stack);
         }
 
+        if (name === 'kpi_tooltip_multiple_percent_low_high') {
+            formatter = new tooltip_point_percentaje_total_formatter(stack, 'low_high');
+        }
+
+        if (name === 'kpi_tooltip_multiple_percent_high_low') {
+            formatter = new tooltip_point_percentaje_total_formatter(stack, 'high_low' );
+        }
+
         if (name === 'kpi_tooltip_total') {
             formatter = new tooltip_total(stack);
+        }
+
+        if (name === 'kpi_tooltip_low_high') {
+            formatter = new tooltip_total(stack, 'low_high');
+        }
+
+        if (name === 'kpi_tooltip_high_low') {
+            formatter = new tooltip_total(stack, 'high_low');
         }
 
         if (name === 'kpi_percent_for_pie_chart') {

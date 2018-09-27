@@ -44,6 +44,7 @@ export class BasicTargetsComponent implements OnInit, OnDestroy {
         });
 
         this.updateUnitControl(this.fg.value.type);
+        this.updateCompareToControl(this.fg.value.type);
     }
 
     ngOnDestroy() {
@@ -60,17 +61,18 @@ export class BasicTargetsComponent implements OnInit, OnDestroy {
     }
 
     private updateBasedOnVisibility(val) {
-        this.showBasedOn = val !== TargetTypeEnum.fixed;
+        this.showBasedOn = val !== null && val !== TargetTypeEnum.fixed;
     }
 
     private updateUnitControl(type: string) {
         const unitCtrl = this.fg.getSafe(f => f.unit);
 
-        if (type === 'fixed') {
+        if (!type || type === 'fixed') {
             this.showUnitOptions = false;
             unitCtrl.setValue('#');
         } else {
             this.showUnitOptions = true;
+            unitCtrl.setValue('%');
         }
     }
 

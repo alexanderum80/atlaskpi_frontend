@@ -3,7 +3,7 @@
         div(layout="column", layout-align="center center")
             bw-preloader.text-center(flex, color="gray")
 
-.simple-kpi-form-container(*ngIf="vmFg")
+.simple-kpi-form-container(*ngIf="vmFg && !newWidgetFromKPI && !newChartFromKPI ")
     .bgm-white.z-depth-1.p-30(flex="grow")
     
         div(layout="column")
@@ -42,7 +42,7 @@
                             kpi-tags([fg]="vm.fg", field="tags", [existingTags]="vm.existingTags")
                     
                     //- right panel
-                    .p-20(flex)
+                    .p-10(flex)
 
                         //- aggreagtion expression
                         .m-b-20
@@ -51,29 +51,29 @@
                                     bw-preloader.text-center(flex, color="gray")
                                 div.p-b-10(*ngIf="isLoading", layout="row", layout-align="center center")
                                     span Loading Collection and Source
-                                div(*ngIf="!isLoading", flex, layout="row")
-                                    #select-source(flex)
-                                        bw-select-picker.m-r-10(
-                                            flex,
-                                            [fg]="vm.fg",
-                                            #vmSource,
-                                            label="Source",
-                                            field="source",
-                                            [items]="vm.sourceItems",
-                                            [multiple]="true",
-                                            noneSelectedText="All"
-                                        )
-                                    bw-select-picker.m-r-10(
-                                        flex,
-                                        [fg]="vm.fg",
-                                        label="Collection",
-                                        field="expression.dataSource",
-                                        dependOnField="source",
-                                        (dependantValueChanged)="vm.getDataSourceList($event)",
-                                        [items]="vm.dataSources",
-                                        leftIcon="dns",
-                                        noneSelectedText="Select Data Source"
-                                    )
+                                div(*ngIf="!isLoading", flex)
+                                    div(layout="row", layout-xs="column", layout-sm="column")
+                                        #select-source(flex)
+                                            bw-select-picker.m-r-10(
+                                                [fg]="vm.fg",
+                                                #vmSource,
+                                                label="Source",
+                                                field="source",
+                                                [items]="vm.sourceItems",
+                                                [multiple]="true",
+                                                noneSelectedText="All"
+                                            )
+                                        #select-collection(flex)
+                                            bw-select-picker.m-r-10(
+                                                [fg]="vm.fg",
+                                                label="Collection",
+                                                field="expression.dataSource",
+                                                dependOnField="source",
+                                                (dependantValueChanged)="vm.getDataSourceList($event)",
+                                                [items]="vm.dataSources",
+                                                leftIcon="dns",
+                                                noneSelectedText="Select Data Source"
+                                            )
                                 div(*ngIf="!isLoading", flex, layout="row", layout-xs="column", layout-sm="column")
                                     bw-select-picker.m-r-10(flex, [fg]="vm.fg",
                                                                 label="Function",
@@ -111,10 +111,35 @@
             //- actions
             div(flex)
                 div(layout="row", layout-align="end center")
+                    //- save & visualize
+                    div(flex-initial)
+                        bw-button.m-r-10(title="VISUALIZE", icon="eye", color="green", (clicked)="_openVisualizeModal()", [disabled]="!valid")
                     //- save
                     div(flex-initial)
                         bw-button(title="Save", icon="check", color="blue", (clicked)="save()", [disabled]="!valid")
-
                     //- cancel
                     div(flex-intial)
                         bw-button(title="Cancel", icon="close", color="black", [simple]="true", (clicked)="cancel()")
+
+bw-modal(#previewModal, (onDismiss)="_closePreviewModal()", (onClosed)="_closePreviewModal()", size="md")
+    div(layout="row", layout-align="end", flex-none)
+        bw-button.iconzoom(icon="close", title="Go to kpi list", color="black", [simple]="true", (clicked)="_closePreviewModal()")
+    div(layout="row", layout-align="start", flex-none)
+        h2.title I would like to visualize my kpi in a:
+    bw-modal-body
+        .m-b-20
+            div(flex, layout="row", layout-xs="column", layout-padding, layout-align="center center")
+                div.ligth.m-10.z-depth-1.bgm-white.pointer-cursor.text-center(flex, flex-xs="50", flex-sm="50", flex-md="50", flex-gt-sm="50", flex-gt-md="45", (click)="newWidget()")
+                    div(flex)
+                        img.m-t-20([style.height.px]="120", src='./assets/img/kpis/widget.PNG')
+                    .m-t-20(flex-none, layout="row", layout-align="center center")
+                        h2 Widget
+                div.ligth.m-10.z-depth-1.bgm-white.pointer-cursor.text-center(flex, flex-xs="50", flex-sm="50", flex-md="50", flex-gt-sm="50", flex-gt-md="45", (click)="newChart()")
+                    div(flex)
+                        img.m-t-20([style.height.px]="120", src='./assets/img/kpis/chart.PNG')
+                    .m-t-20(flex-none, layout="row", layout-align="center center")
+                        h2 Chart
+.new-widget-from-kpi(*ngIf="newWidgetFromKPI")
+    kpi-new-widget([widgetDataFromKPI]="vm.valuesPreviewWidget")
+.new-chart-from-kpi(*ngIf="newChartFromKPI")
+    kpi-new-chart([chartDataFromKPI]="vm.valuesPreviewChart")

@@ -64,20 +64,19 @@ export interface ISelectableTarget extends ITarget {
 
 export function getNewTarget(userId: string) {
     return {
+        _id: null,
         active: true,
         appliesTo: null,
         compareTo: null,
-        _id: null,
         name: null,
         period: null,
-        recurrent: false,
         source: {
             type: null,
             identifier: null,
         },
-        type: null,
-        unit: null,
-        value: 0,
+        type: 'increase',
+        unit: '%' as any,
+        value: null,
         notificationConfig: {
             users: [{ identifier: userId, deliveryMethods: [ DeliveryMethodEnum.email ] }]
         },

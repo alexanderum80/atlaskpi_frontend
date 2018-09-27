@@ -5,6 +5,8 @@ import { IDataSource } from '../../../shared/domain/kpis/data-source';
 import { IKPI } from '../../../shared/domain/kpis/kpi';
 import { UserService } from '../../../shared/services/user.service';
 import { IKPIPayload } from '../shared/simple-kpi-payload';
+import { IWidgetFormGroupValues } from '../../../widgets/shared/models';
+import { IChartFormValues } from '../../../charts/shared/models/chart.models';
 
 
 const REGULAR_EXPRESSION_FOR_SAVING = /@{([\w\d\s\(\)%$!&#-=]+)}/g;
@@ -17,6 +19,35 @@ export class ComplexKpiFormViewModel extends ViewModel<IKPI> {
     private _originalExpression: string;
     private existDuplicatedName: boolean;
 
+    valuesPreviewWidget : IWidgetFormGroupValues = {
+        name: '',
+        description: '',
+        type: 'numeric',
+        size: 'big',
+        order: '4',
+        color: '',
+        kpi: '',
+        predefinedDateRange: 'this year',
+        format: 'dollar',
+        comparison: 'previousPeriod',
+        comparisonArrowDirection: 'up'
+      };
+      
+      valuesPreviewChart : IChartFormValues = {
+        name: '',
+        description: '',
+        dashboards: '',
+        group: 'pre-defined',
+        frequency: 'monthly',
+        grouping: '',
+        tooltipEnabled: true,
+        predefinedTooltipFormat: 'multiple_percent',
+        kpi: '',
+        legendEnabled: false,
+        predefinedDateRange: 'this year',
+        invertAxisEnabled: false,
+        seriesDataLabels: false
+      };
     constructor(userService: UserService) {
         super(userService);
     }
@@ -144,6 +175,32 @@ export class ComplexKpiFormViewModel extends ViewModel<IKPI> {
 
     getExistDuplicatedName() {
         return this.existDuplicatedName;
+    }
+
+    selectColorWidget() {
+        
+        switch (Math.round(Math.random()*10)) {
+            case 0:
+                return 'white';
+            case 1:
+                return 'orange';
+            case 2:
+                return 'blue';
+            case 3:
+                return 'green';
+            case 4:
+                return 'light-green';
+            case 5:
+                return 'sei-green';
+            case 6:
+                return 'purple';
+            case 7:
+                return 'light-purple';
+            case 8: 
+                return "pink";
+            default:
+                return 'white';
+        }
     }
 
 }
