@@ -42,7 +42,7 @@
                             kpi-tags([fg]="vm.fg", field="tags", [existingTags]="vm.existingTags")
                     
                     //- right panel
-                    .p-20(flex)
+                    .p-10(flex)
 
                         //- aggreagtion expression
                         .m-b-20
@@ -51,29 +51,29 @@
                                     bw-preloader.text-center(flex, color="gray")
                                 div.p-b-10(*ngIf="isLoading", layout="row", layout-align="center center")
                                     span Loading Collection and Source
-                                div(*ngIf="!isLoading", flex, layout="row")
-                                    #select-source(flex)
-                                        bw-select-picker.m-r-10(
-                                            flex,
-                                            [fg]="vm.fg",
-                                            #vmSource,
-                                            label="Source",
-                                            field="source",
-                                            [items]="vm.sourceItems",
-                                            [multiple]="true",
-                                            noneSelectedText="All"
-                                        )
-                                    bw-select-picker.m-r-10(
-                                        flex,
-                                        [fg]="vm.fg",
-                                        label="Collection",
-                                        field="expression.dataSource",
-                                        dependOnField="source",
-                                        (dependantValueChanged)="vm.getDataSourceList($event)",
-                                        [items]="vm.dataSources",
-                                        leftIcon="dns",
-                                        noneSelectedText="Select Data Source"
-                                    )
+                                div(*ngIf="!isLoading", flex)
+                                    div(layout="row", layout-xs="column", layout-sm="column")
+                                        #select-source(flex)
+                                            bw-select-picker.m-r-10(
+                                                [fg]="vm.fg",
+                                                #vmSource,
+                                                label="Source",
+                                                field="source",
+                                                [items]="vm.sourceItems",
+                                                [multiple]="true",
+                                                noneSelectedText="All"
+                                            )
+                                        #select-collection(flex)
+                                            bw-select-picker.m-r-10(
+                                                [fg]="vm.fg",
+                                                label="Collection",
+                                                field="expression.dataSource",
+                                                dependOnField="source",
+                                                (dependantValueChanged)="vm.getDataSourceList($event)",
+                                                [items]="vm.dataSources",
+                                                leftIcon="dns",
+                                                noneSelectedText="Select Data Source"
+                                            )
                                 div(*ngIf="!isLoading", flex, layout="row", layout-xs="column", layout-sm="column")
                                     bw-select-picker.m-r-10(flex, [fg]="vm.fg",
                                                                 label="Function",
@@ -113,11 +113,10 @@
                 div(layout="row", layout-align="end center")
                     //- save & visualize
                     div(flex-initial)
-                        bw-button.m-r-10(title="SAVE & VISUALIZE", icon="eye", color="green", (clicked)="_openVisualizeModal()", [disabled]="!valid")
+                        bw-button.m-r-10(title="VISUALIZE", icon="eye", color="green", (clicked)="_openVisualizeModal()", [disabled]="!valid")
                     //- save
                     div(flex-initial)
                         bw-button(title="Save", icon="check", color="blue", (clicked)="save()", [disabled]="!valid")
-
                     //- cancel
                     div(flex-intial)
                         bw-button(title="Cancel", icon="close", color="black", [simple]="true", (clicked)="cancel()")

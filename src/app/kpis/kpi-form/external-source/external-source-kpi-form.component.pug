@@ -36,7 +36,7 @@
                                                         [autosize]="false")
                     
                     //- right panel
-                    .p-20(flex)
+                    .p-10(flex)
 
                         //- aggreagtion expression
                         .m-b-20
@@ -86,7 +86,7 @@
                     
                     //- save & visualize
                     div(flex-initial)
-                        bw-button.m-r-10(title="SAVE & VISUALIZE", icon="eye", color="green", (clicked)="_openVisualizeModal()", [disabled]="!vm.fg.valid")
+                        bw-button.m-r-10(title="VISUALIZE", icon="eye", color="green", (clicked)="_openVisualizeModal()", [disabled]="!vm.fg.valid")
 
                     //- save
                     div(flex-initial)
