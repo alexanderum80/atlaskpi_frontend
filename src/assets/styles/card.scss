@@ -45,7 +45,6 @@ bw-card.full-height {
 }
 
 bw-card.maximized {
-    @media only screen and (min-width: 824px)  {
         .card {
             position: fixed !important;
             top: 0px;
@@ -59,6 +58,10 @@ bw-card.maximized {
                 height: 90% !important;
                 overflow: auto;
                 padding: 8px 25px !important;
+        }
+    @media only screen and (max-width: 824px)  {
+        .card {
+            top: 67px !important; 
         }
     }
 }
