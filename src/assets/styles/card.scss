@@ -54,6 +54,12 @@ bw-card.maximized {
             bottom: 0;
             z-index: 5000;
         }
+        .full-height.chart-card
+             .card-body.card-padding{
+                height: 90% !important;
+                overflow: auto;
+                padding: 5px 25px !important;
+        }
     }
 }
 
