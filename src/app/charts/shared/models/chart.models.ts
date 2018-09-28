@@ -209,7 +209,7 @@ export class ChartModel {
                                               to: fg.value.customTo || null  }};
       proxyChartModel.top = {
         predefined: fg.value.predefinedTop || null,
-        custom: fg.value.customTop || null
+        custom: fg.value.customTop ? +fg.value.customTop : null
       };
       proxyChartModel.frequency = fg.value.frequency;
       proxyChartModel.groupings = fg.value.grouping;
