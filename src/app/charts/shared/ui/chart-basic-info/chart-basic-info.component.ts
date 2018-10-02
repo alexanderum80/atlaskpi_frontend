@@ -33,6 +33,8 @@ import {
 import {PredefinedTopNRecords} from '../../../../shared/models/top-n-records';
 import { title, camelCase } from 'change-case';
 import * as moment from 'moment';
+import { filter } from 'async';
+import { switchMap } from 'rxjs-compat/operator/switchMap';
 
 const kpiOldestDateQuery = require('graphql-tag/loader!./kpi-get-oldestDate.gql');
 
@@ -72,6 +74,8 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
     private sortingCriteriaList$: Observable <SelectionItem[]>;
     frequencyPicker: SelectPickerComponent;
     xSourcePicker: SelectPickerComponent;
+
+    lastGroupingPayload: any;
 
     @ViewChild('frequencyPicker') set frequencyContent(content: SelectPickerComponent) {
         if (content) {
@@ -205,80 +209,87 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
 
     private _subscribeToKpiAndDateRange(): void {
         const that = this;
-        const watchFields = [
-            'kpi',
-            'predefinedDateRange',
-        ];
+        // const watchFields = [
+        //     'kpi',
+        //     'predefinedDateRange',
+        //     'customFrom',
+        //     'customTo'
+        // ];
 
-        watchFields.forEach(f => {
-            const ctrl = that.fg.get(f)
-                   .valueChanges
-                   .debounceTime(500)
-                   .distinctUntilChanged()
-                   .subscribe(v => {
-                        that._getGroupingInfo();
-                        const kpi_id = this.fg.value.kpi;
-                        this._apolloService.networkQuery < string > (kpiOldestDateQuery, {id: kpi_id })
-                        .then(kpis => {
-                            this._updateComparisonData(kpis.getKpiOldestDate);
-                        });
-                    });
-        });
+        // watchFields.forEach(f => {
+        //     const ctrl = that.fg.get(f);
+        //     if (!ctrl) { return; }
 
-
-        // this.fg .valueChanges
-        //         .debounceTime(400)
+        //     ctrl.valueChanges
+        //         .debounceTime(500)
         //         .distinctUntilChanged()
-        //         .subscribe((item) => {
-        //     const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
-        //     if (item.kpi && item.predefinedDateRange && !loadingGroupings) {
-        //         that._getGroupingInfo(item);
-        //     }
+        //         .subscribe(v => {
+        //             that._getGroupingInfo();
+        //             const kpi_id = this.fg.value.kpi;
+        //             this._apolloService.networkQuery < string > (kpiOldestDateQuery, {id: kpi_id })
+        //             .then(kpis => {
+        //                 this._updateComparisonData(kpis.getKpiOldestDate);
+        //             });
+        //         });
         // });
+
+        this.fg .valueChanges
+                .distinctUntilChanged()
+                .debounceTime(400)
+                .subscribe((value) => {
+                const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
+                if (value.kpi && value.predefinedDateRange && !loadingGroupings) {
+                    that._getGroupingInfo(value);
+                }
+        });
     }
 
-    private _getGroupingInfo(): void {
+    private _getGroupingInfo(value: any): void {
         const that = this;
-        const item = this.fg.value;
+        const item = value;
 
         // basic payload check
         if (!item.kpi || !item.predefinedDateRange) {
             return;
         }
 
+        this._apolloService
+            .networkQuery < string > (kpiOldestDateQuery, {id: value.kpi })
+            .then(kpis => {
+                this._updateComparisonData(kpis.getKpiOldestDate);
+            });
+
         // custom daterange payload check
-        if (item.predefinedDateRange === 'custom' && (!item.customFrom || !item.customTo)) {
+        if (item.predefinedDateRange !== 'custom' || !item.customFrom || !item.customTo) {
             return;
         }
 
         const input = this._getGroupingInfoInput(item);
+        if (JSON.stringify(this.lastGroupingPayload) === JSON.stringify(input)) { return; }
+
+        this.lastGroupingPayload = input;
 
         this.fg.controls['loadingGroupings'].patchValue(true, { emitEvent: false });
 
-        this._apollo.watchQuery({
-            query: kpiGroupingsQuery,
-            fetchPolicy: 'network-only',
-            variables: {
-                input: input
-            }
-        }).valueChanges.subscribe(({ data }: any) => {
-            let groupingList = [];
-            if (data || !isEmpty(data.kpiGroupings)) {
-                groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
-            }
+        this._apolloService.networkQuery(kpiGroupingsQuery, { input })
+            .then(data => {
+                let groupingList = [];
+                if (data || !isEmpty(data.kpiGroupings)) {
+                    groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
+                }
 
-            that.groupingList = groupingList;
-            this.fg.controls['loadingGroupings'].patchValue(false, { emitEvent: false });
+                that.groupingList = groupingList;
 
-            const currentGroupingValue = this.fg.get('grouping').value || '';
-            let nextGropingValue;
-            if (!groupingList.map(g => g.id).includes(currentGroupingValue)) {
-                nextGropingValue = '';
-            } else {
-                nextGropingValue = currentGroupingValue;
-            }
-            that.fg.controls['grouping'].patchValue(nextGropingValue, { emitEvent: true });
-        });
+                const currentGroupingValue = this.fg.get('grouping').value || '';
+                let nextGropingValue;
+                if (!groupingList.map(g => g.id).includes(currentGroupingValue)) {
+                    nextGropingValue = '';
+                } else {
+                    nextGropingValue = currentGroupingValue;
+                }
+                that.fg.controls['grouping'].patchValue(nextGropingValue, { emitEvent: false });
+                that.fg.controls['loadingGroupings'].patchValue(false, { emitEvent: true });
+            });
     }
 
     private _getGroupingInfoInput(item: any): any {

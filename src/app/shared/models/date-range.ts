@@ -86,7 +86,13 @@ export const PredefinedDateRanges = {
     last30Days: 'last 30 days',
     last90Days: 'last 90 days',
     last365Days: 'last 365 days',
-    allTimes: 'all times'
+    allTimes: 'all times',
+
+    // future DateRanges,
+    nextWeek: 'next week',
+    nextMonth: 'next month',
+    nextQuarter: 'next quarter',
+    nextYear: 'next year',
 };
 
 export const PredefinedComparisonDateRanges = {
@@ -330,6 +336,39 @@ export function parsePredefinedDate(textDate: string): IDateRange {
             return {
                 from: moment().subtract(365, 'days').startOf('day').toDate(),
                 to: moment().subtract(1, 'days').endOf('day').toDate()
+            };
+
+        // future dateRanges
+
+        case PredefinedDateRanges.nextWeek:
+            return {
+                from: moment().add(1, 'week').startOf('week').toDate(),
+                to: moment().add(1, 'week').endOf('week').toDate()
+            };
+
+        case PredefinedDateRanges.nextMonth:
+            return {
+                from: moment().add(1, 'month').startOf('month').toDate(),
+                to: moment().add(1, 'month').endOf('month').toDate()
+            };
+
+        case PredefinedDateRanges.nextQuarter:
+            let nextQuarter = thisQuarter + 1;
+            if (nextQuarter > 4) { nextQuarter -= 4; }
+
+            const nYear = (thisQuarter - 1)
+                         ? moment().add(1, 'year').year()
+                         : moment().year();
+
+            return {
+                from: moment().year(nYear).quarter(nextQuarter).startOf('quarter').toDate(),
+                to: moment().year(nYear).quarter(nextQuarter).endOf('quarter').toDate()
+            };
+
+        case PredefinedDateRanges.nextYear:
+            return {
+                from: moment().add(1, 'year').startOf('year').toDate(),
+                to: moment().add(1, 'year').endOf('year').toDate()
             };
     }
 
