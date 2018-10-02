@@ -54,6 +54,12 @@ export class AutoRendereableChartComponent implements OnInit {
             const chart = JSON.parse(response.data.chart);
             chart.chartDefinition = that._simplifyChartDefinition(chart.chartDefinition);
             that.chart = new Chart(chart.chartDefinition);
+
+            that.chart.ref$.subscribe(ref => {
+              setTimeout(() => {
+                  ref.reflow();
+              }, 100);
+          });
         });
   }
 
