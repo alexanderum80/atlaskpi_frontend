@@ -2,7 +2,7 @@ import { SingleChartQuery } from '../shared/graphql';
 import { Subscription } from 'apollo-client/util/Observable';
 import { Apollo } from 'apollo-angular';
 import { IChart } from '../shared/models';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Chart } from 'angular-highcharts';
 
 @Component({
@@ -10,7 +10,7 @@ import { Chart } from 'angular-highcharts';
   templateUrl: './auto-rendereable-chart.component.pug',
   styleUrls: ['./auto-rendereable-chart.component.scss']
 })
-export class AutoRendereableChartComponent implements OnInit {
+export class AutoRendereableChartComponent implements OnInit, OnDestroy {
   @Input() item: IChart;
   @Input() title: string;
   @Input() minHeight = 0;
@@ -19,6 +19,7 @@ export class AutoRendereableChartComponent implements OnInit {
 
   chart: any; // Chart;
   loading = false;
+  subscription: Subscription;
 
   constructor(private _apollo: Apollo) { }
 
@@ -55,12 +56,23 @@ export class AutoRendereableChartComponent implements OnInit {
             chart.chartDefinition = that._simplifyChartDefinition(chart.chartDefinition);
             that.chart = new Chart(chart.chartDefinition);
 
-            that.chart.ref$.subscribe(ref => {
-              setTimeout(() => {
-                  ref.reflow();
-              }, 100);
-          });
-        });
+             
+              that.subscription = that.chart.ref$.subscribe(ref => {
+                setTimeout(() => {
+                  /*
+                    known highchart error:
+                    https://github.com/pablojim/highcharts-ng/issues/594
+                    
+                  */
+                    try{
+                    ref.reflow();
+                    }
+                    catch(e){
+                      console.log("HIghchart error: ", e);
+                    }
+                }, 0);
+              });                             
+      });
   }
 
   private _simplifyChartDefinition(definition: any) {
@@ -85,6 +97,10 @@ export class AutoRendereableChartComponent implements OnInit {
     return Math.floor((this.minHeight || 120));
   }
 
-
+  ngOnDestroy(){
+    if(this.subscription){
+      this.subscription.unsubscribe();
+    }
+  }
 
 }
