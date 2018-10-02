@@ -630,9 +630,11 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                                 this.category, dateRange, year, that.chartData.frequency
                             );
 
-                            const comparisonForDrillDown: string[] = that._drillDownSvc.getComparisonForDrillDown(
-                                that.comparisonValue, that.currentNode.dateRange
-                            );
+                            const comparisonForDrillDown: string[] = (that.comparisonValue.length) ? that.comparisonValue :
+                                                                    that._drillDownSvc.getComparisonForDrillDown(
+                                                                        that.currentNode.comparison , that.currentNode.dateRange
+                                                                    );
+                                                                    
                             let frequency = that._drillDownSvc.getFrequencyType(this.category);
                             frequency = frequency ? (frequency === 'quarterly' ? 'monthly' : frequency) : null;
                             const chartQueryVariables = {
