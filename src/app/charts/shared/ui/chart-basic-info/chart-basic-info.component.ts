@@ -13,7 +13,7 @@ import { Observable } from 'rxjs/Observable';
 
 import {FormGroup, FormControl} from '@angular/forms';
 import { Apollo } from 'apollo-angular';
-import { clone, isEmpty, toArray, find, pick, includes, split, map } from 'lodash';
+import { clone, isEmpty, toArray, find, pick, includes, split, map, isEqual } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 
 import { SelectionItem } from '../../../../ng-material-components';
@@ -260,12 +260,12 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
             });
 
         // custom daterange payload check
-        if (item.predefinedDateRange !== 'custom' || !item.customFrom || !item.customTo) {
-            return;
-        }
+        // if (item.predefinedDateRange !== 'custom' || !item.customFrom || !item.customTo) {
+        //     return;
+        // }
 
         const input = this._getGroupingInfoInput(item);
-        if (JSON.stringify(this.lastGroupingPayload) === JSON.stringify(input)) { return; }
+        if (isEqual(this.lastGroupingPayload, input)) { return; }
 
         this.lastGroupingPayload = input;
 
