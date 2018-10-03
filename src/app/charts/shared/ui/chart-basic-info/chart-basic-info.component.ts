@@ -76,6 +76,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
     xSourcePicker: SelectPickerComponent;
 
     lastGroupingPayload: any;
+    lastOldestDatePayload = '';
 
     @ViewChild('frequencyPicker') set frequencyContent(content: SelectPickerComponent) {
         if (content) {
@@ -209,30 +210,6 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
 
     private _subscribeToKpiAndDateRange(): void {
         const that = this;
-        // const watchFields = [
-        //     'kpi',
-        //     'predefinedDateRange',
-        //     'customFrom',
-        //     'customTo'
-        // ];
-
-        // watchFields.forEach(f => {
-        //     const ctrl = that.fg.get(f);
-        //     if (!ctrl) { return; }
-
-        //     ctrl.valueChanges
-        //         .debounceTime(500)
-        //         .distinctUntilChanged()
-        //         .subscribe(v => {
-        //             that._getGroupingInfo();
-        //             const kpi_id = this.fg.value.kpi;
-        //             this._apolloService.networkQuery < string > (kpiOldestDateQuery, {id: kpi_id })
-        //             .then(kpis => {
-        //                 this._updateComparisonData(kpis.getKpiOldestDate);
-        //             });
-        //         });
-        // });
-
         this.fg .valueChanges
                 .distinctUntilChanged()
                 .debounceTime(400)
@@ -240,7 +217,19 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
                 const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
                 if (value.kpi && value.predefinedDateRange && !loadingGroupings) {
                     that._getGroupingInfo(value);
+                    that._getOldestDate(value.kpi);
                 }
+        });
+    }
+
+    private _getOldestDate(kpi: string): void {
+        if (this.lastOldestDatePayload === kpi) { return; }
+        this.lastOldestDatePayload = kpi;
+        
+        this._apolloService
+        .networkQuery < string > (kpiOldestDateQuery, { id: kpi })
+        .then(kpis => {
+            this._updateComparisonData(kpis.getKpiOldestDate);
         });
     }
 
@@ -252,17 +241,6 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         if (!item.kpi || !item.predefinedDateRange) {
             return;
         }
-
-        this._apolloService
-            .networkQuery < string > (kpiOldestDateQuery, {id: value.kpi })
-            .then(kpis => {
-                this._updateComparisonData(kpis.getKpiOldestDate);
-            });
-
-        // custom daterange payload check
-        // if (item.predefinedDateRange !== 'custom' || !item.customFrom || !item.customTo) {
-        //     return;
-        // }
 
         const input = this._getGroupingInfoInput(item);
         if (isEqual(this.lastGroupingPayload, input)) { return; }
