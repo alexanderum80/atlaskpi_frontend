@@ -1,40 +1,36 @@
-
-import { ApolloService } from './../../../../shared/services/apollo.service';
-import { OnFieldChanges } from '../../../../ng-material-components/viewModels';
 import 'rxjs/add/operator/debounceTime';
 
-import { AfterViewInit, Component, Input, OnChanges, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { SelectPickerComponent } from '../../../../ng-material-components/modules/forms/select-picker/select-picker.component';
-import { IChart } from '../../models/chart.models';
-import { CommonService } from '../../../../shared/services/common.service';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/observable/combineLatest';
-import { Observable } from 'rxjs/Observable';
-
-import {FormGroup, FormControl} from '@angular/forms';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
-import { clone, isEmpty, toArray, find, pick, includes, split, map, isEqual } from 'lodash';
+import { camelCase, title } from 'change-case';
+import { clone, find, isEmpty, isEqual, toArray } from 'lodash';
+import * as moment from 'moment';
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { SelectionItem } from '../../../../ng-material-components';
+import {
+    IDatePickerConfig,
+} from '../../../../ng-material-components/modules/forms/date-picker/date-picker/date-picker-config.model';
+import {
+    SelectPickerComponent,
+} from '../../../../ng-material-components/modules/forms/select-picker/select-picker.component';
+import { IKPI } from '../../../../shared/domain/kpis/kpi';
 import { IsNullOrWhiteSpace, ToSelectionItemList } from '../../../../shared/extentions';
 import { PredefinedDateRanges } from '../../../../shared/models';
 import { FrequencyTable } from '../../../../shared/models/frequency';
+import { PredefinedTopNRecords } from '../../../../shared/models/top-n-records';
 import { BrowserService } from '../../../../shared/services/browser.service';
+import { CommonService } from '../../../../shared/services/common.service';
 import { ChartModel } from '../../models';
+import { IChart } from '../../models/chart.models';
 import { ChartGalleryService } from '../../services/';
 import { IDateRangeItem, parseComparisonDateRange } from './../../../../shared/models/date-range';
+import { ApolloService } from './../../../../shared/services/apollo.service';
 import { chartsGraphqlActions } from './../../graphql/charts.graphql-actions';
-import { IKPI } from '../../../../shared/domain/kpis/kpi';
 import { ChartBasicInfoViewModel } from './chart-basic-info.viewmodel';
-import {
-    IDatePickerConfig,
-  } from '../../../../ng-material-components/modules/forms/date-picker/date-picker/date-picker-config.model';
-import {PredefinedTopNRecords} from '../../../../shared/models/top-n-records';
-import { title, camelCase } from 'change-case';
-import * as moment from 'moment';
-import { filter } from 'async';
-import { switchMap } from 'rxjs-compat/operator/switchMap';
+
 
 const kpiOldestDateQuery = require('graphql-tag/loader!./kpi-get-oldestDate.gql');
 
@@ -225,7 +221,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
     private _getOldestDate(kpi: string): void {
         if (this.lastOldestDatePayload === kpi) { return; }
         this.lastOldestDatePayload = kpi;
-        
+
         this._apolloService
         .networkQuery < string > (kpiOldestDateQuery, { id: kpi })
         .then(kpis => {
