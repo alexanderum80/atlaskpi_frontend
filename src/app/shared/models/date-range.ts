@@ -195,7 +195,7 @@ export function parsePredefinedDate(textDate: string): IDateRange {
         case PredefinedDateRanges.allTimes:
             return {
                 from: (<any>moment).min(moment().subtract(30, 'years'), moment().subtract(1, 'years')).startOf('year').toDate(),
-                to: moment().toDate()
+                to: moment().add(30, 'year').toDate()
             };
         case PredefinedDateRanges.lastWeek:
             return {
