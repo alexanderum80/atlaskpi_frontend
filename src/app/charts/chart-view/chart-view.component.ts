@@ -616,108 +616,96 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         if (!this.chart.options.plotOptions.series) {
             this.chart.options.plotOptions.series = {};
         }
+
+        /* 
+                
+                code for mobile drilldown starts here
+
+        */
+        if (this._broserService.isMobile()) {
+            // click in highcharts on data point
+            // not where there is space
+            this.chart.options.plotOptions.series = Object.assign(this.chart.options.plotOptions.series, {
+                point: {
+                    events: {
+                        click: function (event) {
+                            const isShared: boolean = this.series.chart.tooltip.shared === true;
+                            const param = isShared ? [this] : this;
+
+                            this.series.chart.tooltip.refresh(param);
+                        },
+                        dblclick: function (event) {
+                            const chart = this;
+                            that.processDrillDown(chart);
+                        },
+                        mouseOut: function(event) {
+                            this.series.chart.tooltip.hide(this);
+                        },
+                        mouseMove: function(event) {
+                            console.log('mousemove');
+                        },
+                        onClick: function(event) {
+                            console.log('onclick');
+                        }
+                    }
+                }
+            });
+
+            // click in highcharts where there is space
+            // not on data point
+            this.chart.options.chart = Object.assign(this.chart.options.chart, {
+                events: {
+                    load: function(event) {
+                        const self = this;
+                        const selfEvent = event;
+                        this.series.forEach(serie => {
+                            const serieChart = serie.chart;
+                            serie.chart.callbacks.push(function (chart)  {
+                                const hasTouch = document.documentElement.ontouchstart !== undefined;
+                                const mouseTracker = chart.pointer;
+                                const container = chart.container;
+                                let mouseMove;
+
+                                mouseMove = function(e) {
+                                    if (hasTouch) {
+                                        if (e && e.touches && e.touches.length > 1) {
+                                            mouseTracker.onContainerTouchStart(e);
+                                        } else {
+                                            return;
+                                        }
+                                    }
+                                };
+
+                                const click = function(e) {
+                                    if (hasTouch) {
+                                        mouseTracker.onContainerMouseMove(e);
+                                    }
+                                    mouseTracker.onContainerClick(e);
+                                };
+
+                                container.onmousemove = container.ontouchstart = container.ontouchmove = mouseMove;
+                                container.onclick = click;
+                            });
+                        });
+                    },
+                    click: function(event) {
+                        setTimeout(() => {
+                            this.tooltip.hide(this);                            
+                        }, 3000);
+                    }
+                }
+            });
+        }
+        //- end of drilldown mobile code
+        else{
         this.chart.options.plotOptions.series = Object.assign(this.chart.options.plotOptions.series, {
             point: {
                 events: {
                     click: function (event) {
-                        if (that._drillDownSvc.getFrequencyType(this.category) && !this.series.userOptions.targetId) {
+                        
+                        const chart = this; 
+                        that.processDrillDown(chart)
 
-                            const isYear: boolean = moment(this.category, 'YYYY', true).isValid();
-                            const checkYear = isYear ? this.category : null;
-                            const year = that.currentNode.year || checkYear;
-                            const dateRange = that._drillDownSvc.getDateRangeForDrillDown(that.currentNode);
-                            const customDateRange = that._drillDownSvc.getDrillDownDateRange(
-                                this.category, dateRange, year, that.chartData.frequency
-                            );
-
-                            const comparisonForDrillDown: string[] = that._drillDownSvc.getComparisonForDrillDown(
-                                that.comparisonValue, that.currentNode.dateRange
-                            );
-                            let frequency = that._drillDownSvc.getFrequencyType(this.category);
-                            frequency = frequency ? (frequency === 'quarterly' ? 'monthly' : frequency) : null;
-                            const chartQueryVariables = {
-                                id: that.chartData._id,
-                                input: {
-                                    dateRange: customDateRange,
-                                    groupings: that.isDataOnFly ? that.groupingsToUpdate || null : (<any>that.chartData).groupings || null,
-                                    frequency: frequency,
-                                    xAxisSource: '',
-                                    isDrillDown: true,
-                                    comparison: comparisonForDrillDown,
-                                    originalFrequency: that.currentNode.frequency
-                                }
-                            };
-
-                            that._subscription.push(that._apollo.watchQuery({
-                                query: ChartQuery,
-                                fetchPolicy: 'network-only',
-                                variables: chartQueryVariables
-                            }).valueChanges.subscribe(({
-                                data
-                            }) => {
-                                const rawChart: ChartData = JSON.parse((<any>data).chart);
-                                // show message when the chart has no data
-                                if (rawChart.chartDefinition) {
-                                    const noData = that._noChartDataMessage(rawChart.chartDefinition.series);
-                                    if (noData) {
-                                        return;
-                                    }
-                                }
-
-                                that.chart = null;
-                                let definition = that._processChartTooltipFormatter(rawChart.chartDefinition);
-                                yAxisFormatterProcess(definition);
-                                definition = that._processPieChartPercent(rawChart.chartDefinition);
-                                rawChart.chartDefinition = definition;
-                                rawChart.chartDefinition.chart.zoomType = 'x';
-                                that.chart = new Chart(rawChart.chartDefinition);
-                                that._updateChartInfoFromDefinition();
-
-                                that.chart.options.exporting = {
-                                    enabled: false,
-                                    filename: that.title
-                                };
-
-                                that.enableDrillDown();
-
-                                const nodeId = that._nonce();
-
-                                const newNode: IChartTreeNode = {
-                                    id: nodeId,
-                                    parent: that.currentNode,
-                                    children: [],
-                                    definition: rawChart.chartDefinition,
-                                    title: that.title,
-                                    targetList: [],
-                                    rootChart: false,
-                                    year: checkYear,
-                                    dateRange: rawChart.dateRange,
-                                    groupings: rawChart.groupings,
-                                    frequency: rawChart.frequency,
-                                    isDataOnFly: that.currentNode.isDataOnFly,
-                                    isDrillDown: true,
-                                    isCompared: false,
-                                    comparison: rawChart.comparison
-                                };
-
-                                let found = false;
-
-                                that.currentNode.children = that.currentNode.children.filter(c => {
-                                    if (c.id === newNode.id) {
-                                        c = newNode;
-                                        found = true;
-                                    }
-                                    return c;
-                                });
-
-                                if (!found) {
-                                    that.currentNode.children.push(newNode);
-                                }
-
-                                that.currentNode = newNode;
-                            }));
-
-                        }
                     }
                 }
             }
@@ -725,6 +713,111 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         });
     }
 
+    }
+
+
+    processDrillDown(chart): void{
+        const that = this;
+        
+        if (that._drillDownSvc.getFrequencyType(chart.category) && !chart.series.userOptions.targetId) {
+
+            const isYear: boolean = moment(chart.category, 'YYYY', true).isValid();
+            const checkYear = isYear ? chart.category : null;
+            const year = that.currentNode.year || checkYear;
+            const dateRange = that._drillDownSvc.getDateRangeForDrillDown(that.currentNode);
+            const customDateRange = that._drillDownSvc.getDrillDownDateRange(
+                chart.category, dateRange, year, that.chartData.frequency
+            );
+
+            const comparisonForDrillDown: string[] = that._drillDownSvc.getComparisonForDrillDown(
+                that.comparisonValue, that.currentNode.dateRange
+            );
+            let frequency = that._drillDownSvc.getFrequencyType(chart.category);
+            frequency = frequency ? (frequency === 'quarterly' ? 'monthly' : frequency) : null;
+            const chartQueryVariables = {
+                id: that.chartData._id,
+                input: {
+                    dateRange: customDateRange,
+                    groupings: that.isDataOnFly ? that.groupingsToUpdate || null : (<any>that.chartData).groupings || null,
+                    frequency: frequency,
+                    xAxisSource: '',
+                    isDrillDown: true,
+                    comparison: comparisonForDrillDown,
+                    originalFrequency: that.currentNode.frequency
+                }
+            };
+
+            that._subscription.push(that._apollo.watchQuery({
+                query: ChartQuery,
+                fetchPolicy: 'network-only',
+                variables: chartQueryVariables
+            }).valueChanges.subscribe(({
+                data
+            }) => {
+                const rawChart: ChartData = JSON.parse((<any>data).chart);
+                // show message when the chart has no data
+                if (rawChart.chartDefinition) {
+                    const noData = that._noChartDataMessage(rawChart.chartDefinition.series);
+                    if (noData) {
+                        return;
+                    }
+                }
+
+                that.chart = null;
+                let definition = that._processChartTooltipFormatter(rawChart.chartDefinition);
+                yAxisFormatterProcess(definition);
+                definition = that._processPieChartPercent(rawChart.chartDefinition);
+                rawChart.chartDefinition = definition;
+                rawChart.chartDefinition.chart.zoomType = 'x';
+                that.chart = new Chart(rawChart.chartDefinition);
+                that._updateChartInfoFromDefinition();
+
+                that.chart.options.exporting = {
+                    enabled: false,
+                    filename: that.title
+                };
+
+                that.enableDrillDown();
+
+                const nodeId = that._nonce();
+
+                const newNode: IChartTreeNode = {
+                    id: nodeId,
+                    parent: that.currentNode,
+                    children: [],
+                    definition: rawChart.chartDefinition,
+                    title: that.title,
+                    targetList: [],
+                    rootChart: false,
+                    year: checkYear,
+                    dateRange: rawChart.dateRange,
+                    groupings: rawChart.groupings,
+                    frequency: rawChart.frequency,
+                    isDataOnFly: that.currentNode.isDataOnFly,
+                    isDrillDown: true,
+                    isCompared: false,
+                    comparison: rawChart.comparison
+                };
+
+                let found = false;
+
+                that.currentNode.children = that.currentNode.children.filter(c => {
+                    if (c.id === newNode.id) {
+                        c = newNode;
+                        found = true;
+                    }
+                    return c;
+                });
+
+                if (!found) {
+                    that.currentNode.children.push(newNode);
+                }
+
+                that.currentNode = newNode;
+            }));
+
+        }
+    }
 
     actionClicked(item) {
         this.actionItemsTarget = item.id;
