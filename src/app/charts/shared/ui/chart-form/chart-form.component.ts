@@ -321,7 +321,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     updateFormFields() {
         const that = this;
         const values = this.chartDataFromKPI ? this.chartDataFromKPI : this.chartModel.toChartFormValues();
-        
+
         this.ChartFormatInfo.defaultChartColors();
 
         this._subscription.push(
@@ -337,7 +337,6 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             // this.chartType = this.chartModel.type;
                 that.chartDefinition = this.chartDataFromKPI ? chartDefinitionFromKPI : that.chartModel.chartDefinition;
                 that._galleryService.updateToolTipList(that.chartDefinition.chart.type);
-                
                 if (that.chartDefinition && !this.chartDataFromKPI) {
                     that.chartType = (that.chartModel.type || that.chartDefinition.chart.type)
                 } else {
@@ -485,9 +484,13 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     }
 
     get formValid() {
-        return this.fg.value.name !== undefined && this.fg.value.name.length > 1 &&
-            this.fg.value.kpi !== undefined && this.fg.value.kpi.length > 0 &&
-            this.fg.value.predefinedDateRange !== undefined && this.isChartCustomTopValid &&
+        return !isEmpty(this.fg.value.name) &&
+            // !== undefined && this.fg.value.name.length > 1 &&
+            // this.fg.value.kpi !== undefined && this.fg.value.kpi.length > 0 &&
+            !isEmpty(this.fg.value.kpi) &&
+            // this.fg.value.predefinedDateRange !== undefined
+            !isEmpty(this.fg.value.predefinedDateRange) &&
+            this.isChartCustomTopValid &&
             this.tooltipValid;
     }
 
