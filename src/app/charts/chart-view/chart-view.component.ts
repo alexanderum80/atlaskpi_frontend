@@ -638,60 +638,9 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                             const chart = this;
                             that.processDrillDown(chart);
                         },
-                        mouseOut: function(event) {
-                            this.series.chart.tooltip.hide(this);
-                        },
-                        mouseMove: function(event) {
-                            console.log('mousemove');
-                        },
-                        onClick: function(event) {
-                            console.log('onclick');
-                        }
-                    }
-                }
-            });
-
-            // click in highcharts where there is space
-            // not on data point
-            this.chart.options.chart = Object.assign(this.chart.options.chart, {
-                events: {
-                    load: function(event) {
-                        const self = this;
-                        const selfEvent = event;
-                        this.series.forEach(serie => {
-                            const serieChart = serie.chart;
-                            serie.chart.callbacks.push(function (chart)  {
-                                const hasTouch = document.documentElement.ontouchstart !== undefined;
-                                const mouseTracker = chart.pointer;
-                                const container = chart.container;
-                                let mouseMove;
-
-                                mouseMove = function(e) {
-                                    if (hasTouch) {
-                                        if (e && e.touches && e.touches.length > 1) {
-                                            mouseTracker.onContainerTouchStart(e);
-                                        } else {
-                                            return;
-                                        }
-                                    }
-                                };
-
-                                const click = function(e) {
-                                    if (hasTouch) {
-                                        mouseTracker.onContainerMouseMove(e);
-                                    }
-                                    mouseTracker.onContainerClick(e);
-                                };
-
-                                container.onmousemove = container.ontouchstart = container.ontouchmove = mouseMove;
-                                container.onclick = click;
-                            });
-                        });
-                    },
-                    click: function(event) {
-                        setTimeout(() => {
-                            this.tooltip.hide(this);                            
-                        }, 3000);
+                        // mouseOut: function(event) {
+                        //     this.series.chart.tooltip.hide(this);
+                        // },
                     }
                 }
             });
