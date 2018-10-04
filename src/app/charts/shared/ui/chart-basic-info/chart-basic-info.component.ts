@@ -403,9 +403,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
     private _updateComparisonData(yearOldestDate: string) {
 
         if (this.fg.value.predefinedDateRange === '') { return; }
-        if (!yearOldestDate 
-            // || yearOldestDate === moment().year().toString()
-            ) { return; }
+        if (!yearOldestDate) { return; }
 
         this.fg.controls['loadingComparison'].patchValue(true, { emitEvent: false });
 
@@ -434,13 +432,14 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
 
         const currentComparisonValue = this.fg.get('comparison').value || '';
         let nextComparisonValue;
-        if (!this.comparisonList.map(g => g.id).includes(currentComparisonValue)) {
+        const comparisonIds = this.comparisonList.map(g => g.id);
+        if (!comparisonIds.length || !comparisonIds.includes(currentComparisonValue)) {
             nextComparisonValue = '';
         } else {
             nextComparisonValue = currentComparisonValue;
         }
-        this.fg.controls['comparison'].patchValue(nextComparisonValue, { emitEvent: false });
-        this.fg.controls['loadingComparison'].patchValue(false, { emitEvent: true });
+        this.fg.controls['comparison'].patchValue(nextComparisonValue, { emitEvent: true });
+        this.fg.controls['loadingComparison'].patchValue(false, { emitEvent: false });
 
     }
 
