@@ -220,6 +220,9 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         const loadingGroupings = new FormControl(false);
         this.fg.addControl('loadingGroupings', loadingGroupings);
 
+        const loadingComparison = new FormControl(false);
+        this.fg.addControl('loadingComparison', loadingComparison);
+
         this._subscribeToChartSelection();
         const that = this;
         that.fg.valueChanges.debounceTime(500)
@@ -556,8 +559,9 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         this.processFormatChanges(this.fg.value);
         const model = ChartModel.fromFormGroup(this.fg, this.chartDefinition);
         const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
+        const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
 
-        if (this._previewValid(model) && !loadingGroupings)  {
+        if (this._previewValid(model) && !loadingGroupings && !loadingComparison)  {
             this._previewQuery.refetch({ input: model }).then(res => this._processChartPreview(res.data));
         }
     }

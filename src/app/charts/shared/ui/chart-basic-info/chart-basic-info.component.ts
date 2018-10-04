@@ -71,7 +71,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
     frequencyPicker: SelectPickerComponent;
     xSourcePicker: SelectPickerComponent;
 
-    lastGroupingPayload: any;
+    lastKpiDateRangePayload: any;
     lastOldestDatePayload = '';
 
     @ViewChild('frequencyPicker') set frequencyContent(content: SelectPickerComponent) {
@@ -189,9 +189,11 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         this.xAxisSourceList = xAxisSelectionList;
     }
 
-    updateComparisonList(item: string): void {
-        this._updateComparisonPicker(item);
-    }
+    // DECOY 2
+    // updateComparisonList(item: string): void {
+    //     this._updateComparisonPicker(item);
+    // }
+
     get showCustomDateRangeControls(): boolean {
         return this.fg.value['predefinedDateRange'] === 'custom';
     }
@@ -211,17 +213,18 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
                 .debounceTime(400)
                 .subscribe((value) => {
                 const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
-                if (value.kpi && value.predefinedDateRange && !loadingGroupings) {
+                const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
+                if (value.kpi && value.predefinedDateRange && !loadingGroupings && !loadingComparison) {
+                    const payload = that._getGroupingInfoInput(value);
+                    if (isEqual(that.lastKpiDateRangePayload, payload)) { return; }
                     that._getGroupingInfo(value);
                     that._getOldestDate(value.kpi);
+                    that.lastKpiDateRangePayload = payload;
                 }
         });
     }
 
     private _getOldestDate(kpi: string): void {
-        if (this.lastOldestDatePayload === kpi) { return; }
-        this.lastOldestDatePayload = kpi;
-
         this._apolloService
         .networkQuery < string > (kpiOldestDateQuery, { id: kpi })
         .then(kpis => {
@@ -229,9 +232,8 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         });
     }
 
-    private _getGroupingInfo(value: any): void {
+    private _getGroupingInfo(item: any): void {
         const that = this;
-        const item = value;
 
         // basic payload check
         if (!item.kpi || !item.predefinedDateRange) {
@@ -239,9 +241,6 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         }
 
         const input = this._getGroupingInfoInput(item);
-        if (isEqual(this.lastGroupingPayload, input)) { return; }
-
-        this.lastGroupingPayload = input;
 
         this.fg.controls['loadingGroupings'].patchValue(true, { emitEvent: false });
 
@@ -384,26 +383,31 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         }));
     }
 
-    private _updateComparisonPicker(dateRangeString: string) {
+    // DECOY 1
+    // private _updateComparisonPicker(dateRangeString: string) {
 
-        if (IsNullOrWhiteSpace(dateRangeString)) { return; }
+    //     if (IsNullOrWhiteSpace(dateRangeString)) { return; }
 
-        const dateRange = this.dateRanges.find(d => d.dateRange.predefined === dateRangeString);
+    //     const dateRange = this.dateRanges.find(d => d.dateRange.predefined === dateRangeString);
 
-        if (!dateRange) {
-            this.comparisonList = [];
-            this.vm.comparisonList = this.comparisonList;
-            return [];
-        }
+    //     if (!dateRange) {
+    //         this.comparisonList = [];
+    //         this.vm.comparisonList = this.comparisonList;
+    //         return [];
+    //     }
 
-        this.comparisonList = ToSelectionItemList(dateRange.comparisonItems, 'key', 'value');
-        this.vm.comparisonList = this.comparisonList;
-    }
+    //     this.comparisonList = ToSelectionItemList(dateRange.comparisonItems, 'key', 'value');
+    //     this.vm.comparisonList = this.comparisonList;
+    // }
 
     private _updateComparisonData(yearOldestDate: string) {
 
         if (this.fg.value.predefinedDateRange === '') { return; }
-        if (!yearOldestDate || yearOldestDate === moment().year().toString()) { return; }
+        if (!yearOldestDate 
+            // || yearOldestDate === moment().year().toString()
+            ) { return; }
+
+        this.fg.controls['loadingComparison'].patchValue(true, { emitEvent: false });
 
         this.comparisonList = [];
         const dateRange = this.dateRanges.find(d => d.dateRange.predefined === this.fg.value.predefinedDateRange);
@@ -425,18 +429,31 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
                 this.comparisonList.push(newItem);
             }
         }
+
         this.vm.comparisonList = this.comparisonList;
+
+        const currentComparisonValue = this.fg.get('comparison').value || '';
+        let nextComparisonValue;
+        if (!this.comparisonList.map(g => g.id).includes(currentComparisonValue)) {
+            nextComparisonValue = '';
+        } else {
+            nextComparisonValue = currentComparisonValue;
+        }
+        this.fg.controls['comparison'].patchValue(nextComparisonValue, { emitEvent: false });
+        this.fg.controls['loadingComparison'].patchValue(false, { emitEvent: true });
+
     }
-  private _dateRangesQuery() {
-    const that = this;
-    this._subscription.push(this._apollo.watchQuery <{ dateRanges: IDateRangeItem[]}> ({
-        query: chartsGraphqlActions.dateRanges,
-        fetchPolicy: 'network-only'
-    })
-    .valueChanges.subscribe(({ data }) => {
-        that.dateRanges = data.dateRanges;
-    }));
-  }
+
+    private _dateRangesQuery() {
+        const that = this;
+        this._subscription.push(this._apollo.watchQuery <{ dateRanges: IDateRangeItem[]}> ({
+            query: chartsGraphqlActions.dateRanges,
+            fetchPolicy: 'network-only'
+        })
+        .valueChanges.subscribe(({ data }) => {
+            that.dateRanges = data.dateRanges;
+        }));
+    }
 
   private _subscribeToComparisonChanges() {
     const that = this;
