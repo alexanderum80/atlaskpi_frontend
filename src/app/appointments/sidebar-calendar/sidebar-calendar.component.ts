@@ -6,7 +6,7 @@ import { IUserInfo, IUserPreference } from '../../shared/models/user';
 import { AfterViewInit, Component, OnDestroy, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Moment } from 'moment';
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 import { Subscription } from 'rxjs/Subscription';
 
 import { isString, isEmpty } from 'lodash';
@@ -67,20 +67,25 @@ export class SidebarCalendarComponent implements OnInit, AfterViewInit, OnDestro
     loadingAppointments = false;
     currentUser: IUserInfo;
 
+    localTimeZone: string;
+    timezoneOffset: number;
+
     constructor(private _apolloService: ApolloService,
                 private _apollo: Apollo,
                 private _cdr: ChangeDetectorRef,
                 private _store: Store,
                 private _storeHelper: StoreHelper,
                 private _userSvc: UserService) {
-        const that = this;
+
+        this.localTimeZone = moment.tz.guess();
         this.subscriptions.push(
             this._userSvc.user$
                 .distinctUntilChanged()
                 .subscribe(user => {
                     if (user) {
-                        that.currentUser = user;
-                        that._updateProviderStore(user);
+                        this.currentUser = user;
+                        this._updateProviderStore(user);
+                        this.timezoneOffset = moment.tz(user.profile.timezone).utcOffset() - moment.tz(this.localTimeZone).utcOffset();
                     }
                 })
         );
@@ -88,7 +93,9 @@ export class SidebarCalendarComponent implements OnInit, AfterViewInit, OnDestro
 
     ngOnInit() {
         const that = this;
+
         that.selectedDay = moment();
+
         this.selectedProvider = this._store.getState().selectedAppointmentsProvider;
         this.subscriptions.push(
             this._store.changes$
@@ -198,7 +205,18 @@ export class SidebarCalendarComponent implements OnInit, AfterViewInit, OnDestro
             })
             .then(res => {
                 this.loadingAppointments = false;
-                that.appointments = res.searchAppointments;
+
+                if (!this.timezoneOffset) {
+                    that.appointments = res.searchAppointments;
+                    return;
+                }
+
+                that.appointments = res.searchAppointments.map(a => {
+                    return {
+                        ...a,
+                        from: moment(a.from).add(this.timezoneOffset, 'minutes').toDate()
+                     };
+                });
             });
     }
 
