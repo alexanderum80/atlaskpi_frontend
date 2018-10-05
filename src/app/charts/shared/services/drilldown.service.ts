@@ -1,10 +1,10 @@
-import {IDateRange, parsePredefinedDate} from '../../../shared/models';
-import {isEmpty, uniq} from 'lodash';
+import { IDateRange, parsePredefinedDate } from '../../../shared/models';
+import { isEmpty, uniq } from 'lodash';
 import * as moment from 'moment';
 
-import {quarterMonths, PredefinedDateRanges, IChartDateRange, PredefinedComparisonDateRanges} from '../../../shared/models/date-range';
-import {FrequencyTable} from '../../../shared/models/frequency';
-import {IChartTreeNode} from '../../chart-view/chart-view.component';
+import { quarterMonths, PredefinedDateRanges, IChartDateRange, PredefinedComparisonDateRanges } from '../../../shared/models/date-range';
+import { FrequencyTable } from '../../../shared/models/frequency';
+import { IChartTreeNode } from '../../chart-view/chart-view.component';
 import { camelCase } from 'change-case';
 
 const chartFrequencies: any = {};
@@ -21,19 +21,19 @@ export class DrillDownService {
         switch (true) {
             case isEmpty(categoryName) === true:
                 return false;
-                // convert year to monthly
+            // convert year to monthly
             case categoryName.length === 4:
                 return moment(categoryName, 'YYYY').isValid()
                     ? chartFrequencies.monthly
                     : false;
-                // convert monthly to daily
+            // convert monthly to daily
             case categoryName.length === 3:
                 return moment(categoryName, 'MMM').isValid()
                     ? chartFrequencies.daily
                     : false;
             case categoryName.length === 1:
                 return false;
-                // quarterly
+            // quarterly
             case categoryName.length === 2:
                 return this.isQuarterly(categoryName)
                     ? chartFrequencies.quarterly
@@ -49,9 +49,9 @@ export class DrillDownService {
 
     getDrillDownDateRange(category: any, dateRange: any, year?: any, frequency?: string) {
         const frequencyType = this.getFrequencyType(category);
-        
+
         if (year == null) {
-            year = moment(new(Date)).format('YYYY')
+            year = moment(new (Date)).format('YYYY')
         }
 
         if (!frequencyType) {
@@ -79,8 +79,8 @@ export class DrillDownService {
                             };
                         });
                     case chartFrequencies.daily:
-                        return customYears.map((years) => {
-                            return {
+                        const mappedDateRange = customYears.map((years) => {
+                            const drillDaterange = {
                                 predefined: null,
                                 custom: {
                                     from: moment(years, YEAR_FORMAT)
@@ -95,7 +95,59 @@ export class DrillDownService {
                                         .format()
                                 }
                             };
+
+                            /* if the custom date range doens't include the beginning of the frequency
+                                chart daterange -> [Nov 11, 2015 -- Dec 31, 2016]
+
+                                user clicked "Nov"
+                                
+                                2 date ranges for drilldown 
+                                    - Nov 11 - Nov 30 2015
+                                    - Nov 01 - Nov 30 2016
+                            */
+                            if (moment(drillDaterange.custom.from).isBefore(dateRange.from)
+                                && moment(drillDaterange.custom.from).month() === moment(dateRange.from).month()) {
+
+                                drillDaterange.custom.from = dateRange.from;
+                            }
+
+                            /* if the custom date range doens't include the end of the frequency
+                                chart daterange -> [Nov 11, 2015 -- Dec 15, 2016]
+                                
+                                user clicked "Dec"
+                                
+                                2 date ranges for drilldown 
+                                    - Dec 01 - Dec 31 2015
+                                    - Dec 01 - Dec 15 2016
+                            */
+                            if (moment(drillDaterange.custom.to).isAfter(dateRange.to)
+                                && moment(drillDaterange.custom.to).month() === moment(dateRange.to).month()) {
+
+                                drillDaterange.custom.to = dateRange.to;
+                            }
+
+                            return drillDaterange;
+
                         });
+
+                        //- Exclude date ranges that are not included in the custom date range.
+                        /* if the custom date range doens't include the month for some year
+                                chart daterange -> [Nov 11, 2015 -- Dec 15, 2016]
+                                
+                                user clicked "Oct"
+                                
+                                1 date ranges for drilldown 
+                                    - Oct 01 - Oct 31 2016
+                            */
+                        return mappedDateRange.filter(date => (
+                            (
+                                (moment(date.custom.to).isBefore(dateRange.to) ||
+                                    moment(date.custom.to).isSame(dateRange.to)
+                                ) &&
+                                (moment(date.custom.from).isAfter(dateRange.from) ||
+                                    moment(date.custom.from).isSame(dateRange.from))))
+                        )
+
                     case chartFrequencies.quarterly:
                         const getQuarter = quarterMonths[category[1]];
                         return customYears.map((years) => {
@@ -563,9 +615,9 @@ export class DrillDownService {
                                     predefined: null,
                                     custom: {
                                         from: moment(last3MthYear, YEAR_FORMAT)
-                                              .month(category)
-                                              .startOf('month')
-                                              .format(),
+                                            .month(category)
+                                            .startOf('month')
+                                            .format(),
                                         to: moment(last3MthYear, YEAR_FORMAT)
                                             .month(category)
                                             .startOf('month')
@@ -588,7 +640,7 @@ export class DrillDownService {
                                 }
                             }];
                     }
-                    // quarterly to monthly
+                // quarterly to monthly
                 case chartFrequencies.quarterly:
                     const getQuarter = quarterMonths[category[1]];
                     switch (dateRange) {
@@ -746,9 +798,9 @@ export class DrillDownService {
         }
     }
 
-    getDateRangeForDrillDown(currentNode: IChartTreeNode): string|IDateRange {
+    getDateRangeForDrillDown(currentNode: IChartTreeNode): string | IDateRange {
         const dateRange: IChartDateRange = currentNode.dateRange[0];
-        const isPredefined: boolean = dateRange.predefined && dateRange !== 'custom';
+        const isPredefined: boolean = dateRange.predefined && dateRange.predefined !== 'custom';
 
         if (isPredefined) {
             return dateRange.predefined;
@@ -792,7 +844,7 @@ export class DrillDownService {
                     predefinedDate.push(this._threeYearsAgoComparisonDateRange(predefinedDateString));
                     break;
                 default:
-                predefinedDate.push(this._MorethreeYearsAgoComparisonDateRange(cv));
+                    predefinedDate.push(this._MorethreeYearsAgoComparisonDateRange(cv));
                     break;
             }
         });
