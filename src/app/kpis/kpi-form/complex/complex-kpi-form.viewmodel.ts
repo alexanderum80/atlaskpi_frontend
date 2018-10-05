@@ -9,7 +9,7 @@ import { IWidgetFormGroupValues } from '../../../widgets/shared/models';
 import { IChartFormValues } from '../../../charts/shared/models/chart.models';
 
 
-const REGULAR_EXPRESSION_FOR_SAVING = /@{([\w\d\s\(\)%$!&#-=]+)}/g;
+const REGULAR_EXPRESSION_FOR_SAVING = /@{([\w\d\s\(\)%$!&#-=]+><)}/g;
 
 @Injectable()
 export class ComplexKpiFormViewModel extends ViewModel<IKPI> {
@@ -131,7 +131,7 @@ export class ComplexKpiFormViewModel extends ViewModel<IKPI> {
             return true;
         }
 
-        const reg = new RegExp('@{([\\w\\d\\s\\(\\)%$!&#-=]+)}', 'g');
+        const reg = new RegExp('@{([\\w\\d\\s\\(\\)%$!&#-=><]+)}', 'g');
         return reg.test(expression);
     }
 
@@ -140,7 +140,7 @@ export class ComplexKpiFormViewModel extends ViewModel<IKPI> {
         let match: RegExpExecArray;
 
         // const regExp = /@{([\w\d\s\(\)%$!&#-=]+)}/g;
-        const reg = new RegExp('@{([\\w\\d\\s\\(\\)%$!&#-=]+)}', 'g');
+        const reg = new RegExp('@{([\\w\\d\\s\\(\\)%$!&#-=><]+)}', 'g');
 
         while (match = reg.exec(expression)) {
             if (match) {

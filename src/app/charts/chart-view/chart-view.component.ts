@@ -651,10 +651,113 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             point: {
                 events: {
                     click: function (event) {
+<<<<<<< HEAD
                         
                         const chart = this; 
                         that.processDrillDown(chart)
 
+=======
+                        if (that._drillDownSvc.getFrequencyType(this.category) && !this.series.userOptions.targetId) {
+
+                            const isYear: boolean = moment(this.category, 'YYYY', true).isValid();
+                            const checkYear = isYear ? this.category : null;
+                            const year = that.currentNode.year || checkYear;
+                            const dateRange = that._drillDownSvc.getDateRangeForDrillDown(that.currentNode);
+                            const customDateRange = that._drillDownSvc.getDrillDownDateRange(
+                                this.category, dateRange, year, that.chartData.frequency
+                            );
+
+                            const comparisonForDrillDown: string[] = (that.comparisonValue.length) ? that.comparisonValue :
+                                                                    that._drillDownSvc.getComparisonForDrillDown(
+                                                                        that.currentNode.comparison , that.currentNode.dateRange
+                                                                    );
+                                                                    
+                            let frequency = that._drillDownSvc.getFrequencyType(this.category);
+                            frequency = frequency ? (frequency === 'quarterly' ? 'monthly' : frequency) : null;
+                            const chartQueryVariables = {
+                                id: that.chartData._id,
+                                input: {
+                                    dateRange: customDateRange,
+                                    groupings: that.isDataOnFly ? that.groupingsToUpdate || null : (<any>that.chartData).groupings || null,
+                                    frequency: frequency,
+                                    xAxisSource: '',
+                                    isDrillDown: true,
+                                    comparison: comparisonForDrillDown,
+                                    originalFrequency: that.currentNode.frequency
+                                }
+                            };
+
+                            that._subscription.push(that._apollo.watchQuery({
+                                query: ChartQuery,
+                                fetchPolicy: 'network-only',
+                                variables: chartQueryVariables
+                            }).valueChanges.subscribe(({
+                                data
+                            }) => {
+                                const rawChart: ChartData = JSON.parse((<any>data).chart);
+                                // show message when the chart has no data
+                                if (rawChart.chartDefinition) {
+                                    const noData = that._noChartDataMessage(rawChart.chartDefinition.series);
+                                    if (noData) {
+                                        return;
+                                    }
+                                }
+
+                                that.chart = null;
+                                let definition = that._processChartTooltipFormatter(rawChart.chartDefinition);
+                                yAxisFormatterProcess(definition);
+                                definition = that._processPieChartPercent(rawChart.chartDefinition);
+                                rawChart.chartDefinition = definition;
+                                rawChart.chartDefinition.chart.zoomType = 'x';
+                                that.chart = new Chart(rawChart.chartDefinition);
+                                that._updateChartInfoFromDefinition();
+
+                                that.chart.options.exporting = {
+                                    enabled: false,
+                                    filename: that.title
+                                };
+
+                                that.enableDrillDown();
+
+                                const nodeId = that._nonce();
+
+                                const newNode: IChartTreeNode = {
+                                    id: nodeId,
+                                    parent: that.currentNode,
+                                    children: [],
+                                    definition: rawChart.chartDefinition,
+                                    title: that.title,
+                                    targetList: [],
+                                    rootChart: false,
+                                    year: checkYear,
+                                    dateRange: rawChart.dateRange,
+                                    groupings: rawChart.groupings,
+                                    frequency: rawChart.frequency,
+                                    isDataOnFly: that.currentNode.isDataOnFly,
+                                    isDrillDown: true,
+                                    isCompared: false,
+                                    comparison: rawChart.comparison
+                                };
+
+                                let found = false;
+
+                                that.currentNode.children = that.currentNode.children.filter(c => {
+                                    if (c.id === newNode.id) {
+                                        c = newNode;
+                                        found = true;
+                                    }
+                                    return c;
+                                });
+
+                                if (!found) {
+                                    that.currentNode.children.push(newNode);
+                                }
+
+                                that.currentNode = newNode;
+                            }));
+
+                        }
+>>>>>>> 1f8e5c18dddc79064bf3a4a9d340430b0f031dc8
                     }
                 }
             }
