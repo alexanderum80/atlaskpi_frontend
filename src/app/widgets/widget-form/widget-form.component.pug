@@ -108,7 +108,18 @@
                                         liveSearchPlaceholder="Search Chart ...",
                                         [items]="chartSelectionList",
                                         noneSelectedText="Select Chart") 
-        
+
+        //- dashboard
+        div(flex)
+            small.select-picker-placeholder(flex) Choose a dashboard to see your chart
+            bw-select-picker.zIndex-3-9(flex, [fg]="fg",
+                leftIcon="widgets",
+                field="dashboards",
+                [multiple]="true",
+                [items]="dashboardSelectionList",
+                noneSelectedText="NOTHING SELECTED")
+
+
     //- widget preview
     .widget-preview.p-15(flex)
         div(layout="column")
