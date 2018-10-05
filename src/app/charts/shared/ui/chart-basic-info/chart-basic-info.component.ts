@@ -189,11 +189,6 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         this.xAxisSourceList = xAxisSelectionList;
     }
 
-    // DECOY 2
-    // updateComparisonList(item: string): void {
-    //     this._updateComparisonPicker(item);
-    // }
-
     get showCustomDateRangeControls(): boolean {
         return this.fg.value['predefinedDateRange'] === 'custom';
     }
@@ -382,23 +377,6 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
                 that.xAxisSourceList = xAxisSelectionList;
         }));
     }
-
-    // DECOY 1
-    // private _updateComparisonPicker(dateRangeString: string) {
-
-    //     if (IsNullOrWhiteSpace(dateRangeString)) { return; }
-
-    //     const dateRange = this.dateRanges.find(d => d.dateRange.predefined === dateRangeString);
-
-    //     if (!dateRange) {
-    //         this.comparisonList = [];
-    //         this.vm.comparisonList = this.comparisonList;
-    //         return [];
-    //     }
-
-    //     this.comparisonList = ToSelectionItemList(dateRange.comparisonItems, 'key', 'value');
-    //     this.vm.comparisonList = this.comparisonList;
-    // }
 
     private _updateComparisonData(yearOldestDate: string) {
 

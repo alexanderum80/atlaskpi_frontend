@@ -485,10 +485,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
     get formValid() {
         return !isEmpty(this.fg.value.name) &&
-            // !== undefined && this.fg.value.name.length > 1 &&
-            // this.fg.value.kpi !== undefined && this.fg.value.kpi.length > 0 &&
             !isEmpty(this.fg.value.kpi) &&
-            // this.fg.value.predefinedDateRange !== undefined
             !isEmpty(this.fg.value.predefinedDateRange) &&
             this.isChartCustomTopValid &&
             this.tooltipValid;
