@@ -35,7 +35,9 @@ const DashboardQuery = gql`
             _id
             name
             charts
+            maps
             widgets
+            socialwidgets
             owner
             users
         }
@@ -53,6 +55,8 @@ export interface DashboardResponse {
         name: string;
         charts: string[];
         widgets: string[];
+        socialwidgets: string[];
+        maps: string[];
         loading: boolean;
         owner: string;
         users: string[];
@@ -122,7 +126,6 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
 
         this._bringMapMarkers();
         this._getSocialWidgets();
-
         if (this.isFromDashboard) {
             this._loadDashboardData(this.dashboardPayLoad);
         } else {
@@ -248,12 +251,11 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
         if (!dashboard) {
             that.bigWidgets = [];
             that.smallWidgets = [];
+            that.socialWidgets = [];
             that.charts = [];
             return;
         }
-
-        // TODO: Change later .. for now only show map on main dashboard
-        this.showMap = this.mapMarkers && this.mapMarkers.length && dashboard.name === 'Main';
+        this.showMap = this.mapMarkers && this.mapMarkers.length > 0 && dashboard.maps && dashboard.maps[0] === '1';
         this.dashboardName = dashboard.name || 'Untiteled';
 
         if (dashboard.charts) {
@@ -288,7 +290,19 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             that.bigWidgets.forEach(bWidget => bWidget.preview = true);
          }
 
-         this.loading = false;
+         if (dashboard.socialwidgets) {
+            const socialWidgetsSource = dashboard.socialwidgets.map(sw => {
+                try {
+                    const swidget = JSON.parse(sw);
+                    return swidget;
+                } catch (err) {
+                    console.dir(sw);
+                    return sw;
+                }
+            });
+            that.socialWidgets = socialWidgetsSource.map(d => new SocialWidgetBase( < any > objectWithoutProperties(d, ['__typename'])));
+        }
+        this.loading = false;
     }
 
     ngOnDestroy() {
@@ -300,7 +314,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
     }
 
     get showSocialWidgets(): boolean {
-        return this.socialWidgets.length && this.isMainDashboard;
+        return this.socialWidgets.length > 0;
     }
 
     private _loadDashboard(id) {
@@ -325,44 +339,55 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
 
         this._rawDashboard = data.dashboard;
 
-        // TODO: Change later .. for now only show map on main dashboard
-        this.showMap = this.mapMarkers && this.mapMarkers.length && data.dashboard.name === 'Main';
+        this.showMap = this.mapMarkers && this.mapMarkers.length > 0 && data.dashboard.maps && data.dashboard.maps[0] === '1';
         this.dashboardName = data.dashboard.name;
 
         if (data.dashboard.charts) {
-                    that.charts = data.dashboard.charts.map(c => {
-                        if (!c) {
-                            return;
-                        }
-
-                        try {
-                            const rawChart = JSON.parse(c);
-                            let definition = this._processChartTooltipFormatter(rawChart.chartDefinition);
-                            yAxisFormatterProcess(definition);
-                            definition = this._processPieChartPercent(rawChart.chartDefinition);
-                            rawChart.chartDefinition = definition;
-                            return rawChart;
-                        } catch (err) {
-                            return c;
-                        }
-                    });
+            that.charts = data.dashboard.charts.map(c => {
+                if (!c) {
+                    return;
                 }
 
-                if (data.dashboard.widgets) {
-                    const widgets: IWidget[] = data.dashboard.widgets.map(w => {
-                        try {
-                            const widget = JSON.parse(w);
-                            return widget;
-                        } catch (err) {
-                            console.dir(w);
-                            return w;
-                        }
-                    });
-                    that.smallWidgets = widgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Small);
-                    that.smallWidgets.forEach(sWidget => sWidget.preview = true);
-                    that.bigWidgets = widgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Big);
-                    that.bigWidgets.forEach(bWidget => bWidget.preview = true);
+                try {
+                    const rawChart = JSON.parse(c);
+                    let definition = this._processChartTooltipFormatter(rawChart.chartDefinition);
+                    yAxisFormatterProcess(definition);
+                    definition = this._processPieChartPercent(rawChart.chartDefinition);
+                    rawChart.chartDefinition = definition;
+                    return rawChart;
+                } catch (err) {
+                    return c;
                 }
+            });
+        }
+
+        if (data.dashboard.widgets) {
+            const widgets: IWidget[] = data.dashboard.widgets.map(w => {
+                try {
+                    const widget = JSON.parse(w);
+                    return widget;
+                } catch (err) {
+                    console.dir(w);
+                    return w;
+                }
+            });
+            that.smallWidgets = widgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Small);
+            that.smallWidgets.forEach(sWidget => sWidget.preview = true);
+            that.bigWidgets = widgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Big);
+            that.bigWidgets.forEach(bWidget => bWidget.preview = true);
+        }
+        if (data.dashboard.socialwidgets) {
+            const socialWidgetsSource = data.dashboard.socialwidgets.map(sw => {
+                try {
+                    const swidget = JSON.parse(sw);
+                    return swidget;
+                } catch (err) {
+                    console.dir(sw);
+                    return sw;
+                }
+            });
+            that.socialWidgets = socialWidgetsSource.map(d => new SocialWidgetBase( < any > objectWithoutProperties(d, ['__typename'])));
+        }
    }
 
     private _processChartYAxisFormatterFunctions(definition: any) {
@@ -441,9 +466,10 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
 
     private _bringMapMarkers() {
         const that = this;
-
         this._subscription.push(this._apolloService.networkQuery(mapMarkersQuery).then(res => {
             that.mapMarkers = res.mapMarkers.map(m => objectWithoutProperties(m, ['__typename']));
+            const payLoad: any = this.dashboardPayLoad;
+            this.showMap = this.mapMarkers && this.mapMarkers.length > 0 && payLoad && payLoad.maps.length > 0;
         }));
     }
 
@@ -452,7 +478,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
 
         this._apolloService.networkQuery(socialWidgetQuery).then(res => {
             const socialWidgets = res.listSocialWidgets.map(d => new SocialWidgetBase( < any > objectWithoutProperties(d, ['__typename'])));
-            this.socialWidgets = socialWidgets;
+            // this.socialWidgets = socialWidgets;
         });
     }
 

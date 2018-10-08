@@ -5,6 +5,8 @@ query DashboardGQL($id: String!){
     description
     charts
     widgets
+    socialwidgets
+    maps
     owner
     users
   }
