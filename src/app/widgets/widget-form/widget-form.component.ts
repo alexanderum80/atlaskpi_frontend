@@ -128,7 +128,6 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() widgetId: string;
     @Input() widgetDataFromKPI : any;
     @Output() formResult = new EventEmitter < DialogResult > ();
-    @Output() newComponentResult = new EventEmitter<string>();
 
     subs: Subscription[] = [];
     datePickerConfig: IDatePickerConfig;

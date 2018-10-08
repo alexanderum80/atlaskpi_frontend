@@ -111,12 +111,14 @@
 
         //- dashboard
         div(flex)
-            small.select-picker-placeholder(flex) Choose a dashboard to see your chart
+            small.select-picker-placeholder(flex) Choose a dashboard for your widget
             bw-select-picker.zIndex-3-9(flex, [fg]="fg",
                 leftIcon="widgets",
                 field="dashboards",
                 [multiple]="true",
                 [items]="dashboardSelectionList",
+                [liveSearch]="true",
+                liveSearchPlaceholder="... search dashboards ...",
                 noneSelectedText="NOTHING SELECTED")
 
 
