@@ -86,7 +86,7 @@
                                                                                 [item]="chart", [minHeight]="200", style="width: 100%")
 
                                 bw-button.btn-addChart(flex-none, color="blue", icon="plus", [circular]="true", (clicked)="openAddChart()")
-                    bwTab.m-10.section-header(heading="Social widgets", icon="star", (select)="switchTab('socialwidgets')")  
+                    bwTab.m-10.section-header(heading="Social", icon="star", (select)="switchTab('socialwidgets')")  
                         div(*ngIf="socialwidgetsLoading", layout="row", layout-align="center center")
                             bw-preloader.text-center(color="gray")
                         .info-box(*ngIf="!socialwidgetsLoading && allSocialWidgets.length === 0", layout="column", layout-align="center center")
@@ -123,7 +123,7 @@
                                  [circular]="true", (clicked)="previewDashboard()")
         bw-button.floating-btn-2(color="blue", icon="floppy", [disabled]="!valid",
                                  [circular]="true", (clicked)="save()")
-        bw-button.floating-btn-3(color="gray", icon="close", [circular]="true", (clicked)="cancel()")
+        bw-button.floating-btn-3(color="white", icon="close", [circular]="true", (clicked)="cancel()")
 
 //- preview dashboard
 div(layout="row", layout-align="center center", *ngIf="loading")
