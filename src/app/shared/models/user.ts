@@ -64,6 +64,7 @@ export class IUserPreference {
     showAppointmentCancelled?: boolean;
     providers?: string;
     calendarTimeZone?: string;
+    dashboardIdNoVisible?: string;
 }
 
 export interface IUserInfo {

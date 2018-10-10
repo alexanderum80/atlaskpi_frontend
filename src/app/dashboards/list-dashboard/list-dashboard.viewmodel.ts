@@ -6,6 +6,7 @@ import { IListItem } from '../../shared/ui/lists/list-item';
 import {MenuItem} from '../../ng-material-components';
 import { isNumber } from 'lodash';
 import { visibleMenuItem, notVisibleMenuItem } from '../../shared/helpers/visible-action-item.helper';
+import { IUserInfo } from '../../shared/models';
 
 interface IFilter {
     search: string;
@@ -16,6 +17,8 @@ export class ListDashboardViewModel extends ViewModel<IFilter> {
     private _dashboards: IDashboard[];
     private _dashboardItemList: IListItem[];
     private _actionItems: MenuItem[];
+    private _userService: UserService;
+    private _listDashboardIdNoVisible;
 
     constructor(userService: UserService) {
         super(userService);
@@ -36,12 +39,20 @@ export class ListDashboardViewModel extends ViewModel<IFilter> {
     }
 
     set dashboards(list: IDashboard[]) {
-
         if (list === this._dashboards) {
             return;
         }
         this._dashboards = list;
+        let isVisible: boolean;
         this._dashboardItemList = this._dashboards.map(d => {
+            if (!this._listDashboardIdNoVisible) {
+                isVisible = true;
+            }else{
+                    isVisible 
+                        = this._listDashboardIdNoVisible.find(l => l === d._id) 
+                        ? false 
+                        : true;
+            }
             return {
                 id: d._id,
                 imagePath: '/assets/img/dashboard/dashboard.png',
@@ -50,10 +61,20 @@ export class ListDashboardViewModel extends ViewModel<IFilter> {
                 extras: {
                    // access: d.accessLevels
                 },
-                visible: (d.visible === null || d.visible === true) ? true : false
+                visible: isVisible
             };
         });
     }
+
+    listDashboardIdNoVisible(upatedUserInfo: IUserInfo) {
+        if (!upatedUserInfo) {
+            return;
+        }
+        this._listDashboardIdNoVisible 
+            = upatedUserInfo.preferences.dashboardIdNoVisible === null 
+            ? undefined 
+            : upatedUserInfo.preferences.dashboardIdNoVisible.split('|');
+    }   
 
     @Field({ type: String })
     search: string;
@@ -96,7 +117,6 @@ export class ListDashboardViewModel extends ViewModel<IFilter> {
 
         const children: MenuItem[] = this._actionItems[0].children;
         const index = children.findIndex(child => child.id === 'visible');
-
         if (isNumber(index)) {
             children[index] = item.visible ? notVisibleMenuItem() : visibleMenuItem();
         }

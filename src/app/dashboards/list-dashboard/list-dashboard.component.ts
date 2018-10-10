@@ -12,11 +12,17 @@ import { ApolloService } from '../../shared/services/apollo.service';
 import { IActionItemClickedArgs } from '../../shared/ui/lists/item-clicked-args';
 import { IDashboard } from '../shared/models';
 import { ListDashboardViewModel } from './list-dashboard.viewmodel';
+import { IUserInfo } from '../../shared/models';
+import { UserService } from '../../shared/services/user.service';
+import { Subscription } from 'rxjs/Subscription';
+import { id } from '@swimlane/ngx-datatable/release/utils';
 
 const dashboardsQuery = require('graphql-tag/loader!../shared/graphql/all-dashboard.query.gql');
 const dashboardQuery = require('graphql-tag/loader!../shared/graphql/dashboard.gql');
 const deleteDashboardMutation = require('graphql-tag/loader!../shared/graphql/delete-dashboard.gql');
 const updateVisibleDashboardMutation = require('graphql-tag/loader!../shared/graphql/updatevisible-dashboard.gql');
+const updateUserPreference = require('graphql-tag/loader!../shared/graphql/update-user-preference.mutation.gql');
+const updateUserInfo = require('graphql-tag/loader!../../users/shared/graphql/current-user.gql')
 
 @Activity(ViewDashboardActivity)
 @Component({
@@ -29,6 +35,8 @@ export class ListDashboardComponent implements OnInit {
 
     actionActivityNames: IItemListActivityName = {};
     xsSize = '75';
+    user: IUserInfo;
+    subscriptions: Subscription[] = [];
 
     constructor(
         private _route: ActivatedRoute,
@@ -37,7 +45,15 @@ export class ListDashboardComponent implements OnInit {
         private _apolloService: ApolloService,
         private _router: Router,
         public updateDashboardActivity: UpdateDashboardActivity,
+        private _userService: UserService,
         public deleteDashboardActivity: DeleteDashboardActivity) {
+            const that = this;
+            this.subscriptions.push(
+            this._userService.user$
+            .distinctUntilChanged()
+            .subscribe((user: IUserInfo) => {
+                that.user = user;
+            }))
         this.actionActivityNames = {
             edit: this.updateDashboardActivity.name,
             delete: this.deleteDashboardActivity.name,
@@ -79,22 +95,29 @@ export class ListDashboardComponent implements OnInit {
     private update(item: IActionItemClickedArgs) {
         const that = this;
         const idDash = item.item.id;
-        const visible = !item.item.visible;
-        that._apolloService.mutation < {
-                updatevisibleDashboard: {
-                    success: boolean
-                }
-            } > (updateVisibleDashboardMutation, {
-                id: item.item.id,
-                input: !item.item.visible
-            })
-            .then(result => {
-                const response = result;
-                if (response.data.updatevisibleDashboard === true) {
-                    this._refreshDashboards(true);
-                }
-            });
+            if (!this.user || !this.user._id) {
+                return;
+            } else {
+
+                this.subscriptions.push(
+                    that._apolloService.mutation < {
+                    updateUserPreference: {
+                        success
+                    }
+                    } > (updateUserPreference, {
+                        id: this.user._id,
+                        input: {dashboardIdNoVisible: idDash }
+                    })
+                    .then(result => {
+                        const response = result;
+                          if (response.data.updateUserPreference.success === true) {
+                              this._refreshDashboards(true);
+                              }
+                    })
+                );
+            }    
     }
+
     editClickedList($event) {
         if ($event.itemType === 'standard') {
             this.edit($event.item.id);
@@ -145,6 +168,9 @@ export class ListDashboardComponent implements OnInit {
 
     private _refreshDashboards(refresh ? : boolean) {
         const that = this;
+        this._apolloService.networkQuery < IUserInfo > (updateUserInfo).then(d => {
+            that.vm.listDashboardIdNoVisible(d.User);
+                    });           
         this._apolloService.networkQuery < IDashboard[] > (dashboardsQuery).then(d => {
             that.vm.dashboards = d.dashboards;
         });
