@@ -220,6 +220,9 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         const loadingGroupings = new FormControl(false);
         this.fg.addControl('loadingGroupings', loadingGroupings);
 
+        const loadingComparison = new FormControl(false);
+        this.fg.addControl('loadingComparison', loadingComparison);
+
         this._subscribeToChartSelection();
         const that = this;
         that.fg.valueChanges.debounceTime(500)
@@ -318,7 +321,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     updateFormFields() {
         const that = this;
         const values = this.chartDataFromKPI ? this.chartDataFromKPI : this.chartModel.toChartFormValues();
-        
+
         this.ChartFormatInfo.defaultChartColors();
 
         this._subscription.push(
@@ -334,7 +337,6 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             // this.chartType = this.chartModel.type;
                 that.chartDefinition = this.chartDataFromKPI ? chartDefinitionFromKPI : that.chartModel.chartDefinition;
                 that._galleryService.updateToolTipList(that.chartDefinition.chart.type);
-                
                 if (that.chartDefinition && !this.chartDataFromKPI) {
                     that.chartType = (that.chartModel.type || that.chartDefinition.chart.type)
                 } else {
@@ -482,9 +484,10 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     }
 
     get formValid() {
-        return this.fg.value.name !== undefined && this.fg.value.name.length > 1 &&
-            this.fg.value.kpi !== undefined && this.fg.value.kpi.length > 0 &&
-            this.fg.value.predefinedDateRange !== undefined && this.isChartCustomTopValid &&
+        return !isEmpty(this.fg.value.name) &&
+            !isEmpty(this.fg.value.kpi) &&
+            !isEmpty(this.fg.value.predefinedDateRange) &&
+            this.isChartCustomTopValid &&
             this.tooltipValid;
     }
 
@@ -556,8 +559,9 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         this.processFormatChanges(this.fg.value);
         const model = ChartModel.fromFormGroup(this.fg, this.chartDefinition);
         const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
+        const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
 
-        if (this._previewValid(model) && !loadingGroupings)  {
+        if (this._previewValid(model) && !loadingGroupings && !loadingComparison)  {
             this._previewQuery.refetch({ input: model }).then(res => this._processChartPreview(res.data));
         }
     }

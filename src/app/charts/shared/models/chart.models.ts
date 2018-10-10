@@ -352,8 +352,9 @@ export class ChartModel {
     }
 
     get validForPreview(): boolean {
-      return this.kpis !== undefined && this.kpis.length > 0 &&
-             new ChartDateRangeModel(this.dateRange).valid;
+      return !isEmpty(this.kpis)
+             && this.kpis.every(k => !isEmpty(k))
+             && new ChartDateRangeModel(this.dateRange).valid;
     }
 
     get valid(): boolean {

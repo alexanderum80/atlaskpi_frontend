@@ -386,21 +386,23 @@ function tooltip_point_percentaje_total_formatter(stack?: string, sorting? :stri
 function percent_with_total() {
     this.exec = function () {
         let custom_tooltip_html = ``;
-        const legend = this.key || this.point.name;
+        //- in mobile the points data will be inside this.points[0]
+        const object = (this.key && this.point) ? this : this.points[0];
+        const legend = object.key || object.point.name;
         custom_tooltip_html += `
             <div flex layout="row">
             <div flex>
-                <span style="color: ${this.point.color}">${legend}</span>: 
+                <span style="color: ${object.point.color}">${legend}</span>: 
             </div>
             <div flex-initial>
-                <span style="font-weight: bold">${Highcharts.numberFormat(this.y)}</span>
+                <span style="font-weight: bold">${Highcharts.numberFormat(object.y)}</span>
             </div>
             </div>
 
             <div flex layout="row">
             <div flex style="font-weight: bold">Total: </div>
             <div flex-initial>
-                <span style="font-weight: bold">${Highcharts.numberFormat(this.total)}</span>
+                <span style="font-weight: bold">${Highcharts.numberFormat(object.total)}</span>
             </div>
             </div>
         `;
@@ -411,16 +413,17 @@ function percent_with_total() {
 function pie_with_total_percent_formatter() {
     this.exec = function() {
         let pie_percent_total_html = '';
-        const legend: string = this.key || this.point.name;
+        const object = (this.key && this.point) ? this : this.points[0];
+        let legend: string = object.key || object.point.name;
 
         pie_percent_total_html += `
             <div flex layout="row">
                 <div flex>
-                    <span style="color: ${this.point.color}">${legend}</span>: 
+                    <span style="color: ${object.point.color}">${legend}</span>: 
                 </div>
                 <div flex-initial>
                     <span style="font-weight: bold">
-                        ${Highcharts.numberFormat(this.y)} ( ${Highcharts.numberFormat(this.percentage)}% )
+                        ${Highcharts.numberFormat(object.y)} ( ${Highcharts.numberFormat(object.percentage)}% )
                     </span>
                 </div>
             </div>
@@ -428,7 +431,7 @@ function pie_with_total_percent_formatter() {
             <div flex layout="row">
                 <div flex style="font-weight: bold">Total: </div>
                 <div flex-initial>
-                    <span style="font-weight: bold">${Highcharts.numberFormat(this.total)} ( 100% )</span>
+                    <span style="font-weight: bold">${Highcharts.numberFormat(object.total)} ( 100% )</span>
                 </div>
             </div>
         `;
