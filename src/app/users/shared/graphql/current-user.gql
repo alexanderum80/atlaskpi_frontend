@@ -39,6 +39,7 @@ query User {
             showAppointmentCancelled
             providers
             calendarTimeZone
+            dashboardIdNoVisible
         }
         profilePictureUrl
         ownerAgreed
