@@ -178,6 +178,10 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     totalrunrateValues = 0;
     targetsVisible = false;
 
+    userTouchSub: Subscription;
+    userTouching: boolean;
+
+
     compareActions: MenuItem[] = [{
         id: 'comparison',
         icon: 'swap',
@@ -266,6 +270,9 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         this.isComparison = this.getIsComparison();
         this.AnalizeFrequency();
         this.getShowRunRate();
+
+        this.userTouchSub = this._broserService.userTouching$.subscribe(val => this.userTouching = val)
+
     }
 
     ngAfterContentInit() {
@@ -471,6 +478,10 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         this.chartData = null;
         console.log(`chart ${this.title} destroyed`);
 
+        if(this.userTouchSub){
+            this.userTouchSub.unsubscribe();
+        }
+
         CommonService.unsubscribe([
             ...this._subscription,
         ]);
@@ -622,7 +633,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 code for mobile drilldown starts here
 
         */
-        if (this._broserService.isMobile()) {
+        if (this._broserService.isMobile() || this.userTouching) {
             // click in highcharts on data point
             // not where there is space
             this.chart.options.plotOptions.series = Object.assign(this.chart.options.plotOptions.series, {
@@ -632,7 +643,9 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                             const isShared: boolean = this.series.chart.tooltip.shared === true;
                             const param = isShared ? [this] : this;
 
-                            this.series.chart.tooltip.refresh(param);
+                           //this.setState(['hover']);
+                           this.series.chart.tooltip.refresh(param);
+
                         },
                         dblclick: function (event) {
                             const chart = this;
