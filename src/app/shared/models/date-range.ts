@@ -40,6 +40,10 @@ import { IDateRange, IChartDateRange } from './date-range';
 //     }
 // }
 
+export enum AKPIDateFormatEnum {
+    US_DATE = 'MM/DD/YYYY',
+    US_SHORT_DATE = 'MM/DD/YY',
+}
 
 import * as moment from 'moment';
 
@@ -575,8 +579,6 @@ export class ChartDateRangeModel {
     }
 }
 
-
-
 export interface IDateRangeComparisonItem {
     key: string;
     value: string;
@@ -586,3 +588,5 @@ export interface IDateRangeItem {
     dateRange: IChartDateRange;
     comparisonItems: IDateRangeComparisonItem[];
 }
+
+

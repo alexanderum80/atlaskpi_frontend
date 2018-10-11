@@ -1,3 +1,4 @@
+import { AKPIDateFormatEnum } from '../../models/date-range';
 import { Component, Input, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { toArray } from 'lodash';
@@ -22,6 +23,7 @@ export class KpiDaterangePickerComponent implements OnInit, OnDestroy, AfterView
     @Input() fromRequired = false;
     @Input() toRequired = false;
     @Input() dateRange: IChartDateRange;
+    @Input() config: IDatePickerConfig;
 
     private _fromSubscription: Subscription;
     private _toSubscription: Subscription;
@@ -48,10 +50,12 @@ export class KpiDaterangePickerComponent implements OnInit, OnDestroy, AfterView
     }
 
     ngOnInit() {
-        this.datePickerConfig = {
-            showGoToCurrent: false,
-            format: 'MM/DD/YYYY'
-        };
+        this.datePickerConfig =
+            this.config ||
+            {
+                showGoToCurrent: false,
+                format: AKPIDateFormatEnum.US_DATE
+            };
     }
 
     ngAfterViewInit() {
@@ -114,8 +118,10 @@ export class KpiDaterangePickerComponent implements OnInit, OnDestroy, AfterView
     }
 
     private _setValueToForm() {
-        this.fg.controls['from'].setValue(this.dateRange[0].custom.from);
-        this.fg.controls['to'].setValue(this.dateRange[0].custom.to);
+        const from = moment(this.dateRange[0].custom.from).format(this.datePickerConfig.format);
+        const to = moment(this.dateRange[0].custom.to).format(this.datePickerConfig.format);
+        this.fg.controls['from'].setValue(from);
+        this.fg.controls['to'].setValue(to);
     }
 
 }
