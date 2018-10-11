@@ -86,14 +86,44 @@
                                                                                 [item]="chart", [minHeight]="200", style="width: 100%")
 
                                 bw-button.btn-addChart(flex-none, color="blue", icon="plus", [circular]="true", (clicked)="openAddChart()")
+                    bwTab.m-10.section-header(heading="Social", icon="star", (select)="switchTab('socialwidgets')")  
+                        div(*ngIf="socialwidgetsLoading", layout="row", layout-align="center center")
+                            bw-preloader.text-center(color="gray")
+                        .info-box(*ngIf="!socialwidgetsLoading && allSocialWidgets.length === 0", layout="column", layout-align="center center")
+                            .icon(flex)
+                                i.zmdi.zmdi-star
+                            .message(flex)
+                                h2.p-b-40.c-gray.text-center Looks that there are no social widgets defined yet
+                        .socialwidgets(*ngIf="!socialwidgetsLoading", flex-none, [attr.layout-padding]="!isMobile")        
+                            div(layout="row", layout-wrap, layout-padding)
+                                div(*ngFor="let sw of visibleSocialWidgets", flex-xs="100", flex-sm="50", flex-md="50", flex-gt-md="50")
+                                    kpi-selectable-item-frame([item]="sw", (click)="toggleSocialWidgetSelection(sw)")
+                                        kpi-social-widget.pointer-cursor([socialWidget]="sw")
+                                                                                          
+                                // bw-button.btn-addSocialWidget(flex-none, color="blue", icon="plus", [circular]="true", (clicked)="openAddSocialWidget()")
+                    bwTab.m-10.section-header(heading="Map", icon="map", (select)="switchTab('maps')")  
+                        div(*ngIf="mapsLoading", layout="row", layout-align="center center")
+                            bw-preloader.text-center(color="gray")
+                        .info-box(*ngIf="!mapsLoading && allMaps.length === 0", layout="column", layout-align="center center")
+                            .icon(flex)
+                                i.zmdi.zmdi-map
+                            .message(flex)
+                                h2.p-b-40.c-gray.text-center Looks that there are no maps defined yet    
+                        .maps(*ngIf="!mapsLoading", flex-none, [attr.layout-padding]="!isMobile")
+                            div(layout="row", layout-wrap, layout-padding, layout-align="center center")
+                                div(*ngFor="let map of visibleMaps", flex-xs="100", flex-sm="50", flex-md="50", flex-gt-md="50")
+                                    kpi-selectable-item-frame([item]="map", (click)="toggleMapSelection(map)")
+                                        .overflow-auto(layout-align="center center")
+                                            img.map-icon(src='/assets/img/datasources/mapa.logo.png', alt="map logo image")
+                                // bw-button.btn-addMap(flex-none, color="blue", icon="plus", [circular]="true", (clicked)="openAddMap()")            
 
 //- mobile device button at the end
-.hide-gt-xs(*ngIf="!isAddChart && !isAddWidget && !loading && !isPreviewDashboard")
+.hide-gt-xs(*ngIf="!isAddChart && !isAddWidget && !isAddSocialWidget && !isAddMap && !loading && !isPreviewDashboard")
         bw-button.floating-btn-1(color="green", icon="eye", [disabled]="selectedItems.length === 0",
                                  [circular]="true", (clicked)="previewDashboard()")
         bw-button.floating-btn-2(color="blue", icon="floppy", [disabled]="!valid",
                                  [circular]="true", (clicked)="save()")
-        bw-button.floating-btn-3(color="gray", icon="close", [circular]="true", (clicked)="cancel()")
+        bw-button.floating-btn-3(color="white", icon="close", [circular]="true", (clicked)="cancel()")
 
 //- preview dashboard
 div(layout="row", layout-align="center center", *ngIf="loading")
@@ -106,6 +136,10 @@ div.hv-100(*ngIf="isPreviewDashboard && !loading")
 
 //- create new widget
 .hv-100(*ngIf="isAddWidget")
+    kpi-new-widget.h-100.animated.fadeIn([isFromDashboard]="'true'", (result)="onWidgetFormEvent($event)")
+
+//- create new social widget
+.hv-100(*ngIf="isAddSocialWidget")
     kpi-new-widget.h-100.animated.fadeIn([isFromDashboard]="'true'", (result)="onWidgetFormEvent($event)")
 
 //- create new chart
