@@ -144,6 +144,7 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     dateRangeSelectionList: SelectionItem[] = [];
     kpiSelectionList: SelectionItem[] = [];
+    dashboardSelectionList: SelectionItem[] = [];
     chartSelectionList: SelectionItem[] = [];
     comparisonSelectionList: SelectionItem[] = [];
 
@@ -293,6 +294,7 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
         this.subs.push(this._widgetFormService.chartList$.subscribe(list => this.chartSelectionList = list));
         this.subs.push(this._widgetFormService.dateRangeList$.subscribe(list => this.dateRangeSelectionList = list));
         this.subs.push(this._widgetFormService.kpiList$.subscribe(list => this.kpiSelectionList = list));
+        this.subs.push(this._widgetFormService.dashboardList$.subscribe(list => this.dashboardSelectionList = list));
         this.subs.push(this._widgetFormService.widgetModelValid$.subscribe(isValid => this.widgetModelValid = isValid));
     }
 
