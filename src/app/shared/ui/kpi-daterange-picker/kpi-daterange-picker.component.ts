@@ -118,8 +118,8 @@ export class KpiDaterangePickerComponent implements OnInit, OnDestroy, AfterView
     }
 
     private _setValueToForm() {
-        const from = moment(this.dateRange[0].custom.from).format(this.datePickerConfig.format);
-        const to = moment(this.dateRange[0].custom.to).format(this.datePickerConfig.format);
+        const from = moment.utc(this.dateRange[0].custom.from).format(this.datePickerConfig.format);
+        const to = moment.utc(this.dateRange[0].custom.to).format(this.datePickerConfig.format);
         this.fg.controls['from'].setValue(from);
         this.fg.controls['to'].setValue(to);
     }
