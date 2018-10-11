@@ -1,0 +1,47 @@
+query User {
+    User {
+        _id
+        username
+        roles {
+            name
+            permissions {
+                action
+                subject
+            }
+        }
+        emails {
+            address
+            verified
+        }
+        profile {
+            firstName
+            middleName
+            lastName
+            sex
+            dob
+            phoneNumber
+            timezone
+            agreement {
+                accept
+            }
+        }
+        preferences {
+            notification {
+                general
+                chat
+                email
+                dnd
+            }
+            chart {
+                showTour
+            }
+            helpCenter
+            showAppointmentCancelled
+            providers
+            calendarTimeZone
+            dashboardIdNoVisible
+        }
+        profilePictureUrl
+        ownerAgreed
+    }
+}

@@ -14,18 +14,22 @@ interface IFilter {
 
 @Injectable()
 export class ListDashboardViewModel extends ViewModel<IFilter> {
+    private _listDashboardIdNoVisible;
     private _dashboards: IDashboard[];
     private _dashboardItemList: IListItem[];
     private _actionItems: MenuItem[];
     private _userService: UserService;
-    private _listDashboardIdNoVisible;
 
     constructor(userService: UserService) {
         super(userService);
 
         this.setActionItems();
     }
-
+    
+    get alistDashboardIdNoVisible() {
+        return this._listDashboardIdNoVisible;
+    }
+    
     get dashboards(): IDashboard[] {
         return this._dashboards;
     }
@@ -38,6 +42,16 @@ export class ListDashboardViewModel extends ViewModel<IFilter> {
         return this._actionItems;
     }
 
+    set alistDashboardIdNoVisible(upatedUserInfo: IUserInfo) {
+        if (!upatedUserInfo) {
+            return;
+        }
+        this._listDashboardIdNoVisible 
+            = upatedUserInfo.preferences.dashboardIdNoVisible === null 
+            ? undefined 
+            : upatedUserInfo.preferences.dashboardIdNoVisible.split('|');
+    }   
+    
     set dashboards(list: IDashboard[]) {
         if (list === this._dashboards) {
             return;
@@ -66,15 +80,6 @@ export class ListDashboardViewModel extends ViewModel<IFilter> {
         });
     }
 
-    listDashboardIdNoVisible(upatedUserInfo: IUserInfo) {
-        if (!upatedUserInfo) {
-            return;
-        }
-        this._listDashboardIdNoVisible 
-            = upatedUserInfo.preferences.dashboardIdNoVisible === null 
-            ? undefined 
-            : upatedUserInfo.preferences.dashboardIdNoVisible.split('|');
-    }   
 
     @Field({ type: String })
     search: string;

@@ -272,7 +272,6 @@ export class SidebarService {
                                 && items[0].children != null
                                 && items[0].children.length > 0
                                 && items[0].children[0].route;
-
         if (firstDashboardExist && (this._router.url === '/' || this._router.url === '/dashboards')) {
             const firstDashboard = `/dashboards/${items[0].children[0].route.split('/')[2]}`;
             this._router.navigate([firstDashboard]);

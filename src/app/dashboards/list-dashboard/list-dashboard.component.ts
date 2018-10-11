@@ -22,7 +22,7 @@ const dashboardQuery = require('graphql-tag/loader!../shared/graphql/dashboard.g
 const deleteDashboardMutation = require('graphql-tag/loader!../shared/graphql/delete-dashboard.gql');
 const updateVisibleDashboardMutation = require('graphql-tag/loader!../shared/graphql/updatevisible-dashboard.gql');
 const updateUserPreference = require('graphql-tag/loader!../shared/graphql/update-user-preference.mutation.gql');
-const updateUserInfo = require('graphql-tag/loader!../../users/shared/graphql/current-user.gql')
+const updateUserInfo = require('graphql-tag/loader!../shared/graphql/current-user.gql')
 
 @Activity(ViewDashboardActivity)
 @Component({
@@ -37,6 +37,7 @@ export class ListDashboardComponent implements OnInit {
     xsSize = '75';
     user: IUserInfo;
     subscriptions: Subscription[] = [];
+    timeWait: boolean = true;
 
     constructor(
         private _route: ActivatedRoute,
@@ -66,6 +67,7 @@ export class ListDashboardComponent implements OnInit {
         if (!this.vm.initialized) {
             this.vm.initialize(null);
             this.vm.addActivities([this.addDashboardActivity, this.updateDashboardActivity, this.deleteDashboardActivity]);
+            this._currentUserInfo(this.user);
             this._refreshDashboards();
         }
 
@@ -110,8 +112,9 @@ export class ListDashboardComponent implements OnInit {
                     })
                     .then(result => {
                         const response = result;
-                          if (response.data.updateUserPreference.success === true) {
-                              this._refreshDashboards(true);
+                            if (response.data.updateUserPreference.success === true) {
+                                this._refresUserInfo(true);
+                                this._refreshDashboards(true);
                               }
                     })
                 );
@@ -166,14 +169,33 @@ export class ListDashboardComponent implements OnInit {
         this._router.navigateByUrl('/dashboards/add');
     }
 
-    private _refreshDashboards(refresh ? : boolean) {
-        const that = this;
-        this._apolloService.networkQuery < IUserInfo > (updateUserInfo).then(d => {
-            that.vm.listDashboardIdNoVisible(d.User);
-                    });           
-        this._apolloService.networkQuery < IDashboard[] > (dashboardsQuery).then(d => {
-            that.vm.dashboards = d.dashboards;
-        });
+    private _currentUserInfo(user: IUserInfo) {
+        this.vm.alistDashboardIdNoVisible = user;
     }
 
+    private _refresUserInfo(refresh ? : boolean) {
+        const that = this;
+        this.timeWait = false;
+            this._apolloService.networkQuery < IUserInfo > (updateUserInfo).then(d => {
+                that.vm.alistDashboardIdNoVisible = d.User;
+                this.timeWait = true;
+            }); 
+        }
+
+        private _timeWait(){
+                setTimeout(() => {
+                    this._refreshDashboards();
+                },100);
+        }
+        
+        private _refreshDashboards(refresh ? : boolean) {
+        const that = this;
+        if (this.timeWait === false) {
+            this._timeWait()
+        }else{
+            this._apolloService.networkQuery < IDashboard[] > (dashboardsQuery).then(d => {
+                that.vm.dashboards = d.dashboards;
+            });
+        }
+    }
 }
