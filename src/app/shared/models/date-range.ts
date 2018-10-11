@@ -43,6 +43,7 @@ import { IDateRange, IChartDateRange } from './date-range';
 export enum AKPIDateFormatEnum {
     US_DATE = 'MM/DD/YYYY',
     US_SHORT_DATE = 'MM/DD/YY',
+    US_DATE_HOUR = 'MM/DD/YYYY HH:mm:ss',
 }
 
 import * as moment from 'moment';
