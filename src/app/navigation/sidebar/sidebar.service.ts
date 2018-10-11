@@ -230,7 +230,7 @@ export class SidebarService {
         let isDashboardRoute = false;
         let isVisible: boolean = true;
         let listdashboardIdNoVisible;
-        if (this._userService.user.preferences.dashboardIdNoVisible !== null) {
+        if (this._userService.user && this._userService.user.preferences && this._userService.user.preferences.dashboardIdNoVisible !== null) {
             listdashboardIdNoVisible = this._userService.user.preferences.dashboardIdNoVisible.split('|');
         }
 
