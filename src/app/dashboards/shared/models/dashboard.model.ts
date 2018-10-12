@@ -4,6 +4,8 @@ export interface IDashboard {
   description: string;
   charts: string[] | any[];
   widgets: string[] | any[];
+  socialwidgets: string[] | any[];
+  maps: string[] | any[];
   users: string[];
   owner?: string;
   visible?: boolean;
@@ -26,6 +28,12 @@ export class Dashboard implements IDashboard {
   private _widgets: string[];
   get widgets(): string[] { return this._widgets; }
 
+  private _socialwidgets: string[];
+  get socialwidgets(): string[] { return this._socialwidgets; }
+
+  private _maps: string[];
+  get maps(): string[] { return this._maps; }
+
   private _users: string[];
   get users(): string[] { return this._users; }
 
@@ -37,17 +45,17 @@ export class Dashboard implements IDashboard {
 
 
   static Create(id: string, name: string, description: string, charts: string[], widgets: string[],
-                owner: string,
+                socialwidgets: string[], maps: string[] , owner: string,
                 users: string[], visible?: boolean):
     IDashboard {
-      const instance = new Dashboard(id, name, description, charts, widgets,
+      const instance = new Dashboard(id, name, description, charts, widgets, socialwidgets, maps,
                                      owner,
                                      users, visible);
       return instance.name ? instance : null;
   }
 
   private constructor(id: string, name: string, description: string, charts: string[], widgets: string[],
-                      owner: string,
+                      socialwidgets: string[], maps: string[], owner: string,
                       users: string[], visible?: boolean) {
       if (!name || !description) {
           return;
@@ -57,6 +65,8 @@ export class Dashboard implements IDashboard {
       this._description = description;
       this._charts = charts;
       this._widgets = widgets;
+      this._socialwidgets = socialwidgets;
+      this._maps = maps;
       this._users = users;
       this._owner = owner;
       this._visible = visible;
