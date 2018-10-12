@@ -123,5 +123,6 @@ export class KpiDaterangePickerComponent implements OnInit, OnDestroy, AfterView
         this.fg.controls['from'].setValue(from);
         this.fg.controls['to'].setValue(to);
     }
+    
 
 }
