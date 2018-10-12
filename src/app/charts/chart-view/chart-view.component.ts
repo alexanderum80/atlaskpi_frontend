@@ -17,7 +17,7 @@ import { SeeInfoActivity } from '../../shared/authorization/activities/charts/se
 import { AddTargetActivity } from '../../shared/authorization/activities/targets/add-target.activity';
 import { ViewTargetActivity } from '../../shared/authorization/activities/targets/view-target.activity';
 import { parseComparisonDateRange, parsePredefinedDate } from '../../shared/models';
-import { IDateRangeItem, PredefinedDateRanges } from '../../shared/models/date-range';
+import { IDateRangeItem, PredefinedDateRanges, IStringChartDateRange, convertDateRangeToStringDateRange } from '../../shared/models/date-range';
 import { DialogResult } from '../../shared/models/dialog-result';
 import { IChartDateRange } from '../../shared/models/index';
 import { IChartTop } from '../../shared/models/top-n-records';
@@ -582,13 +582,17 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             custom = this.currentNode.parent.dateRange[0].custom;
         }
 
+        const dr: IStringChartDateRange = convertDateRangeToStringDateRange(
+            {
+                predefined,
+                custom
+            }
+        );
+
         this.chartSubscription.refetch({
             id: this.chartData._id,
             input: {
-                dateRange: [{
-                    predefined: predefined,
-                    custom: custom
-                }],
+                dateRange: [dr],
                 groupings: groupings,
                 frequency: frequency,
                 isDrillDown: false

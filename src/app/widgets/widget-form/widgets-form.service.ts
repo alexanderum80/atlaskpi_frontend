@@ -381,8 +381,8 @@ export class WidgetsFormService {
                               widget.numericWidgetAttributes.dateRange.custom.from &&
                               widget.numericWidgetAttributes.dateRange.custom.to
                               )
-                              ? { from: widget.numericWidgetAttributes.dateRange.custom.from,
-                                  to: widget.numericWidgetAttributes.dateRange.custom.to }
+                              ? { from: moment(widget.numericWidgetAttributes.dateRange.custom.from).format(this._momentFormat),
+                                  to: moment(widget.numericWidgetAttributes.dateRange.custom.to).format(this._momentFormat) } as any
                               : null;
 
     switch (WidgetTypeMap[widget.type]) {
@@ -495,12 +495,12 @@ export class WidgetsFormService {
 
             customFrom: this._widgetModel.numericWidgetAttributes
                         ? this._widgetModel.numericWidgetAttributes.dateRange.custom
-                            ? String(this._widgetModel.numericWidgetAttributes.dateRange.custom.from) || null
+                            ? moment(this._widgetModel.numericWidgetAttributes.dateRange.custom.from).format(this._momentFormat) || null
                             : ''
                         : '',
             customTo: this._widgetModel.numericWidgetAttributes
                         ?   this._widgetModel.numericWidgetAttributes.dateRange.custom
-                            ? String(this._widgetModel.numericWidgetAttributes.dateRange.custom.to) || null
+                            ? moment(this._widgetModel.numericWidgetAttributes.dateRange.custom.to).format(this._momentFormat) || null
                             : ''
                         : '',
             comparison: this._widgetModel.numericWidgetAttributes

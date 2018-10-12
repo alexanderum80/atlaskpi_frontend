@@ -1,3 +1,4 @@
+import { AKPIDateFormatEnum } from '../../shared/models/date-range';
 import { SelectPickerComponent } from '../../ng-material-components/modules/forms/select-picker/select-picker.component';
 import { objectWithoutProperties } from '../../shared/helpers/object.helpers';
 import { UserService } from '../../shared/services/user.service';
@@ -198,7 +199,7 @@ export class SidebarCalendarComponent implements OnInit, AfterViewInit, OnDestro
 
         this._apolloService.networkQuery(SearchAppointmentsQuery, {
                 criteria: {
-                    date: date.toISOString(),
+                    date: date.format(AKPIDateFormatEnum.US_DATE),
                     provider: cleanAppointemntsProviderId(this.selectedProvider),
                     cancelled: cancelled
                 }

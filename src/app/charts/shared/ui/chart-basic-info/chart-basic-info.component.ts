@@ -26,7 +26,7 @@ import { CommonService } from '../../../../shared/services/common.service';
 import { ChartModel } from '../../models';
 import { IChart } from '../../models/chart.models';
 import { ChartGalleryService } from '../../services/';
-import { IDateRangeItem, parseComparisonDateRange } from './../../../../shared/models/date-range';
+import { IDateRangeItem, parseComparisonDateRange, IChartDateRange } from './../../../../shared/models/date-range';
 import { ApolloService } from './../../../../shared/services/apollo.service';
 import { chartsGraphqlActions } from './../../graphql/charts.graphql-actions';
 import { ChartBasicInfoViewModel } from './chart-basic-info.viewmodel';
@@ -235,6 +235,12 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
             return;
         }
 
+        // incomplete custom dateRange
+        if (item.predefinedDateRange === 'custom'
+            && (!item.customFrom || !item.customTo)) {
+                return;
+        }
+
         const input = this._getGroupingInfoInput(item);
 
         this.fg.controls['loadingGroupings'].patchValue(true, { emitEvent: false });
@@ -260,7 +266,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
             });
     }
 
-    private _getGroupingInfoInput(item: any): any {
+    private _getGroupingInfoInput(item: any): { id: string, dateRange: IChartDateRange[] } {
         item = this.fg.value;
         const dateRange = { predefined: item.predefinedDateRange, custom: null};
 
