@@ -132,6 +132,10 @@
     z-index: 100;
 }
 
+.map-icon {
+    height: 150px;
+}
+
 @media screen and (max-width: 600px) {
     .dashboard-container {
         height: auto !important;

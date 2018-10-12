@@ -40,6 +40,11 @@ import { IDateRange, IChartDateRange } from './date-range';
 //     }
 // }
 
+export enum AKPIDateFormatEnum {
+    US_DATE = 'MM/DD/YYYY',
+    US_SHORT_DATE = 'MM/DD/YY',
+    US_DATE_HOUR = 'MM/DD/YYYY HH:mm:ss',
+}
 
 import * as moment from 'moment';
 
@@ -575,8 +580,6 @@ export class ChartDateRangeModel {
     }
 }
 
-
-
 export interface IDateRangeComparisonItem {
     key: string;
     value: string;
@@ -585,4 +588,31 @@ export interface IDateRangeComparisonItem {
 export interface IDateRangeItem {
     dateRange: IChartDateRange;
     comparisonItems: IDateRangeComparisonItem[];
+}
+
+export interface IStringDateRange {
+    from: string;
+    to: string;
+}
+
+export interface IStringChartDateRange {
+    predefined: string;
+    custom?: IStringDateRange;
+}
+
+export function  convertDateRangeToStringDateRange(dateRange: IChartDateRange): IStringChartDateRange {
+    const newDateRange: IStringChartDateRange = {
+        predefined: dateRange.predefined
+    };
+
+    if (dateRange.custom) {
+        const from = moment(dateRange.custom.from).format(AKPIDateFormatEnum.US_DATE);
+        const to = moment(dateRange.custom.to).format(AKPIDateFormatEnum.US_DATE);
+        newDateRange.custom = {
+            from,
+            to
+        };
+    }
+
+    return newDateRange;
 }

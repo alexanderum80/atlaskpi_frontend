@@ -1,0 +1,6 @@
+query WidgetListDashboardsQuery {
+ dashboards{
+    _id
+    name
+  }
+}

@@ -1,5 +1,3 @@
 mutation UpdateVisibleDashboard($id: String!, $input: Boolean!){
-   updatevisibleDashboard (id: $id, input: $input)  {
-       success
-   }
+   updatevisibleDashboard (id: $id, input: $input)  
 }
