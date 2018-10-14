@@ -3,14 +3,14 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'kpi-notifications',
-  template: `<h1>Notifications</h1><router-outlet></router-outlet>`,
+  template: `<kpi-search-notifications></kpi-search-notifications>`,
 })
 export class NotificationsComponent implements OnInit {
 
   constructor(private _router: Router) { }
 
   ngOnInit() {
-    this._router.navigateByUrl('dashboards');
+    // this._router.navigateByUrl('dashboards');
   }
 
 }

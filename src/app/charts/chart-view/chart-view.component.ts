@@ -476,7 +476,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
 
     ngOnDestroy() {
         this.chartData = null;
-        console.log(`chart ${this.title} destroyed`);
 
         if(this.userTouchSub){
             this.userTouchSub.unsubscribe();

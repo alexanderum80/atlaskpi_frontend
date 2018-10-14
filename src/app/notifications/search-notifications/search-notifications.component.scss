@@ -1,0 +1,41 @@
+.search-notifications {
+    display: block;
+    padding: 20px;
+    box-sizing: border-box;
+    
+    &__list {
+        max-width: 1024px;
+        margin: 0 auto;
+        padding: 10px;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__data-row {
+        padding: 10px;
+
+        &--delivery-method {
+            // flex: 0 0 50px;
+        }
+
+        &--timestamp {
+            margin-right: 10px;
+            // flex: 0 0 120px;
+            // margin: 0 10px;
+            background-color: #eee;
+            padding: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 5px;
+
+            .zmdi { margin-right: 10px; }
+        }
+
+        &--message {
+            flex: 1;
+            // background-color: #eee;
+            overflow: auto;
+        }
+    }
+}

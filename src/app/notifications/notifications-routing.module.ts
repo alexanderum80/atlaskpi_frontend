@@ -1,15 +1,11 @@
-import { NotificationComponent } from './notification/notification.component';
-import { SearchNotificationsComponent } from './search-notifications/search-notifications.component';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+
 import { AuthGuard } from '../shared/services';
 import { NotificationsComponent } from './notifications.component';
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
-    { path: 'notifications', component: NotificationsComponent, canActivate: [AuthGuard], children: [
-        { path: 'search', component: SearchNotificationsComponent },
-        { path: ':id', component: NotificationComponent }
-    ] }
+    { path: 'notifications', component: NotificationsComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({
