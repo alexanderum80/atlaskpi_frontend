@@ -1,0 +1,53 @@
+.search-notifications {
+    display: block;
+    padding: 20px;
+    box-sizing: border-box;
+    
+    &__list {
+        max-width: 1024px;
+        margin: 0 auto;
+        padding: 10px;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__header {
+        padding: 10px;
+        font-weight: bold;
+
+        display: flex;
+        flex-direction: row;
+        
+        &--delivery-method {
+            flex: 0 0 50px;
+        }
+
+        &--timestamp {
+            flex: 0 0 120px;
+        }
+
+        &--message {
+            flex: 1;
+        }
+    }
+
+    &__data-row {
+        padding: 10px;
+
+        display: flex;
+        flex-direction: row;
+
+        &--delivery-method {
+            flex: 0 0 50px;
+        }
+
+        &--timestamp {
+            flex: 0 0 120px;
+        }
+
+        &--message {
+            flex: 1;
+        }
+    }
+}
