@@ -1,38 +1,36 @@
-
-import { ApolloService } from './../../../../shared/services/apollo.service';
-import { OnFieldChanges } from '../../../../ng-material-components/viewModels';
 import 'rxjs/add/operator/debounceTime';
 
-import { AfterViewInit, Component, Input, OnChanges, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { SelectPickerComponent } from '../../../../ng-material-components/modules/forms/select-picker/select-picker.component';
-import { IChart } from '../../models/chart.models';
-import { CommonService } from '../../../../shared/services/common.service';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/observable/combineLatest';
-import { Observable } from 'rxjs/Observable';
-
-import {FormGroup, FormControl} from '@angular/forms';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
-import { clone, isEmpty, toArray, find, pick, includes, split, map } from 'lodash';
+import { camelCase, title } from 'change-case';
+import { clone, find, isEmpty, isEqual, toArray } from 'lodash';
+import * as moment from 'moment';
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { SelectionItem } from '../../../../ng-material-components';
+import {
+    IDatePickerConfig,
+} from '../../../../ng-material-components/modules/forms/date-picker/date-picker/date-picker-config.model';
+import {
+    SelectPickerComponent,
+} from '../../../../ng-material-components/modules/forms/select-picker/select-picker.component';
+import { IKPI } from '../../../../shared/domain/kpis/kpi';
 import { IsNullOrWhiteSpace, ToSelectionItemList } from '../../../../shared/extentions';
 import { PredefinedDateRanges } from '../../../../shared/models';
 import { FrequencyTable } from '../../../../shared/models/frequency';
+import { PredefinedTopNRecords } from '../../../../shared/models/top-n-records';
 import { BrowserService } from '../../../../shared/services/browser.service';
+import { CommonService } from '../../../../shared/services/common.service';
 import { ChartModel } from '../../models';
+import { IChart } from '../../models/chart.models';
 import { ChartGalleryService } from '../../services/';
-import { IDateRangeItem, parseComparisonDateRange } from './../../../../shared/models/date-range';
+import { IDateRangeItem, parseComparisonDateRange, IChartDateRange } from './../../../../shared/models/date-range';
+import { ApolloService } from './../../../../shared/services/apollo.service';
 import { chartsGraphqlActions } from './../../graphql/charts.graphql-actions';
-import { IKPI } from '../../../../shared/domain/kpis/kpi';
 import { ChartBasicInfoViewModel } from './chart-basic-info.viewmodel';
-import {
-    IDatePickerConfig,
-  } from '../../../../ng-material-components/modules/forms/date-picker/date-picker/date-picker-config.model';
-import {PredefinedTopNRecords} from '../../../../shared/models/top-n-records';
-import { title, camelCase } from 'change-case';
-import * as moment from 'moment';
+
 
 const kpiOldestDateQuery = require('graphql-tag/loader!./kpi-get-oldestDate.gql');
 
@@ -72,6 +70,9 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
     private sortingCriteriaList$: Observable <SelectionItem[]>;
     frequencyPicker: SelectPickerComponent;
     xSourcePicker: SelectPickerComponent;
+
+    lastKpiDateRangePayload: any;
+    lastOldestDatePayload = '';
 
     @ViewChild('frequencyPicker') set frequencyContent(content: SelectPickerComponent) {
         if (content) {
@@ -188,9 +189,6 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         this.xAxisSourceList = xAxisSelectionList;
     }
 
-    updateComparisonList(item: string): void {
-        this._updateComparisonPicker(item);
-    }
     get showCustomDateRangeControls(): boolean {
         return this.fg.value['predefinedDateRange'] === 'custom';
     }
@@ -205,83 +203,70 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
 
     private _subscribeToKpiAndDateRange(): void {
         const that = this;
-        const watchFields = [
-            'kpi',
-            'predefinedDateRange',
-        ];
-
-        watchFields.forEach(f => {
-            const ctrl = that.fg.get(f)
-                   .valueChanges
-                   .debounceTime(500)
-                   .distinctUntilChanged()
-                   .subscribe(v => {
-                        that._getGroupingInfo();
-                        const kpi_id = this.fg.value.kpi;
-                        this._apolloService.networkQuery < string > (kpiOldestDateQuery, {id: kpi_id })
-                        .then(kpis => {
-                            this._updateComparisonData(kpis.getKpiOldestDate);
-                        });
-                    });
+        this.fg .valueChanges
+                .distinctUntilChanged()
+                .debounceTime(400)
+                .subscribe((value) => {
+                const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
+                const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
+                if (value.kpi && value.predefinedDateRange && !loadingGroupings && !loadingComparison) {
+                    const payload = that._getGroupingInfoInput(value);
+                    if (isEqual(that.lastKpiDateRangePayload, payload)) { return; }
+                    that._getGroupingInfo(value);
+                    that._getOldestDate(value.kpi);
+                    that.lastKpiDateRangePayload = payload;
+                }
         });
-
-
-        // this.fg .valueChanges
-        //         .debounceTime(400)
-        //         .distinctUntilChanged()
-        //         .subscribe((item) => {
-        //     const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
-        //     if (item.kpi && item.predefinedDateRange && !loadingGroupings) {
-        //         that._getGroupingInfo(item);
-        //     }
-        // });
     }
 
-    private _getGroupingInfo(): void {
+    private _getOldestDate(kpi: string): void {
+        this._apolloService
+        .networkQuery < string > (kpiOldestDateQuery, { id: kpi })
+        .then(kpis => {
+            this._updateComparisonData(kpis.getKpiOldestDate);
+        });
+    }
+
+    private _getGroupingInfo(item: any): void {
         const that = this;
-        const item = this.fg.value;
 
         // basic payload check
         if (!item.kpi || !item.predefinedDateRange) {
             return;
         }
 
-        // custom daterange payload check
-        if (item.predefinedDateRange === 'custom' && (!item.customFrom || !item.customTo)) {
-            return;
+        // incomplete custom dateRange
+        if (item.predefinedDateRange === 'custom'
+            && (!item.customFrom || !item.customTo)) {
+                return;
         }
 
         const input = this._getGroupingInfoInput(item);
 
         this.fg.controls['loadingGroupings'].patchValue(true, { emitEvent: false });
 
-        this._apollo.watchQuery({
-            query: kpiGroupingsQuery,
-            fetchPolicy: 'network-only',
-            variables: {
-                input: input
-            }
-        }).valueChanges.subscribe(({ data }: any) => {
-            let groupingList = [];
-            if (data || !isEmpty(data.kpiGroupings)) {
-                groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
-            }
+        this._apolloService.networkQuery(kpiGroupingsQuery, { input })
+            .then(data => {
+                let groupingList = [];
+                if (data || !isEmpty(data.kpiGroupings)) {
+                    groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
+                }
 
-            that.groupingList = groupingList;
-            this.fg.controls['loadingGroupings'].patchValue(false, { emitEvent: false });
+                that.groupingList = groupingList;
 
-            const currentGroupingValue = this.fg.get('grouping').value || '';
-            let nextGropingValue;
-            if (!groupingList.map(g => g.id).includes(currentGroupingValue)) {
-                nextGropingValue = '';
-            } else {
-                nextGropingValue = currentGroupingValue;
-            }
-            that.fg.controls['grouping'].patchValue(nextGropingValue, { emitEvent: true });
-        });
+                const currentGroupingValue = this.fg.get('grouping').value || '';
+                let nextGropingValue;
+                if (!groupingList.map(g => g.id).includes(currentGroupingValue)) {
+                    nextGropingValue = '';
+                } else {
+                    nextGropingValue = currentGroupingValue;
+                }
+                that.fg.controls['grouping'].patchValue(nextGropingValue, { emitEvent: false });
+                that.fg.controls['loadingGroupings'].patchValue(false, { emitEvent: true });
+            });
     }
 
-    private _getGroupingInfoInput(item: any): any {
+    private _getGroupingInfoInput(item: any): { id: string, dateRange: IChartDateRange[] } {
         item = this.fg.value;
         const dateRange = { predefined: item.predefinedDateRange, custom: null};
 
@@ -399,26 +384,12 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         }));
     }
 
-    private _updateComparisonPicker(dateRangeString: string) {
-
-        if (IsNullOrWhiteSpace(dateRangeString)) { return; }
-
-        const dateRange = this.dateRanges.find(d => d.dateRange.predefined === dateRangeString);
-
-        if (!dateRange) {
-            this.comparisonList = [];
-            this.vm.comparisonList = this.comparisonList;
-            return [];
-        }
-
-        this.comparisonList = ToSelectionItemList(dateRange.comparisonItems, 'key', 'value');
-        this.vm.comparisonList = this.comparisonList;
-    }
-
     private _updateComparisonData(yearOldestDate: string) {
 
         if (this.fg.value.predefinedDateRange === '') { return; }
-        if (!yearOldestDate || yearOldestDate === moment().year().toString()) { return; }
+        if (!yearOldestDate) { return; }
+
+        this.fg.controls['loadingComparison'].patchValue(true, { emitEvent: false });
 
         this.comparisonList = [];
         const dateRange = this.dateRanges.find(d => d.dateRange.predefined === this.fg.value.predefinedDateRange);
@@ -440,18 +411,32 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
                 this.comparisonList.push(newItem);
             }
         }
+
         this.vm.comparisonList = this.comparisonList;
+
+        const currentComparisonValue = this.fg.get('comparison').value || '';
+        let nextComparisonValue;
+        const comparisonIds = this.comparisonList.map(g => g.id);
+        if (!comparisonIds.length || !comparisonIds.includes(currentComparisonValue)) {
+            nextComparisonValue = '';
+        } else {
+            nextComparisonValue = currentComparisonValue;
+        }
+        this.fg.controls['comparison'].patchValue(nextComparisonValue, { emitEvent: true });
+        this.fg.controls['loadingComparison'].patchValue(false, { emitEvent: false });
+
     }
-  private _dateRangesQuery() {
-    const that = this;
-    this._subscription.push(this._apollo.watchQuery <{ dateRanges: IDateRangeItem[]}> ({
-        query: chartsGraphqlActions.dateRanges,
-        fetchPolicy: 'network-only'
-    })
-    .valueChanges.subscribe(({ data }) => {
-        that.dateRanges = data.dateRanges;
-    }));
-  }
+
+    private _dateRangesQuery() {
+        const that = this;
+        this._subscription.push(this._apollo.watchQuery <{ dateRanges: IDateRangeItem[]}> ({
+            query: chartsGraphqlActions.dateRanges,
+            fetchPolicy: 'network-only'
+        })
+        .valueChanges.subscribe(({ data }) => {
+            that.dateRanges = data.dateRanges;
+        }));
+    }
 
   private _subscribeToComparisonChanges() {
     const that = this;

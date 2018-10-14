@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "version": "0.0.15",
+  "version": "0.0.22",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --watch --disable-host-check",

@@ -1,10 +1,10 @@
-import {IDateRange, parsePredefinedDate} from '../../../shared/models';
-import {isEmpty, uniq} from 'lodash';
+import { IDateRange, parsePredefinedDate } from '../../../shared/models';
+import { isEmpty, uniq } from 'lodash';
 import * as moment from 'moment';
 
-import {quarterMonths, PredefinedDateRanges, IChartDateRange, PredefinedComparisonDateRanges} from '../../../shared/models/date-range';
-import {FrequencyTable} from '../../../shared/models/frequency';
-import {IChartTreeNode} from '../../chart-view/chart-view.component';
+import { quarterMonths, PredefinedDateRanges, IChartDateRange, PredefinedComparisonDateRanges, AKPIDateFormatEnum } from '../../../shared/models/date-range';
+import { FrequencyTable } from '../../../shared/models/frequency';
+import { IChartTreeNode } from '../../chart-view/chart-view.component';
 import { camelCase } from 'change-case';
 
 const chartFrequencies: any = {};
@@ -21,19 +21,19 @@ export class DrillDownService {
         switch (true) {
             case isEmpty(categoryName) === true:
                 return false;
-                // convert year to monthly
+            // convert year to monthly
             case categoryName.length === 4:
                 return moment(categoryName, 'YYYY').isValid()
                     ? chartFrequencies.monthly
                     : false;
-                // convert monthly to daily
+            // convert monthly to daily
             case categoryName.length === 3:
                 return moment(categoryName, 'MMM').isValid()
                     ? chartFrequencies.daily
                     : false;
             case categoryName.length === 1:
                 return false;
-                // quarterly
+            // quarterly
             case categoryName.length === 2:
                 return this.isQuarterly(categoryName)
                     ? chartFrequencies.quarterly
@@ -49,9 +49,9 @@ export class DrillDownService {
 
     getDrillDownDateRange(category: any, dateRange: any, year?: any, frequency?: string) {
         const frequencyType = this.getFrequencyType(category);
-        
+
         if (year == null) {
-            year = moment(new(Date)).format('YYYY')
+            year = moment(new (Date)).format('YYYY');
         }
 
         if (!frequencyType) {
@@ -70,32 +70,84 @@ export class DrillDownService {
                                     from: moment(years, YEAR_FORMAT)
                                         .year(years)
                                         .startOf('year')
-                                        .format(),
+                                        .format(AKPIDateFormatEnum.US_DATE),
                                     to: moment()
                                         .year(years)
                                         .endOf('year')
-                                        .format()
+                                        .format(AKPIDateFormatEnum.US_DATE)
                                 }
                             };
                         });
                     case chartFrequencies.daily:
-                        return customYears.map((years) => {
-                            return {
+                        const mappedDateRange = customYears.map((years) => {
+                            const drillDaterange = {
                                 predefined: null,
                                 custom: {
                                     from: moment(years, YEAR_FORMAT)
                                         .year(years)
                                         .month(category)
                                         .startOf('month')
-                                        .format(),
+                                        .format(AKPIDateFormatEnum.US_DATE),
                                     to: moment()
                                         .year(years)
                                         .month(category)
                                         .endOf('month')
-                                        .format()
+                                        .format(AKPIDateFormatEnum.US_DATE)
                                 }
                             };
+
+                            /* if the custom date range doens't include the beginning of the frequency
+                                chart daterange -> [Nov 11, 2015 -- Dec 31, 2016]
+
+                                user clicked "Nov"
+                                
+                                2 date ranges for drilldown 
+                                    - Nov 11 - Nov 30 2015
+                                    - Nov 01 - Nov 30 2016
+                            */
+                            if (moment(drillDaterange.custom.from).isBefore(dateRange.from)
+                                && moment(drillDaterange.custom.from).month() === moment(dateRange.from).month()) {
+
+                                drillDaterange.custom.from = dateRange.from;
+                            }
+
+                            /* if the custom date range doens't include the end of the frequency
+                                chart daterange -> [Nov 11, 2015 -- Dec 15, 2016]
+                                
+                                user clicked "Dec"
+                                
+                                2 date ranges for drilldown 
+                                    - Dec 01 - Dec 31 2015
+                                    - Dec 01 - Dec 15 2016
+                            */
+                            if (moment(drillDaterange.custom.to).isAfter(dateRange.to)
+                                && moment(drillDaterange.custom.to).month() === moment(dateRange.to).month()) {
+
+                                drillDaterange.custom.to = dateRange.to;
+                            }
+
+                            return drillDaterange;
+
                         });
+
+                        //- Exclude date ranges that are not included in the custom date range.
+                        /* if the custom date range doens't include the month for some year
+                                chart daterange -> [Nov 11, 2015 -- Dec 15, 2016]
+                                
+                                user clicked "Oct"
+                                
+                                1 date ranges for drilldown 
+                                    - Oct 01 - Oct 31 2016
+                            */
+                        return mappedDateRange.filter(date => (
+                            (
+                                (moment(date.custom.to).isBefore(dateRange.to) ||
+                                    moment(date.custom.to).isSame(dateRange.to)
+                                ) &&
+                                (moment(date.custom.from).isAfter(dateRange.from) ||
+                                    moment(date.custom.from).isSame(dateRange.from))))
+                        )
+
                     case chartFrequencies.quarterly:
                         const getQuarter = quarterMonths[category[1]];
                         return customYears.map((years) => {
@@ -106,12 +158,12 @@ export class DrillDownService {
                                         .year(years)
                                         .month(getQuarter[0])
                                         .startOf('month')
-                                        .format(),
+                                        .format(AKPIDateFormatEnum.US_DATE),
                                     to: moment()
                                         .year(years)
                                         .month(getQuarter[2])
                                         .endOf('month')
-                                        .format()
+                                        .format(AKPIDateFormatEnum.US_DATE)
                                 }
                             };
                         });
@@ -126,11 +178,11 @@ export class DrillDownService {
                                 from: moment(dateRange.from)
                                     .year(year)
                                     .startOf('year')
-                                    .format(),
+                                    .format(AKPIDateFormatEnum.US_DATE),
                                 to: moment(dateRange.to)
                                     .year(year)
                                     .endOf('year')
-                                    .format()
+                                    .format(AKPIDateFormatEnum.US_DATE)
                             }
                         }];
                     case chartFrequencies.daily:
@@ -141,12 +193,12 @@ export class DrillDownService {
                                     .year(year)
                                     .month(category)
                                     .startOf('month')
-                                    .format(),
+                                    .format(AKPIDateFormatEnum.US_DATE),
                                 to: moment(dateRange.to)
                                     .year(year)
                                     .month(category)
                                     .endOf('month')
-                                    .format()
+                                    .format(AKPIDateFormatEnum.US_DATE)
                             }
                         }];
                     case chartFrequencies.quarterly:
@@ -158,12 +210,12 @@ export class DrillDownService {
                                     .year(year)
                                     .month(getQuarter[0])
                                     .startOf('month')
-                                    .format(),
+                                    .format(AKPIDateFormatEnum.US_DATE),
                                 to: moment(dateRange.to)
                                     .year(year)
                                     .month(getQuarter[2])
                                     .endOf('month')
-                                    .format()
+                                    .format(AKPIDateFormatEnum.US_DATE)
                             }
                         }];
                 }
@@ -179,10 +231,10 @@ export class DrillDownService {
                                 custom: {
                                     from: moment(category, YEAR_FORMAT)
                                         .startOf('year')
-                                        .format(),
+                                        .format(AKPIDateFormatEnum.US_DATE),
                                     to: moment(category, YEAR_FORMAT)
                                         .endOf('year')
-                                        .format()
+                                        .format(AKPIDateFormatEnum.US_DATE)
                                 }
                             }];
                         case PredefinedDateRanges.thisYear:
@@ -193,10 +245,10 @@ export class DrillDownService {
                                     custom: {
                                         from: moment(category, YEAR_FORMAT)
                                             .startOf('year')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment(category, YEAR_FORMAT)
                                             .endOf('year')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -208,11 +260,11 @@ export class DrillDownService {
                                         from: moment(category, YEAR_FORMAT)
                                             .subtract(1, 'years')
                                             .startOf('year')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment(category, YEAR_FORMAT)
                                             .subtract(1, 'years')
                                             .endOf('year')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -224,10 +276,10 @@ export class DrillDownService {
                                         from: moment(category, YEAR_FORMAT)
                                             .subtract(1, 'years')
                                             .startOf('year')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment(category, YEAR_FORMAT)
                                             .endOf('day')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -238,10 +290,10 @@ export class DrillDownService {
                                     custom: {
                                         from: moment(category, YEAR_FORMAT)
                                             .startOf('year')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment(category, YEAR_FORMAT)
                                             .endOf('year')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -262,10 +314,10 @@ export class DrillDownService {
                                         custom: {
                                             from: moment(yearMonth)
                                                 .startOf('month')
-                                                .format(),
+                                                .format(AKPIDateFormatEnum.US_DATE),
                                             to: moment(yearMonth)
                                                 .endOf('month')
-                                                .format()
+                                                .format(AKPIDateFormatEnum.US_DATE)
                                         }
                                     }
                                 ];
@@ -277,11 +329,11 @@ export class DrillDownService {
                                             from: moment()
                                                 .month(category)
                                                 .startOf('month')
-                                                .format(),
+                                                .format(AKPIDateFormatEnum.US_DATE),
                                             to: moment()
                                                 .month(category)
                                                 .endOf('month')
-                                                .format()
+                                                .format(AKPIDateFormatEnum.US_DATE)
                                         }
                                     }
                                 ];
@@ -293,11 +345,11 @@ export class DrillDownService {
                                     from: moment(year, YEAR_FORMAT)
                                         .month(category)
                                         .startOf('month')
-                                        .format(),
+                                        .format(AKPIDateFormatEnum.US_DATE),
                                     to: moment(year, YEAR_FORMAT)
                                         .month(category)
                                         .endOf('month')
-                                        .format()
+                                        .format(AKPIDateFormatEnum.US_DATE)
                                 }
                             }];
                         case PredefinedDateRanges.lastYear:
@@ -309,12 +361,12 @@ export class DrillDownService {
                                             .month(category)
                                             .subtract(1, 'years')
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(category)
                                             .subtract(1, 'years')
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -327,11 +379,11 @@ export class DrillDownService {
                                             .month(category)
                                             .subtract(1, 'years')
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(category)
                                             .endOf('day')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -343,11 +395,11 @@ export class DrillDownService {
                                         from: moment()
                                             .month(category)
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(category)
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }, {
                                     predefined: null,
@@ -356,12 +408,12 @@ export class DrillDownService {
                                             .month(category)
                                             .subtract(1, 'years')
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(category)
                                             .subtract(1, 'years')
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -373,11 +425,11 @@ export class DrillDownService {
                                         from: moment()
                                             .month(category)
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(category)
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }, {
                                     predefined: null,
@@ -386,12 +438,12 @@ export class DrillDownService {
                                             .month(category)
                                             .subtract(1, 'years')
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(category)
                                             .subtract(1, 'years')
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }, {
                                     predefined: null,
@@ -400,12 +452,12 @@ export class DrillDownService {
                                             .month(category)
                                             .subtract(2, 'years')
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(category)
                                             .subtract(2, 'years')
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -417,11 +469,11 @@ export class DrillDownService {
                                         from: moment()
                                             .month(category)
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(category)
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }, {
                                     predefined: null,
@@ -430,12 +482,12 @@ export class DrillDownService {
                                             .month(category)
                                             .subtract(1, 'years')
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(category)
                                             .subtract(1, 'years')
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }, {
                                     predefined: null,
@@ -444,12 +496,12 @@ export class DrillDownService {
                                             .month(category)
                                             .subtract(2, 'years')
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(category)
                                             .subtract(2, 'years')
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }, {
                                     predefined: null,
@@ -458,12 +510,12 @@ export class DrillDownService {
                                             .month(category)
                                             .subtract(3, 'years')
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(category)
                                             .subtract(3, 'years')
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -475,11 +527,11 @@ export class DrillDownService {
                                         from: moment()
                                             .month(category)
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(category)
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }, {
                                     predefined: null,
@@ -488,12 +540,12 @@ export class DrillDownService {
                                             .month(category)
                                             .subtract(1, 'years')
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(category)
                                             .subtract(1, 'years')
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }, {
                                     predefined: null,
@@ -502,12 +554,12 @@ export class DrillDownService {
                                             .month(category)
                                             .subtract(2, 'years')
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(category)
                                             .subtract(2, 'years')
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }, {
                                     predefined: null,
@@ -516,12 +568,12 @@ export class DrillDownService {
                                             .month(category)
                                             .subtract(3, 'years')
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(category)
                                             .subtract(3, 'years')
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }, {
                                     predefined: null,
@@ -530,12 +582,12 @@ export class DrillDownService {
                                             .month(category)
                                             .subtract(4, 'years')
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(category)
                                             .subtract(4, 'years')
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -548,11 +600,11 @@ export class DrillDownService {
                                         from: moment(last6MthYear, YEAR_FORMAT)
                                             .month(category)
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment(last6MthYear, YEAR_FORMAT)
                                             .month(category)
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -563,13 +615,13 @@ export class DrillDownService {
                                     predefined: null,
                                     custom: {
                                         from: moment(last3MthYear, YEAR_FORMAT)
-                                              .month(category)
-                                              .startOf('month')
-                                              .format(),
+                                            .month(category)
+                                            .startOf('month')
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment(last3MthYear, YEAR_FORMAT)
                                             .month(category)
                                             .startOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -580,15 +632,15 @@ export class DrillDownService {
                                     from: moment()
                                         .month(category)
                                         .startOf('month')
-                                        .format(),
+                                        .format(AKPIDateFormatEnum.US_DATE),
                                     to: moment()
                                         .month(category)
                                         .endOf('month')
-                                        .format()
+                                        .format(AKPIDateFormatEnum.US_DATE)
                                 }
                             }];
                     }
-                    // quarterly to monthly
+                // quarterly to monthly
                 case chartFrequencies.quarterly:
                     const getQuarter = quarterMonths[category[1]];
                     switch (dateRange) {
@@ -602,11 +654,11 @@ export class DrillDownService {
                                         from: moment(y, 'YYYY')
                                             .month(getQuarter[0])
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment(y, 'YYYY')
                                             .month(getQuarter[2])
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 };
                             });
@@ -618,11 +670,11 @@ export class DrillDownService {
                                         from: moment()
                                             .month(getQuarter[0])
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(getQuarter[2])
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -634,11 +686,11 @@ export class DrillDownService {
                                         from: moment()
                                             .month(getQuarter[0])
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(getQuarter[2])
                                             .endOf('day')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -651,12 +703,12 @@ export class DrillDownService {
                                             .month(getQuarter[0])
                                             .startOf('month')
                                             .subtract(1, 'years')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(getQuarter[2])
                                             .endOf('month')
                                             .subtract(1, 'years')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -669,11 +721,11 @@ export class DrillDownService {
                                             .month(getQuarter[0])
                                             .startOf('month')
                                             .subtract(1, 'years')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(getQuarter[2])
                                             .endOf('day')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -685,11 +737,11 @@ export class DrillDownService {
                                         from: moment()
                                             .month(getQuarter[0])
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(getQuarter[2])
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }, {
                                     predefined: null,
@@ -698,12 +750,12 @@ export class DrillDownService {
                                             .month(getQuarter[0])
                                             .startOf('month')
                                             .subtract(1, 'years')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment()
                                             .month(getQuarter[2])
                                             .endOf('month')
                                             .subtract(1, 'years')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -716,11 +768,11 @@ export class DrillDownService {
                                         from: moment(last3MthYear, YEAR_FORMAT)
                                             .month(getQuarter[0])
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment(last3MthYear, YEAR_FORMAT)
                                             .month(getQuarter[2])
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -733,11 +785,11 @@ export class DrillDownService {
                                         from: moment(last6MthYear, YEAR_FORMAT)
                                             .month(getQuarter[0])
                                             .startOf('month')
-                                            .format(),
+                                            .format(AKPIDateFormatEnum.US_DATE),
                                         to: moment(last6MthYear, YEAR_FORMAT)
                                             .month(getQuarter[2])
                                             .endOf('month')
-                                            .format()
+                                            .format(AKPIDateFormatEnum.US_DATE)
                                     }
                                 }
                             ];
@@ -746,9 +798,9 @@ export class DrillDownService {
         }
     }
 
-    getDateRangeForDrillDown(currentNode: IChartTreeNode): string|IDateRange {
+    getDateRangeForDrillDown(currentNode: IChartTreeNode): string | IDateRange {
         const dateRange: IChartDateRange = currentNode.dateRange[0];
-        const isPredefined: boolean = dateRange.predefined && dateRange !== 'custom';
+        const isPredefined: boolean = dateRange.predefined && dateRange.predefined !== 'custom';
 
         if (isPredefined) {
             return dateRange.predefined;
@@ -792,7 +844,7 @@ export class DrillDownService {
                     predefinedDate.push(this._threeYearsAgoComparisonDateRange(predefinedDateString));
                     break;
                 default:
-                predefinedDate.push(this._MorethreeYearsAgoComparisonDateRange(cv));
+                    predefinedDate.push(this._MorethreeYearsAgoComparisonDateRange(cv));
                     break;
             }
         });

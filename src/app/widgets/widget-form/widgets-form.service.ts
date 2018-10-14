@@ -23,6 +23,7 @@ import {
 import { IKPI } from '../../shared/domain/kpis/kpi';
 import { INumericWidgetAttributes } from '../shared/models';
 import { PredefinedDateRanges, IChartDateRange } from '../../shared/models';
+import { IDashboard } from '../../charts/shared/models/dashboard.models';
 
 const newWidgetModel = {
   name: 'Sample Widget',
@@ -41,6 +42,7 @@ export class WidgetsFormService {
 
   private charts: IChart[] = [];
   private kpis: IKPI[] = [];
+  private dashboards: IDashboard[] = [];
   private dateRanges: IDateRangeItem[] = [];
 
   private _latestFormValue: IWidgetFormGroupValues;
@@ -48,18 +50,23 @@ export class WidgetsFormService {
   public dateRangesQuery: QueryRef<any>;
   public kpisQuery: QueryRef<any>;
   public chartsQuery: QueryRef<any>;
+  public dashboardsQuery: QueryRef<any>;
 
   private chartList: SelectionItem[] = [];
   private kpiList: SelectionItem[] = [];
+  private dashboardList: SelectionItem[] = [];
   // get kpi after create kpi
   private updatedKpiList: any[] = [];
+  private updatedDashboardList: any[] = [];
   private comparisonList: SelectionItem[] = [];
   private dateRangeList: SelectionItem[] = [];
 
   private _widgetModelValidSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private _kpiListSubject: BehaviorSubject<SelectionItem[]> = new BehaviorSubject<SelectionItem[]>(this.kpiList);
+  private _dashboardListSubject: BehaviorSubject<SelectionItem[]> = new BehaviorSubject<SelectionItem[]>(this.dashboardList);
   private _updateKpiListSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>(this.updatedKpiList);
+  private _updateDashboardListSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>(this.updatedDashboardList);
   private _chartListSubject: BehaviorSubject<SelectionItem[]> = new BehaviorSubject<SelectionItem[]>(this.chartList);
   private _dateRangeListSubject: BehaviorSubject<SelectionItem[]> = new BehaviorSubject<SelectionItem[]>(this.dateRangeList);
 
@@ -90,6 +97,14 @@ export class WidgetsFormService {
     });
 
     this._subscription.push(this.kpisQuery.valueChanges.subscribe(res => this._handleKpisQueryResponse(res)));
+  
+    this.dashboardsQuery = this._apollo.watchQuery<{dashboards: IDashboard[]}>
+        ({
+          query: widgetsGraphqlActions.listWidgetDashboards,
+          fetchPolicy: 'network-only'
+        });
+    
+        this._subscription.push(this.dashboardsQuery.valueChanges.subscribe(res => this._handleDashboardsQueryResponse(res)));
   }
 
   newModel() {
@@ -145,7 +160,7 @@ export class WidgetsFormService {
       if (!values.comparison /*|| dateRangeChanged */) {
         this._widgetModel['numericWidgetAttributes'] = <any>this._widgetModel['numericWidgetAttributes'] || {};
         this._widgetModel['numericWidgetAttributes']['comparison'] = undefined;
-        this._widgetModel['numericWidgetAttributes']['comparisonArrowDirection'] = undefined;
+        this._widgetModel['numericWidgetAttributes']['comparisonArrowDirection'] = '';
       } else {
         this._widgetModel['numericWidgetAttributes'] = <any>this._widgetModel['numericWidgetAttributes'] || {};
         this._widgetModel['numericWidgetAttributes']['comparison'] = this._getComparisonValue(values);
@@ -191,10 +206,12 @@ export class WidgetsFormService {
       that._materializeWidget(this._widgetModel).then(materializedWidget => {
         if (materializedWidget) {
           that._widgetModel = that._getCleanWidgetModel(materializedWidget);
+          that._widgetModel['dashboards'] = values.dashboards.split('|');
           that._widgetModelValidSubject.next(true);
           resolve(that.widgetModel);
           return;
         }
+        this._widgetModel['dashboards'] = values.dashboards.split('|');
         that._widgetModelValidSubject.next(false);
         resolve(this._widgetModel);
         return;
@@ -327,6 +344,21 @@ export class WidgetsFormService {
     this._chartListSubject.next(this.chartList);
   }
 
+  private _handleDashboardsQueryResponse(res: any) {
+        this._subscription.push(this.updatedDashboardsList$.subscribe(list => {
+          if (!list || !list.length) {
+            this.dashboards = res.data.dashboards;
+            this.dashboardList = ToSelectionItemList(this.dashboards, '_id', 'name');
+            this._dashboardListSubject.next(this.dashboardList);
+          } else {
+            if (list.length !== res.data.dashboards.length) {
+              this.dashboardList = ToSelectionItemList(list, '_id', 'name');
+              this._dashboardListSubject.next(this.dashboardList);
+            }
+          }
+        }));
+  }
+  
   public getComparisonListForDateRange(dateRangeString: string) {
     const that = this;
 
@@ -349,8 +381,8 @@ export class WidgetsFormService {
                               widget.numericWidgetAttributes.dateRange.custom.from &&
                               widget.numericWidgetAttributes.dateRange.custom.to
                               )
-                              ? { from: widget.numericWidgetAttributes.dateRange.custom.from,
-                                  to: widget.numericWidgetAttributes.dateRange.custom.to }
+                              ? { from: moment(widget.numericWidgetAttributes.dateRange.custom.from).format(this._momentFormat),
+                                  to: moment(widget.numericWidgetAttributes.dateRange.custom.to).format(this._momentFormat) } as any
                               : null;
 
     switch (WidgetTypeMap[widget.type]) {
@@ -371,7 +403,8 @@ export class WidgetsFormService {
                                chart: widget.materialized ? widget.materialized.chart : null
                              }
                             : null,
-              tags: widget.tags
+              tags: widget.tags,
+              dashboards: widget.dashboards
             };
             return chartWidget;
       case WidgetTypeEnum.Numeric:
@@ -390,7 +423,7 @@ export class WidgetsFormService {
                 custom: customDateRange
               },
               comparison: widget.numericWidgetAttributes.comparison,
-              comparisonArrowDirection: widget.numericWidgetAttributes.comparisonArrowDirection || undefined,
+              comparisonArrowDirection: widget.numericWidgetAttributes.comparisonArrowDirection || '',
             },
             materialized: widget.materialized
                           ? {
@@ -411,7 +444,8 @@ export class WidgetsFormService {
                             }
                           : null,
             preview: widget.preview,
-            tags: widget.tags
+            tags: widget.tags,
+            dashboards: widget.dashboards
           };
           return numericWidget;
 
@@ -437,7 +471,8 @@ export class WidgetsFormService {
               type: this._widgetModel.type,
               size: this._widgetModel.size,
               color: 'white', // all chart widgets are white
-              chart: this._widgetModel.chartWidgetAttributes.chart
+              chart: this._widgetModel.chartWidgetAttributes.chart,
+              dashboards: this._widgetModel.dashboards ? this._widgetModel.dashboards.join('|') : ''
             };
             return chartWidgetFormGroup;
       case WidgetTypeEnum.Numeric:
@@ -460,12 +495,12 @@ export class WidgetsFormService {
 
             customFrom: this._widgetModel.numericWidgetAttributes
                         ? this._widgetModel.numericWidgetAttributes.dateRange.custom
-                            ? String(this._widgetModel.numericWidgetAttributes.dateRange.custom.from) || null
+                            ? moment(this._widgetModel.numericWidgetAttributes.dateRange.custom.from).format(this._momentFormat) || null
                             : ''
                         : '',
             customTo: this._widgetModel.numericWidgetAttributes
                         ?   this._widgetModel.numericWidgetAttributes.dateRange.custom
-                            ? String(this._widgetModel.numericWidgetAttributes.dateRange.custom.to) || null
+                            ? moment(this._widgetModel.numericWidgetAttributes.dateRange.custom.to).format(this._momentFormat) || null
                             : ''
                         : '',
             comparison: this._widgetModel.numericWidgetAttributes
@@ -476,6 +511,7 @@ export class WidgetsFormService {
             comparisonArrowDirection: this._widgetModel.numericWidgetAttributes
                                       ? this._widgetModel.numericWidgetAttributes.comparisonArrowDirection
                                       : '',
+            dashboards: this._widgetModel.dashboards ? this._widgetModel.dashboards.join('|') : ''
           };
         return numericWidget;
 
@@ -510,6 +546,14 @@ export class WidgetsFormService {
 
   get chartList$() {
     return this._chartListSubject.asObservable();
+  }
+
+  get dashboardList$() {
+    return this._dashboardListSubject.asObservable();
+  }
+   
+  get updatedDashboardsList$() {
+    return this._updateDashboardListSubject.asObservable().distinctUntilChanged();
   }
 
   get dateRangeList$() {

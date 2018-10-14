@@ -9,7 +9,7 @@
                 flex-gt-md="25")
                 kpi-widget-view.pointer-cursor([widget]="bWidget", (done)="onActionClicked($event)")
 
-    .big-widgets(*ngIf="showSocialWidgets", flex-none, [attr.layout-padding]="!isMobile")
+    .social-widgets(*ngIf="showSocialWidgets", flex-none, [attr.layout-padding]="!isMobile")
         div(layout="row", layout-wrap, layout-padding)
             div(*ngFor="let sw of socialWidgets",
                 flex-xs="100",

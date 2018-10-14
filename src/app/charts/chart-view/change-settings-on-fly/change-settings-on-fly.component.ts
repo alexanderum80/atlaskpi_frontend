@@ -86,6 +86,7 @@ export class ChangeSettingsOnFlyComponent implements OnInit, AfterViewInit {
 
     private _getValueFromChart() {
         this.dateRange = this.chartData.dateRange;
+
         this.frequency = this.chartType !== 'pie' ? this.chartData.frequency : null;
         this.grouping = this.chartData.groupings;
     }
@@ -105,7 +106,7 @@ export class ChangeSettingsOnFlyComponent implements OnInit, AfterViewInit {
             from: value.from,
             to: value.to
         };
-        
+
         this._getValueFromChart();
 
         this._chartViewComponent.setSettingsOnFly(value.predefinedDateRange, dateRange,
