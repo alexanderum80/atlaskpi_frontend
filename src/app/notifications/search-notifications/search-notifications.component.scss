@@ -12,42 +12,30 @@
         flex-direction: column;
     }
 
-    &__header {
-        padding: 10px;
-        font-weight: bold;
-
-        display: flex;
-        flex-direction: row;
-        
-        &--delivery-method {
-            flex: 0 0 50px;
-        }
-
-        &--timestamp {
-            flex: 0 0 120px;
-        }
-
-        &--message {
-            flex: 1;
-        }
-    }
-
     &__data-row {
         padding: 10px;
 
-        display: flex;
-        flex-direction: row;
-
         &--delivery-method {
-            flex: 0 0 50px;
+            // flex: 0 0 50px;
         }
 
         &--timestamp {
-            flex: 0 0 120px;
+            margin-right: 10px;
+            // flex: 0 0 120px;
+            // margin: 0 10px;
+            background-color: #eee;
+            padding: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 5px;
+
+            .zmdi { margin-right: 10px; }
         }
 
         &--message {
             flex: 1;
+            // background-color: #eee;
+            overflow: auto;
         }
     }
 }

@@ -1,34 +1,33 @@
-import { ViewKpiActivity } from '../../shared/authorization/activities/kpis/view-kpi.activity';
-import { ViewSmartBarActivity } from '../../shared/authorization/activities/smart-bar/view-smartbar.activity';
-import { UserAgreementService } from '../../users/user-agreement/user-agreement.service';
-import { IRole } from '../../roles/shared/role';
-import { IUserPreference } from '../../shared/models/user';
-import { HelpCenterService } from '../help-center/help-center.service';
-import { IHelpCenterDataResponse, IHelpCenter } from '../help-center/help-center.component';
-import {CommonService} from '../../shared/services/common.service';
-import { ActivityFeedActivity } from '../../shared/authorization/activities/feed/activity-feed.activity';
-import { ViewAppointmentActivity } from '../../shared/authorization/activities/appointments/view-appointment.activity';
-import { Component, Input, OnDestroy, OnInit, ViewChild, Renderer2 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/observable/combineLatest';
+
+import { Component, Input, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Apollo } from 'apollo-angular';
+import { isBoolean, isEmpty, isNull } from 'lodash';
 import { Observable } from 'rxjs/Observable';
 import { take } from 'rxjs/operators';
+import { Subscription } from 'rxjs/Subscription';
+import SweetAlert from 'sweetalert2';
 
-import { isNull, isBoolean, isEmpty } from 'lodash';
 import { MenuItem } from '../../ng-material-components';
+import { ViewAppointmentActivity } from '../../shared/authorization/activities/appointments/view-appointment.activity';
+import { ActivityFeedActivity } from '../../shared/authorization/activities/feed/activity-feed.activity';
+import { ViewKpiActivity } from '../../shared/authorization/activities/kpis/view-kpi.activity';
+import { ViewSmartBarActivity } from '../../shared/authorization/activities/smart-bar/view-smartbar.activity';
+import { objectWithoutProperties } from '../../shared/helpers/object.helpers';
 import { IUserInfo } from '../../shared/models';
+import { IUserPreference } from '../../shared/models/user';
 import { IVersion } from '../../shared/models/version';
 import { AuthenticationService, Store, StoreHelper, UserService } from '../../shared/services';
-import { VersionService } from '../../shared/services/version.service';
-import { HeaderViewModel } from './header.viewmodel';
-import SweetAlert from 'sweetalert2';
-import { Router } from '@angular/router';
-import { ModalComponent } from '../../ng-material-components';
-import { UserProfileComponent } from '../../users/user-profile/user-profile.component';
 import { ApolloService } from '../../shared/services/apollo.service';
-import {Apollo} from 'apollo-angular';
-import {objectWithoutProperties} from '../../shared/helpers/object.helpers';
+import { CommonService } from '../../shared/services/common.service';
+import { VersionService } from '../../shared/services/version.service';
+import { UserAgreementService } from '../../users/user-agreement/user-agreement.service';
+import { UserProfileComponent } from '../../users/user-profile/user-profile.component';
+import { IHelpCenter, IHelpCenterDataResponse } from '../help-center/help-center.component';
+import { HelpCenterService } from '../help-center/help-center.service';
+import { HeaderViewModel } from './header.viewmodel';
 
 const helpCenterQueryGql = require('graphql-tag/loader!./help-center.query.gql');
 const updateUserPreference = require('graphql-tag/loader!./update-user-preference.mutation.gql');
@@ -65,7 +64,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 {
                     id: 'notifications',
                     title: 'Notifications',
-                    icon: 'notifications-none'
+                    icon: 'notifications-none',
                 },
                 {
                     id: 'dark',
@@ -129,7 +128,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
         public viewSmartBarActivity: ViewSmartBarActivity,
         private _router: Router,
         // yojanier
-        private _apolloService: ApolloService) {
+        private _apolloService: ApolloService,
+    ) {
             this.vm.addActivities([
                 this.activityFeedActivity, this.viewAppointMentActivity,
                 this.viewSmartBarActivity
@@ -262,6 +262,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 break;
             case 'helpCenter':
                 this.toggleHelpCenter();
+                break;
+            case 'notifications':
+                this._router.navigate(['/notifications']);
                 break;
         }
     }

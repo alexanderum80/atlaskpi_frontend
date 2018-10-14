@@ -1,13 +1,9 @@
 .search-notifications
     .search-notifications__list.bgm-white.z-depth-1.p-20
-        .search-notifications__header
-            .search-notifications__header--delivery-method 
-            .search-notifications__header--timestamp Timestamp
-            .search-notifications__header--message Message
-        .search-notifications__data-row(*ngFor="let n of notifications")
-            .search-notifications__data-row--delivery-method
+        .search-notifications__data-row(*ngFor="let n of notifications", layout-gt-sm="row", layout-xs="column")
+            .search-notifications__data-row--timestamp 
                 i.zmdi.zmdi-email(*ngIf="n.deliveryMethod === 'email'")
                 i.zmdi.zmdi-smartphone-android(*ngIf="n.deliveryMethod === 'push'")
-            .search-notifications__data-row--timestamp {{ n.timestamp | date }}
-            .search-notifications__data-row--message {{ n.message }}
+                span {{ n.timestamp | date }}
+            .search-notifications__data-row--message([innerHTML]="n.message")
         

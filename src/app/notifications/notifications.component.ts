@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'kpi-notifications',
-  template: `<router-outlet></router-outlet>`,
+  template: `<kpi-search-notifications></kpi-search-notifications>`,
 })
 export class NotificationsComponent implements OnInit {
 
