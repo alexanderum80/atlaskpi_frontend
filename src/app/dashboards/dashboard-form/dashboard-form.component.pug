@@ -2,49 +2,51 @@
     //-.z-depth-1.h-100.bgm-white(*ngIf="!isAddChart && !isAddWidget && !loading && !isPreviewDashboard",
     .dashboard-container.z-depth-1.bgm-white.h-100(*ngIf="!loading", layout="column", layout-gt-sm="row")
         //- left panel ( first panel if mobile)
-        div(flex-initial, flex-gt-sm="40")
-            .m-20(layout="column")
-                h2 {{ formTitle }}
-                bw-text-box.m-b-10.m-t-10.p-r-10(flex, [fg]="fg", leftIcon="label", field="name", label="Name", [required]="true")
-                bw-text-area.m-b-10.p-r-10(flex, [fg]="fg", leftIcon="file-text", [required]="true",
+        div(flex, flex-gt-sm="40")
+            .m-20(layout="column", layout-padding)
+                h2.m-b-10(flex) {{ formTitle }}
+                bw-text-box(flex, [fg]="fg", leftIcon="label", field="name", label="Name", [required]="true")
+                bw-text-area(flex, [fg]="fg", leftIcon="file-text", [required]="true",
                                             label="Description",
                                             field="description",
                                             placeholder="Some description go here and this is another line.",
                                             [autosize]="false")
-            //- filters
-            div.m-20([ngClass]="{'is-disabled': filterDisabled }")
-                bw-select-picker.text-ellip.m-l-20.p-r-10([fg]="fg", 
-                    label="Filter",
-                    leftIcon="filter-list",
-                    field="filter",
-                    [required]="false",
-                    [items]="filterList",
-                    [multiple]="true",
-                    [liveSearch]="true",
-                    noneSelectedText="NOTHING SELECTED",
-                    [disabled]="filterDisabled")  
+                //- filters
+                div([ngClass]="{'is-disabled': filterDisabled }")
+                    bw-select-picker([fg]="fg", 
+                        flex,
+                        label="Filter",
+                        leftIcon="filter-list",
+                        field="filter",
+                        [required]="false",
+                        [items]="filterList",
+                        [multiple]="true",
+                        [liveSearch]="true",
+                        noneSelectedText="NOTHING SELECTED",
+                        [disabled]="filterDisabled")  
             
-            //- dashboard
-            #select-users.m-20(flex)
-                bw-select-picker.text-ellip.m-l-20.p-r-10(flex, [fg]="fg",
-                    label="Dashboard Users",
-                    leftIcon="account",
-                    field="users",
-                    [multiple]="true",
-                    [items]="allUsers",
-                    noneSelectedText="Select Users")
-            
-            .hide-xs(flex="100", layout="row", layout-padding, layout-align="end end")
-                bw-button.m-10(flex="30", color="green", title="PREVIEW",
-                                            icon="eye",  [block]="true",
-                                            [disabled]="selectedItems.length === 0", (clicked)="previewDashboard()")
-                bw-button.m-10(flex="30", color="blue", title="SAVE",
-                                            icon="floppy",  [block]="true",
-                                            [disabled]="!valid", (clicked)="save()")
-                bw-button.m-10(flex="30", color="gray", title="CANCEL", icon="close", [simple]="true", [block]="true", (clicked)="cancel()")
+                //- dashboard
+                #select-users(flex)
+                    bw-select-picker.text-ellip(flex, [fg]="fg",
+                        label="Dashboard Users",
+                        leftIcon="account",
+                        field="users",
+                        [multiple]="true",
+                        [items]="allUsers",
+                        noneSelectedText="Select Users")
+                
+                div(flex)
+                    .hide-xs(layout="row", layout-align="end end")
+                        bw-button.m-5(flex="30", color="green", title="PREVIEW",
+                                                    icon="eye",  [block]="true",
+                                                    [disabled]="selectedItems.length === 0", (clicked)="previewDashboard()")
+                        bw-button.m-5(flex="30", color="blue", title="SAVE",
+                                                    icon="floppy",  [block]="true",
+                                                    [disabled]="!valid", (clicked)="save()")
+                        bw-button.m-5(flex="30", color="gray", title="CANCEL", icon="close", [simple]="true", [block]="true", (clicked)="cancel()")
 
         //- right panel
-        .right-panel.h-100(flex, flex-gt-sm="70")
+        .right-panel.h-100(flex)
             bw-tab-set.w-100
                     bwTab.m-10.section-header(heading="Widgets", icon="widgets", (select)="switchTab('widgets')")  
                         div(*ngIf="widgetsLoading", layout="row", layout-align="center center")
