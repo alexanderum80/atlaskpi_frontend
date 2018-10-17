@@ -725,7 +725,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   get isMapTab(): boolean {
-    return this.selectedTab === 'map';
+    return this.selectedTab === 'maps';
   }
 
   get isAccessLevelTab(): boolean {
@@ -733,7 +733,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   get filterDisabled(): boolean {
-    return this.isWidgetsTab || this.isAccessLevelsTab;
+    return this.isWidgetsTab || this.isMapTab || this.isSocialWidgetsTab || this.isAccessLevelsTab;
   }
 
   get selectedWidgets(): IWidget[] {

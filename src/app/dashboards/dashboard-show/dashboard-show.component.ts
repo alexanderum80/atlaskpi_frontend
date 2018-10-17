@@ -93,10 +93,10 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
     dashboardName: string;
     dashboardId: string;
 
-    private _dashboardIdSubject = new Subject < string > ();
+    private _dashboardIdSubject = new Subject<string>();
 
     private _subscription: Subscription[] = [];
-    private _dashboardQuery: QueryRef < any > ;
+    private _dashboardQuery: QueryRef<any>;
     private _rawDashboard: IDashboard;
 
     constructor(
@@ -129,7 +129,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
         if (this.isFromDashboard) {
             this._loadDashboardData(this.dashboardPayLoad);
         } else {
-            this._dashboardQuery = this._apollo.watchQuery < DashboardResponse > ({
+            this._dashboardQuery = this._apollo.watchQuery<DashboardResponse>({
                 query: DashboardQuery,
                 variables: {
                     id: ''
@@ -138,7 +138,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             });
 
             this._route.params.subscribe(params => {
-                const apolloData = ( < any > that._apollo.getClient().store.getCache()).data.data;
+                const apolloData = (<any>that._apollo.getClient().store.getCache()).data.data;
                 const arr = toArray(apolloData);
                 const dashboards = arr.filter(a => a['__typename'] === 'Dashboard');
 
@@ -255,8 +255,9 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             that.charts = [];
             return;
         }
+
         this.showMap = this.mapMarkers && this.mapMarkers.length > 0 && dashboard.maps && dashboard.maps[0] === '1';
-        this.dashboardName = dashboard.name || 'Untiteled';
+        this.dashboardName = dashboard.name || 'Untitled';
 
         if (dashboard.charts) {
             that.charts = dashboard.charts.map(c => {
@@ -288,9 +289,9 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             that.smallWidgets.forEach(sWidget => sWidget.preview = true);
             that.bigWidgets = widgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Big);
             that.bigWidgets.forEach(bWidget => bWidget.preview = true);
-         }
+        }
 
-         if (dashboard.socialwidgets) {
+        if (dashboard.socialwidgets) {
             const socialWidgetsSource = dashboard.socialwidgets.map(sw => {
                 try {
                     const swidget = JSON.parse(sw);
@@ -300,7 +301,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
                     return sw;
                 }
             });
-            that.socialWidgets = socialWidgetsSource.map(d => new SocialWidgetBase( < any > objectWithoutProperties(d, ['__typename'])));
+            that.socialWidgets = socialWidgetsSource.map(d => new SocialWidgetBase(<any>objectWithoutProperties(d, ['__typename'])));
         }
         this.loading = false;
     }
@@ -386,9 +387,9 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
                     return sw;
                 }
             });
-            that.socialWidgets = socialWidgetsSource.map(d => new SocialWidgetBase( < any > objectWithoutProperties(d, ['__typename'])));
+            that.socialWidgets = socialWidgetsSource.map(d => new SocialWidgetBase(<any>objectWithoutProperties(d, ['__typename'])));
         }
-   }
+    }
 
     private _processChartYAxisFormatterFunctions(definition: any) {
         if (definition.yAxis && definition.yAxis.labels && definition.yAxis.labels.formatter) {
@@ -456,12 +457,12 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
 
     private _dateRangesQuery() {
         const that = this;
-        this._apollo.query<{dateRanges: IDateRangeItem[]}>({
+        this._apollo.query<{ dateRanges: IDateRangeItem[] }>({
             query: chartsGraphqlActions.dateRanges,
             fetchPolicy: 'network-only'
         })
-        .toPromise()
-        .then((res) => that.dateRanges = res.data.dateRanges);
+            .toPromise()
+            .then((res) => that.dateRanges = res.data.dateRanges);
     }
 
     private _bringMapMarkers() {
@@ -477,14 +478,14 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
         const that = this;
 
         this._apolloService.networkQuery(socialWidgetQuery).then(res => {
-            const socialWidgets = res.listSocialWidgets.map(d => new SocialWidgetBase( < any > objectWithoutProperties(d, ['__typename'])));
+            const socialWidgets = res.listSocialWidgets.map(d => new SocialWidgetBase(<any>objectWithoutProperties(d, ['__typename'])));
             // this.socialWidgets = socialWidgets;
         });
     }
 
     viewChart() {
-        return  this._userService.hasPermission('View', 'Chart') ||
-                (this._rawDashboard && this._rawDashboard.users.includes(this._userService.user._id));
+        return this._userService.hasPermission('View', 'Chart') ||
+            (this._rawDashboard && this._rawDashboard.users.includes(this._userService.user._id));
     }
 
 

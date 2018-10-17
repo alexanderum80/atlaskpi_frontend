@@ -38,6 +38,7 @@ import { groupBy, includes } from 'lodash';
 import { FormControl } from '@angular/forms';
 import { OnChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 import { ChartFormatInfoComponent } from '../chart-format-info/chart-format-info.component';
+import { UserService } from '../../../../shared/services';
 
 
 const Highcharts = require('highcharts/js/highcharts');
@@ -176,7 +177,8 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         private _galleryService: ChartGalleryService,
         private _apolloService: ApolloService,
         private _selectChartService: SelectedChartsService,
-        private _browserService: BrowserService) {
+        private _browserService: BrowserService,
+        private _user: UserService) {
         Highcharts.setOptions({
             lang: {
                 decimalPoint: '.',
