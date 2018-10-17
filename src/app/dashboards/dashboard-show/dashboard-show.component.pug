@@ -1,4 +1,4 @@
-.dashboard-show.p-relative(layout="column")
+.dashboard-show.p-relative(*ngIf="!isEditChartFromDashboard", layout="column")
     kpi-spinner(*ngIf="loading")
     .big-widgets(*ngIf="bigWidgets.length", flex-none, [attr.layout-padding]="!isMobile")
         div(layout="row", layout-wrap, layout-padding)
@@ -31,6 +31,16 @@
 
     .charts.flex(layout="row", layout-wrap, [attr.layout-padding]="!isMobile")
         .space-charts(*ngFor="let chart of charts", flex-xs="100", flex-gt-xs="100", flex-gt-sm="50", flex-gt-lg="33")
-            kpi-chart-view(*ngIf="viewChart()",[chartData]="chart", [dateRanges]="dateRanges", [isFromDashboard]="isFromDashboard")
+            kpi-chart-view(*ngIf="viewChart()",
+                            [chartData]="chart", 
+                            [dateRanges]="dateRanges",
+                            [dashBoardId]="dashboardId",
+                            (chartSelectedDashId)="delChartId($event)", 
+                            (editChartId)="editingChartFromDashboard($event)", 
+                            [isFromDashboard]="isFromDashboard")
             
 kpi-widget-alert(#widgetAlert)
+.hv-100(*ngIf="isEditChartFromDashboard")
+    kpi-edit-chart(
+        [chartId]="idChartSelected",
+        (goToDashboardShow)="showDashboardShow($event)")

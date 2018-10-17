@@ -24,6 +24,7 @@ import { chartsGraphqlActions } from '../../charts/shared/graphql/charts.graphql
 import { IDateRangeItem } from '../../shared/models/date-range';
 import { SocialWidgetBase } from '../../social-widgets/models/social-widget-base';
 import { WidgetSizeMap } from '../../widgets/shared/models/widget.models';
+import { dashboardGraphqlActions } from '../shared/graphql';
 
 
 const Highcharts = require('highcharts/js/highcharts');
@@ -34,6 +35,7 @@ const DashboardQuery = gql`
         dashboard(id: $id) {
             _id
             name
+            description
             charts
             maps
             widgets
@@ -84,6 +86,8 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
     isMobile: boolean;
     showMap = false;
     loading = true;
+    isEditChartFromDashboard = false;
+    idChartSelected: string;
 
     dateRanges: IDateRangeItem[] = [];
     mapMarkers: IMapMarker[];
@@ -331,7 +335,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
 
         this.loading = false;
 
-        if (!data.dashboard) {
+        if (!data || !data.dashboard) {
             that.bigWidgets = [];
             that.smallWidgets = [];
             that.charts = [];
@@ -339,6 +343,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
         }
 
         this._rawDashboard = data.dashboard;
+        this.dashboardId = data.dashboard._id;
 
         this.showMap = this.mapMarkers && this.mapMarkers.length > 0 && data.dashboard.maps && data.dashboard.maps[0] === '1';
         this.dashboardName = data.dashboard.name;
@@ -488,5 +493,57 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             (this._rawDashboard && this._rawDashboard.users.includes(this._userService.user._id));
     }
 
+    
+    private chartIdValues(dataDashboard) {
+            const charts: string[] = [];
+    
+            if (dataDashboard.dashboard.charts) {
+                dataDashboard.dashboard.charts.forEach(item => {
+                    charts.push(JSON.parse(item)._id)});
+                return charts;
+            }
+            return;
+        }
+    
+        delChartId(result): void {
+            const idChart = result.idChart;
+            
+            this._dashboardQuery.refetch({
+                id: result.idDashboard
+     
+            }).then(res => {
+                const that = this;
+                const value = res.data;
+                const chartValues = this.chartIdValues(value).filter(c => c !== idChart);
+    
+                const resultChartValues = {
+                      charts: chartValues
+                } as any;
+                
+                if (value.dashboard._id) {
+                    resultChartValues.id = result.idDashboard;
+                }
+                this._apolloService.mutation < DashboardResponse > (dashboardGraphqlActions.deleteChartIdFromDashboard, resultChartValues)
+                    .then(res => {
+                        //that.ngOnInit();
+                        that._loadDashboard(value.dashboard._id);
+                })
+                    .catch(err => that._displayServerErrors(err));
+            });      
+        } 
+        
+        private _displayServerErrors(err) {
+            console.log('Server errors: ' + JSON.stringify(err));
+        }
+       
+        editingChartFromDashboard($event) {
+            this.isEditChartFromDashboard = true;
+            this.idChartSelected = $event;
+        }
+     
+        showDashboardShow($event) {
+            this.isEditChartFromDashboard = false;
+            this.ngOnInit();
+        }
 
 }
