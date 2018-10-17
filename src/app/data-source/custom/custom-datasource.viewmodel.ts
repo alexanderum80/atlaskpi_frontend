@@ -3,7 +3,7 @@ import { IDataType, ICustomDataInfo } from '../shared/models/data-sources/custom
 import { ICustomSchema, ICustomSchemaInfo } from '../shared/models/data-sources/custom-form.model';
 import { ViewModel, Field, ArrayField } from '../../ng-material-components/viewModels';
 import { Injectable } from '@angular/core';
-import { SelectionItem } from '../../ng-material-components';
+import { SelectionItem, MenuItem } from '../../ng-material-components';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 
@@ -14,6 +14,9 @@ export class CustomSchemaViewModel extends ViewModel<ICustomSchemaInfo> {
 
     @Field({ type: String, required: true })
     dataType: string;
+
+    @Field({ type: Boolean, required: false })
+    dateRangeField: Boolean;
 
     initialize(model: ICustomSchemaInfo): void {
         this.onInit(model);
@@ -45,7 +48,9 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
 
     private _isEditSubject = new BehaviorSubject<boolean>(false);
 
-    private _requiredDataType = ['String', 'Date'];
+    private _requiredDataType = ['Date'];
+
+    private _requiredDataTypeLength = 2;
 
     private _selectedTableOption: string;
 
@@ -55,17 +60,22 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
 
     private _defaultInputSchema: ICustomSchema;
 
+    private _defaultDateRangeSchema: ICustomSchema;
+
     Alphabet = [
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
     ];
+
+    dateFields: MenuItem[] = [];
 
     constructor() {
         super(null);
 
         this._defaultSchema = {
             schema: [
-                { columnName: 'Description', dataType: this._dataType.string },
-                { columnName: 'Transaction Date', dataType: this._dataType.date },
+                { columnName: 'Invoice amount', dataType: this._dataType.number, dateRangeField: false },
+                { columnName: 'Due Date', dataType: this._dataType.date, dateRangeField: true },
+                { columnName: 'Notes', dataType: this._dataType.string, dateRangeField: false },
             ],
             data: [],
             dataName: ''
@@ -73,11 +83,19 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
 
         this._defaultInputSchema = {
             schema : [
-                { columnName: '', dataType: this._dataType.string },
-                { columnName: '', dataType: this._dataType.date },
+                { columnName: '', dataType: this._dataType.number, dateRangeField: false },
+                { columnName: '', dataType: this._dataType.date, dateRangeField: true },
+                { columnName: '', dataType: this._dataType.string, dateRangeField: false },
             ],
             data: [],
             dataName: ''
+        };
+
+        this._defaultDateRangeSchema = {
+            schema: [],
+            data: [],
+            dataName: '',
+            dateRangeName: ''
         };
 
         this._dataTypeList = [
@@ -105,6 +123,9 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
     @Field({ type: String })
     dataName: string;
 
+    @Field({ type: String })
+    dateFieldName: string;
+
     initialize(model: ICustomSchema): void {
         this.onInit(model);
     }
@@ -115,6 +136,10 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
 
     getDefaultInputSchema() {
         return this._defaultInputSchema;
+    }
+
+    getDefaultDateRangeSchema() {
+        return this._defaultDateRangeSchema;
     }
 
     getDataType() {
@@ -175,7 +200,7 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
         let dataTypePresent = true;
         this._requiredDataType.map(o => {
             const data = dataTypeArray.find(d => d.dataType === o);
-            if (!data) {
+            if (!data || dataTypeArray.length < this._requiredDataTypeLength) {
                 dataTypePresent = false;
             }
         });

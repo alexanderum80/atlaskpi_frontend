@@ -22,7 +22,8 @@
                             bw-date-picker(
                                     [fg]="controls",
                                     [field]="i",
-                                    [config]="datePickerConfig")
+                                    [config]="datePickerConfig",
+                                    [placeholder]="getPlaceholder(j, i)")
                         div(*ngIf="getInputType(j, i) === 'checkbox'")
                             bw-checkbox(
                                     [fg]="controls",

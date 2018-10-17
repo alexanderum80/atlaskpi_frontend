@@ -6,12 +6,14 @@ div(layout="column", layout-padding)
                 .schema-form-container(flex="100", layout="row")
                     .zmdi.zmdi-view-headline
                     div(flex="45", layout="column", layout-padding)
+                        div(layout="row")
+                            .schema-header Column name:
                         div(flex="100", layout="row") 
-                            bw-text-box.p-t-15(
+                            bw-text-box(
                                         [fg]="schema",
                                         field="columnName",
                                         [required]="true",
-                                        label="Choose a name")
+                                        placeholder="Choose a name")
 
                     div(flex="40", layout="column", layout-padding)
                         div(layout="row")
@@ -26,6 +28,13 @@ div(layout="column", layout-padding)
                                         liveSearchPlaceholder="...search...",
                                         noneSelectedText="NOTHING SELECTED")
                     .zmdi.zmdi-close((click)="removeSchema(schema)")
+                
+                .date-field(*ngIf="moreThanOneDateField(schema)", layout="row")
+                    bw-checkbox(
+                        [fg]="schema",
+                        field="dateRangeField",
+                        label="Use this for date ranges")
+
 
 .m-t-10.m-r-40(layout="row", layout-align="end")
     bw-button(icon="plus", title="ADD COLUMN", color="blue", (clicked)="addSchema()")

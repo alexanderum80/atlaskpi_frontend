@@ -2,10 +2,11 @@ import { ApolloService } from '../../../shared/services/apollo.service';
 import { CustomFormViewModel } from '../custom-datasource.viewmodel';
 import { ICustomData, ICustomSchemaInfo } from '../../shared/models/data-sources/custom-form.model';
 import Sweetalert from 'sweetalert2';
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, ViewChild } from '@angular/core';
 import { DialogResult } from '../../../shared/models/dialog-result';
 import * as XLSX from 'ts-xlsx';
 import { Router } from '@angular/router';
+import { DateFieldPopupComponent } from './date-field-popup/date-field-popup.component';
 
 const addCustomMutation = require('graphql-tag/loader!../custom-datasource.connect.gql');
 
@@ -16,6 +17,7 @@ const addCustomMutation = require('graphql-tag/loader!../custom-datasource.conne
 })
 export class ImportFileComponent {
   @Output() dialogResult = new EventEmitter<DialogResult>();
+  @ViewChild(DateFieldPopupComponent) dateFieldPopupComponent: DateFieldPopupComponent;
 
   // csv
   csvImagePath: string;
@@ -26,6 +28,7 @@ export class ImportFileComponent {
 
   };
   csvTokenDelimeter = ',';
+  file: string;
 
   // excel
   excelImagePath: string;
@@ -50,14 +53,14 @@ export class ImportFileComponent {
     if (this.csvFileData.inputName) {
       filesData.push({
         inputName: this.csvFileData.inputName,
-        fields: this.csvFileData.fields,
+        fields: JSON.stringify(this.csvFileData.fields),
         records: JSON.stringify(this.csvFileData.records)
       });
     }
     if (this.excelFileData.inputName) {
       filesData.push({
         inputName: this.excelFileData.inputName,
-        fields: this.excelFileData.fields,
+        fields: JSON.stringify(this.excelFileData.fields),
         records: JSON.stringify(this.excelFileData.records)
       });
     }
@@ -92,8 +95,8 @@ export class ImportFileComponent {
 
   importFile(event) {
     const target = event.target || event.srcElement;
-    const file = target.files[0];
-    if (!this.isCSVFile(file) && !this.isXLSFile(file)) {
+    this.file = target.files[0];
+    if (!this.isCSVFile(this.file) && !this.isXLSFile(this.file)) {
       return Sweetalert({
         title: 'Invalid file!',
         text: 'Please, import valid .csv or .xlsx file.',
@@ -103,12 +106,12 @@ export class ImportFileComponent {
       });
     }
 
-    if (this.isCSVFile(file)) {
-      this._processCsvFile(file);
+    if (this.isCSVFile(this.file)) {
+      this._processCsvFile(this.file);
     }
 
-    if (this.isXLSFile(file)) {
-      this._processExcelFile(file);
+    if (this.isXLSFile(this.file)) {
+      this._processExcelFile(this.file);
     }
 
   }
@@ -122,9 +125,10 @@ export class ImportFileComponent {
   }
 
   private _processCsvFile(file) {
-    const reader = new FileReader();
+    this._csvFileReset();
 
-    reader.onload = (data) => {
+    const reader = new FileReader();
+    reader.onload = () => {
       const csvData = reader.result;
       const csvRecordsArray = csvData.split(/\r\n|\n/);
 
@@ -155,6 +159,8 @@ export class ImportFileComponent {
 
       if (this.csvFileData.records === null) {
         this._csvFileReset();
+      } else {
+        this._verifyDateFields(this.csvFileData.fields);
       }
     };
 
@@ -166,8 +172,10 @@ export class ImportFileComponent {
   }
 
   private _processExcelFile(file) {
+      this._excelFileReset();
+
       const fileReader = new FileReader();
-      fileReader.onload = (e) => {
+      fileReader.onload = () => {
           const arrayBuffer = fileReader.result;
           const data = new Uint8Array(arrayBuffer);
           const arr = new Array();
@@ -193,7 +201,8 @@ export class ImportFileComponent {
                 if (cellValue !== '') {
                   const newfield: ICustomSchemaInfo = {
                     columnName: cellValue,
-                    dataType: ''
+                    dataType: '',
+                    dateRangeField: false
                   };
 
                   this.excelFileData.fields.push(newfield);
@@ -229,6 +238,8 @@ export class ImportFileComponent {
               showConfirmButton: true,
               confirmButtonText: 'Ok'
             });
+          } else {
+            this._verifyDateFields(this.excelFileData.fields);
           }
       };
       fileReader.readAsArrayBuffer(file);
@@ -249,9 +260,11 @@ export class ImportFileComponent {
     const fields: ICustomSchemaInfo[] = [];
     for (let i = 0; i < fieldsArray.length; i++) {
       const element = fieldsArray[i];
+      const dataType = this.vm.getDataTypeFromValue(this.csvFileData.records[0][i]);
       fields.push({
         columnName: element,
-        dataType: this.vm.getDataTypeFromValue(this.csvFileData.records[0][i])
+        dataType: dataType,
+        dateRangeField: false
       });
     }
     return fields;
@@ -322,5 +335,41 @@ export class ImportFileComponent {
     this.excelFileData.fields = [];
     this.excelFileData.records = [];
   }
+
+  private _verifyDateFields(fields) {
+    this.vm.dateFields = [];
+    fields.map(field => {
+      if (field.dataType === 'Date') {
+        this.vm.dateFields.push({
+          id: field.columnName,
+          title: field.columnName.toUpperCase()
+        });
+      }
+    });
+
+    if (this.vm.dateFields.length > 1) {
+      this.dateFieldPopupComponent.open();
+    } else {
+      this._updateDateField(this.vm.dateFields[0].id);
+    }
+  }
+
+  closeModal() {
+    this.dateFieldPopupComponent.close();
+    this._updateDateField(this.vm.dateFieldName);
+  }
+
+  private _updateDateField(dateFieldName) {
+    const fileType = this.isCSVFile(this.file) ? 'csv' : 'xls';
+    const selectedDateFieldIndex = fileType === 'csv' ?
+            this.csvFileData.fields.findIndex(f => f.columnName === dateFieldName) :
+            this.excelFileData.fields.findIndex(f => f.columnName === dateFieldName);
+    if (fileType === 'csv') {
+      this.csvFileData.fields[selectedDateFieldIndex].dateRangeField = true;
+    } else {
+      this.excelFileData.fields[selectedDateFieldIndex].dateRangeField = true;
+    }
+  }
+
 
 }

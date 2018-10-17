@@ -33,7 +33,7 @@ export class DataManuallyComponent implements OnInit {
       this.vm.isEdit$.subscribe(v => this.isEditing = v);
   }
 
-   selectTableType(tableOption) {
+  selectTableType(tableOption) {
     this.vm.setSelectedTableOption(tableOption);
     if (tableOption === 'blank_table') {
       this.vm.initialize(this.vm.getDefaultInputSchema());
@@ -84,7 +84,7 @@ export class DataManuallyComponent implements OnInit {
 
     const tableData: ICustomData = {
       inputName: this.vm.fg.controls['dataName'].value,
-      fields: tableFields,
+      fields: JSON.stringify(tableFields),
       records: JSON.stringify(tableRecords)
     };
 
@@ -113,7 +113,7 @@ export class DataManuallyComponent implements OnInit {
           }
         });
 
-        if (!this.vm.isRequiredDataTypePresent(schema)) {
+        if (!this.vm.isRequiredDataTypePresent(schema) || !this._isValidDateRangeField()) {
           returnValue = false;
         }
         break;
@@ -137,6 +137,20 @@ export class DataManuallyComponent implements OnInit {
       this.vm.fg.get('data').reset();
     }
     this.vm.updateIsEdit(false);
+  }
+
+  private _isValidDateRangeField(): boolean {
+    const dateRangeFields = this.vm.fg.controls.schema.value.filter(f => f.dataType === 'Date');
+    if (dateRangeFields.length <= 1) {
+      return true;
+    }
+
+    const dateRangeChecked = this.vm.fg.controls.schema.value.filter(f => f.dateRangeField === true);
+    if (dateRangeChecked.length === 1) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

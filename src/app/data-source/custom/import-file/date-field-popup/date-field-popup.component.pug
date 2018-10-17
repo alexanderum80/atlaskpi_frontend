@@ -1,0 +1,19 @@
+bw-modal(size="md",#dateFieldPopup='')
+    .h-100.p-relative(layout="row", layout-xs="column")
+      .m-25(flex, flex-xs="100", layout="column")
+        .popup-header(layout="row", layout-padding)
+          div(flex-initial)
+            i.zmdi.zmdi-help-outline
+          div(flex-initial)
+            .header-text We notice that your file have more than 1 date field!
+        .popup-body(layout="column")
+          .body-text Please select the field you want to use for date range to visualize your charts and widgets
+          div(layout="column", layout-align="center center")
+            bw-radio-group(*ngIf="vm.dateFields.length && defaultValue", [fg]="vm.fg", field="dateFieldName", [defaultValue]="defaultValue")
+              bw-radio(
+                *ngFor="let item of vm.dateFields",
+                [label]="item.title",
+                [value]="item.id"
+              )
+        .modal-footer
+          bw-button(title="OK", color="blue", (clicked)="closeModal()")
