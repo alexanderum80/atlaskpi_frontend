@@ -30,7 +30,8 @@ import { predefinedColors } from './../shared/ui/chart-format-info/material-colo
 import { ChartViewViewModel } from './chart-view.viewmodel';
 import { TableModeService } from './table-mode/table-mode.service';
 import { Router} from '@angular/router';
-
+import { ModifyChartActivity } from 'src/app/shared/authorization/activities/charts/modify-chart.activity';
+import { ModifyDashboardActivity } from 'src/app/shared/authorization/activities/dashboards/modify-dashboard.activity';
 
 const Highcharts = require('highcharts/js/highcharts');
 
@@ -120,7 +121,8 @@ export interface IRunRate {
         DrillDownService, CommonService, MilestoneService,
         ChartViewViewModel, ViewTargetActivity, AddTargetActivity,
         ChangeSettingsOnFlyActivity, CompareOnFlyActivity,
-        SeeInfoActivity, DownloadChartActivity
+        SeeInfoActivity, DownloadChartActivity, ModifyChartActivity,
+        ModifyDashboardActivity
     ],
     // changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -256,6 +258,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         public vm: ChartViewViewModel,
         public addTargetActivity: AddTargetActivity,
         public viewTargetActivity: ViewTargetActivity,
+        public modifyDashboardActivity: ModifyDashboardActivity,
+        public modifyChartActivity: ModifyChartActivity,
         public changeSettingsOnFlyActivity: ChangeSettingsOnFlyActivity,
         public compareOnFlyActivity: CompareOnFlyActivity,
         public seeChartInfoActivity: SeeInfoActivity,
@@ -278,7 +282,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             this.viewTargetActivity, this.addTargetActivity,
             this.changeSettingsOnFlyActivity,
             this.seeChartInfoActivity, this.compareOnFlyActivity,
-            this.downloadChartActivity
+            this.downloadChartActivity, this.modifyDashboardActivity,
+            this.modifyChartActivity
         ]);
         this.isDateRangeInPresent = this.getDateRangeInPresent();
         this.isfrequencyToRunRate = this.getFrecuencyToRunRate();
@@ -871,6 +876,11 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
 
             case 'remove-this-dashboard':
                 const that = this;
+
+                if(!this.vm.authorizedTo(this.modifyDashboardActivity.name)){
+                    this._router.navigateByUrl('/unauthorized');
+                    return;
+                 }
 
                 return SweetAlert({
                     titleText: 'Are you sure you want to remove this chart from this dashboard?',
@@ -1860,6 +1870,14 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         this._commonService.disableChildrenActionItems(
             this.actionItems, ['toggle-description'],
             !this.vm.authorizedTo('SeeInfoActivity')
+        );
+        this._commonService.disableChildrenActionItems(
+            this.actionItems, ['edit-chart'],
+            !this.vm.authorizedTo(this.modifyChartActivity.name)
+        );
+        this._commonService.disableChildrenActionItems(
+            this.actionItems, ['remove-this-dashboard'],
+            !this.vm.authorizedTo(this.modifyDashboardActivity.name)
         );
     }
 }

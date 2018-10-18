@@ -25,7 +25,7 @@ import { IDateRangeItem } from '../../shared/models/date-range';
 import { SocialWidgetBase } from '../../social-widgets/models/social-widget-base';
 import { WidgetSizeMap } from '../../widgets/shared/models/widget.models';
 import { dashboardGraphqlActions } from '../shared/graphql';
-
+import { ModifyChartActivity } from 'src/app/shared/authorization/activities/charts/modify-chart.activity';
 
 const Highcharts = require('highcharts/js/highcharts');
 
@@ -72,7 +72,8 @@ const socialWidgetQuery = require('graphql-tag/loader!./social-widgets.query.gql
 @Component({
     selector: 'kpi-dashboard-show',
     templateUrl: './dashboard-show.component.pug',
-    styleUrls: ['./dashboard-show.component.scss']
+    styleUrls: ['./dashboard-show.component.scss'],
+    providers: [ModifyChartActivity]
 })
 export class DashboardShowComponent implements OnInit, OnDestroy {
     @Input() isFromDashboard = false;
@@ -111,6 +112,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
         private _userService: UserService,
         private _authService: AuthenticationService,
         private _router: Router,
+        public modifyChartActivity: ModifyChartActivity,
         private _legendService: LegendService) {
         Highcharts.setOptions({
             lang: {
@@ -537,8 +539,13 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
         }
        
         editingChartFromDashboard($event) {
+            if(!this.modifyChartActivity.check(this._userService.user)){
+                this._router.navigateByUrl('/unauthorized');
+            }
+           else{
             this.isEditChartFromDashboard = true;
             this.idChartSelected = $event;
+           }
         }
      
         showDashboardShow($event) {
