@@ -31,6 +31,6 @@ export class SocialWidgetComponent {
   }
 
   hasValue(): boolean {
-    return this.socialWidget.value !== null;
+    return this.socialWidget.value !== null && this.socialWidget.value !== undefined ;
   }
 }

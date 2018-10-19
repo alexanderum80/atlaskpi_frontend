@@ -20,7 +20,8 @@
 @import '~@swimlane/ngx-datatable/release/assets/icons.css';
 @import './assets/styles/material.css';
 // calendar
-@import '~angular-calendar/css/angular-calendar.css';
+//@import '~angular-calendar/css/angular-calendar.css';
+@import '../src/app/appointments/shared/angular-calendar-styles/angular-calendar.css';
 // intro js
 @import '../node_modules/intro.js/introjs.css';
 // themes

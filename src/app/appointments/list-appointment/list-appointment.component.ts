@@ -1,3 +1,4 @@
+import { AKPIDateFormatEnum } from '../../shared/models/date-range';
 import { SelectPickerComponent } from '../../ng-material-components/modules/forms/select-picker/select-picker.component';
 import { IUserInfo } from '../../shared/models';
 import { UserService } from '../../shared/services/user.service';
@@ -231,11 +232,19 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
           .subscribe(result => {
           that.events = (<any>result.data).searchAppointments.map(a => {
             const timeZone = this.user.profile.timezone;
-            const offset = moment.tz(timeZone).utcOffset() - moment.tz(this.localTimeZone).utcOffset();
 
-            // fix end date if it is not valid
-            const momentTo = moment(a.to);
-            const endDate = momentTo.isValid() ? a.to : a.from;
+            let from, to;
+
+            const fromStr = moment(a.from).tz(timeZone).format(AKPIDateFormatEnum.US_DATE_HOUR);
+            from = moment(fromStr, AKPIDateFormatEnum.US_DATE_HOUR).toDate();
+
+            const momentTo = moment(a.to).tz(timeZone);
+            if (momentTo.isValid()) {
+              const toStr = momentTo.format(AKPIDateFormatEnum.US_DATE_HOUR);
+              to = moment(toStr, AKPIDateFormatEnum.US_DATE_HOUR).toDate();
+            } else {
+              to = from;
+            }
 
             const provider = a.provider || [];
             const customer = a.customer || {};
@@ -243,8 +252,8 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
 
             const appointmentCalendar: ExtendedCalendarEvent = {
                 id: a._id,
-                start: moment(a.from).add(offset, 'minutes').toDate(),
-                end:  moment(endDate).add(offset, 'minutes').toDate(),
+                start: from,
+                end: to,
                 title: a.reason || a.appointmentType,
                 color: { primary: event.color, secondary: event.color },
                 name: event.name || 'Not provided',

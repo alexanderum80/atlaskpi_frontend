@@ -1,23 +1,28 @@
+import { AKPIDateFormatEnum } from '../../../../shared/models/date-range';
+import { UserService } from '../../../../shared/services';
 import { IChart } from '../../models/chart.models';
 import { Component, OnInit, Input } from '@angular/core';
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 
 @Component({
-  selector: 'kpi-chart-item-details',
-  templateUrl: './chart-item-details.component.pug',
-  styleUrls: ['./chart-item-details.component.scss']
+    selector: 'kpi-chart-item-details',
+    templateUrl: './chart-item-details.component.pug',
+    styleUrls: ['./chart-item-details.component.scss'],
 })
 export class ChartItemDetailsComponent implements OnInit {
-  @Input() item: IChart;
+    @Input()
+    item: IChart;
 
-  ngOnInit() {
-  }
+    constructor(private _userService: UserService) {}
 
-  safe(value) {
-    return value || '-';
-  }
+    ngOnInit() {}
 
-  momentify(date) {
-    return moment(date).toString();
-  }
+    safe(value) {
+        return value || '-';
+    }
+
+    momentify(date) {
+        const dateStr = moment.utc(date).format(AKPIDateFormatEnum.US_DATE);
+        return moment(dateStr).format(AKPIDateFormatEnum.US_DATE);
+    }
 }

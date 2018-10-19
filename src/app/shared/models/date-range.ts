@@ -40,6 +40,11 @@ import { IDateRange, IChartDateRange } from './date-range';
 //     }
 // }
 
+export enum AKPIDateFormatEnum {
+    US_DATE = 'MM/DD/YYYY',
+    US_SHORT_DATE = 'MM/DD/YY',
+    US_DATE_HOUR = 'MM/DD/YYYY HH:mm:ss',
+}
 
 import * as moment from 'moment';
 
@@ -86,7 +91,13 @@ export const PredefinedDateRanges = {
     last30Days: 'last 30 days',
     last90Days: 'last 90 days',
     last365Days: 'last 365 days',
-    allTimes: 'all times'
+    allTimes: 'all times',
+
+    // future DateRanges,
+    nextWeek: 'next week',
+    nextMonth: 'next month',
+    nextQuarter: 'next quarter',
+    nextYear: 'next year',
 };
 
 export const PredefinedComparisonDateRanges = {
@@ -189,7 +200,7 @@ export function parsePredefinedDate(textDate: string): IDateRange {
         case PredefinedDateRanges.allTimes:
             return {
                 from: (<any>moment).min(moment().subtract(30, 'years'), moment().subtract(1, 'years')).startOf('year').toDate(),
-                to: moment().toDate()
+                to: moment().add(30, 'year').toDate()
             };
         case PredefinedDateRanges.lastWeek:
             return {
@@ -330,6 +341,39 @@ export function parsePredefinedDate(textDate: string): IDateRange {
             return {
                 from: moment().subtract(365, 'days').startOf('day').toDate(),
                 to: moment().subtract(1, 'days').endOf('day').toDate()
+            };
+
+        // future dateRanges
+
+        case PredefinedDateRanges.nextWeek:
+            return {
+                from: moment().add(1, 'week').startOf('week').toDate(),
+                to: moment().add(1, 'week').endOf('week').toDate()
+            };
+
+        case PredefinedDateRanges.nextMonth:
+            return {
+                from: moment().add(1, 'month').startOf('month').toDate(),
+                to: moment().add(1, 'month').endOf('month').toDate()
+            };
+
+        case PredefinedDateRanges.nextQuarter:
+            let nextQuarter = thisQuarter + 1;
+            if (nextQuarter > 4) { nextQuarter -= 4; }
+
+            const nYear = (thisQuarter - 1)
+                         ? moment().add(1, 'year').year()
+                         : moment().year();
+
+            return {
+                from: moment().year(nYear).quarter(nextQuarter).startOf('quarter').toDate(),
+                to: moment().year(nYear).quarter(nextQuarter).endOf('quarter').toDate()
+            };
+
+        case PredefinedDateRanges.nextYear:
+            return {
+                from: moment().add(1, 'year').startOf('year').toDate(),
+                to: moment().add(1, 'year').endOf('year').toDate()
             };
     }
 
@@ -536,8 +580,6 @@ export class ChartDateRangeModel {
     }
 }
 
-
-
 export interface IDateRangeComparisonItem {
     key: string;
     value: string;
@@ -546,4 +588,31 @@ export interface IDateRangeComparisonItem {
 export interface IDateRangeItem {
     dateRange: IChartDateRange;
     comparisonItems: IDateRangeComparisonItem[];
+}
+
+export interface IStringDateRange {
+    from: string;
+    to: string;
+}
+
+export interface IStringChartDateRange {
+    predefined: string;
+    custom?: IStringDateRange;
+}
+
+export function  convertDateRangeToStringDateRange(dateRange: IChartDateRange): IStringChartDateRange {
+    const newDateRange: IStringChartDateRange = {
+        predefined: dateRange.predefined
+    };
+
+    if (dateRange.custom) {
+        const from = moment(dateRange.custom.from).format(AKPIDateFormatEnum.US_DATE);
+        const to = moment(dateRange.custom.to).format(AKPIDateFormatEnum.US_DATE);
+        newDateRange.custom = {
+            from,
+            to
+        };
+    }
+
+    return newDateRange;
 }

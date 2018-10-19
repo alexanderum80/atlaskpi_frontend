@@ -43,6 +43,7 @@ import { ChartFormatInfoComponent } from '../chart-format-info/chart-format-info
 import { IMapMarker } from '../../../../maps/shared/models/map-marker';
 import { objectWithoutProperties } from '../../../../shared/helpers/object.helpers';
 import { MapModel } from '../../../../maps/shared/models/map.models';
+import { UserService } from '../../../../shared/services';
 
 
 const Highcharts = require('highcharts/js/highcharts');
@@ -185,7 +186,8 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         private _galleryService: ChartGalleryService,
         private _apolloService: ApolloService,
         private _selectChartService: SelectedChartsService,
-        private _browserService: BrowserService) {
+        private _browserService: BrowserService,
+        private _user: UserService) {
         Highcharts.setOptions({
             lang: {
                 decimalPoint: '.',
@@ -228,6 +230,10 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     ngAfterViewInit() {
         const loadingGroupings = new FormControl(false);
         this.fg.addControl('loadingGroupings', loadingGroupings);
+
+        const loadingComparison = new FormControl(false);
+        this.fg.addControl('loadingComparison', loadingComparison);
+
         this._subscribeToChartSelection();
         const that = this;
         that.fg.valueChanges.debounceTime(500)
@@ -563,10 +569,11 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                 this.fg.value.kpi !== undefined && this.fg.value.kpi.length > 0 &&
                 this.fg.value.predefinedDateRange !== undefined && this.isMapSizeValid;
         } else {
-            return this.fg.value.name !== undefined && this.fg.value.name.length > 1 &&
-                this.fg.value.kpi !== undefined && this.fg.value.kpi.length > 0 &&
-                this.fg.value.predefinedDateRange !== undefined && this.isChartCustomTopValid &&
-                this.tooltipValid;
+            return !isEmpty(this.fg.value.name) &&
+            !isEmpty(this.fg.value.kpi) &&
+            !isEmpty(this.fg.value.predefinedDateRange) &&
+            this.isChartCustomTopValid &&
+            this.tooltipValid;
         }
     }
 
@@ -644,8 +651,9 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         this.processFormatChanges(this.fg.value);
         const model = ChartModel.fromFormGroup(this.fg, this.chartDefinition);
         const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
+        const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
 
-        if (this._previewValid(model) && !loadingGroupings)  {
+        if (this._previewValid(model) && !loadingGroupings && !loadingComparison)  {
             this._previewQuery.refetch({ input: model }).then(res => this._processChartPreview(res.data));
         }
     }

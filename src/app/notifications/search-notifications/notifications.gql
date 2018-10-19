@@ -1,0 +1,9 @@
+query Notifications {
+    notifications {
+        _id
+        timestamp
+        status
+        message
+        deliveryMethod
+    }
+}

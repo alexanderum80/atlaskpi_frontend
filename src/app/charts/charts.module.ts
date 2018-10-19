@@ -39,14 +39,14 @@ import { ChartPreviewComponent } from './shared/ui/chart-preview/chart-preview.c
 import { ChartTypeComponent } from './shared/ui/chart-type/chart-type.component';
 import { ChartInspectorComponent } from './chart-inspector/chart-inspector.component';
 import { MapsModule } from '../maps/maps.module';
-import { SelectedMapsService } from './shared';
+import highchartEvents from 'highcharts-custom-events';
 
 // import { MyDatePickerModule } from 'mydatepicker';
 
 // import { NgDateRangePickerModule } from 'ng-daterangepicker';
 export function highchartsModules() {
     // apply Highcharts Modules to this array
-    return [threeD, offlineExporting, exporting, exportData];
+    return [threeD, offlineExporting, exporting, exportData, highchartEvents];
 }
 
 @NgModule({
