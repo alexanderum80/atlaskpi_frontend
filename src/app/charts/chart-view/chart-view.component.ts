@@ -646,13 +646,15 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                             const isShared: boolean = this.series.chart.tooltip.shared === true;
                             const param = isShared ? [this] : this;
 
-                           //this.setState(['hover']);
-                           this.series.chart.tooltip.refresh(param);
-
+                            //this.setState(['hover']);
+                            this.series.chart.tooltip.refresh(param);
                         },
                         dblclick: function (event) {
-                            const chart = this;
-                            that.processDrillDown(chart);
+                            const chart = event.target.point;
+                            // if you click on a target, the chart will be undefined so no need to call processDrilldown 
+                            if(chart){
+                                that.processDrillDown(chart);
+                            }
                         },
                         // mouseOut: function(event) {
                         //     this.series.chart.tooltip.hide(this);
@@ -668,9 +670,11 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 events: {
                     click: function (event) {
                         
-                        const chart = this; 
-                        that.processDrillDown(chart)
-
+                        const chart = event.target.point;
+                        // if you click on a target, the chart will be undefined so no need to call processDrilldown 
+                        if(chart){
+                            that.processDrillDown(chart);
+                        }
                     }
                 }
             }
@@ -684,7 +688,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     processDrillDown(chart): void{
         const that = this;
         
-        if (that._drillDownSvc.getFrequencyType(chart.category) && !chart.series.userOptions.targetId) {
+        if (that._drillDownSvc.getFrequencyType(chart.category)) {
 
             const isYear: boolean = moment(chart.category, 'YYYY', true).isValid();
             const checkYear = isYear ? chart.category : null;
