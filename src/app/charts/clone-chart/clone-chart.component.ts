@@ -1,3 +1,4 @@
+import { map } from 'rxjs/operators';
 import { CommonService } from '../../shared/services/common.service';
 import { Subscription } from 'rxjs/Subscription';
 import { CloneChartActivity } from '../../shared/authorization/activities/charts/clone-chart.activity';
@@ -12,9 +13,10 @@ import { Observable } from 'rxjs/Observable';
 
 import { DialogResult } from '../../shared/models/dialog-result';
 import { prepareChartDefinitionForPreview } from '../shared/extentions';
-import { CreateChartMutation, SingleChartQuery } from '../shared/graphql/charts.gql';
-import { ChartModel, IChart, ISaveChartResponse, SingleChartResponse } from '../shared/models';
+import { CreateChartMutation, CreateMapMutation ,  SingleChartQuery, SingleMapQuery } from '../shared/graphql/charts.gql';
+import { ChartModel, IChart, ISaveChartResponse, SingleChartResponse, SingleMapResponse } from '../shared/models';
 import { ChartFormComponent } from '../shared/ui/chart-form';
+import { MapModel } from '../../maps/shared/models/map.models';
 
 @Activity(CloneChartActivity)
 @Component({
@@ -27,7 +29,9 @@ export class CloneChartComponent implements AfterViewInit, OnDestroy {
     fg: FormGroup = new FormGroup({});
 
     chart: IChart;
+    map: any;
     chartModel: ChartModel;
+    mapModel: MapModel;
     loading = true;
 
     private _chartModel: IChart;
@@ -47,10 +51,21 @@ export class CloneChartComponent implements AfterViewInit, OnDestroy {
       this._subscription.push(this._route.params
           .switchMap((params: Params) => that._getChartByIdApolloQuery(params['id']).valueChanges)
           .subscribe((response: ApolloQueryResult<any>) => {
-            setTimeout(() => {
-                that._processChartResponse(response);
-               }, 500);
+            if (response.data.chart) {
+                setTimeout(() => {
+                    that._processChartResponse(response);
+                }, 500);
+            }
       }));
+      this._subscription.push(this._route.params
+        .switchMap((params: Params) => that._getMapByIdApolloQuery(params['id']).valueChanges)
+        .subscribe((response: ApolloQueryResult<any>) => {
+          if (response.data.map) {
+              setTimeout(() => {
+                  that._processMapResponse(response);
+              }, 500);
+          }
+    }));
     }
 
     onChartFormEvent($event: DialogResult) {
@@ -59,7 +74,11 @@ export class CloneChartComponent implements AfterViewInit, OnDestroy {
                return this._router.navigateByUrl('/charts');
 
           case DialogResult.SAVE:
+            if (this.chartModel) {
                return this.cloneChart();
+            } else {
+                return this.cloneMap();
+            }
         }
     }
 
@@ -90,6 +109,28 @@ export class CloneChartComponent implements AfterViewInit, OnDestroy {
         .catch(err => console.log(err));
     }
 
+    cloneMap() {
+        const that = this;
+        const model = MapModel.fromFormGroup(this.fg);
+
+        this._apollo.mutate<ISaveChartResponse>({
+            mutation: CreateMapMutation,
+            variables: { input: model }
+        })
+        .toPromise()
+        .then(response => {
+            if (response.data.createMap.success) {
+                this._router.navigateByUrl('/charts/list');
+            }
+
+            if (response.data.createMap.errors) {
+                // perform an error message
+                console.dir(response.data.createMap.errors);
+            }
+        })
+        .catch(err => console.log(err));
+    }
+
     private _processChartResponse(response: ApolloQueryResult<any>) {
         this.loading = false;
 
@@ -110,6 +151,25 @@ export class CloneChartComponent implements AfterViewInit, OnDestroy {
         }, 200);
     }
 
+    private _processMapResponse(response: ApolloQueryResult<any>) {
+        this.loading = false;
+
+        if (!response.data.map) {
+            return;
+        }
+
+        this.map = JSON.parse(response.data.map);
+
+        // this is where we change the name of the map
+        this.map._id = undefined;
+        this.map.title += ` (copy ${moment().format('H:mm:ss')})`;
+
+        this.mapModel = new MapModel(this.map);
+        setTimeout(() => {
+          this.chartFormComponent.updateFormFields();
+        }, 200);
+    }
+
     private _getChartByIdApolloQuery(id: string): QueryRef<SingleChartResponse> {
       return this._apollo.watchQuery <SingleChartResponse> ({
           query: SingleChartQuery,
@@ -119,4 +179,14 @@ export class CloneChartComponent implements AfterViewInit, OnDestroy {
           fetchPolicy: 'network-only'
         });
     }
+
+    private _getMapByIdApolloQuery(id: string): QueryRef<SingleMapResponse> {
+        return this._apollo.watchQuery <SingleMapResponse> ({
+            query: SingleMapQuery,
+            variables: {
+              id: id
+            },
+            fetchPolicy: 'network-only'
+          });
+      }
 }

@@ -5,7 +5,7 @@ div(layout-gt-sm="row", layout-sm="column")
         bw-tab-set
             bwTab(heading="Data")
                   kpi-chart-basic-info.p-b-40([fg]="fg", [kpis]="kpis", [kpiList]="kpiList", [dashboardList]="dashboardList", [chartType]="chartType")
-            bwTab(heading="Format")
+            bwTab(heading="Format", [disabled]="ischartTypeMap")
                   kpi-chart-format-info(flex, [fg]="fg",
                     [chartDefinition]="chartDefinition",
                     [isLegendEnabled]="isLegendsEnabled()",
@@ -21,7 +21,7 @@ div(layout-gt-sm="row", layout-sm="column")
             div(flex)
                 div(layout="row", layout-align="center center")
                     div(flex)
-                        kpi-chart-preview([fg]="fg", [chartDefinition]="chartDefinition", [size]="chartSize", (serieName)="openSelectColor($event)")
+                        kpi-chart-preview([fg]="fg", [chartDefinition]="chartDefinition",[mapMarkers]="mapMarkers", [size]="chartSize", (serieName)="openSelectColor($event)")
 
             .m-t-30(flex)
                 .m-b-10(layout="row", layout-margin, layout-align="end end")

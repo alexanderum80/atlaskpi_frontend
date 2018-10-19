@@ -30,10 +30,11 @@ export interface IMapMarkerResponse {
     styleUrls: ['./show-map.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class ShowMapComponent implements OnChanges, OnDestroy {
+export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     @Input() markers: IMapMarker[];
     @Input() legendColors: ILegendColorConfig[];
-
+    @Input() legendClosed = false;
+    @Input() Height = '400px';
     @ViewChild('showMapForm') private _form: ShowMapFormComponent;
 
     lat: number;
@@ -47,6 +48,9 @@ export class ShowMapComponent implements OnChanges, OnDestroy {
 
     constructor(private _apollo: Apollo) {}
 
+    ngOnInit() {
+        this.showingLegend = !this.legendClosed;
+    }
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
     }
@@ -85,7 +89,6 @@ export class ShowMapComponent implements OnChanges, OnDestroy {
         if (!Object.keys(this._form.vm.payload).length) { return; }
         const that = this;
         this.isMapMarkerGrouping = this._form.vm.payload.grouping ? true : false;
-
         this._subscription.push(this._apollo.watchQuery<IMapMarkerResponse>({
             query: mapMarkerQuery,
             fetchPolicy: 'network-only',

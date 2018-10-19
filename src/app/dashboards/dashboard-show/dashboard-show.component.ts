@@ -441,7 +441,6 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
 
     private _bringMapMarkers() {
         const that = this;
-
         this._subscription.push(this._apolloService.networkQuery(mapMarkersQuery).then(res => {
             that.mapMarkers = res.mapMarkers.map(m => objectWithoutProperties(m, ['__typename']));
         }));

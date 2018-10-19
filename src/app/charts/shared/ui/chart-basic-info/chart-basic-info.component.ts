@@ -1,3 +1,4 @@
+import { IChartGalleryItem } from './../../models/chart.models';
 
 import { ApolloService } from './../../../../shared/services/apollo.service';
 import { OnFieldChanges } from '../../../../ng-material-components/viewModels';
@@ -35,6 +36,7 @@ import { title, camelCase } from 'change-case';
 import * as moment from 'moment';
 
 const kpiOldestDateQuery = require('graphql-tag/loader!./kpi-get-oldestDate.gql');
+const kpiDataSourcesQuery = require('graphql-tag/loader!./kpi-get-DataSources.gql');
 
 export const RevenueGroupingList: SelectionItem[] = [
     { id: 'location', title: 'Location', selected: false, disabled: false },
@@ -46,6 +48,10 @@ export const RevenueGroupingList: SelectionItem[] = [
     { id: 'customerCity', title: 'Customer\'s CITY', selected: false, disabled: false},
     { id: 'customerZip', title: 'Customer\'s ZIP', selected: false, disabled: false},
     { id: 'customerGender', title: 'Customer\'s GENDER', selected: false, disabled: false}
+];
+export const MapsGroupingList: SelectionItem[] = [
+    { id: 'customer.zip', title: 'Customer ZIP', selected: false, disabled: false},
+    { id: 'location.zip', title: 'Location ZIP', selected: false, disabled: false}
 ];
 
 const ExpensesGroupingList = [
@@ -62,9 +68,9 @@ const kpiGroupingsQuery = require('graphql-tag/loader!./kpi-groupings.query.gql'
     templateUrl: 'chart-basic-info.component.pug',
     providers: [ ChartBasicInfoViewModel ]
 })
-export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
     @Input() fg: FormGroup;
-    @Input() kpis: IKPI[]= [];
+    @Input() kpis: IKPI[] = [];
     @Input() chartType = 'pie';
     @Input() kpiList: SelectionItem[] = [];
     @Input() dashboardList: SelectionItem[] = [];
@@ -117,12 +123,27 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
     isCollapsedSorting = true;
     frequencyList: SelectionItem[] = [];
     groupingList: SelectionItem[] = [];
+    mapsizeList: SelectionItem[] = [
+        {
+            id: 'small',
+            title: 'SMALL',
+            selected: false,
+            disabled: false
+        },
+        {
+            id: 'big',
+            title: 'BIG',
+            selected: false,
+            disabled: false
+        }
+    ];
     xAxisSourceList: SelectionItem[] = [];
     topList: SelectionItem[] = [
         { id: 'other', title: 'other', selected: false, disabled: false }
     ];
 
     backupChartModel: ChartModel;
+    ischartTypeMap = false;
 
     private _subscription: Subscription[] = [];
 
@@ -146,7 +167,19 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
             format: 'MM/DD/YYYY'
         };
     }
-
+    ngOnChanges() {
+        if (this.chartType === 'map') {
+            this.ischartTypeMap = true;
+            this.groupingList = MapsGroupingList;
+            const selectedTypeChart: IChartGalleryItem = {
+                configName: 'map',
+                img: '/assets/img/charts/others/map.png',
+                name: 'map',
+                type: 'others'
+            };
+            this._chartGalleryService.setActive(selectedTypeChart);
+        }
+    }
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
     }
@@ -216,13 +249,28 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
                    .debounceTime(500)
                    .distinctUntilChanged()
                    .subscribe(v => {
-                        that._getGroupingInfo();
+                        if (this.ischartTypeMap) {
+                            that.groupingList = MapsGroupingList;
+                            that.fg.controls['grouping'].patchValue(MapsGroupingList, { emitEvent: true });
+                        } else {
+                            that.groupingList = [];
+                            this._getGroupingInfo();
+                        }
                         const kpi_id = this.fg.value.kpi;
+                        this._apolloService.networkQuery < string > (kpiDataSourcesQuery, {id: kpi_id })
+                        .then(sources => {
+                            // Enable-Disable the map type chart
+                            if (sources.getKpiDataSources.includes('sales')) {
+                                this._chartGalleryService.showMap = true;
+                            } else {
+                                this._chartGalleryService.showMap = false;
+                            }
+                        });
                         this._apolloService.networkQuery < string > (kpiOldestDateQuery, {id: kpi_id })
                         .then(kpis => {
                             this._updateComparisonData(kpis.getKpiOldestDate);
                         });
-                    });
+                });
         });
 
 
@@ -338,7 +386,15 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         const that = this;
         this._chartGalleryService.activeChart$.subscribe((chart) => {
             that.chartType = String(chart.type);
+            this.ischartTypeMap = chart.name === 'map';
+            if (this.ischartTypeMap) {
 
+                that.groupingList = MapsGroupingList;
+                that.fg.controls['grouping'].patchValue(MapsGroupingList, { emitEvent: true });
+            } else {
+                that.groupingList = [];
+                this._getGroupingInfo();
+            }
             that._resetFrequencyAndSource(that.chartType);
         });
     }

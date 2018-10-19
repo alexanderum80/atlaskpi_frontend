@@ -7,13 +7,14 @@ import { IChart } from '../models';
 
 @Injectable()
 export class ListChartService {
-    private _selectionSubject = new BehaviorSubject < IChart > (null);
+
+    private _selectionSubject = new BehaviorSubject < any > (null);
 
     private selectedArray: string[] = [];
 
     private _inspectorOpenSubject = new BehaviorSubject < boolean > (false);
 
-    get selected$(): Observable < IChart > {
+    get selected$(): Observable < any > {
         return this._selectionSubject.asObservable();
     }
 
@@ -25,7 +26,7 @@ export class ListChartService {
         return this.selectedArray;
     }
 
-    setActive(item: IChart) {
+    setActive(item: any) {
         this._selectionSubject.next(item);
     }
 

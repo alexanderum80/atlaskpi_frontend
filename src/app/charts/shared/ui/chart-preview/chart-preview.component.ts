@@ -1,3 +1,4 @@
+import { ChartGalleryService } from './../../services/chart-gallery.service';
 import {FormatterFactory, yAxisFormatterProcess} from '../../../../dashboards/shared/extentions/chart-formatter.extention';
 import {IChartGalleryItem} from '../../models';
 import {FormGroup} from '@angular/forms';
@@ -14,6 +15,9 @@ import {
 } from '@angular/core';
 import {Chart} from 'angular-highcharts';
 import {Subscription} from 'rxjs/Subscription';
+import { IMapMarker } from '../../../../maps/shared/models/map-marker';
+import { ILegendColorConfig } from '../../../../maps/show-map/show-map.component';
+import { LegendService } from '../../../../maps/shared/legend.service';
 
 export interface IChartSize {
     width: number;
@@ -29,19 +33,28 @@ export class ChartPreviewComponent implements OnChanges, AfterViewInit {
     @Input()fg: FormGroup;
     @Input()chartDefinition: any;
     @Input()size: IChartSize;
+    @Input()mapMarkers: IMapMarker[] = [];
     @Output() serieName = new EventEmitter <string>();
 
     title = 'Chart Name';
     chart: Chart;
     comparison = '';
+    ischartTypeMap = false;
+    legendColors: ILegendColorConfig[];
+
+    constructor(private _chartGalleryService: ChartGalleryService,
+                private _legendService: LegendService) {
+
+    }
 
     ngAfterViewInit() {
         this._subscribeToDefinitionChanges();
+        this._subscribeToChartTypeChanges();
+        this.legendColors = this._legendService.getLegendColors();
     }
 
     ngOnChanges(changes: SimpleChanges) {
         const that = this;
-
         this.comparison = this.fg.value.comparison;
         if (changes.chartDefinition && changes.chartDefinition.previousValue && changes.chartDefinition.previousValue.tooltip) {
             this.chartDefinition.tooltip = changes.chartDefinition.previousValue.tooltip;
@@ -70,7 +83,17 @@ export class ChartPreviewComponent implements OnChanges, AfterViewInit {
             }
         }
     }
-
+    private _subscribeToChartTypeChanges() {
+        const that = this;
+        that._chartGalleryService.activeChart$.subscribe((chart) => {
+            that.ischartTypeMap = chart.name === 'map';
+            if (that.ischartTypeMap) {
+                this.title = 'Map Name';
+            } else {
+                this.title = 'Chart Name';
+            }
+        });
+    }
     get hasSeries(): boolean {
         if (!this.definitionAndSeriesExist) {
             return false;

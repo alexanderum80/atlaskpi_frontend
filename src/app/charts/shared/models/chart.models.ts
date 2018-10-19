@@ -8,6 +8,7 @@ import { IMutationResponse } from '../../../shared/models';
 import { ChartDateRangeModel, IChartDateRange } from '../../../shared/models/date-range';
 import { IDashboard } from './dashboard.models';
 import {IChartTop} from '../../../shared/models/top-n-records';
+import { IMap } from '../../../maps/shared/models/map.models';
 
 export interface ChartData {
   _id: string;
@@ -166,6 +167,10 @@ export interface KPIListResponse {
 
 export interface SingleChartResponse {
   chart: string;
+}
+
+export interface SingleMapResponse {
+  map: string;
 }
 
 export class ChartModel {

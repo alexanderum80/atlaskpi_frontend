@@ -38,6 +38,8 @@ import { ChartItemDetailsComponent } from './shared/ui/chart-item-details/chart-
 import { ChartPreviewComponent } from './shared/ui/chart-preview/chart-preview.component';
 import { ChartTypeComponent } from './shared/ui/chart-type/chart-type.component';
 import { ChartInspectorComponent } from './chart-inspector/chart-inspector.component';
+import { MapsModule } from '../maps/maps.module';
+import { SelectedMapsService } from './shared';
 
 // import { MyDatePickerModule } from 'mydatepicker';
 
@@ -59,6 +61,7 @@ export function highchartsModules() {
         MilestonesModule,
         ScrollEventModule,
         TargetsModule,
+        MapsModule
     ],
     declarations: [
         ChartViewComponent,

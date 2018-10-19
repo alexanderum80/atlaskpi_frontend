@@ -33,7 +33,7 @@ export class ChartTypeComponent implements OnInit {
 
     get chartTypeButtonTitle(): string {
         if (!this.chartType) { return 'Chart Type'; }
-        return this.chartType;
+        return this.chartType = String(this.chartType) === 'others' ? 'map' : String(this.chartType);
     }
 
     private _show() {

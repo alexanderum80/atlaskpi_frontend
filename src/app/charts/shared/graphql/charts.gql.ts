@@ -35,20 +35,8 @@ export const PreviewChartQuery = gql `
     }
 `;
 
-export const CreateChartMutation = gql `
-    mutation ($input: ChartAttributesInput!) {
-        createChart(input: $input) {
-            success
-            entity {
-                _id
-            }
-            errors {
-                field
-                errors
-            }
-        }
-    }
-`;
+
+
 
 export const ListChartQuery = gql `
 query ListChartQuery {
@@ -77,9 +65,53 @@ export const SingleChartQuery = gql `
     }
 `;
 
+export const SingleMapQuery = gql `
+    query ($id: String) {
+      map(id: $id)
+    }
+`;
+export const CreateChartMutation = gql `
+    mutation ($input: ChartAttributesInput!) {
+        createChart(input: $input) {
+            success
+            entity {
+                _id
+            }
+            errors {
+                field
+                errors
+            }
+        }
+    }
+`;
+export const CreateMapMutation = gql `
+    mutation ($input: MapAttributesInput!) {
+        createMap(input: $input) {
+            success
+            entity {
+                _id
+            }
+            errors {
+                field
+                errors
+            }
+        }
+    }
+`;
 export const DeleteChartMutation = gql `
     mutation ($id: String!) {
       deleteChart(id: $id) {
+        success
+        errors {
+            field
+            errors
+        }
+      }
+    }
+`;
+export const DeleteMapMutation = gql `
+    mutation ($id: String!) {
+      deleteMap(id: $id) {
         success
         errors {
             field
@@ -92,6 +124,17 @@ export const DeleteChartMutation = gql `
 export const UpdateChartMutation = gql `
     mutation ($id: String!, $input: ChartAttributesInput!) {
         updateChart(id: $id, input: $input) {
+            success
+            errors {
+                field
+                errors
+            }
+        }
+    }
+`;
+export const UpdateMapMutation = gql `
+    mutation ($id: String!, $input: MapAttributesInput!) {
+        updateMap(id: $id, input: $input) {
             success
             errors {
                 field

@@ -1,3 +1,5 @@
+import { from } from 'apollo-link';
+import { IChartDateRange } from './../../../../shared/models/date-range';
 import { CommonService } from '../../../../shared/services/common.service';
 import {
     AfterViewInit,
@@ -38,10 +40,14 @@ import { groupBy, includes } from 'lodash';
 import { FormControl } from '@angular/forms';
 import { OnChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 import { ChartFormatInfoComponent } from '../chart-format-info/chart-format-info.component';
+import { IMapMarker } from '../../../../maps/shared/models/map-marker';
+import { objectWithoutProperties } from '../../../../shared/helpers/object.helpers';
+import { MapModel } from '../../../../maps/shared/models/map.models';
 
 
 const Highcharts = require('highcharts/js/highcharts');
 const getChartByTitle = require('graphql-tag/loader!../../graphql/get-chart-by-title.gql');
+const mapMarkersQuery = require('graphql-tag/loader!src/app/dashboards/dashboard-show/map-markers.gql');
 
 const initialDefinition = {
     chart: {
@@ -141,6 +147,7 @@ interface Itypography {
 export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     @Input() fg: FormGroup;
     @Input() chartModel: ChartModel;
+    @Input() mapModel: MapModel;
     @Input() chartId: string;
     @Input() chartDataFromKPI: any;
     @Output() result = new EventEmitter < DialogResult > ();
@@ -155,6 +162,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     kpiList: SelectionItem[] = [];
     viewportSizeSub: Subscription;
     chartSize: IChartSize;
+    mapMarkers: IMapMarker[] = [];
 
     // // DEFINICION DE VARIABLES DEL TOOLTIP
     // format: string;
@@ -171,6 +179,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
     canSave = false;
     isEdit = false;
+    ischartTypeMap = false;
 
     constructor(private _apollo: Apollo,
         private _galleryService: ChartGalleryService,
@@ -219,13 +228,21 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     ngAfterViewInit() {
         const loadingGroupings = new FormControl(false);
         this.fg.addControl('loadingGroupings', loadingGroupings);
-
         this._subscribeToChartSelection();
         const that = this;
         that.fg.valueChanges.debounceTime(500)
            .subscribe(values => {
-            that.processFormatChanges(values)
-                   .then(() => that.previewChartQuery());
+               if (this.ischartTypeMap) {
+                // Here i must run the query
+                // to obtain map data
+                that._bringMapMarkers();
+                this.canSave = this.formValid;
+               } else {
+                    if (this.chartModel) {
+                        that.processFormatChanges(values)
+                            .then(() => that.previewChartQuery());
+                    }
+               }
             });
         this._selectChartService.updateExistDuplicatedName(false);
         this._subscribeToNameChanges();
@@ -253,6 +270,33 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             chartWidth = 290;
             chartHeight = 260;
         }
+    }
+
+    private _bringMapMarkers() {
+        const that = this;
+        let tmpDateRange: IChartDateRange;
+        if (this.fg.value.predefinedDateRange === 'custom') {
+            tmpDateRange = {
+                predefined: 'custom',
+                custom: {
+                    from: this.fg.value.customFrom,
+                    to: this.fg.value.customTo
+                }
+            };
+        } else {
+            tmpDateRange = {
+                predefined: this.fg.value.predefinedDateRange,
+                custom: undefined
+            };
+        }
+        this._subscription.push(
+            this._apolloService.networkQuery <any> (mapMarkersQuery, { input:
+                { dateRange: JSON.stringify(tmpDateRange),
+                    grouping: this.fg.value.grouping,
+                    kpi: this.fg.value.kpi
+                } }).then(res => {
+                that.mapMarkers = res.mapMarkers.map(m => objectWithoutProperties(m, ['__typename']));
+        }));
     }
 
     saveChart() {
@@ -317,8 +361,13 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
     updateFormFields() {
         const that = this;
-        const values = this.chartDataFromKPI ? this.chartDataFromKPI : this.chartModel.toChartFormValues();
-        
+        let values: any;
+        if (this.mapModel) {
+            values = this.mapModel.toMapFormValues();
+        } else {
+            values = this.chartDataFromKPI ? this.chartDataFromKPI : this.chartModel.toChartFormValues();
+        }
+
         this.ChartFormatInfo.defaultChartColors();
 
         this._subscription.push(
@@ -332,15 +381,19 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
                 that.isEdit = true;
             // this.chartType = this.chartModel.type;
-                that.chartDefinition = this.chartDataFromKPI ? chartDefinitionFromKPI : that.chartModel.chartDefinition;
-                that._galleryService.updateToolTipList(that.chartDefinition.chart.type);
-                
-                if (that.chartDefinition && !this.chartDataFromKPI) {
-                    that.chartType = (that.chartModel.type || that.chartDefinition.chart.type)
-                } else {
-                    that.chartType = (that.chartDefinition && this.chartDataFromKPI) ? 
-                        chartDefinitionFromKPI.chart.type : 
-                        initialDefinition.chart.type;
+                if (this.chartModel) {
+                    that.chartDefinition = this.chartDataFromKPI ? chartDefinitionFromKPI : that.chartModel.chartDefinition;
+                    that._galleryService.updateToolTipList(that.chartDefinition.chart.type);
+
+                    if (that.chartDefinition && !this.chartDataFromKPI) {
+                        that.chartType = (that.chartModel.type || that.chartDefinition.chart.type);
+                    } else {
+                        that.chartType = (that.chartDefinition && this.chartDataFromKPI) ?
+                            chartDefinitionFromKPI.chart.type :
+                            initialDefinition.chart.type;
+                    }
+                } else if (MapModel) {
+                    that.chartType = 'map';
                 }
                 // Update formgroup
                 setTimeout(function () {
@@ -349,7 +402,14 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                     that.fg.controls['description'].patchValue(values.description);
                     that.fg.controls['predefinedDateRange'].patchValue(values.predefinedDateRange);
                     that.fg.controls['predefinedTop'].patchValue(values.predefinedTop);
-
+                    if (values.mapsize) {
+                        const mapsize = that.fg.controls['mapsize'];
+                        if (!mapsize) {
+                            that.fg.addControl('mapsize', new FormControl(values.mapsize));
+                        } else {
+                            mapsize.patchValue(values.mapsize);
+                        }
+                    }
                     if (values.predefinedDateRange === 'custom') {
                         const customFrom = that.fg.controls['customFrom'];
 
@@ -447,20 +507,32 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     }
 
     isLegendsEnabled() {
-        return (!this.chartModel.hasOwnProperty('chartDefinition') || !this.chartModel.chartDefinition.hasOwnProperty('legend')) ?
-            true : this.chartModel.chartDefinition['legend']['enabled'];
+        if (!this.chartModel) {
+            return false;
+        } else {
+            return (!this.chartModel.hasOwnProperty('chartDefinition') || !this.chartModel.chartDefinition.hasOwnProperty('legend')) ?
+                true : this.chartModel.chartDefinition['legend']['enabled'];
+        }
     }
 
     isInvertAxisEnabled() {
-        return (!this.chartModel.hasOwnProperty('chartDefinition') || !this.chartModel.chartDefinition.hasOwnProperty('invertAxis')) ?
-            false : this.chartModel.chartDefinition['invertAxis']['enabled'];
+        if (!this.chartModel) {
+            return false;
+        } else {
+            return (!this.chartModel.hasOwnProperty('chartDefinition') || !this.chartModel.chartDefinition.hasOwnProperty('invertAxis')) ?
+                false : this.chartModel.chartDefinition['invertAxis']['enabled'];
+        }
     }
 
     getCustom() {
-              return (!this.chartModel.hasOwnProperty('chartDefinition') ||
-              !this.chartModel.chartDefinition.hasOwnProperty('tooltip') ||
-              !this.chartModel.chartDefinition.tooltip.hasOwnProperty('custom'))
-              ? new CustomFormat() : this.chartModel.chartDefinition.tooltip.custom;
+        if (!this.chartModel) {
+            return new CustomFormat();
+        } else {
+            return (!this.chartModel.hasOwnProperty('chartDefinition') ||
+            !this.chartModel.chartDefinition.hasOwnProperty('tooltip') ||
+            !this.chartModel.chartDefinition.tooltip.hasOwnProperty('custom'))
+            ? new CustomFormat() : this.chartModel.chartDefinition.tooltip.custom;
+        }
     }
 
     get isPredefinedTopOther() {
@@ -481,11 +553,21 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         return true;
     }
 
+    get isMapSizeValid() {
+        return this.fg.value.mapsize && this.fg.value.mapsize.length > 0;
+    }
+
     get formValid() {
-        return this.fg.value.name !== undefined && this.fg.value.name.length > 1 &&
-            this.fg.value.kpi !== undefined && this.fg.value.kpi.length > 0 &&
-            this.fg.value.predefinedDateRange !== undefined && this.isChartCustomTopValid &&
-            this.tooltipValid;
+        if (this.ischartTypeMap) {
+            return this.fg.value.name !== undefined && this.fg.value.name.length > 1 &&
+                this.fg.value.kpi !== undefined && this.fg.value.kpi.length > 0 &&
+                this.fg.value.predefinedDateRange !== undefined && this.isMapSizeValid;
+        } else {
+            return this.fg.value.name !== undefined && this.fg.value.name.length > 1 &&
+                this.fg.value.kpi !== undefined && this.fg.value.kpi.length > 0 &&
+                this.fg.value.predefinedDateRange !== undefined && this.isChartCustomTopValid &&
+                this.tooltipValid;
+        }
     }
 
     get tooltipValid(): boolean {
@@ -503,8 +585,14 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     private _updateDashboardList(): SelectionItem[] {
         // in this method we put a mark on the items who contains the chart
         const that = this;
-        const chartDashboardsIds = this.chartModel.dashboards ?
+        let chartDashboardsIds: String[] = [];
+        if (this.chartModel) {
+        chartDashboardsIds = this.chartModel.dashboards ?
             this.chartModel.dashboards.map(d => d._id) : [];
+        } else {
+            chartDashboardsIds = this.mapModel.dashboards ?
+            this.mapModel.dashboards.map(d => d) : [];
+        }
         this.fg.controls['dashboards'].setValue(chartDashboardsIds.join('|'));
         return this.dashboardList;
     }
@@ -600,10 +688,13 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         const that = this;
 
         this._subscription.push(this._galleryService.activeChart$.subscribe((chart) => {
-            that._galleryService.getChartSampleDefinition( < any > chart.type, chart)
-                .subscribe((sampleChart) => {
-                    processChartActivityChange(that, chart, sampleChart);
-                });
+            this.ischartTypeMap = chart.name === 'map';
+            if (!this.ischartTypeMap) {
+                that._galleryService.getChartSampleDefinition( < any > chart.type, chart)
+                    .subscribe((sampleChart) => {
+                        processChartActivityChange(that, chart, sampleChart);
+                    });
+                }
         }));
     }
 

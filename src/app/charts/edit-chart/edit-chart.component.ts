@@ -1,9 +1,11 @@
+import { UpdateMapMutation } from './../shared/graphql/charts.gql';
+import { MapModel } from './../../maps/shared/models/map.models';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { ApolloQueryResult } from 'apollo-client';
-import { isEqual, isString, pick } from 'lodash';
+import { isEqual, isString, pick, map } from 'lodash';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import Sweetalert from 'sweetalert2';
@@ -13,13 +15,14 @@ import { ApolloService } from '../../shared/services/apollo.service';
 import { CommonService } from '../../shared/services/common.service';
 import { SelectedChartsService } from '../shared';
 import { prepareChartDefinitionForPreview } from '../shared/extentions';
-import { SingleChartQuery, UpdateChartMutation } from '../shared/graphql/charts.gql';
-import { ChartModel, IChart, IUpdateChartResponse, SingleChartResponse } from '../shared/models';
+import { SingleChartQuery, UpdateChartMutation, SingleMapQuery } from '../shared/graphql/charts.gql';
+import { ChartModel, IChart, IUpdateChartResponse, SingleChartResponse, SingleMapResponse } from '../shared/models';
 import { ChartFormComponent } from '../shared/ui/chart-form';
 
 
 const Highcharts = require('highcharts/js/highcharts');
 const getChartByTitle = require('graphql-tag/loader!../shared/graphql/get-chart-by-title.gql');
+const getMapByTitle = require('graphql-tag/loader!../shared/graphql/get-map-by-title.gql');
 
 @Component({
   selector: 'kpi-edit-chart',
@@ -31,8 +34,10 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
     fg: FormGroup = new FormGroup({});
 
     chart: IChart;
+    map: any;
     id: string;
     chartModel: ChartModel;
+    mapModel: MapModel;
     loading = true;
 
     removeTargetData: any = {};
@@ -62,9 +67,22 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
             .switchMap((params: Params) => that._getChartByIdApolloQuery(params['id']))
             .subscribe((response: ApolloQueryResult<any>) => {
                setTimeout(() => {
-                that._setRemoveTargetData(response);
-                that._processChartResponse(response);
+                   if (response.data.chart) {
+                      that._setRemoveTargetData(response);
+                      that._processChartResponse(response);
+                   }
                }, 500);
+        }));
+        this._subscription.push(this._route.params
+            .do((params: Params) => that.id = params['id'])
+            .switchMap((params: Params) => that._getMapByIdApolloQuery(params['id']))
+            .subscribe((response: ApolloQueryResult<any>) => {
+            setTimeout(() => {
+                // that._setRemoveTargetData(response);
+                if (response.data.map) {
+                    that._processMapResponse(response);
+                }
+            }, 2000);
         }));
 
     }
@@ -75,7 +93,11 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
                return this._router.navigateByUrl('/charts');
 
           case DialogResult.SAVE:
-               return this.updateChart();
+            if (MapModel) {
+                return this.updateMap();
+            } else {
+                return this.updateChart();
+            }
         }
     }
 
@@ -125,6 +147,49 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
         });
     }
 
+    updateMap() {
+        const that = this;
+
+        this._selectChartService.updateExistDuplicatedName(false);
+
+        this._apolloService.networkQuery < String > (getMapByTitle, { title: this.fg.controls.name.value }).then(d => {
+            const mapResponse = JSON.parse(d.getMapByTitle);
+            if (mapResponse && mapResponse._id !== this.id) {
+                this._selectChartService.updateExistDuplicatedName(true);
+
+                this.fg.controls['name'].setErrors({forbiddenName: true});
+
+                return Sweetalert({
+                    title: 'Duplicated name!',
+                    text: 'You already have a Map with that name. Please change the name and try again.',
+                    type: 'error',
+                    showConfirmButton: true,
+                    confirmButtonText: 'Ok'
+                  });
+            }
+
+            // this.chartFormComponent.processFormatChanges(this.fg.value);
+            const model = MapModel.fromFormGroup(this.fg);
+
+            this._apollo.mutate<IUpdateChartResponse>({
+                mutation: UpdateMapMutation,
+                variables: { id: that.id, input: model }
+            })
+            .toPromise()
+            .then(response => {
+                if (response.data.updateMap.success) {
+                    this._router.navigateByUrl('/charts/list');
+                }
+
+                if (response.data.updateMap.errors) {
+                    // perform an error message
+                    console.log(response.data.updateMap.errors);
+                }
+            })
+            .catch(err => console.log(err));
+        });
+    }
+
     private _canRemoveTargetFromChart(): boolean {
         if (!this.removeTargetData) { return true; }
 
@@ -154,6 +219,18 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
         }, 500);
     }
 
+    private _processMapResponse(response: ApolloQueryResult<any>) {
+        this.loading = false;
+        if (!response.data.map) {
+            return this.id = null;
+        }
+        this.map = JSON.parse(response.data.map);
+        this.mapModel = new MapModel(this.map);
+        setTimeout(() => {
+            this.chartFormComponent.updateFormFields();
+        }, 500);
+    }
+
     private _getChartByIdApolloQuery(id: string): Observable<ApolloQueryResult<SingleChartResponse>> {
       return this._apollo.watchQuery <SingleChartResponse> ({
           query: SingleChartQuery,
@@ -163,6 +240,16 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
           fetchPolicy: 'network-only'
         }).valueChanges;
     }
+
+    private _getMapByIdApolloQuery(id: string): Observable<ApolloQueryResult<SingleMapResponse>> {
+        return this._apollo.watchQuery <SingleMapResponse> ({
+            query: SingleMapQuery,
+            variables: {
+              id: id
+            },
+            fetchPolicy: 'network-only'
+          }).valueChanges;
+      }
 
     private _setRemoveTargetData(response: any): void {
         const data = response.data;

@@ -4,12 +4,11 @@ import { ModifyChartActivity } from '../../shared/authorization/activities/chart
 import { CloneChartActivity } from '../../shared/authorization/activities/charts/clone-chart.activity';
 import { ChartInspectorViewModel } from './chart-inspector.viewmodel';
 import { ModalComponent } from '../../ng-material-components';
-import { DeleteChartMutation } from '../shared/graphql';
+import { DeleteChartMutation, DeleteMapMutation } from '../shared/graphql';
 import { IMutationResponse } from '../../shared/models';
 import { OverlayComponent } from '../../shared/ui/overlay/overlay.component';
 import { ListChartService } from '../shared/services/list-chart.service';
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { IChart } from '../shared/models';
 import { Apollo } from 'apollo-angular';
 import { Router } from '@angular/router';
 import { IModalError } from '../../shared/interfaces/modal-error.interface';
@@ -30,7 +29,7 @@ export class ChartInspectorComponent implements OnInit, OnDestroy {
     @ViewChild(OverlayComponent) removeOverlay: OverlayComponent;
     @ViewChild('errorModal') errorModal: ModalComponent;
 
-    item: IChart;
+    item: any;
     deleted = false;
 
     lastError: IModalError;
@@ -91,8 +90,47 @@ export class ChartInspectorComponent implements OnInit, OnDestroy {
     clone() {
       this._router.navigate(['/charts/clone', this.item._id]);
     }
+    DeleteMap() {
+      const that = this;
+      this._subscription.push(
+        this._apollo.mutate<IDeleteChartResponse>({
+            mutation: DeleteMapMutation,
+            variables: { id: that.item._id },
+            updateQueries: {
+              ListMapQuery: (previousResult, { mutationResult }) => {
+                const { deleteMap } = mutationResult.data;
+                const { success, errors } = deleteMap;
 
-    remove() {
+                if (!success && errors && errors.length) {
+                  const dependency = errors.find(e => e.field === '__isDependencyOf');
+                  that.lastError = {
+                    title: 'Error removing map',
+                    msg: 'A map cannot be remove while it\'s being used. The following element(s) are currently using this map: ',
+                    items: dependency.errors
+                  };
+                  that.errorModal.open();
+                  return;
+                }
+                let listMaps = (<any>previousResult).listMaps.map(m => {
+                  return JSON.parse(m);
+                });
+                const currMaps = (<any>listMaps).filter( c => c._id !== that.item._id);
+                listMaps = currMaps.map(c => {
+                  return JSON.stringify(c);
+                });
+                return { listMaps: listMaps };
+              }
+            }
+        })
+        .subscribe(response => {
+            if (response.data.deleteMap.success) {
+                this._successfullChartDeletion();
+            }
+        })
+      );
+    }
+
+    DeleteChart() {
       const that = this;
       this._subscription.push(
         this._apollo.mutate<IDeleteChartResponse>({
@@ -127,6 +165,13 @@ export class ChartInspectorComponent implements OnInit, OnDestroy {
             }
         })
       );
+    }
+    remove() {
+      if (this.item.size) {
+        this.DeleteMap();
+      } else {
+        this.DeleteChart();
+      }
     }
 
     private _successfullChartDeletion() {

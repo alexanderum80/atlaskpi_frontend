@@ -3,11 +3,19 @@
 .block-header
     h2.m-t-30.text-center  {{ title }}
 .h-100(layout="column", layout-align="start center")
-    .chart-fit-mobile.overflow-auto(flex)
+    // show map
+    .div-map(*ngIf="ischartTypeMap", flex)
+        kpi-show-map(*ngIf="mapMarkers.length > 0", [markers]="mapMarkers", [legendColors]="legendColors", [legendClosed]="true")
+        div.text-center(*ngIf="mapMarkers.length === 0", flex)
+                    img(src="/assets/img/charts/others/map-preview-no-data.png", alt="Map no data")
+        div.m-t-20(flex)
+            h2.text-center Map Preview            
+    // show chart    
+    .chart-fit-mobile.overflow-auto(*ngIf="!ischartTypeMap", flex)
         div([chart]="chart", *ngIf="hasSeries")
         div(*ngIf="isSeriesEmpty")
             .h-100(layout="row", layout-padding, layout-align="center center")
-                div.text-center(flex)
+                div.text-center(flex)    
                     i.zmdi.zmdi-image.no-data-icon.c-lightGray
-    div(flex)
-        h2.text-center Chart Preview
+        div(flex)
+            h2.text-center Chart Preview

@@ -1,12 +1,13 @@
 bw-card.m-b-5.p-relative(flex, [depth]="1")
     bw-card-body.box(flex, [padded]="true", (click)="setActive()")
-        div(layout="column", style="min-height: 200px;")
+        div(layout="column", style="min-height: 100px;")
             .text-center.mini-chart-title(flex) {{ item.title }}
             div(flex, layout="column")
             div(*ngIf="loading", flex, style="text-align: center")
                 bw-preloader(color="gray")
                 //- | loading...
-            .animated.fadeIn.box.p-t-5(flex, [chart]="chart", style="height: 300px;")
+            .animated.fadeIn.box.p-t-2(flex, style="height: 300px;")
+                kpi-show-map([markers]="item.markers", [legendColors]="legendColors", [legendClosed]="true", [Height]="'280px'")
     div(*ngIf="selected$ | async; let itemSelected")
         .marker.animated.fadeIn(*ngIf="(inspectorOpen$ | async)  && itemSelected === item")
             i.zmdi.zmdi-check-circle.text-right.c-green.checked
