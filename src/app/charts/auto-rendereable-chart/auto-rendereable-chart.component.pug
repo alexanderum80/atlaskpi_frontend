@@ -20,7 +20,7 @@ bw-card.m-b-0([depth]="1")
             div(*ngIf="loading", flex, style="text-align: center")
                 bw-preloader(color="gray")
             .box.p-t-5.p-relative(*ngIf="!loading && chart !== undefined")
-                div(*ngIf="chart.options?.series?.length > 0", flex, [chart]="chart", [style.min-height.px]="minHeight")
+                div.remove-gridlines(*ngIf="chart.options?.series?.length > 0", flex, [chart]="chart", [style.min-height.px]="minHeight")
             div(*ngIf="!loading && chart?.options?.series?.length === 0", flex, style="text-align: center",
                        layout="column", layout-align="center center")
                 i.zmdi.zmdi-info-outline.big-i-icon(flex)

@@ -136,6 +136,8 @@ export interface IChartFormValues {
   tooltipEnabled: boolean;
   predefinedTooltipFormat?: string;
   seriesDataLabels: boolean;
+  //gridlines
+  gridLineWidth: number;
 
 }
 
@@ -265,6 +267,10 @@ export class ChartModel {
         }
       }
       proxyChartModel.chartDefinition.invertAxis = {enabled: fg.value.invertedAxis || false};
+      //removegridlines
+      if (proxyChartModel.chartDefinition.yAxis) {
+        proxyChartModel.chartDefinition.yAxis.gridLineWidth = fg.value.removeGridlines ? 0 : 1;
+      }
       // convert the definition to string
       proxyChartModel.chartDefinition = JSON.stringify(proxyChartModel.chartDefinition);
 
@@ -309,6 +315,8 @@ export class ChartModel {
         tooltipEnabled: this.isTooltipEnabled,
         predefinedTooltipFormat: this.predefinedTooltipDefinition,
         seriesDataLabels: this.isSerieDataLabelsEnabled,
+        //remove gridlines
+        gridLineWidth: this.removeGridlines
             };
     }
 
@@ -346,6 +354,13 @@ export class ChartModel {
         return  this.chartDefinition.yAxis.title.text;
       }
       return undefined;
+    }
+    //gridlines
+    get removeGridlines(): number {
+      if (this.chartDefinition.yAxis && (this.chartDefinition.yAxis.gridLineWidth >= 0)) {
+      return  this.chartDefinition.yAxis.gridLineWidth;
+    }
+    return undefined;
     }
 
     get validForPreview(): boolean {

@@ -263,11 +263,17 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                         }
                     });
                 }
+                //gridlines
+                if (!isEmpty(values.removeGridlines)) {
+                    this.chartDefinition.yAxis = Object.assign({}, this.chartDefinition.removeGridlines || {}, {
+                        removeGridlines: 0
+                    });
+                }
 
                 if (!this.chartDefinition.chart) {
                     this.chartDefinition.chart = {};
                 }
-                // legend
+                // legend,
                 this._processLegendChanges(values);
                 // series
                 this._processSerieChanges(values);
@@ -275,6 +281,8 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                 this._processTooltipChanges(values);
                 // invert axis
                 this._processInvertedAxisChanges(values);
+                //remove gridlines
+                this._proccessRemoveGridlines(values);
                 console.log(this.chartDefinition);
                 return resolve();
             });
@@ -418,6 +426,14 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     isInvertAxisEnabled() {
         return (!this.chartModel.hasOwnProperty('chartDefinition') || !this.chartModel.chartDefinition.hasOwnProperty('invertAxis')) ?
             false : this.chartModel.chartDefinition['invertAxis']['enabled'];
+    }
+    //remove gridlines
+    isRemoveGridlinesEnabled() {
+        if (!this.chartModel.hasOwnProperty('chartDefinition') || !this.chartModel.chartDefinition.hasOwnProperty('yAxis') ||
+        this.chartModel.chartDefinition['yAxis']['gridLineWidth'] !== 0) {
+            return false;
+        }
+        return true;
     }
 
     getCustom() {
@@ -609,6 +625,15 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             if (this._previewQuery && this._previewValid(model)) {
                 this._previewQuery.refetch({ input: model }).then(res => this._processChartPreview(res.data));
             }
+        }
+    }
+    //remove gridlines
+     private _proccessRemoveGridlines(values) {
+        const newValue = (values.removeGridlines) ? true : false;
+
+        const model = ChartModel.fromFormGroup(this.fg, this.chartDefinition);
+        if (this._previewQuery && this._previewValid(model)) {
+            this._previewQuery.refetch({ input: model }).then(res => this._processChartPreview(res.data));
         }
     }
 

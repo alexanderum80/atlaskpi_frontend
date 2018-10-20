@@ -143,8 +143,10 @@
         .m-10(layout="column")
             bw-text-box(flex-none, [fg]="fg", field="yAxisTitle", label="Y axis title", leftIcon="long-arrow-up")
         .block-header
-        .m-10(layout="column")
+        .m-10(layout="row")
             bw-checkbox.m-l-40([fg]="fg", field="invertedAxis", label="Invert axis", [hidden]="isPie", [value]="isInvertAxisEnabled")    
+            bw-checkbox.m-l-40([fg]="fg", field="removeGridlines", label="Remove Gridlines", [hidden]="isPie", [value]="isRemoveGridlinesEnabled")
+        
         .block-header
             h2.m-t-10 Legend
         .m-10(layout="column")

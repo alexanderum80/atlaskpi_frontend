@@ -6,7 +6,7 @@ bw-card.m-b-5.p-relative(flex, [depth]="1")
             div(*ngIf="loading", flex, style="text-align: center")
                 bw-preloader(color="gray")
                 //- | loading...
-            .animated.fadeIn.box.p-t-5(flex, [chart]="chart", style="height: 300px;")
+            .animated.fadeIn.box.p-t-5.kaka(flex, [chart]="chart", style="height: 300px;")
     div(*ngIf="selected$ | async; let itemSelected")
         .marker.animated.fadeIn(*ngIf="(inspectorOpen$ | async)  && itemSelected === item")
             i.zmdi.zmdi-check-circle.text-right.c-green.checked
