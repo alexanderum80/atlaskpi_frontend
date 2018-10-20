@@ -6,7 +6,7 @@ import { MenuItem } from '../../../../dashboards/shared/models';
 import { IActionItemClickedArgs } from '../item-clicked-args';
 import { IListItem } from '../list-item';
 import { IItemListActivityName } from '../../../interfaces/item-list-activity-names.interface';
-import { getEnumString } from '../../../extentions/index';
+import { getEnumString } from '../../../extentions';
 import { flatten, isEmpty } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 import SweetAlert from 'sweetalert2';

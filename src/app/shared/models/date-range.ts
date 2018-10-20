@@ -40,6 +40,11 @@ import { IDateRange, IChartDateRange } from './date-range';
 //     }
 // }
 
+export enum AKPIDateFormatEnum {
+    US_DATE = 'MM/DD/YYYY',
+    US_SHORT_DATE = 'MM/DD/YY',
+    US_DATE_HOUR = 'MM/DD/YYYY HH:mm:ss',
+}
 
 import * as moment from 'moment';
 
@@ -86,7 +91,13 @@ export const PredefinedDateRanges = {
     last30Days: 'last 30 days',
     last90Days: 'last 90 days',
     last365Days: 'last 365 days',
-    allTimes: 'all times'
+    allTimes: 'all times',
+
+    // future DateRanges,
+    nextWeek: 'next week',
+    nextMonth: 'next month',
+    nextQuarter: 'next quarter',
+    nextYear: 'next year',
 };
 
 export const PredefinedComparisonDateRanges = {
@@ -142,7 +153,36 @@ export const PredefinedComparisonDateRanges = {
     customTwoYearsAgo: 'two years ago',
     customThreeYearsAgo: 'three years ago',
     customFourYearsAgo: 'four years ago',
-    customFiveYearsAgo: 'five years ago'
+    customFiveYearsAgo: 'five years ago',
+    twoYearsAgo: '2 years ago',
+    threeYearsAgo: '3 years ago',
+    fourYearsAgo: '4 years ago',
+    fiveYearsAgo: '5 years ago',
+    sixYearsAgo: '6 years ago',
+    sevenYearsAgo: '7 years ago',
+    eightYearsAgo: '8 years ago',
+    nineYearsAgo: '9 years ago',
+    tenYearsAgo: '10 years ago',
+    elevenYearsAgo: '11 years ago',
+    twelveYearsAgo: '12 years ago',
+    thirteenYearsAgo: '13 years ago',
+    fourteenYearsAgo: '14 years ago',
+    fifteenYearsAgo: '15 years ago',
+    sixteenYearsAgo: '16 years ago',
+    seventeenYearsAgo: '17 years ago',
+    eighteenYearsAgo: '18 years ago',
+    nineteenYearsAgo: '19 years ago',
+    twentyYearsAgo: '20 years ago',
+    twentyoneYearsAgo: '21 years ago',
+    twentytwoYearsAgo: '22 years ago',
+    twentythreeYearsAgo: '23 years ago',
+    twentyfourYearsAgo: '24 years ago',
+    twentyfiveYearsAgo: '25 years ago',
+    twentysixYearsAgo: '26 years ago',
+    twentysevenYearsAgo: '27 years ago',
+    twentyeightYearsAgo: '28 years ago',
+    twentynineYearsAgo: '29 years ago',
+    thirtyYearsAgo: '30 years ago',
 };
 
 export const quarterMonths = {
@@ -154,13 +194,13 @@ export const quarterMonths = {
 
 const thisQuarter = moment().quarter();
 
-export function parsePredifinedDate(textDate: string): IDateRange {
+export function parsePredefinedDate(textDate: string): IDateRange {
 
     switch (textDate) {
         case PredefinedDateRanges.allTimes:
             return {
                 from: (<any>moment).min(moment().subtract(30, 'years'), moment().subtract(1, 'years')).startOf('year').toDate(),
-                to: moment().toDate()
+                to: moment().add(30, 'year').toDate()
             };
         case PredefinedDateRanges.lastWeek:
             return {
@@ -302,6 +342,39 @@ export function parsePredifinedDate(textDate: string): IDateRange {
                 from: moment().subtract(365, 'days').startOf('day').toDate(),
                 to: moment().subtract(1, 'days').endOf('day').toDate()
             };
+
+        // future dateRanges
+
+        case PredefinedDateRanges.nextWeek:
+            return {
+                from: moment().add(1, 'week').startOf('week').toDate(),
+                to: moment().add(1, 'week').endOf('week').toDate()
+            };
+
+        case PredefinedDateRanges.nextMonth:
+            return {
+                from: moment().add(1, 'month').startOf('month').toDate(),
+                to: moment().add(1, 'month').endOf('month').toDate()
+            };
+
+        case PredefinedDateRanges.nextQuarter:
+            let nextQuarter = thisQuarter + 1;
+            if (nextQuarter > 4) { nextQuarter -= 4; }
+
+            const nYear = (thisQuarter - 1)
+                         ? moment().add(1, 'year').year()
+                         : moment().year();
+
+            return {
+                from: moment().year(nYear).quarter(nextQuarter).startOf('quarter').toDate(),
+                to: moment().year(nYear).quarter(nextQuarter).endOf('quarter').toDate()
+            };
+
+        case PredefinedDateRanges.nextYear:
+            return {
+                from: moment().add(1, 'year').startOf('year').toDate(),
+                to: moment().add(1, 'year').endOf('year').toDate()
+            };
     }
 
 }
@@ -329,7 +402,7 @@ export function parseComparisonDateRange(value: string, customDateRange?: IDateR
             to: moment(customDateRange.to).toDate()
         };
     } else {
-        firstDateRange = parsePredifinedDate(comparisonTokens[0]);
+        firstDateRange = parsePredefinedDate(comparisonTokens[0]);
     }
 
     // check if undefined
@@ -337,9 +410,7 @@ export function parseComparisonDateRange(value: string, customDateRange?: IDateR
     if (!firstDateRange) {
         firstDateRange = {};
     }
-
     switch (comparisonTokens[1]) {
-
         // today cases
         case 'yesterday':
             return backInTime(firstDateRange, 1, 'day');
@@ -365,16 +436,74 @@ export function parseComparisonDateRange(value: string, customDateRange?: IDateR
         case 'threeYearsAgo':
             return backInTime(firstDateRange, 3, 'year');
 
+        case 'fourYearsAgo':
+            return backInTime(firstDateRange, 4, 'year');
+        case 'fiveYearsAgo':
+            return backInTime(firstDateRange, 5, 'year');
+        case 'sixYearsAgo':
+            return backInTime(firstDateRange, 6, 'year');
+        case 'sevenYearsAgo':
+            return backInTime(firstDateRange, 7, 'year');
+        case 'eightYearsAgo':
+            return backInTime(firstDateRange, 8, 'year');
+        case 'nineYearsAgo':
+            return backInTime(firstDateRange, 9, 'year');
+        case 'tenYearsAgo':
+            return backInTime(firstDateRange, 10, 'year');
+        case 'elevenYearsAgo':
+            return backInTime(firstDateRange, 11, 'year');
+        case 'twelveYearsAgo':
+            return backInTime(firstDateRange, 12, 'year');
+        case 'thirteenYearsAgo':
+            return backInTime(firstDateRange, 13, 'year');
+        case 'fourteenYearsAgo':
+            return backInTime(firstDateRange, 14, 'year');
+        case 'fifteenYearsAgo':
+            return backInTime(firstDateRange, 15, 'year');
+        case 'sixteenYearsAgo':
+            return backInTime(firstDateRange, 16, 'year');
+        case 'seventeenYearsAgo':
+            return backInTime(firstDateRange, 17, 'year');
+        case 'eighteenYearsAgo':
+            return backInTime(firstDateRange, 18, 'year');
+        case 'nineteenYearsAgo':
+            return backInTime(firstDateRange, 19, 'year');
+        case 'twentyYearsAgo':
+            return backInTime(firstDateRange, 20, 'year');
+        case 'twentyoneYearsAgo':
+            return backInTime(firstDateRange, 21, 'year');
+        case 'twentytwoYearsAgo':
+            return backInTime(firstDateRange, 22, 'year');
+        case 'twentythreeYearsAgo':
+            return backInTime(firstDateRange, 23, 'year');
+        case 'twentyfourYearsAgo':
+            return backInTime(firstDateRange, 24, 'year');
+        case 'twentyfiveYearsAgo':
+            return backInTime(firstDateRange, 25, 'year');
+        case 'twentysixYearsAgo':
+            return backInTime(firstDateRange, 26, 'year');
+        case 'twentysevenYearsAgo':
+            return backInTime(firstDateRange, 27, 'year');
+        case 'twentyeightYearsAgo':
+            return backInTime(firstDateRange, 28, 'year');
+        case 'twentynineYearsAgo':
+            return backInTime(firstDateRange, 29, 'year');
+        case 'thirtyYearsAgo':
+            return backInTime(firstDateRange, 30, 'year');
         case 'lastQuarter':
             // TODO: we have to calculate the previous Q, just back in time 90 days for now
             return backInTime(firstDateRange, 90, 'days');
 
         case 'previousPeriod':
             return previousPeriod(firstDateRange);
-
+        default :
+            if (comparisonTokens[1].endsWith('YearsAgo')) {
+                const timeBack = comparisonTokens[1].substr(0, comparisonTokens[1].indexOf('YearsAgo'));
+                return backInTime(firstDateRange, <any>timeBack, 'year');
+            } else {
+                return null;
+            }
     }
-
-    return null;
 }
 
 export function backInTime(dateRange: IDateRange, amount: any, timespan: string): IDateRange {
@@ -432,7 +561,7 @@ export class ChartDateRangeModel {
 
     constructor(obj: IChartDateRange) {
         if (obj.predefined) {
-            this._parsedDateRange = parsePredifinedDate(obj.predefined);
+            this._parsedDateRange = parsePredefinedDate(obj.predefined);
         }
         if (this._parsedDateRange !== undefined) { return; }
 
@@ -451,8 +580,6 @@ export class ChartDateRangeModel {
     }
 }
 
-
-
 export interface IDateRangeComparisonItem {
     key: string;
     value: string;
@@ -461,4 +588,31 @@ export interface IDateRangeComparisonItem {
 export interface IDateRangeItem {
     dateRange: IChartDateRange;
     comparisonItems: IDateRangeComparisonItem[];
+}
+
+export interface IStringDateRange {
+    from: string;
+    to: string;
+}
+
+export interface IStringChartDateRange {
+    predefined: string;
+    custom?: IStringDateRange;
+}
+
+export function  convertDateRangeToStringDateRange(dateRange: IChartDateRange): IStringChartDateRange {
+    const newDateRange: IStringChartDateRange = {
+        predefined: dateRange.predefined
+    };
+
+    if (dateRange.custom) {
+        const from = moment(dateRange.custom.from).format(AKPIDateFormatEnum.US_DATE);
+        const to = moment(dateRange.custom.to).format(AKPIDateFormatEnum.US_DATE);
+        newDateRange.custom = {
+            from,
+            to
+        };
+    }
+
+    return newDateRange;
 }

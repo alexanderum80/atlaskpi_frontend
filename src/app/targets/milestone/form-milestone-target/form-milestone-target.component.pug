@@ -1,0 +1,33 @@
+.milestone-form(layout="column")
+    //- form controls
+    div(flex)
+        div(layout="row")
+            div(flex)
+                bw-text-box(
+                    [fg]="fg",
+                    leftIcon="file-text",
+                    field="task",
+                    label="Task Description"
+                )
+                
+            div(flex)
+                bw-date-picker([fg]="fg", field="dueDate", label="Date", [required]="true", [config]="datePickerConfig")
+            
+            //-  responsible
+            div(flex)
+                bw-select-picker(
+                    [fg]="fg",
+                    field="responsible",
+                    [items]="userList",
+                    leftIcon="accounts",
+                    [multiple]="true",
+                    noneSelectedText="Responsible(s)"
+                )  
+
+    //- actions
+    div(flex)
+        div(layout="row", layout-align="end start")
+            div(flex-initial)
+                bw-button.m-t-20(color="blue", title="Save", [simple]="true", icon="floppy", (clicked)="save()", [disabled]="!fg.valid")
+            div(flex-initial)
+                bw-button.m-t-20(title="Cancel", color="black", [simple]="true", icon="close", (clicked)="cancel()")

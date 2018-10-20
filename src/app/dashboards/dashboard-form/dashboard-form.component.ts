@@ -22,12 +22,20 @@ import { ListWidgetsQueryResponse } from '../../widgets/shared/models';
 import { dashboardGraphqlActions } from '../shared/graphql';
 import { Dashboard, IDashboard } from '../shared/models';
 import { MenuService } from '../shared/services';
-import { IUserInfo } from './../../shared/models/user';
-import { GenericSelectionItem, IGenericSelectionItem } from './../../shared/services/generic-selection.service';
-import { UserService } from './../../shared/services/user.service';
-import { IWidget, WidgetSizeEnum, WidgetSizeMap } from './../../widgets/shared/models/widget.models';
+import { IUserInfo } from '../../shared/models/user';
+import { GenericSelectionItem, IGenericSelectionItem } from '../../shared/services/generic-selection.service';
+import { UserService } from '../../shared/services/user.service';
+import { IWidget, WidgetSizeEnum, WidgetSizeMap } from '../../widgets/shared/models/widget.models';
+import { SocialWidgetBase } from './../../social-widgets/models/social-widget-base';
+import { objectWithoutProperties } from '../../shared/helpers/object.helpers';
+
+export interface IMap {
+  _id: string;
+  imgpath: string;
+}
 
 const dashboardByNameQuery = require('graphql-tag/loader!../shared/graphql/dashboard-by-name.gql');
+const socialwidgetsQuery = require('graphql-tag/loader!../dashboard-show/social-widgets.query.gql');
 
 @Component({
   selector: 'kpi-dashboard-form',
@@ -49,8 +57,11 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   widgetsLoading = true;
   chartsLoading = true;
-
+  socialwidgetsLoading = true;
+  mapsLoading = true;
   allWidgets: IWidget[] = [];
+  allSocialWidgets: SocialWidgetBase[] = [];
+  allMaps: IMap[] = [];
   allCharts: IChart[] = [];
 
   filterList: SelectionItem[] = [];
@@ -76,6 +87,8 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
   isAccessLevelsTab = false;
   isAddChart = false;
   isAddWidget = false;
+  isAddSocialWidget = false;
+  isAddMap = false;
   isPreviewDashboard = false;
 
   loading = false;
@@ -99,7 +112,6 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngOnInit() {
     const that = this;
-
     this.subscriptions.push(this._userService.user$.subscribe((user: IUserInfo) => {
       that.currentUser = user;
     }));
@@ -112,6 +124,8 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     if ( that.actionAdd === 'actionAdd' ) {
       that._loadUsers();
       that._loadWidgets();
+      that._loadSocialWidgets();
+      that._loadMaps();
       that._loadCharts();
       that._dashboardModelSubscription();
     } else {
@@ -119,6 +133,8 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
       this._loadDashboard().then(() => {
         that._loadUsers();
         that._loadWidgets();
+        that._loadSocialWidgets();
+        that._loadMaps();
         that._loadCharts();
         that._dashboardModelSubscription();
       });
@@ -149,6 +165,14 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   toggleWidgetSelection(item: any) {
     this._selectionService.toggleSelection(new GenericSelectionItem(item, 'widget'));
+  }
+
+  toggleSocialWidgetSelection(item: any) {
+    this._selectionService.toggleSelection(new GenericSelectionItem(item, 'sw'));
+  }
+
+  toggleMapSelection(item: any) {
+    this._selectionService.toggleSelection(new GenericSelectionItem(item, 'map'));
   }
 
   toggleChartSelection(item: any) {
@@ -261,6 +285,33 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     });
   }
 
+  private _loadSocialWidgets(options = { updateSelection: true }) {
+    this.socialwidgetsLoading = true;
+    const that = this;
+    this._apollo.query<any> ({
+      query: socialwidgetsQuery,
+      fetchPolicy: 'network-only'
+    })
+    .toPromise()
+    .then(response => {
+      that.socialwidgetsLoading = false;
+      const socialWidgets = response.data.listSocialWidgets.map(
+        d => new SocialWidgetBase( < any > objectWithoutProperties(d, ['__typename'])));
+      that.allSocialWidgets = socialWidgets;
+      if (options.updateSelection) {  that._updateSocialWidgetSelection(); }
+    });
+  }
+
+  private _loadMaps(options = { updateSelection: true }) {
+    this.mapsLoading = true;
+    this.allMaps = [{
+        _id: '1',
+        imgpath: '/assets/img/datasources/mapa.logo.png'
+      }];
+    this.mapsLoading = false;
+    if (options.updateSelection) {  this._updateMapSelection(); }
+  }
+
   private _loadCharts(options = { updateSelection: true }): Promise<any> {
     this.chartsLoading = true;
     const that = this;
@@ -294,14 +345,14 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
   previewDashboard() {
     const that = this;
     this.loading = true;
-
     const payload = {
       name: that.dashboardModel ? that.dashboardModel.name : '',
       description: that.dashboardModel ? that.dashboardModel.description : '',
       charts: that.selectedCharts.map((c: IChart) => c._id),
       widgets: that.selectedWidgets.map((w: IWidget) => w._id),
+      socialwidgets: that.selectedSocialWidgets.map((sw: SocialWidgetBase) => sw.connectorId),
+      maps: that.selectedMaps.map((m: IMap) => m._id)
     };
-
     that._apolloService.networkQuery(
       dashboardGraphqlActions.previewDashboard,
       { input: payload }
@@ -342,10 +393,11 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
         description: that.dashboardModel.description,
         charts: that.selectedCharts.map((c: IChart) => c._id),
         widgets: that.selectedWidgets.map((w: IWidget) => w._id),
+        socialwidgets: that.selectedSocialWidgets.map((sw: SocialWidgetBase) => sw.connectorId),
+        maps: that.selectedMaps.map((m: IMap) => m._id),
         users: that.dashboardModel.users,
         owner: that.currentUser._id
       };
-
       this._apollo.mutate({
         mutation: dashboardGraphqlActions.createDashboard,
         variables: { input: dashboardPayload },
@@ -387,6 +439,8 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
         description: that.dashboardModel.description,
         charts: that.selectedCharts.map((c: IChart) => c._id),
         widgets: that.selectedWidgets.map((w: IWidget) => w._id),
+        socialwidgets: that.selectedSocialWidgets.map((sw: SocialWidgetBase) => sw.connectorId),
+        maps: that.selectedMaps.map((m: IMap) => m._id),
         users: that.dashboardModel.users
       };
 
@@ -419,6 +473,8 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
           dashboard.description,
           this.selectedCharts.map((c: IChart) => c._id),
           this.selectedWidgets.map((w: IWidget) => w._id),
+          this.selectedSocialWidgets.map((sw: SocialWidgetBase) => sw.connectorId),
+          this.selectedMaps.map((m: IMap) => m._id),
           that.dashboardModel && that.dashboardModel.owner || that.currentUser._id,
           (dashboard.users.length > 0) && dashboard.users.split('|') || []
       );
@@ -440,19 +496,19 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
         .toPromise()
         .then((response: ApolloQueryResult < any > ) => {
           const rawDashboard = response.data.dashboard;
-
           const fgValues = {
             _id: rawDashboard._id,
             name: rawDashboard.name,
             description: rawDashboard.description,
             users: rawDashboard.users
           };
-
           that.dashboardModel = {
             name: rawDashboard.name,
             description: rawDashboard.description,
             charts: rawDashboard.charts.map(c => JSON.parse(c)._id),
-            widgets: rawDashboard.charts.map(w => JSON.parse(w)._id),
+            widgets: rawDashboard.widgets.map(w => JSON.parse(w)._id),
+            socialwidgets: rawDashboard.socialwidgets.map(sw => JSON.parse(sw).connectorId),
+            maps: rawDashboard.maps.map(m => JSON.parse(m)),
             users: rawDashboard.users,
             owner: rawDashboard.owner
           };
@@ -495,7 +551,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   private _isAccountOwner(user): boolean {
-    //return user.roles.find(role => role.name !== 'owner');
+    // return user.roles.find(role => role.name !== 'owner');
     return user && user.roles[0] && (user.roles[0].name === 'owner') ;
   }
 
@@ -559,6 +615,28 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     });
   }
 
+  private _updateSocialWidgetSelection() {
+    if (!this.rawDashboard || !this.rawDashboard.socialwidgets) { return; }
+    const that = this;
+    this.allSocialWidgets.forEach(sw => {
+      const initialSocialWidgetsSelection = (<any>that.rawDashboard.socialwidgets).map(rw => JSON.parse(rw).connectorId);
+      if (initialSocialWidgetsSelection.includes(sw.connectorId)) {
+        that.toggleSocialWidgetSelection(sw);
+      }
+    });
+  }
+
+  private _updateMapSelection() {
+    if (!this.rawDashboard || !this.rawDashboard.maps) { return; }
+    const that = this;
+    this.allMaps.forEach(m => {
+      const initialMapsSelection = (<any>that.rawDashboard.maps);
+      if (initialMapsSelection.includes(m._id)) {
+        that.toggleMapSelection(m);
+      }
+    });
+  }
+
   private _updateChartSelection() {
     if (!this.rawDashboard || !this.rawDashboard.charts) { return; }
     const that = this;
@@ -591,6 +669,14 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     this.isAddWidget = true;
   }
 
+  openAddSocialWidget() {
+    this.isAddSocialWidget = true;
+  }
+
+  openAddMap() {
+    this.isAddMap = true;
+  }
+
   onChartFormEvent($event: string) {
     this.isAddChart = false;
     this.selectedCharts.forEach(c => this.toggleChartSelection(c));
@@ -599,8 +685,20 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   onWidgetFormEvent($event: string) {
     this.isAddWidget = false;
-    this.selectedWidgets.forEach(c => this.toggleWidgetSelection(c));
+    this.selectedWidgets.forEach(w => this.toggleWidgetSelection(w));
     this._loadWidgets();
+  }
+
+  onSocialWidgetFormEvent($event: string) {
+    this.isAddSocialWidget = false;
+    this.selectedSocialWidgets.forEach(sw => this.toggleSocialWidgetSelection(sw));
+    this._loadSocialWidgets();
+  }
+
+  onMapFormEvent($event: string) {
+    this.isAddMap = false;
+    this.selectedMaps.forEach(m => this.toggleMapSelection(m));
+    this._loadMaps();
   }
 
   onDashboardPreviewFormEvent($event: DialogResult) {
@@ -622,16 +720,32 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     return this.selectedTab === 'widgets';
   }
 
+  get isSocialWidgetsTab(): boolean {
+    return this.selectedTab === 'socialwidgets';
+  }
+
+  get isMapTab(): boolean {
+    return this.selectedTab === 'maps';
+  }
+
   get isAccessLevelTab(): boolean {
     return this.selectedTab === 'accessLevels';
   }
 
   get filterDisabled(): boolean {
-    return this.isWidgetsTab || this.isAccessLevelsTab;
+    return this.isWidgetsTab || this.isMapTab || this.isSocialWidgetsTab || this.isAccessLevelsTab;
   }
 
   get selectedWidgets(): IWidget[] {
     return this.selectedItems.filter(i => i.type === 'widget').map(o => o.payload);
+  }
+
+  get selectedSocialWidgets(): SocialWidgetBase[] {
+    return this.selectedItems.filter(i => i.type === 'sw').map(o => o.payload);
+  }
+
+  get selectedMaps(): IMap[] {
+    return this.selectedItems.filter(i => i.type === 'map').map(o => o.payload);
   }
 
   get selectedCharts(): IChart[] {
@@ -640,6 +754,14 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   get visibleSmallWidgets(): IWidget[] {
     return this.allWidgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Small);
+  }
+
+  get visibleSocialWidgets(): SocialWidgetBase[] {
+    return this.allSocialWidgets;
+  }
+
+  get visibleMaps(): IMap[] {
+    return this.allMaps;
   }
 
   get visibleBigWidgets(): IWidget[] {
@@ -655,7 +777,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   get dashboardFormHidden() {
-    return this.isAddChart || this.isAddWidget || this.isPreviewDashboard;
+    return this.isAddChart || this.isAddWidget || this.isAddSocialWidget || this.isAddMap || this.isPreviewDashboard;
   }
 
   get valid(): boolean {

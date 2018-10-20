@@ -1,7 +1,7 @@
 import { dashboardGraphqlActions } from '../shared/graphql';
-import { IMutationResponse } from './../../shared/models/mutation-response';
+import { IMutationResponse } from '../../shared/models/mutation-response';
 import { IDashboard, Dashboard } from '../shared/models';
-import { DashboardFormComponent } from './../dashboard-form/dashboard-form.component';
+import { DashboardFormComponent } from '../dashboard-form/dashboard-form.component';
 import { Apollo } from 'apollo-angular';
 import { ModalComponent } from '../../ng-material-components';
 import { FormGroup } from '@angular/forms';

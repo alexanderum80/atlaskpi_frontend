@@ -228,9 +228,16 @@ export class SidebarService {
         const that = this;
         const items = this._itemsSubject.value;
         let isDashboardRoute = false;
-        if (!dashboards) {
+        let isVisible: boolean = true;
+        let listdashboardIdNoVisible;
+        if (this._userService.user && this._userService.user.preferences && this._userService.user.preferences.dashboardIdNoVisible !== null) {
+            listdashboardIdNoVisible = this._userService.user.preferences.dashboardIdNoVisible.split('|');
+        }
+
+        if (!dashboards || !dashboards.length) {
             return;
         }
+
         this._itemsNotVisibles = 0;
         items[0].children = dashboards.map(d => {
             // check if the current root is relarted to the dashboards
@@ -239,7 +246,12 @@ export class SidebarService {
             if (active) {
                 isDashboardRoute = true;
             }
-            if (d.visible === false) {
+            if (!listdashboardIdNoVisible) {
+                isVisible = true;
+            }else{
+                isVisible = listdashboardIdNoVisible.find(l => l === d._id) ? false : true;
+            }
+            if (isVisible === false) {
                 this._itemsNotVisibles += 1;
             }
             return {
@@ -248,7 +260,7 @@ export class SidebarService {
                 route: route,
                 group: 'dashboard',
                 active: active,
-                visible: (d.visible === null || d.visible === true) ? true : false
+                visible: isVisible
             };
         });
         // mark the dashboards parent as selected if a dashboard was selected
@@ -260,7 +272,6 @@ export class SidebarService {
                                 && items[0].children != null
                                 && items[0].children.length > 0
                                 && items[0].children[0].route;
-
         if (firstDashboardExist && (this._router.url === '/' || this._router.url === '/dashboards')) {
             const firstDashboard = `/dashboards/${items[0].children[0].route.split('/')[2]}`;
             this._router.navigate([firstDashboard]);

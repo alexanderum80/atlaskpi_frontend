@@ -15,7 +15,7 @@ export class GenericSelectionItem implements IGenericSelectionItem {
   payload: any;
 
   constructor(obj: any, type?: string, id?: string) {
-    this.id = id || obj['id'] || obj['_id'] || null;
+    this.id = id || obj['id'] || obj['_id'] || obj['connectorId'] || null;
     this.type = type || typeof obj || null;
     this.payload = obj;
   }

@@ -1,6 +1,6 @@
 import { WidgetsFormService } from './widget-form/widgets-form.service';
 import { ChartsModule } from '../charts';
-import { SharedModule } from './../shared/shared.module';
+import { SharedModule } from '../shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialFormsModule, MaterialUserInterfaceModule } from '../ng-material-components';
 import { NgModule } from '@angular/core';
@@ -42,6 +42,7 @@ import { WidgetsAlertListComponent } from './widgets-alert-list/widgets-alert-li
                 ],
   exports: [WidgetViewComponent, NewWidgetComponent, WidgetAlertComponent, WidgetAlertFormComponent,
             WidgetNoAlertsComponent, WidgetsAlertListComponent, AutoRenderableWidgetComponent],
-  providers: [UserService]
+  providers: [WidgetsFormService, UserService]
+
 })
 export class WidgetsModule { }

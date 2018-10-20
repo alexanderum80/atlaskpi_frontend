@@ -1,4 +1,4 @@
-import { IChartDateRange } from '../../../shared/models';
+import { IChartDateRange } from '../../models';
 import { IValueName } from '../../models/value-name';
 import { ITaggable } from '../shared/taggable';
 

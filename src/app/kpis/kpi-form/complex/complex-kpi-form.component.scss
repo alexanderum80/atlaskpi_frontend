@@ -11,3 +11,28 @@
     color: rgb(218, 73, 73);
     margin-top: -10px;
 }
+
+.new-chart-from-kpi {
+    max-width: 99%;
+    margin: auto;
+}
+
+.new-widget-from-kpi {
+    max-width: 1100px;
+    margin: auto;
+}
+.iconzoom {
+    position: relative;
+    padding-top: 5px;
+}
+.title {
+    position: relative;
+    margin-left: 20px;
+    font-size: 17px;
+}
+
+.ligth {
+    &:hover {
+        border: 2px solid #2196f3;
+    }    
+}

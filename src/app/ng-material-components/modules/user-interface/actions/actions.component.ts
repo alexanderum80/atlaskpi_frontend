@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { MenuItem } from '../../../models/menu-item';
 import { ActionsService } from './actions.service';
 
@@ -35,6 +35,11 @@ export class ActionsComponent implements OnInit {
             throw new Error('Actions component need actions to show');
         }
     }
+
+    // ngOnChanges() {
+    //     console.log('Action items');
+    //     console.log(JSON.stringify(this.actionItems));
+    // }
 
     get dropdown(): boolean {
         // if any action item contain children the I should add the dropdown class

@@ -23,7 +23,10 @@ export interface ChartData {
   targetList?: any[];
   title?: string;
   frequency?: string;
-  dateRange?: IChartDateRange;
+  dateRange?: IChartDateRange[];
+  xAxisSource: string;
+  comparison: string[];
+  groupings: string[];
 }
 
 export enum ChartType {
@@ -137,7 +140,7 @@ export interface IChartFormValues {
   predefinedTooltipFormat?: string;
   seriesDataLabels: boolean;
   //gridlines
-  gridLineWidth: number;
+  gridLineWidth?: number;
 
 }
 
@@ -208,14 +211,14 @@ export class ChartModel {
                                               to: fg.value.customTo || null  }};
       proxyChartModel.top = {
         predefined: fg.value.predefinedTop || null,
-        custom: fg.value.customTop || null
+        custom: fg.value.customTop ? +fg.value.customTop : null
       };
       proxyChartModel.frequency = fg.value.frequency;
       proxyChartModel.groupings = fg.value.grouping;
       proxyChartModel.sortingCriteria = fg.value.sortingCriteria;
       proxyChartModel.sortingOrder = fg.value.sortingOrder;
       proxyChartModel.xAxisSource = fg.value.xAxisSource;
-      proxyChartModel.comparison = fg.value.comparison && !isEmpty(fg.value.comparison) ? fg.value.comparison : null;
+      proxyChartModel.comparison = fg.value.comparison && !isEmpty(fg.value.comparison) ? fg.value.comparison.split('|') : null;
       proxyChartModel.dashboards = fg.value.dashboards ? fg.value.dashboards.split('|').map(d => d.trim()) : [];
 
       // fill legend object
@@ -300,7 +303,7 @@ export class ChartModel {
         grouping: this.groupings ? this.groupings[0] || undefined : undefined,
         kpi: this.kpis ? this.kpis[0]._id || undefined : undefined,
         xAxisSource: this.xAxisSource || '',
-        comparison: this.comparison ? this.comparison[0] || undefined : undefined,
+        comparison: this.comparison ? this.comparison.map(c => c).join('|') : undefined,
         dashboards: this.dashboards ? this.dashboards.map(d => d._id).join('|') : undefined,
 
         // chart format info
@@ -364,8 +367,9 @@ export class ChartModel {
     }
 
     get validForPreview(): boolean {
-      return this.kpis !== undefined && this.kpis.length > 0 &&
-             new ChartDateRangeModel(this.dateRange).valid;
+      return !isEmpty(this.kpis)
+             && this.kpis.every(k => !isEmpty(k))
+             && new ChartDateRangeModel(this.dateRange).valid;
     }
 
     get valid(): boolean {

@@ -3,14 +3,14 @@ import { AddWidgetActivity } from '../../shared/authorization/activities/widgets
 import { Activity } from '../../shared/authorization/decorators/component-activity.decorator';
 import { DialogResult } from '../../shared/models/dialog-result';
 import { Router } from '@angular/router';
-import { widgetsGraphqlActions } from './../shared/graphql/widgets.graphql-actions';
-import { IMutationResponse } from './../../shared/models/mutation-response';
-import { WidgetsFormService } from './../widget-form/widgets-form.service';
+import { widgetsGraphqlActions } from '../shared/graphql/widgets.graphql-actions';
+import { IMutationResponse } from '../../shared/models/mutation-response';
+import { WidgetsFormService } from '../widget-form/widgets-form.service';
 import { Apollo } from 'apollo-angular';
 import { WidgetFormComponent } from '../widget-form/widget-form.component';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import { IWidget } from '../shared/models/index';
+import { IWidget } from '../shared/models';
 import { ApolloService } from '../../shared/services/apollo.service';
 import Sweetalert from 'sweetalert2';
 import { Subscription } from 'rxjs/Subscription';
@@ -28,6 +28,7 @@ const getWidgetByTitle = require('graphql-tag/loader!../shared/graphql/get-widge
 
 export class NewWidgetComponent implements OnInit, OnDestroy {
   @Input() isFromDashboard = false;
+  @Input() widgetDataFromKPI : any;
   @Output() result = new EventEmitter();
   fg: FormGroup = new FormGroup({});
 
@@ -65,8 +66,12 @@ export class NewWidgetComponent implements OnInit, OnDestroy {
     if (this.isFromDashboard) {
         this.result.emit('widgets');
     } else {
-        this._router.navigateByUrl('/widgets');
-    }
+        if (this.widgetDataFromKPI) {
+          this._router.navigateByUrl('/kpis/list');
+        } else {
+          this._router.navigateByUrl('/widgets');
+        }
+    }    
   }
 
   saveWidget() {

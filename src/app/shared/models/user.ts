@@ -1,5 +1,5 @@
-import { IPermission } from '../../permissions/shared/models/index';
-import { IRole } from '../../users/shared/index';
+import { IPermission } from '../../permissions/shared/models';
+import { IRole } from '../../users/shared';
 import { AllPermissions } from '../authorization/permissions/all-permissions';
 import { flatten, pick, uniqBy } from 'lodash';
 
@@ -64,6 +64,7 @@ export class IUserPreference {
     showAppointmentCancelled?: boolean;
     providers?: string;
     calendarTimeZone?: string;
+    dashboardIdNoVisible?: string;
 }
 
 export interface IUserInfo {

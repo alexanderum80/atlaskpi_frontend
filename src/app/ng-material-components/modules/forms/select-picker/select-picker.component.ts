@@ -22,8 +22,9 @@ import { SelectionItem } from '../../../models/selection-item';
 import { InputBase } from '../input-base/input-base.component';
 import { processPolyfills } from './polyfills';
 import { MouseEvent } from '@agm/core/services/google-maps-types';
-import { ISelectableItem } from '../../../../shared/models/index';
+import { ISelectableItem } from '../../../../shared/models';
 import { ScrollEvent } from 'ngx-scroll-event';
+import SweetAlert from 'sweetalert2';
 
 /* tslint:disable */
 declare var $: any;
@@ -188,11 +189,29 @@ export class SelectPickerComponent extends InputBase implements OnChanges, OnDes
         this._valueChangeSubscription = this.control.valueChanges.subscribe(data => {
             let newValue = data;
 
-            if (data && that.rememberLastValue) {
-                this._lastValue = data;
+            if (!newValue) {
+                this._cleanSelection();
             }
-            if (!data && that.rememberLastValue && !that._valueChangedFromInside) {
+
+            if (this.selectedItems.length > this.maxOptions) {
+                SweetAlert({
+                    title: 'Selected options limit reached',
+                    text: 'only up to ' + this.maxOptions + ' selected options',
+                    type: 'warning'
+                });
                 newValue = this._lastValue;
+            } else {
+                if (data && that.rememberLastValue) {
+                    this._lastValue = data;
+                }
+                
+                if (!data && that.rememberLastValue && !that._valueChangedFromInside) {
+                    newValue = this._lastValue;
+                }
+            }
+
+            if (this.control.value) {
+                this._cleanSelection();
             }
 
             that._updateSelection(newValue);
@@ -370,6 +389,12 @@ export class SelectPickerComponent extends InputBase implements OnChanges, OnDes
         this.resetSelectedItems();
     }
 
+    private _cleanSelection() {
+        this._clonedItems.forEach(i => i.selected = false);
+        this.selectedItems = [];
+        this._updateSelectionText();
+    }
+
     private _updateSelectionWidth() {
         const that = this;
 
@@ -457,9 +482,14 @@ export class SelectPickerComponent extends InputBase implements OnChanges, OnDes
             this._markForReset = false;
         }
 
+        // if (!this.control.value) {
+        //     this._clonedItems.forEach(i => i.selected = false);
+        // }
+
         if (!filter || filter === '') {
             // return items that are not selected
-            this.filteredItems = this._clonedItems.filter(c => !c.selected).slice(this._resultsUpIndex, this._resultsDownIndex);
+            this.filteredItems = this._clonedItems.filter(c => !this.control.value || !c.selected)
+                .slice(this._resultsUpIndex, this._resultsDownIndex);
         } else {
             // filter selected items
             

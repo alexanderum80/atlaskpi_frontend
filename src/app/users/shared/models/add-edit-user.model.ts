@@ -1,4 +1,4 @@
-import { IUserInfo } from '../../../shared/models/index';
+import { IUserInfo } from '../../../shared/models';
 import * as Promise from 'bluebird';
 import * as moment from 'moment';
 import { map } from 'lodash';

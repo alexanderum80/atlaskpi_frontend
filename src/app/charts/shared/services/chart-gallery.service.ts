@@ -7,7 +7,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { ChartType } from '../models';
 import { IChartGalleryItem } from '../models';
-import { SelectionItem } from '../../../ng-material-components/index';
+import { SelectionItem } from '../../../ng-material-components';
 import { deCamelCase } from '@swimlane/ngx-datatable/release/utils';
 
 interface IChartGalleryItemWithType {
@@ -65,7 +65,10 @@ export class ChartGalleryService {
             case 'pie 3d':
             case 'donut':
             case 'donut 3d':
-                this._toolTipList = TooltipFormats.filter(tip => tip.id !== 'multiple' && tip.id !== 'multiple_percent');
+                this._toolTipList = TooltipFormats.filter(tip =>
+                    tip.id !== 'multiple' && tip.id !== 'multiple_percent' &&
+                    tip.id !== 'multiple_low_high' && tip.id !== 'multiple_high_low' &&
+                    tip.id !== 'multiple_percent_low_high' && tip.id !== 'multiple_percent_high_low');
                 this._toolTipLisSubect.next(this._toolTipList);
                 break;
             default:
@@ -79,44 +82,44 @@ export class ChartGalleryService {
 
     updateSortingCriteriaList(fgValues: any, series: any) {
 
-     const groupingValue = fgValues.grouping;
-     const frequencyValue = fgValues.frequency;
-     const comparisonValue = fgValues.comparison;
-     const daterangeValue = fgValues.predefinedDateRange;
+        const groupingValue = fgValues.grouping;
+        const frequencyValue = fgValues.frequency;
+        const comparisonValue = fgValues.comparison;
+        const daterangeValue = fgValues.predefinedDateRange;
 
-     if (!groupingValue && frequencyValue && frequencyValue.length > 0) {
-         // not Grouping & frequency
-        this._sortingCriteriaList = [
-            {
-                id: 'frequency',
-                title: 'Frequency',
-                selected: false,
-                disabled: false
-            },
-            {
-                id: 'values',
-                title: 'Values',
-                selected: false,
-                disabled: false
-            }
+        if (!groupingValue && frequencyValue && frequencyValue.length > 0) {
+            // not Grouping & frequency
+            this._sortingCriteriaList = [
+                {
+                    id: 'frequency',
+                    title: 'Frequency',
+                    selected: false,
+                    disabled: false
+                },
+                {
+                    id: 'values',
+                    title: 'Values',
+                    selected: false,
+                    disabled: false
+                }
 
-        ];
-    } else if (groupingValue && groupingValue.length > 0 && !frequencyValue) {
+            ];
+        } else if (groupingValue && groupingValue.length > 0 && !frequencyValue) {
             // Grouping & not frequency
-        this._sortingCriteriaList = [
-                        {
-                id: 'categories',
-                title: 'Categories',
-                selected: false,
-                disabled: false
-            },
-            {
-                id: 'values',
-                title: 'Values',
-                selected: false,
-                disabled: false
-            }
-        ];
+            this._sortingCriteriaList = [
+                {
+                    id: 'categories',
+                    title: 'Categories',
+                    selected: false,
+                    disabled: false
+                },
+                {
+                    id: 'values',
+                    title: 'Values',
+                    selected: false,
+                    disabled: false
+                }
+            ];
         } else if (groupingValue && groupingValue.length > 0 && frequencyValue && frequencyValue.length > 0) {
             // Grouping & frequency
             this._sortingCriteriaList = [

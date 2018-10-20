@@ -1,0 +1,33 @@
+.title  Notifications will be sent and completion percentages 25%, 50%, 75%  or above, and  at 100%.
+
+.contener-related-users.m-t-20
+    div(flex, layout="row")
+            div(flex)
+                | Select users
+            .fixed-column.m-r-10(flex-initial)
+                i.zmdi.zmdi-email
+            .fixed-column.m-r-10(flex-initial)
+                i.zmdi.zmdi-smartphone-android
+            .fixed-column.text-center(flex-initial) &nbsp;    
+
+    div(flex, layout="row", *ngFor="let item of users; let i=index")
+            .text-center.m-r-10(flex)
+                .m-t--20
+                    bw-select-picker([fg]="item", 
+                        field="identifier",
+                        [items]="userList",
+                        leftIcon="accounts-alt"
+                    )  
+            .fixed-column.text-center.m-t-10.m-r-10(flex-initial)
+                bw-checkbox([fg]="item", field="email")
+        
+            .fixed-column.text-center.m-t-10.m-r-15(flex-initial)
+                bw-checkbox([fg]="item", field="push")
+                
+            .fixed-column.text-center.m-t-15.mdc-text-red(*ngIf="!isUserCurrent", flex-initial)
+                //- bw-button(title="Cancel", [simple]="true", icon="delete", (clicked)="cancelRemove()")
+                i.zmdi.zmdi-delete(*ngIf="i !== 0", (click)="removeUser(i)")
+
+    .text-left(flex)
+        bw-button(title="Add user", color="green", icon="plus", type="button", (clicked)="addUser()")
+    

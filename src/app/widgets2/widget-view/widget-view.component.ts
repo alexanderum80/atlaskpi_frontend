@@ -1,6 +1,6 @@
-import { OnInit } from '@angular/core/core';
+import { OnInit } from '@angular/core';
 import { WidgetViewViewModel } from './widget-view.viewmodel';
-import { IWidgetViewData } from './../shared/models/widget';
+import { IWidgetViewData } from '../shared/models/widget';
 import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
 
 @Component({

@@ -1,5 +1,5 @@
 import { ViewModel } from '../../ng-material-components/viewModels/view-model';
-import { IWidget } from '../shared/models/index';
+import { IWidget } from '../shared/models';
 import { UserService } from '../../shared/services/user.service';
 import { IUserInfo } from '../../shared/models/user';
 import { Injectable } from '@angular/core';

@@ -1,5 +1,10 @@
 // Angular Import
 import { SelectPickerComponent } from '../../../ng-material-components/modules/forms/select-picker/select-picker.component';
+import { ModalComponent } from '../../../ng-material-components/modules/user-interface/modal/modal.component';
+import { IWidget } from '../../../widgets/shared/models';
+import { WidgetsFormService } from '../../../widgets/widget-form/widgets-form.service';
+
+
 import {
     AfterViewInit,
     ChangeDetectorRef,
@@ -13,8 +18,8 @@ import {
 } from '@angular/core';
 import {Router} from '@angular/router';
 import SweetAlert from 'sweetalert2';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+// import { Observable } from 'rxjs/Observable';
+// import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 import Sweetalert from 'sweetalert2';
@@ -27,7 +32,8 @@ import { SimpleKpiFormViewModel } from './simple-kpi-form.viewmodel';
 import { ITag } from '../../../shared/domain/shared/tag';
 import { IKPIPayload } from '../shared/simple-kpi-payload';
 import {CommonService} from '../../../shared/services/common.service';
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef  } from 'apollo-angular';
+import { timeout } from 'rxjs/operators';
 
 const dataSources = require('graphql-tag/loader!../data-sources.gql');
 const tags = require('graphql-tag/loader!./tags.gql');
@@ -47,6 +53,7 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
     @Input() model: IKPI;
     @Input() editing: boolean;
     @Input() clone: boolean;
+    @ViewChild('previewModal') previewModal: ModalComponent;
 
     @ViewChild('numericFieldSelector') set content(content: SelectPickerComponent) {
         if (content) {
@@ -65,6 +72,12 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
     resultName: string;
     isLoading = true;
 
+    fromSaveAndVisualize: boolean;
+    currrentKPI: IKPI;
+    widgetModel: IWidget;
+    newWidgetFromKPI: boolean;
+    newChartFromKPI: boolean;
+
     vm: SimpleKpiFormViewModel;
 
     private _subscription: Subscription[] = [];
@@ -75,6 +88,7 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
         private _apollo: Apollo,
         private _router: Router,
         private _cdr: ChangeDetectorRef
+
     ) {}
 
     ngOnInit(): void {
@@ -85,6 +99,30 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
+    }
+
+    private _openVisualizeModal() {
+        this.fromSaveAndVisualize = true;
+        this.save();
+    }
+    
+    _closePreviewModal() {
+        if ( this.newWidgetFromKPI === true || this. newChartFromKPI === true ) {
+                        this.previewModal.close();    
+        } else {
+            this.previewModal.close();
+            this._goToListKpis();
+        }     
+    }
+    
+    newWidget() {
+        this.newWidgetFromKPI = true;
+        this._closePreviewModal();
+    }
+    
+    newChart() {
+        this.newChartFromKPI = true;
+        this._closePreviewModal();
     }
 
     save() {
@@ -128,11 +166,27 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
                         confirmButtonText: 'Ok'
                       });
                 }
+                if (this.fromSaveAndVisualize) {
+                    // for widget
+                    this.currrentKPI = res.data[this.resultName].entity;
+                    this.vm.valuesPreviewWidget.name = this.currrentKPI.name;
+                    this.vm.valuesPreviewWidget.kpi = this.currrentKPI._id;
+                    this.vm.valuesPreviewWidget.color = this.vm.selectColorWidget();
 
-                this._router.navigateByUrl('/kpis/list');
+                    // for chart
+                    this.vm.valuesPreviewChart.name = this.currrentKPI.name;
+                    this.vm.valuesPreviewChart.kpi = this.currrentKPI._id;
+
+                    this.fromSaveAndVisualize = !this.fromSaveAndVisualize;
+                    this.previewModal.open();
+
+                }else {
+                    this._router.navigateByUrl('/kpis/list');
+                }
             });
         });
     }
+
 
     cancel() {
         const that = this;
@@ -241,16 +295,19 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
                  * edit-kpi to add-kpi and vice-versa for name and description
                  */
                 that.isLoading = false;
-                that.vm = new SimpleKpiFormViewModel(that._apollo);
+                that.vm = new SimpleKpiFormViewModel(that._apollo, this._cdr);
 
                 that._getTags();
 
                 that.vm.updateExistDuplicatedName(false);
 
-                that.vm.initialize(that.model);
                 that.vm.updateDataSources(res.dataSources);
+
                 this._subscribeToNameChanges();
+                that.vm.initialize(that.model);
+
                 this._subscribeToDataSourceChanges();
+                this._cdr.detectChanges();
             });
     }
 

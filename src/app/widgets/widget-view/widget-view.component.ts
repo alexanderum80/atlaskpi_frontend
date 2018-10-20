@@ -1,4 +1,4 @@
-import { CommonService } from '../../shared/services/index';
+import { CommonService } from '../../shared/services';
 import { DeleteWidgetActivity } from '../../shared/authorization/activities/widgets/delete-widget.activity';
 import { UpdateWidgetActivity } from '../../shared/authorization/activities/widgets/update-widget.activity';
 import { Component, EventEmitter, Input, OnInit, OnChanges, Output, SimpleChanges, OnDestroy } from '@angular/core';
@@ -8,9 +8,9 @@ import { isEmpty } from 'lodash';
 
 import { MenuItem } from '../../dashboards/shared/models';
 import { abbreviate_number } from '../../shared/extentions/utils';
-import { IChart } from './../../charts/shared/models/chart.models';
-import { ValueFormatHelper } from './../../shared/helpers/format.helper';
-import { IWidget } from './../shared/models/widget.models';
+import { IChart } from '../../charts/shared/models/chart.models';
+import { ValueFormatHelper } from '../../shared/helpers/format.helper';
+import { IWidget } from '../shared/models/widget.models';
 import {WidgetViewViewModel} from './widget-view.viewmodel';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs/Subscription';
@@ -78,7 +78,6 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
     ) {}
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log('widget chart changed');
         if (this.widget) {
             this._removeInfoItem();
             if (this.widget.materialized && this.widget.materialized.chart) {
@@ -93,7 +92,6 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         }
 
         const widgetPreviewChanges = changes['widgetPreview'];
-
         if (widgetPreviewChanges) {
             if (widgetPreviewChanges.currentValue) {
                 const infoItem: MenuItem = Object.assign({}, this.actionInfoItem);

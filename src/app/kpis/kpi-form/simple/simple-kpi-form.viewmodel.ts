@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { FormArray } from '@angular/forms/src/model';
 import { Apollo } from 'apollo-angular';
@@ -17,7 +17,9 @@ import { TagsViewModel } from '../../../shared/view-models/tags.viewmodel';
 import { FilterViewModel } from '../shared/filter.viewmodel';
 import { SimpleKpiExpressionViewModel } from '../shared/simple-kpi-expression.viewmodel';
 import { IKPIPayload } from '../shared/simple-kpi-payload';
-import { getAggregateFunctions } from './../../../shared/domain/kpis/functions';
+import { IWidgetFormGroupValues } from '../../../widgets/shared/models';
+import { IChartFormValues } from '../../../charts/shared/models/chart.models';
+import { getAggregateFunctions } from '../../../shared/domain/kpis/functions';
 
 export const KPINAMEREGULAREXPRESSION = /^([a-zA-Z0-9\*\-\(\)\$\&\:#%] *){5,}$/;
 const expressionNumericFieldQuery = require('graphql-tag/loader!./get-expression-fields.query.gql');
@@ -43,8 +45,37 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     sourceItems: SelectionItem[];
     consSourceValue: string;
     consSourceValues: string[] = [];
+    valuesPreviewWidget : IWidgetFormGroupValues = {
+        name: '',
+        description: '',
+        type: 'numeric',
+        size: 'big',
+        order: '4',
+        color: '',
+        kpi: '',
+        predefinedDateRange: 'this year',
+        format: 'dollar',
+        comparison: 'previousPeriod',
+        comparisonArrowDirection: 'up'
+      };
+      
+      valuesPreviewChart : IChartFormValues = {
+        name: '',
+        description: '',
+        dashboards: '',
+        group: 'pre-defined',
+        frequency: 'monthly',
+        grouping: 'location.name',
+        tooltipEnabled: true,
+        predefinedTooltipFormat: 'multiple_percent',
+        kpi: '',
+        legendEnabled: false,
+        predefinedDateRange: 'this year',
+        invertAxisEnabled: false,
+        seriesDataLabels: false
+      };
 
-    constructor(private _apollo: Apollo) {
+    constructor(private _apollo: Apollo, private _cdr: ChangeDetectorRef ) {
         super(null);
         this.expressionFieldSubject = new Subject<string>();
     }
@@ -80,24 +111,50 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     source: string;
 
     initialize(model: any): void {
+        const that = this;
         if (model) {
+            let dataSourceValue;
+            let sourceCollectionValue;
+
             // deserialize expression and filters
             const cleanModel = this.objectWithoutProperties(model, ['__typename']) as IKPI;
             cleanModel.expression = JSON.parse(cleanModel.expression);
+
+            dataSourceValue = (<any>cleanModel.expression).dataSource;
+
             if (cleanModel.filter) {
                 cleanModel.filter = JSON.parse(cleanModel.filter);
 
                 if (cleanModel.filter.length) {
                     const cleanModelFilter: string[] = [];
                     cleanModel.filter.forEach(item => {
-                        if (isNaN(parseFloat(item.criteria)) && moment(item.criteria).isValid()) {
-                            item.criteria = moment(item.criteria).format('MM/DD/YYYY');
-                        }
+                        // FIX for CORE-2630, transforming "La Jolla Cosmetic Surgery Centre, Inc 3092" => "01/01/3092"
+                        // process source field first
                         if (item.field === 'source') {
                             cleanModel.source = item.criteria;
-                        } else {
-                            cleanModelFilter.push(item);
+                            sourceCollectionValue = item.criteria;
+                            return;
                         }
+
+                        if (!cleanModel.expression) {
+                            console.log('expression not ready');
+                            return;
+                        }
+
+                        const virtualSource = that._dataSources.find(s => s.name === (<any>cleanModel.expression).dataSource);
+                        const vsField = virtualSource.fields.find(f => f.path === item.field);
+
+                        switch (vsField.type) {
+                            case 'Date':
+                                item.criteria = moment(item.criteria).format('MM/DD/YYYY');
+                                break;
+
+                            default:
+                                item.criteria = String(item.criteria);
+                                break;
+                        }
+
+                        cleanModelFilter.push(item);
                     });
                     cleanModel.filter = cleanModelFilter;
                 }
@@ -106,12 +163,14 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             if (cleanModel.tags) {
                 cleanModel.tags = cleanModel.tags.map(t => ({ value: t, display: t })) as any;
             }
+            this._queryFields(dataSourceValue, sourceCollectionValue || []);
             this.onInit(cleanModel);
+            this._cdr.detectChanges();
         } else {
             this.onInit(model);
+            this._cdr.detectChanges();
         }
 
-        const that = this;
         this.expressionFieldSubject.subscribe(expressionField => {
             if (!that._expressionFieldValuesTracker.currentValue && !that._expressionFieldValuesTracker.previousValue) {
                 that._expressionFieldValuesTracker = {
@@ -184,6 +243,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
 
     get selectedDataSource(): IDataSource {
         // return this._selectedDataSource;
+        if (!this.expression) { return; }
         return this._dataSources.find(d => d.name === this.expression.dataSource);
     }
 
@@ -204,13 +264,14 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         return this.fg.controls['source'].setValue(this.consSourceValue);
     }
 
+    
     resetItemSource() {
         if (this.sourceItems) {
             this.vmSource.resetSelectedItems();
             this.sourceItems = this.consSourceValues.map(s => new SelectionItem(s, s));
         }
     }
-
+    
     updateDataSources(dataSources: IDataSource[]) {
         if (!dataSources || this._dataSources === dataSources) {
             return;
@@ -222,16 +283,19 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         this.dataSources = dataSources.filter(s => !s.externalSource).map(s => new SelectionItem(s.name, s.description.toUpperCase()));
 
         this.updateItemSources(dataSources);
-
+        
         // once the data source list its update I need to make sure I update the fields
         if (this.hasFormControls(this.fg)) {
             this._updateExpressionNumericFields({
                 'expression.dataSource': this.fg.get('expression').get('dataSource').value,
-                'source': this.fg.get('source').value
+                'source': this.fg.get('source').value,
+                'expression.function': this.fg.get('expression').get('function').value,
             });
         }
-    }
 
+        this._cdr.markForCheck();
+    }
+    
     hasFormControls(fg: FormGroup): boolean {
         return (fg && !isEmpty(fg.controls)) ? true : false;
     }
@@ -245,9 +309,9 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
 
         sources = uniq(sources);
         this.sourceItems = sources.map(s => new SelectionItem(s, s));
-
+        
         let nonExistItems: string[] = [];
-
+        
         if (isString(this.source)) {
             const arraySourceValues: string[] = this.source.split(/\|/);
             const sourceItemIds = this.sourceItems.map(s => s.id);
@@ -258,10 +322,12 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             const addMissingSelectedItems = nonExistItems.map(n => new SelectionItem(n, n));
             this.sourceItems = this.sourceItems.concat(addMissingSelectedItems);
         }
-
+        
         if (this.source) {
             this.getDataSourceList(this.source);
         }
+
+        this._cdr.markForCheck();
     }
 
     updateExpressionFields(fieldList: IDataSourceField[]): void {
@@ -269,7 +335,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             this.numericFields = [];
             return;
         }
-
+        
         // filter out fields that does not exist in collection
         // return field that does not exist in collection, but does for edit kpi
         const exp = this.expression;
@@ -282,18 +348,18 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
                 // return true if the expression is already using this field
                 (exp.field === f.path);
         });
-
+        
         this.numericFields = availableFields.map(f => new SelectionItem(f.path, f.name.toUpperCase()));
     }
-
+    
     getDataSourceList(item: any): void {
         const reg: RegExp = /\|/;
         if (!item) {
             this.dataSources = this._dataSources.filter(s => !s.externalSource)
                                                 .map(s => new SelectionItem(s.name, s.description.toUpperCase()));
-            return;
+                                                return;
         }
-
+        
         this.dataSources = this._dataSources
                                 .filter((dSource: IDataSource) => {
                                     // multiple selection
@@ -306,7 +372,9 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
                                 })
                                 .map(s => new SelectionItem(s.name, s.description.toUpperCase()));
         if (!this.dataSources.length && !reg.test(item)) {
-            const dataSourceValue: string = (this.expression && this.expression.dataSource) ? this.expression.dataSource : '';
+            const dataSourceValue: string = (this.expression && this.expression.dataSource)
+                ? (this.expression && this.expression.dataSource)
+                : '';
             if (dataSourceValue) {
                 const selectedDataSource: IDataSource = this._dataSources.find(d => d.name === dataSourceValue);
 
@@ -316,19 +384,20 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             }
         }
     }
-
+    
     updateTags(tags: ITag[]) {
         this._tags = tags.map(t => ({ value: t.name, display: t.name }));
+        this._cdr.markForCheck();
     }
-
+    
     updateExistDuplicatedName(exist: boolean) {
         this.existDuplicatedName = exist;
     }
-
+    
     getExistDuplicatedName() {
         return this.existDuplicatedName;
     }
-
+    
     private _queryFields(dataSource: string, collectionSource?: string[]): void {
         const that = this;
         this._apollo.query<{ kpiExpressionFields: IDataSourceField[]}>({
@@ -342,6 +411,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             }
         }).subscribe(({ data }) => {
             that.updateExpressionFields(data.kpiExpressionFields);
+            this._cdr.markForCheck();
         });
     }
 
@@ -359,28 +429,53 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             return temp;
         }) as IDataSource[];
     }
-
+    
+    selectColorWidget() {
+        
+        switch (Math.round(Math.random()*10)) {
+            case 0:
+                return 'white';
+            case 1:
+                return 'orange';
+            case 2:
+                return 'blue';
+            case 3:
+                return 'green';
+            case 4:
+                return 'light-green';
+            case 5:
+                return 'sei-green';
+            case 6:
+                return 'purple';
+            case 7:
+                return 'light-purple';
+            case 8: 
+                return "pink";
+            default:
+                return 'white';
+        }
+    }
     // @OnFieldChanges([{ name: 'expression.dataSource' }, { name: 'source' }])
     // private _updateExpressionNumericFields(value: { 'expression.dataSource': string, 'source': string}) {
     //     // this.expressionFieldSubject.next(value['expression.dataSource']);
-        // const dSource = this._dataSources.find(d => d.name === value['expression.dataSource']);
+    // const dSource = this._dataSources.find(d => d.name === value['expression.dataSource']);
 
-        // reset selected items for expression.field
-        // const { currentValue, previousValue } = this._expressionFieldValuesTracker;
+    // reset selected items for expression.field
+    // const { currentValue, previousValue } = this._expressionFieldValuesTracker;
         // if ((previousValue !== undefined) && (previousValue !== currentValue)) {
-        //     this.numericFieldSelector.resetSelectedItems();
+            //     this.numericFieldSelector.resetSelectedItems();
         // }
-
+        
         // if (dSource) {
-        //     this._selectedDataSource = dSource;
+            //     this._selectedDataSource = dSource;
         // }
-
+        
         // const dataSource: string = value['expression.dataSource'] || (this.expression ? this.expression.dataSource : '');
         // const source: string = value['source'] || this.source;
 
-
+        
         // if (dataSource) {
-        //     const that = this;
+            //     const that = this;
 
         //     const collectionSource = source ? source.split(/\|/) : [];
 
@@ -421,8 +516,9 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     //     }
     // }
 
-    @OnFieldChanges([{ name: 'expression.dataSource' }, { name: 'source' }])
-    private _updateExpressionNumericFields(value: { 'expression.dataSource': string, 'source': string }) {
+    @OnFieldChanges([{ name: 'expression.dataSource' }, { name: 'source' }, { name: 'expression.function' }])
+    private _updateExpressionNumericFields(value: { 'expression.dataSource': string, 'source': string,
+                                                    'expression.function': string }) {
         const { 'expression.dataSource': dataSourceValue = null, source: sourceValue = null } = value;
 
         let dataSource: IDataSource;
@@ -448,31 +544,40 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
                 }
             }
 
-            this.numericFields =
-                dataSource.fields   .filter(f => f.type === 'Number')
-                                    .map(f => new SelectionItem(f.path, f.name.toUpperCase()));
+            // this.numericFields =
+            //     dataSource.fields   .filter(f => f.type === 'Number')
+            //                         .map(f => new SelectionItem(f.path, f.name.toUpperCase()));
+            if (value['expression.function'] && value['expression.function'].toLowerCase() === 'count' ) {
+                this.numericFields = this._selectedDataSource.fields.map(f =>
+                    new SelectionItem(f.path, f.name.toUpperCase()));
+            } else {
+                this.numericFields = this._selectedDataSource.fields.filter(f => f.type === 'Number')
+                    .map(f => new SelectionItem(f.path, f.name.toUpperCase()));
+            }
         }
 
         const source: string = sourceValue || this.source;
 
         collectionSourceVar = source ? source.split(/\|/) : [];
-        dataSourceVar = dataSourceValue || this.expression.dataSource;
+        dataSourceVar = dataSourceValue || (this.expression && this.expression.dataSource);
 
         // const dataSource: string = value['expression.dataSource'] || (this.expression ? this.expression.dataSource : '');
         this._queryFields(dataSourceVar, collectionSourceVar);
     }
 
     @OnFieldChanges({ name: 'expression.function' })
-    private _updateExpressionFieldsForCountFunction(value: { 'epxression.function': string}) {
+    private _updateExpressionFieldsForCountFunction(value: { 'expression.function': string}) {
         if (!this._selectedDataSource) { return; }
 
         if (value['expression.function'] && value['expression.function'].toLowerCase() === 'count' ) {
-            return this.numericFields = this._selectedDataSource.fields.map(f =>
+            this.numericFields = this._selectedDataSource.fields.map(f =>
                 new SelectionItem(f.path, f.name.toUpperCase()));
         } else {
             this.numericFields = this._selectedDataSource.fields.filter(f => f.type === 'Number')
                 .map(f => new SelectionItem(f.path, f.name.toUpperCase()));
         }
+
+        this._cdr.markForCheck();
     }
 
     @OnFieldChanges({ name: 'expression.operator' })
@@ -482,5 +587,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         if (isEmpty(operator)) {
             this.expression.value = null;
         }
+
+        this._cdr.markForCheck();
     }
 }

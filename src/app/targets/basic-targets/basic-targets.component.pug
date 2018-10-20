@@ -1,0 +1,42 @@
+div(layout="column")
+    .m-t-15(flex, layout="row", layout-align="end center")
+        div(flex-initial)
+            //- bw-toggle(*ngIf="activeVisible", [fg]="fg", field="active", color="green", label="Active")
+            bw-checkbox(*ngIf="activeVisible", [fg]="fg", field="active", label="Active")
+    //- name
+    div(flex)
+        bw-text-box([fg]="fg", field="name", label="Name", leftIcon="local-offer")   
+    .m-t-15(*ngIf="displayAppliesToField", flex)
+        bw-select-picker(flex
+            [fg]="fg.controls['appliesTo']", 
+            field="value",
+            label="I would like to set a target for",
+            [items]="appliesToList",
+            leftIcon="group-work"
+        )
+
+    .m-t-15(flex, layout="row")
+        .m-r-10(flex)
+            bw-select-picker(
+                [fg]="fg", 
+                field="type",
+                label="Objective",
+                [items]="objectiveList",
+                leftIcon="gps-dot"
+            )  
+
+        .text-center.m-t-10(flex="20")
+            bw-number.m-r-20([fg]="fg", field="value", label="Value", leftIcon="edit")   
+            
+        .m-t-35.m-l-10.text-center(flex-initial)
+            bw-button-group(*ngIf="showUnitOptions", [options]="unitOptions", type="default", [activeOption]="fg.controls['unit'].value", (optionSelected)="onOptionSelected($event)")
+    
+    div(flex, *ngIf="showBasedOn")
+        bw-select-picker(
+            [fg]="fg", 
+            field="compareTo",
+            label="Based on",
+            [items]="baseOnList",
+            leftIcon="calendar-alt",
+            noneSelectedText="{{nodoSelectedTextCompareTo || 'NOTHING SELECTED'}}"
+        )

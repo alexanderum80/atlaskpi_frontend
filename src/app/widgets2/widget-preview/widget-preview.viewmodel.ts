@@ -4,7 +4,7 @@ import { isEmpty, pick } from 'lodash';
 
 import { Field, ViewModel } from '../../ng-material-components/viewModels';
 import { IChartDateRange } from '../../shared/models/date-range';
-import { INumericWidgetData, IWidgetViewData } from './../shared/models/widget';
+import { INumericWidgetData, IWidgetViewData } from '../shared/models/widget';
 
 export interface IWidgetData {
     name: string;
@@ -56,6 +56,7 @@ export class WidgetPreviewViewModel extends ViewModel<IWidgetData> {
 
     initialize(model: IWidgetData): void {
         this.onInit(model);
+
     }
 
     get isAValidNumericWidget(): boolean {

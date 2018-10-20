@@ -9,7 +9,7 @@
                 flex-gt-md="25")
                 kpi-widget-view.pointer-cursor([widget]="bWidget", (done)="onActionClicked($event)")
 
-    .big-widgets(*ngIf="showSocialWidgets", flex-none, [attr.layout-padding]="!isMobile")
+    .social-widgets(*ngIf="showSocialWidgets", flex-none, [attr.layout-padding]="!isMobile")
         div(layout="row", layout-wrap, layout-padding)
             div(*ngFor="let sw of socialWidgets",
                 flex-xs="100",
@@ -32,5 +32,5 @@
     .charts.flex(layout="row", layout-wrap, [attr.layout-padding]="!isMobile")
         .space-charts(*ngFor="let chart of charts", flex-xs="100", flex-gt-xs="100", flex-gt-sm="50", flex-gt-lg="33")
             kpi-chart-view(*ngIf="viewChart()",[chartData]="chart", [dateRanges]="dateRanges", [isFromDashboard]="isFromDashboard")
-
+            
 kpi-widget-alert(#widgetAlert)

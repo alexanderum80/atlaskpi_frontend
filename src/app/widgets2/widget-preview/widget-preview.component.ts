@@ -1,4 +1,4 @@
-import { ApolloService } from './../../shared/services/apollo.service';
+import { ApolloService } from '../../shared/services/apollo.service';
 import { Apollo } from 'apollo-angular';
 import {
     IChartDateRange
@@ -143,7 +143,6 @@ export class WidgetPreviewComponent implements OnInit, OnChanges {
                 comparisonArrowDirection: this.vm.comparisonArrowDirection,
             }
         };
-
         const that = this;
         this._apolloSvc.networkQuery<IPreviewWidgetResponse>(
             previewWidgetQuery,

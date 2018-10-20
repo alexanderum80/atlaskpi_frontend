@@ -1,4 +1,4 @@
-import { OnInit } from '@angular/core/core';
+import { OnInit } from '@angular/core';
 import {
   Directive, OnDestroy, Input, Output, HostBinding, TemplateRef, EventEmitter,
 } from '@angular/core';

@@ -30,14 +30,15 @@ import { ChartGalleryService } from '../../services';
 import { TooltipFormats } from '../chart-format-info/tooltip-formats';
 import { CustomFormat } from '../chart-format-info/tooltip-custom-formats';
 import { IChartSize } from '../chart-preview';
-import { chartsGraphqlActions } from './../../graphql/charts.graphql-actions';
-import { SelectedChartsService, IChart } from '../../index';
+import { chartsGraphqlActions } from '../../graphql/charts.graphql-actions';
+import { SelectedChartsService, IChart } from '../..';
 import { ApolloService } from '../../../../shared/services/apollo.service';
 
 import { groupBy, includes } from 'lodash';
 import { FormControl } from '@angular/forms';
 import { OnChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 import { ChartFormatInfoComponent } from '../chart-format-info/chart-format-info.component';
+import { UserService } from '../../../../shared/services';
 
 
 const Highcharts = require('highcharts/js/highcharts');
@@ -68,6 +69,38 @@ const initialDefinition = {
     }
 };
 
+const chartDefinitionFromKPI = {
+    chart: {
+        type: 'column'
+    },
+    title: undefined,
+    plotOptions: {
+        column: {
+            dataLabels: {
+                enabled: true,
+                format: '{point.name}:<br/> <b>{point.y:,.2f} ({point.percentage:.2f}%)</b>'
+            },
+            showInLegend: true,
+            stacking: "normal"
+        }
+    },
+    tooltip: {
+        altas_definition_id: "multiple_percent",
+        enabled: true,
+        formatter: "kpi_tooltip_with_percentage_and_total",
+        shared: true,
+        useHTML: true
+    },
+    series: [],
+    exporting: {
+        enabled: false
+    },
+    credits: {
+        enabled: false,
+        href: 'http://www.atlaskpi.com',
+        text: 'Powered by AtlasKPI'
+    }
+};
 const ChartTypes = [{
     id: 1,
     title: 'Line'
@@ -110,6 +143,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     @Input() fg: FormGroup;
     @Input() chartModel: ChartModel;
     @Input() chartId: string;
+    @Input() chartDataFromKPI: any;
     @Output() result = new EventEmitter < DialogResult > ();
     @ViewChild(ChartFormatInfoComponent) ChartFormatInfo: ChartFormatInfoComponent;
 
@@ -143,7 +177,8 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         private _galleryService: ChartGalleryService,
         private _apolloService: ApolloService,
         private _selectChartService: SelectedChartsService,
-        private _browserService: BrowserService) {
+        private _browserService: BrowserService,
+        private _user: UserService) {
         Highcharts.setOptions({
             lang: {
                 decimalPoint: '.',
@@ -186,6 +221,9 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     ngAfterViewInit() {
         const loadingGroupings = new FormControl(false);
         this.fg.addControl('loadingGroupings', loadingGroupings);
+
+        const loadingComparison = new FormControl(false);
+        this.fg.addControl('loadingComparison', loadingComparison);
 
         this._subscribeToChartSelection();
         const that = this;
@@ -245,6 +283,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                     this.chartDefinition.chart &&
                     this.chartDefinition.chart.type) {
                     this._galleryService.updateToolTipList(this.chartDefinition.chart.type);
+
                 }
                 this.canSave = this.formValid;
                 // x axis
@@ -291,7 +330,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
     updateFormFields() {
         const that = this;
-        const values = this.chartModel.toChartFormValues();
+        const values = this.chartDataFromKPI ? this.chartDataFromKPI : this.chartModel.toChartFormValues();
 
         this.ChartFormatInfo.defaultChartColors();
 
@@ -306,13 +345,15 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
                 that.isEdit = true;
             // this.chartType = this.chartModel.type;
-                that.chartDefinition = that.chartModel.chartDefinition;
-
+                that.chartDefinition = this.chartDataFromKPI ? chartDefinitionFromKPI : that.chartModel.chartDefinition;
                 that._galleryService.updateToolTipList(that.chartDefinition.chart.type);
-                that.chartType = that.chartDefinition ?
-                                    (that.chartModel.type || that.chartDefinition.chart.type) :
-                                    initialDefinition.chart.type;
-
+                if (that.chartDefinition && !this.chartDataFromKPI) {
+                    that.chartType = (that.chartModel.type || that.chartDefinition.chart.type)
+                } else {
+                    that.chartType = (that.chartDefinition && this.chartDataFromKPI) ? 
+                        chartDefinitionFromKPI.chart.type : 
+                        initialDefinition.chart.type;
+                }
                 // Update formgroup
                 setTimeout(function () {
                     // in this stage we are updating controls with no dependency
@@ -386,7 +427,6 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                         that.fg.controls['predefinedTooltipFormat'].setValue(values.predefinedTooltipFormat);
                     }
                 }, 800);
-
                 setTimeout(() => {
                     that.fg.controls['xAxisSource'].setValue(values.xAxisSource);
                     if (that.fg.controls['grouping']) {
@@ -462,9 +502,10 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     }
 
     get formValid() {
-        return this.fg.value.name !== undefined && this.fg.value.name.length > 1 &&
-            this.fg.value.kpi !== undefined && this.fg.value.kpi.length > 0 &&
-            this.fg.value.predefinedDateRange !== undefined && this.isChartCustomTopValid &&
+        return !isEmpty(this.fg.value.name) &&
+            !isEmpty(this.fg.value.kpi) &&
+            !isEmpty(this.fg.value.predefinedDateRange) &&
+            this.isChartCustomTopValid &&
             this.tooltipValid;
     }
 
@@ -536,8 +577,9 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         this.processFormatChanges(this.fg.value);
         const model = ChartModel.fromFormGroup(this.fg, this.chartDefinition);
         const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
+        const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
 
-        if (this._previewValid(model) && !loadingGroupings)  {
+        if (this._previewValid(model) && !loadingGroupings && !loadingComparison)  {
             this._previewQuery.refetch({ input: model }).then(res => this._processChartPreview(res.data));
         }
     }

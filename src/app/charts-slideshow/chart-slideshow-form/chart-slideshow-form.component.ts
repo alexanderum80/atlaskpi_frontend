@@ -1,6 +1,6 @@
 import { CommonService } from '../../shared/services/common.service';
 import { AutoUnsubscribe } from '../../data-source/shared/auto-unsubscribe';
-import { IChartSlideshow } from './../shared/model/chartslideshow.model';
+import { IChartSlideshow } from '../shared/model/chartslideshow.model';
 import { dashboardGraphqlActions } from '../../dashboards/shared/graphql';
 import { Subscription } from 'rxjs/Subscription';
 import { GenericSelectionItem, GenericSelectionService } from '../../shared/services/generic-selection.service';

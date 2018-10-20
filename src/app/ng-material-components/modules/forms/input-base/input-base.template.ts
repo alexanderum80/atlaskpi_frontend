@@ -16,7 +16,7 @@ export const inputBaseTemplate = `
                 [formControl]="control"
                 [disabled]="disabled"
                 (focus)="onFocus(i)"
-                (blur)="onBlur(i)"/>
+                (blur)="onBlur(i)" autocapitalize="none" autocorrect="off"/>
             <label class="fg-label" *ngIf="label && floatingLabel">
                 <span class="c-red">{{requiredSymbol}}</span>{{label}}
             </label>
