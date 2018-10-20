@@ -1,3 +1,4 @@
+import { title } from 'change-case';
 import gql from 'graphql-tag';
 
 
@@ -89,7 +90,7 @@ export const CreateMapMutation = gql `
         createMap(input: $input) {
             success
             entity {
-                _id
+                title
             }
             errors {
                 field

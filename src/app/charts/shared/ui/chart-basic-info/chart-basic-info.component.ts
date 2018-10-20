@@ -3,7 +3,7 @@ import { IChartGalleryItem } from './../../models/chart.models';
 import { OnFieldChanges } from '../../../../ng-material-components/viewModels';
 import 'rxjs/add/operator/debounceTime';
 
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, OnChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { camelCase, title } from 'change-case';
@@ -244,7 +244,6 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                 .subscribe((value) => {
                     if (this.ischartTypeMap) {
                         that.groupingList = MapsGroupingList;
-                        that.fg.controls['grouping'].patchValue(MapsGroupingList, { emitEvent: true });
                     } else {
                         const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
                         const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
@@ -255,17 +254,19 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                             that._getOldestDate(value.kpi);
                             that.lastKpiDateRangePayload = payload;
                         }
-                    }
+                   }
                     const kpi_id = this.fg.value.kpi;
-                    this._apolloService.networkQuery < string > (kpiDataSourcesQuery, {id: kpi_id })
-                    .then(sources => {
-                        // Enable-Disable the map type chart
-                        if (sources.getKpiDataSources.includes('sales')) {
-                            this._chartGalleryService.showMap = true;
-                        } else {
-                            this._chartGalleryService.showMap = false;
-                        }
-                    });
+                    if (kpi_id !== '') {
+                        this._apolloService.networkQuery < string > (kpiDataSourcesQuery, {id: kpi_id })
+                        .then(sources => {
+                            // Enable-Disable the map type chart
+                            if (sources.getKpiDataSources.includes('sales')) {
+                                this._chartGalleryService.showMap = true;
+                            } else {
+                                this._chartGalleryService.showMap = false;
+                            }
+                        });
+                    }
         });
     }
 
@@ -380,7 +381,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                 that.fg.controls['grouping'].patchValue(MapsGroupingList, { emitEvent: true });
             } else {
                 that.groupingList = [];
-                this._getGroupingInfo();
+                this._getGroupingInfo(chart);
             }
             that._resetFrequencyAndSource(that.chartType);
         });
