@@ -28,6 +28,7 @@ import { SchemaFormComponent } from './custom/data-manually/schema-form/schema-f
 import { EnterDataFormComponent } from './custom/data-manually/enter-data-form/enter-data-form.component';
 import { CustomFormViewModel } from './custom/custom-datasource.viewmodel';
 import { DateFieldPopupComponent } from './custom/import-file/date-field-popup/date-field-popup.component';
+import { RadioGroupService } from '../ng-material-components/modules/forms/radio/radio-group.service';
 
 @NgModule({
   imports: [
@@ -52,7 +53,7 @@ import { DateFieldPopupComponent } from './custom/import-file/date-field-popup/d
   providers: [
     DataSourceService, ServerSideDataSourceService,
     FacebookAuthService, InstagramAuthService, TwitterAuthService, YoutubeAuthService,
-    GoogleAnaliticsAuthService, SquareAuthService, CustomFormViewModel
+    GoogleAnaliticsAuthService, SquareAuthService, CustomFormViewModel, RadioGroupService
   ]
 })
 export class DataSourceModule { }

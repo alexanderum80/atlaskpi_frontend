@@ -1,6 +1,6 @@
 div(layout="column", layout-padding)
     .title Define your schema
-    div(flex, *ngFor="let schema of schema.controls; let i=index")
+    div(flex, *ngFor="let schema of schemas.controls; let i=index")
         div(layout="row")
             div(flex)
                 .schema-form-container(flex="100", layout="row")
@@ -29,11 +29,11 @@ div(layout="column", layout-padding)
                                         noneSelectedText="NOTHING SELECTED")
                     .zmdi.zmdi-close((click)="removeSchema(schema)")
                 
-                .date-field(*ngIf="moreThanOneDateField(schema)", layout="row")
-                    bw-checkbox(
-                        [fg]="schema",
-                        field="dateRangeField",
-                        label="Use this for date ranges")
+                div.date-field
+                    bw-radio-group(*ngIf="moreThanOneDateField(schema)", [fg]="vm.fg", field="dateRangeField")
+                        bw-radio(
+                            label="Use this for date ranges",
+                            [value]="i")
 
 
 .m-t-10.m-r-40(layout="row", layout-align="end")

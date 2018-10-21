@@ -18,7 +18,7 @@
             div 
                 img.table-image(src="{{ tablePath }}", alt="Blank table image", (click)="selectTableType('table')")
     .step-2(flex="100", *ngIf="vm.currentStep === 2", layout="column")
-        kpi-schema-form([schema]="vm.fg.get('schema')")
+        kpi-schema-form
 
     .step-3(flex="100", *ngIf="vm.currentStep === 3", layout="column")
         kpi-enter-data-form.h-100

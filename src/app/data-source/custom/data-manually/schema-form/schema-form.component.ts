@@ -8,15 +8,19 @@ import { CustomFormViewModel } from '../../custom-datasource.viewmodel';
   styleUrls: ['./schema-form.component.scss']
 })
 export class SchemaFormComponent {
-  @Input() schema: FormArray;
+
+  schemas: FormArray;
+  // defaultDateRangeField: number;
 
   constructor(
     private vm: CustomFormViewModel
-  ) { }
+  ) {
+    this.schemas = vm.fg.get('schema') as FormArray;
+  }
 
   addSchema(): void {
     const that = this;
-    that.schema.push(new FormGroup({}) as any);
+    that.schemas.push(new FormGroup({}) as any);
   }
 
   removeSchema(schema: FormGroup) {
@@ -24,34 +28,26 @@ export class SchemaFormComponent {
           return;
       }
 
-      const schemaIndex = this.schema.controls.findIndex(c => c === schema);
+      const schemaIndex = this.schemas.controls.findIndex(c => c === schema);
 
       if (schemaIndex > -1) {
-          this.schema.removeAt(schemaIndex);
+          this.schemas.removeAt(schemaIndex);
       }
   }
 
   moreThanOneDateField(schema: FormGroup) {
-    const schemaIndex = this.schema.controls.findIndex(c => c === schema);
-    const currentSchema = this.schema.controls[schemaIndex];
+    const schemaIndex = this.schemas.controls.findIndex(c => c === schema);
+    const currentSchema = this.schemas.controls[schemaIndex];
 
-    const dateFields = this.schema.controls.filter(f => f.value.dataType === 'Date');
+    this.vm.fg.controls.dateRangeField.setValue(this.vm.fg.controls.schema.value.findIndex(f => f.dataType === 'Date'));
+
+    const dateFields = this.schemas.controls.filter(f => f.value.dataType === 'Date');
 
     if (currentSchema.value.dataType === 'Date' && dateFields.length > 1) {
-      // this._updateDateRangeField();
       return true;
     } else {
       return false;
     }
   }
-
-  // private _updateDateRangeField() {
-  //     const dateRangeChecked = this.vm.fg.controls.schema.value.filter(f => f.dateRangeField === true);
-
-  //     if (dateRangeChecked.length === 0) {
-  //       const dateRangeIndex = this.vm.fg.controls.schema.value.findIndex(f => f.dataType === 'Date');
-  //       ((this.vm.fg.get('schema') as FormArray).controls[dateRangeIndex] as FormArray).controls['dateRangeField'].value = true;
-  //     }
-  // }
 
 }
