@@ -2,13 +2,12 @@ export interface ICustomSchema {
     schema: ICustomSchemaInfo[];
     data: ICustomDataInfo[];
     dataName: string;
-    dateRangeName?: string;
+    dateRangeField: string;
 }
 
 export interface ICustomSchemaInfo {
     columnName: string;
     dataType: string;
-    dateRangeField: boolean;
 }
 
 export interface ICustomDataInfo {
@@ -26,5 +25,6 @@ export interface ICustomData {
     inputName: string;
     fields: string;
     records: string;
+    dateRangeField: string;
 }
 

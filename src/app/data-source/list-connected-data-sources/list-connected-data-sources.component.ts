@@ -129,7 +129,8 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
         const schema = {
           'schema': fields,
           'data': [],
-          'dataName': dataName
+          'dataName': dataName,
+          'dateRangeField': ''
         };
 
         this._vm.initialize(schema);
@@ -174,9 +175,9 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
               console.log('connector removed...');
             } else {
               const entity = JSON.parse(response.data.removeConnector.entity);
-              if (entity.length) {
-                const simpleKPI = entity.filter(s => s.type === 'simple').map(simpleResp => 'Simple KPI: ' + simpleResp.description);
-                const complexKPI = entity.filter(s => s.type === 'complex').map(complexResp => 'Complex KPI: ' + complexResp.description);
+              if (entity && entity.length) {
+                const simpleKPI = entity.filter(s => s.type === 'simple').map(simpleResp => 'Simple KPI: ' + simpleResp.name);
+                const complexKPI = entity.filter(s => s.type === 'complex').map(complexResp => 'Complex KPI: ' + complexResp.name);
 
                 const listNames = [].concat(simpleKPI, complexKPI);
 

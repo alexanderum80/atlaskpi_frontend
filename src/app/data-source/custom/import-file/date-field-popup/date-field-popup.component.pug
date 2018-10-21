@@ -9,7 +9,7 @@ bw-modal(size="md",#dateFieldPopup='')
         .popup-body(layout="column")
           .body-text Please select the field you want to use for date range to visualize your charts and widgets
           div(layout="column", layout-align="center center")
-            bw-radio-group(*ngIf="vm.dateFields.length && defaultValue", [fg]="vm.fg", field="dateFieldName", [defaultValue]="defaultValue")
+            bw-radio-group(*ngIf="vm.dateFields.length && defaultValue", [fg]="vm.fg", field="dateRangeField", [defaultValue]="defaultValue")
               bw-radio(
                 *ngFor="let item of vm.dateFields",
                 [label]="item.title",

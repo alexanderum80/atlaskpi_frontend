@@ -24,9 +24,10 @@ export class ImportFileComponent {
   csvFileData = {
     inputName: undefined,
     fields: [],
-    records: []
-
+    records: [],
+    dateRangeField: undefined
   };
+
   csvTokenDelimeter = ',';
   file: string;
 
@@ -35,7 +36,8 @@ export class ImportFileComponent {
   excelFileData = {
     inputName: undefined,
     fields: [],
-    records: []
+    records: [],
+    dateRangeField: undefined
   };
 
   constructor(
@@ -54,14 +56,16 @@ export class ImportFileComponent {
       filesData.push({
         inputName: this.csvFileData.inputName,
         fields: JSON.stringify(this.csvFileData.fields),
-        records: JSON.stringify(this.csvFileData.records)
+        records: JSON.stringify(this.csvFileData.records),
+        dateRangeField: this.csvFileData.dateRangeField
       });
     }
     if (this.excelFileData.inputName) {
       filesData.push({
         inputName: this.excelFileData.inputName,
         fields: JSON.stringify(this.excelFileData.fields),
-        records: JSON.stringify(this.excelFileData.records)
+        records: JSON.stringify(this.excelFileData.records),
+        dateRangeField: this.excelFileData.dateRangeField
       });
     }
 
@@ -201,8 +205,7 @@ export class ImportFileComponent {
                 if (cellValue !== '') {
                   const newfield: ICustomSchemaInfo = {
                     columnName: cellValue,
-                    dataType: '',
-                    dateRangeField: false
+                    dataType: ''
                   };
 
                   this.excelFileData.fields.push(newfield);
@@ -263,8 +266,7 @@ export class ImportFileComponent {
       const dataType = this.vm.getDataTypeFromValue(this.csvFileData.records[0][i]);
       fields.push({
         columnName: element,
-        dataType: dataType,
-        dateRangeField: false
+        dataType: dataType
       });
     }
     return fields;
@@ -356,7 +358,7 @@ export class ImportFileComponent {
 
   closeModal() {
     this.dateFieldPopupComponent.close();
-    this._updateDateField(this.vm.dateFieldName);
+    this._updateDateField(this.vm.dateRangeField);
   }
 
   private _updateDateField(dateFieldName) {
@@ -365,11 +367,10 @@ export class ImportFileComponent {
             this.csvFileData.fields.findIndex(f => f.columnName === dateFieldName) :
             this.excelFileData.fields.findIndex(f => f.columnName === dateFieldName);
     if (fileType === 'csv') {
-      this.csvFileData.fields[selectedDateFieldIndex].dateRangeField = true;
+      this.csvFileData.dateRangeField = this.csvFileData.fields[selectedDateFieldIndex].columnName;
     } else {
-      this.excelFileData.fields[selectedDateFieldIndex].dateRangeField = true;
+      this.excelFileData.dateRangeField = this.excelFileData.fields[selectedDateFieldIndex].columnName;
     }
   }
-
 
 }

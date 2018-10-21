@@ -85,7 +85,8 @@ export class DataManuallyComponent implements OnInit {
     const tableData: ICustomData = {
       inputName: this.vm.fg.controls['dataName'].value,
       fields: JSON.stringify(tableFields),
-      records: JSON.stringify(tableRecords)
+      records: JSON.stringify(tableRecords),
+      dateRangeField: tableFields[this.vm.fg.controls['dateRangeField'].value].columnName
     };
 
     this._apolloService.mutation < ICustomData > (addCustomMutation, { input: tableData }, ['ServerSideConnectors'])
@@ -141,16 +142,10 @@ export class DataManuallyComponent implements OnInit {
 
   private _isValidDateRangeField(): boolean {
     const dateRangeFields = this.vm.fg.controls.schema.value.filter(f => f.dataType === 'Date');
-    if (dateRangeFields.length <= 1) {
+    if (dateRangeFields.length >= 1) {
       return true;
     }
 
-    const dateRangeChecked = this.vm.fg.controls.schema.value.filter(f => f.dateRangeField === true);
-    if (dateRangeChecked.length === 1) {
-      return true;
-    } else {
-      return false;
-    }
   }
 
 }

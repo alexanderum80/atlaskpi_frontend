@@ -15,9 +15,6 @@ export class CustomSchemaViewModel extends ViewModel<ICustomSchemaInfo> {
     @Field({ type: String, required: true })
     dataType: string;
 
-    @Field({ type: Boolean, required: false })
-    dateRangeField: Boolean;
-
     initialize(model: ICustomSchemaInfo): void {
         this.onInit(model);
     }
@@ -73,29 +70,24 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
 
         this._defaultSchema = {
             schema: [
-                { columnName: 'Invoice amount', dataType: this._dataType.number, dateRangeField: false },
-                { columnName: 'Due Date', dataType: this._dataType.date, dateRangeField: true },
-                { columnName: 'Notes', dataType: this._dataType.string, dateRangeField: false },
+                { columnName: 'Invoice amount', dataType: this._dataType.number},
+                { columnName: 'Due Date', dataType: this._dataType.date },
+                { columnName: 'Notes', dataType: this._dataType.string },
             ],
             data: [],
-            dataName: ''
+            dataName: '',
+            dateRangeField: ''
         };
 
         this._defaultInputSchema = {
             schema : [
-                { columnName: '', dataType: this._dataType.number, dateRangeField: false },
-                { columnName: '', dataType: this._dataType.date, dateRangeField: true },
-                { columnName: '', dataType: this._dataType.string, dateRangeField: false },
+                { columnName: '', dataType: this._dataType.number },
+                { columnName: '', dataType: this._dataType.date },
+                { columnName: '', dataType: this._dataType.string },
             ],
             data: [],
-            dataName: ''
-        };
-
-        this._defaultDateRangeSchema = {
-            schema: [],
-            data: [],
             dataName: '',
-            dateRangeName: ''
+            dateRangeField: ''
         };
 
         this._dataTypeList = [
@@ -124,7 +116,7 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
     dataName: string;
 
     @Field({ type: String })
-    dateFieldName: string;
+    dateRangeField: string;
 
     initialize(model: ICustomSchema): void {
         this.onInit(model);
