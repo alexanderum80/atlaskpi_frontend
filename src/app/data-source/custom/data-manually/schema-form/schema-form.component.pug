@@ -29,8 +29,8 @@ div(layout="column", layout-padding)
                                         noneSelectedText="NOTHING SELECTED")
                     .zmdi.zmdi-close((click)="removeSchema(schema)")
                 
-                div.date-field
-                    bw-radio-group(*ngIf="moreThanOneDateField(schema)", [fg]="vm.fg", field="dateRangeField")
+                div.date-field.p-b-10
+                    bw-radio-group(*ngIf="moreThanOneDateField(schema)", [fg]="vm.fg", field="dateRangeField", [defaultValue]="defaultDateRangeField")
                         bw-radio(
                             label="Use this for date ranges",
                             [value]="i")

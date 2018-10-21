@@ -7,15 +7,19 @@ import { CustomFormViewModel } from '../../custom-datasource.viewmodel';
   templateUrl: './schema-form.component.pug',
   styleUrls: ['./schema-form.component.scss']
 })
-export class SchemaFormComponent {
+export class SchemaFormComponent implements OnInit {
 
   schemas: FormArray;
-  // defaultDateRangeField: number;
+  defaultDateRangeField: number;
 
   constructor(
     private vm: CustomFormViewModel
   ) {
     this.schemas = vm.fg.get('schema') as FormArray;
+    this.defaultDateRangeField = this.vm.fg.controls.schema.value.findIndex(f => f.dataType === 'Date');
+  }
+
+  ngOnInit() {
   }
 
   addSchema(): void {
@@ -38,8 +42,6 @@ export class SchemaFormComponent {
   moreThanOneDateField(schema: FormGroup) {
     const schemaIndex = this.schemas.controls.findIndex(c => c === schema);
     const currentSchema = this.schemas.controls[schemaIndex];
-
-    this.vm.fg.controls.dateRangeField.setValue(this.vm.fg.controls.schema.value.findIndex(f => f.dataType === 'Date'));
 
     const dateFields = this.schemas.controls.filter(f => f.value.dataType === 'Date');
 
