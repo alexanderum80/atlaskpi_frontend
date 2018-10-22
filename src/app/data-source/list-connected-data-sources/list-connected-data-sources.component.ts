@@ -111,6 +111,8 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
           }
         });
 
+        const dateRangeField = fields.findIndex(f => f.columnName.toLowerCase().replace(' ', '_') === dataSourceCollection.dateRangeField);
+
         const data = [];
         dataCollection.map(d => {
           const dataElement = [];
@@ -130,7 +132,7 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
           'schema': fields,
           'data': [],
           'dataName': dataName,
-          'dateRangeField': ''
+          'dateRangeField': dateRangeField.toString()
         };
 
         this._vm.initialize(schema);

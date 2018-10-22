@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { DateFieldPopupComponent } from './date-field-popup/date-field-popup.component';
 
 const addCustomMutation = require('graphql-tag/loader!../custom-datasource.connect.gql');
+const dataSourceByNameQuery = require('graphql-tag/loader!../data-source-by-name.query.gql');
 
 @Component({
   selector: 'kpi-import-file',
@@ -29,7 +30,7 @@ export class ImportFileComponent {
   };
 
   csvTokenDelimeter = ',';
-  file: string;
+  file: any;
 
   // excel
   excelImagePath: string;
@@ -110,14 +111,32 @@ export class ImportFileComponent {
       });
     }
 
-    if (this.isCSVFile(this.file)) {
-      this._processCsvFile(this.file);
-    }
+    let fileName = this.file.name;
+    this.vm.fileExtensions.map(f => {
+      fileName = fileName.replace(f, '');
+    });
 
-    if (this.isXLSFile(this.file)) {
-      this._processExcelFile(this.file);
-    }
+    this._apolloService.networkQuery(dataSourceByNameQuery, { name: fileName })
+    .then(res => {
+      if (res.dataSourceByName) {
+        return Sweetalert({
+          title: 'File exists!',
+          text: 'The file you are trying to import already exists. Please select another one.',
+          type: 'error',
+          showConfirmButton: true,
+          confirmButtonText: 'Ok'
+        });
+      }
 
+      if (this.isCSVFile(this.file)) {
+        this._processCsvFile(this.file);
+      }
+
+      if (this.isXLSFile(this.file)) {
+        this._processExcelFile(this.file);
+      }
+    })
+    .catch(err => console.log(err));
   }
 
   isCSVFile(file) {
@@ -133,7 +152,7 @@ export class ImportFileComponent {
 
     const reader = new FileReader();
     reader.onload = () => {
-      const csvData = reader.result;
+      const csvData = <any>reader.result;
       const csvRecordsArray = csvData.split(/\r\n|\n/);
 
       const headerLength = this._getCsvHeaderArray(csvRecordsArray, ',').length;
@@ -181,7 +200,7 @@ export class ImportFileComponent {
       const fileReader = new FileReader();
       fileReader.onload = () => {
           const arrayBuffer = fileReader.result;
-          const data = new Uint8Array(arrayBuffer);
+          const data = new Uint8Array(<any>arrayBuffer);
           const arr = new Array();
           for (let i = 0; i !== data.length; ++i) {
             arr[i] = String.fromCharCode(data[i]);

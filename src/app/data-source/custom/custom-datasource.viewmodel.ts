@@ -65,6 +65,8 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
 
     dateFields: MenuItem[] = [];
 
+    private _fileExtensions = ['.csv', '.xls', '.xlsx'];
+
     constructor() {
         super(null);
 
@@ -76,7 +78,7 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
             ],
             data: [],
             dataName: '',
-            dateRangeField: ''
+            dateRangeField: '1'
         };
 
         this._defaultInputSchema = {
@@ -87,7 +89,7 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
             ],
             data: [],
             dataName: '',
-            dateRangeField: ''
+            dateRangeField: '1'
         };
 
         this._dataTypeList = [
@@ -222,6 +224,10 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
 
     updateIsEdit(value) {
         this._isEditSubject.next(value);
+    }
+
+    get fileExtensions() {
+        return this._fileExtensions;
     }
 }
 
