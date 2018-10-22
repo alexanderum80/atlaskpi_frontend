@@ -66,7 +66,7 @@ export class ChartViewDashboardComponent implements OnInit, OnDestroy {
         definition.exporting = definition.exporting || { };
         definition.exporting.enabled = false;
         definition.credits = { enabled: false };
-        definition.legend = { enabled: false };
+        definition.legend = { enabled: true };
         definition.tooltip = { enabled: false };
         definition.plotOptions = definition.plotOptions || {};
         definition.plotOptions.series = definition.plotOptions.series || {};
