@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, QueryRef } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { toArray } from 'lodash';
+import { toArray, map } from 'lodash';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import SweetAlert from 'sweetalert2';
@@ -80,6 +80,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
     bigWidgets: any[] = [];
     smallWidgets: any[] = [];
     charts: any[] = null;
+    maps: any[] = [];
     refreshing = false;
     isMobile: boolean;
     showMap = false;
@@ -124,7 +125,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
 
         const that = this;
 
-        this._bringMapMarkers();
+        // this._bringMapMarkers();
         this._getSocialWidgets();
         if (this.isFromDashboard) {
             this._loadDashboardData(this.dashboardPayLoad);
@@ -256,9 +257,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this.showMap = this.mapMarkers && this.mapMarkers.length > 0 && dashboard.maps && dashboard.maps[0] === '1';
         this.dashboardName = dashboard.name || 'Untitled';
-
         if (dashboard.charts) {
             that.charts = dashboard.charts.map(c => {
                 if (!c) { return; }
@@ -274,7 +273,16 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
                 }
             });
         }
+        if (dashboard.maps.length > 0) {
+            that.maps = dashboard.maps.map(dm => JSON.parse(dm));
+            that.maps.forEach(m => {
+                m.markers = m.markers.map(mk => objectWithoutProperties(mk, ['__typename']));
+            });
+            this.showMap = true;
+        } else {
 
+            this.showMap = false;
+        }
         if (dashboard.widgets) {
             const widgets: IWidget[] = dashboard.widgets.map(w => {
                 try {
@@ -326,6 +334,13 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
         });
     }
 
+    get bigMaps(): any {
+        return this.maps ? this.maps.filter(m => m.size === 'big') : undefined;
+    }
+
+    get smallMaps(): any {
+        return this.maps ? this.maps.filter(m => m.size === 'small') : undefined;
+    }
     private _processDashboardResponse(data) {
         const that = this;
 
@@ -335,14 +350,22 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             that.bigWidgets = [];
             that.smallWidgets = [];
             that.charts = [];
+            that.maps = [];
             return;
         }
 
         this._rawDashboard = data.dashboard;
-
-        this.showMap = this.mapMarkers && this.mapMarkers.length > 0 && data.dashboard.maps && data.dashboard.maps[0] === '1';
         this.dashboardName = data.dashboard.name;
 
+        if (data.dashboard.maps.length > 0) {
+            that.maps = data.dashboard.maps.map(dm => JSON.parse(dm));
+            that.maps.forEach(m => {
+                m.markers = m.markers.map(mk => objectWithoutProperties(mk, ['__typename']));
+            });
+            this.showMap = true;
+        } else {
+            this.showMap = false;
+        }
         if (data.dashboard.charts) {
             that.charts = data.dashboard.charts.map(c => {
                 if (!c) {

@@ -18,8 +18,20 @@
                 flex-gt-md="25")
                 kpi-social-widget.pointer-cursor([socialWidget]="sw")
     
-    kpi-show-map(*ngIf="showMap", [markers]="mapMarkers", [legendColors]="legendColors")
-
+    .Maps(*ngIf="showMap", layout="column", flex="100")
+        div(*ngFor="let mapMarkers of bigMaps",flex)
+            kpi-map-view-big.pointer-cursor([item]="mapMarkers", [legendColors]="legendColors")
+    
+        div(flex, layout="row", layout-wrap, layout-padding, layout-align="start start")
+                .box(
+                    [ngClass]="{'box-margin': (inspectorOpen$ | async)}",
+                    flex-xs="100",
+                    flex-gt-xs="50",
+                    flex-gt-md="33",
+                    flex-gt-lg="25",
+                    *ngFor="let mapMarkers of smallMaps")
+                        kpi-map-view-mini.pointer-cursor([item]="mapMarkers", [legendColors]="legendColors")
+                        
     .big-widgets(*ngIf="smallWidgets.length", flex-none, [attr.layout-padding]="!isMobile")
         div(layout="row", layout-wrap, layout-padding)
             div(*ngFor="let sWidget of smallWidgets",

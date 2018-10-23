@@ -1,5 +1,5 @@
 div(layout="row", layout-wrap, layout-padding)
-    div(*ngFor="let category of chartCategories",flex="50")
+    div(*ngFor="let category of chartCategories",flex="50", flex-xs="100")
         .text-center.separator {{ category }}
         div(flex, layout="row", layout-wrap)
             kpi-chart-gallery-item.chart-item(*ngFor="let chart of charts[category]", flex="33", [item]="chart", [type]="category", [width]="70")

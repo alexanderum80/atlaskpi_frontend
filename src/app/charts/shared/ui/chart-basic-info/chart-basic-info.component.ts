@@ -173,7 +173,6 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
     ngOnChanges() {
         if (this.chartType === 'map') {
             this.ischartTypeMap = true;
-            this.groupingList = MapsGroupingList;
             const selectedTypeChart: IChartGalleryItem = {
                 configName: 'map',
                 img: '/assets/img/charts/others/map.png',
@@ -242,19 +241,15 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                 .distinctUntilChanged()
                 .debounceTime(400)
                 .subscribe((value) => {
-                    if (this.ischartTypeMap) {
-                        that.groupingList = MapsGroupingList;
-                    } else {
-                        const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
-                        const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
-                        if (value.kpi && value.predefinedDateRange && !loadingGroupings && !loadingComparison) {
-                            const payload = that._getGroupingInfoInput(value);
-                            if (isEqual(that.lastKpiDateRangePayload, payload)) { return; }
-                            that._getGroupingInfo(value);
-                            that._getOldestDate(value.kpi);
-                            that.lastKpiDateRangePayload = payload;
-                        }
-                   }
+                    const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
+                    const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
+                    if (value.kpi && value.predefinedDateRange && !loadingGroupings && !loadingComparison) {
+                        const payload = that._getGroupingInfoInput(value);
+                        if (isEqual(that.lastKpiDateRangePayload, payload)) { return; }
+                        that._getGroupingInfo(value);
+                        that._getOldestDate(value.kpi);
+                        that.lastKpiDateRangePayload = payload;
+                    }
                     const kpi_id = this.fg.value.kpi;
                     if (kpi_id !== '') {
                         this._apolloService.networkQuery < string > (kpiDataSourcesQuery, {id: kpi_id })
@@ -299,11 +294,18 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         this._apolloService.networkQuery(kpiGroupingsQuery, { input })
             .then(data => {
                 let groupingList = [];
+                that.groupingList = [];
                 if (data || !isEmpty(data.kpiGroupings)) {
                     groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
                 }
-
-                that.groupingList = groupingList;
+                if (this.ischartTypeMap) {
+                    const exists = MapsGroupingList.map(m => {
+                        return groupingList.find(gl => gl.id === m.id);
+                    });
+                    that.groupingList = exists.filter(e => e !== undefined);
+                } else {
+                    that.groupingList = groupingList;
+                }
 
                 const currentGroupingValue = this.fg.get('grouping').value || '';
                 let nextGropingValue;
