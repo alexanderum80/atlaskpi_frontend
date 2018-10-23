@@ -20,7 +20,7 @@ kpi-add-item(*ngIf = "!listEmpty && !slideshowPlaying", [itemViewModel]="vm", [a
 
 //- Slideshow Preview
 .preview-container(*ngIf="slideshowPlaying")
-    kpi-show-chart-slideshow([slideshow]="slideshowPlaying", (onPresentationStopped)="stopSlideshow()")
+    kpi-show-chart-slideshow([slideshow]="slideshowPlaying", (stopPresentation)="stopSlideshow()")
 
 //- Confirmation modal for removing slideshow
 bw-modal(#removeConfirmationModal='', animation="true", keyboard="true", backdrop="true", size="md",

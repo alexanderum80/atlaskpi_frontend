@@ -63,7 +63,7 @@ export class ShowChartSlideshowComponent implements OnInit, OnDestroy {
       setTimeout(function() {
         that.stopPresentation.emit('');
         that.animation = 'fadeIn';
-      }, 1000);
+      }, 200);
     }
 
     private _calculateMinHeight() {
