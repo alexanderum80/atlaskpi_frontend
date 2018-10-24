@@ -124,7 +124,6 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
         this.legendColors = this._legendService.getLegendColors();
 
         const that = this;
-
         // this._bringMapMarkers();
         this._getSocialWidgets();
         if (this.isFromDashboard) {

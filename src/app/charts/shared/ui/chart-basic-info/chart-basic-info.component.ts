@@ -81,6 +81,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
 
     lastKpiDateRangePayload: any;
     lastOldestDatePayload = '';
+    previousChartType = '';
 
     @ViewChild('frequencyPicker') set frequencyContent(content: SelectPickerComponent) {
         if (content) {
@@ -255,11 +256,11 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                         this._apolloService.networkQuery < string > (kpiDataSourcesQuery, {id: kpi_id })
                         .then(sources => {
                             // Enable-Disable the map type chart
-                            if (sources.getKpiDataSources.includes('sales')) {
-                                this._chartGalleryService.showMap = true;
-                            } else {
-                                this._chartGalleryService.showMap = false;
+                            this._chartGalleryService.showMap = sources.getKpiDataSources[0];
+                            if (!this._chartGalleryService.showMap && this.chartType === this.previousChartType) {
+                                this.chartType = 'pie';
                             }
+                            this.previousChartType = this.chartType;
                         });
                     }
         });
