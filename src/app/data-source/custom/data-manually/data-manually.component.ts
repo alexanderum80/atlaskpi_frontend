@@ -93,7 +93,7 @@ export class DataManuallyComponent implements OnInit {
 
     this._apolloService.networkQuery(dataSourceByNameQuery, { name: tableData.inputName })
       .then(res => {
-        if (res.dataSourceByName) {
+        if (res.dataSourceByName && !this.isEditing) {
           return Sweetalert({
             title: 'Data name exists!',
             text: `Already exists data with name: '${tableData.inputName}'. Please change the data name.`,
