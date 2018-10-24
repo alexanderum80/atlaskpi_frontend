@@ -15,6 +15,7 @@ export class MapViewBigComponent implements OnInit {
     @Input() title: string;
     @Input() legendColors: ILegendColorConfig[];
     @Input() allowSelected = true;
+    @Input() padded = true;
 
     selected$: Observable<any>;
     inspectorOpen$: Observable<boolean>;
