@@ -20,17 +20,17 @@
     
     .Maps(*ngIf="showMap", layout="column", flex="100")
         div(*ngFor="let mapMarkers of bigMaps",flex)
-            kpi-map-view-big.pointer-cursor([item]="mapMarkers", [legendColors]="legendColors")
+            kpi-map-view-big.pointer-cursor([item]="mapMarkers", [allowSelected]="false", [legendColors]="legendColors")
     
         div(flex, layout="row", layout-wrap, layout-padding, layout-align="start start")
                 .box(
                     [ngClass]="{'box-margin': (inspectorOpen$ | async)}",
                     flex-xs="100",
-                    flex-gt-xs="50",
-                    flex-gt-md="33",
-                    flex-gt-lg="25",
+                    flex-gt-xs="100",
+                    flex-gt-sm="50",
+                    flex-gt-lg="33",
                     *ngFor="let mapMarkers of smallMaps")
-                        kpi-map-view-mini.pointer-cursor([item]="mapMarkers", [legendColors]="legendColors")
+                        kpi-map-view-mini.pointer-cursor([item]="mapMarkers", [allowSelected]="false" , [legendColors]="legendColors")
                         
     .big-widgets(*ngIf="smallWidgets.length", flex-none, [attr.layout-padding]="!isMobile")
         div(layout="row", layout-wrap, layout-padding)

@@ -8,6 +8,6 @@ bw-card.m-b-5.p-relative(flex, [depth]="1")
                 //- | loading...
             .animated.fadeIn.box.p-t-2(flex, style="height: 300px;")
                 kpi-show-map([markers]="item.markers", [legendColors]="legendColors", [legendClosed]="true", [Height]="'280px'")
-    div(*ngIf="selected$ | async; let itemSelected")
+    div(*ngIf="allowSelected && (selected$ | async); let itemSelected")
         .marker.animated.fadeIn(*ngIf="(inspectorOpen$ | async)  && itemSelected === item")
             i.zmdi.zmdi-check-circle.text-right.c-green.checked

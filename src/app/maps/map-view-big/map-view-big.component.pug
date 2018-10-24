@@ -3,6 +3,6 @@ bw-card.m-b-5.p-relative(flex, [depth]="1")
         div(flex, (click)="setActive()")
             .text-center.mini-chart-title(flex) {{ item.title }}
             kpi-show-map(flex, [markers]="item.markers", [legendColors]="legendColors", [legendClosed]="true")
-            div(*ngIf="selected$ | async; let itemSelected")
+            div(*ngIf="allowSelected && (selected$ | async); let itemSelected")
                 .marker.animated.fadeIn(*ngIf="(inspectorOpen$ | async)  && itemSelected === item")
                     i.zmdi.zmdi-check-circle.text-right.c-green.checked
