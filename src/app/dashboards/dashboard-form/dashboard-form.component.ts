@@ -415,7 +415,6 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private _actionUpdate() {
     const that = this;
-
     this._dashboardService.updateExistDuplicatedName(false);
 
     this._apolloService.networkQuery < IDashboard > (dashboardByNameQuery, { name: this.fg.controls['name'].value }).then(d => {
@@ -432,7 +431,8 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
               showConfirmButton: true,
               confirmButtonText: 'Ok'
           });
-      }
+
+      }});
 
       const dashboardPayload = {
         name: that.dashboardModel.name.trim(),
@@ -457,7 +457,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
             that._router.navigateByUrl('/dashboards/list');
         }
       });
-    });
+    
   }
 
   private _dashboardModelSubscription() {
