@@ -83,7 +83,7 @@ export class EnterDataFormComponent implements OnInit, AfterViewInit {
               if (fieldData.controls[d].controls[i]) {
                 fieldData.controls[d].controls[i].setErrors({invalidDataType: true});
               }
-            } else {
+            } else if(fieldData.controls[d].controls[i]) {
               fieldData.controls[d].controls[i].setErrors(null);
             }
           }
