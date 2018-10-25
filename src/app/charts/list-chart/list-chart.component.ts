@@ -94,14 +94,6 @@ export class ListChartComponent implements OnInit, OnDestroy, AfterViewInit {
         return this._visibleMaps;
     }
 
-    get visibleBigMaps() {
-        return this._visibleMaps.filter(m => m.size === 'big');
-    }
-
-    get visibleSmallMaps() {
-        return this._visibleMaps.filter(m => m.size === 'small');
-    }
-
   addChart() {
       this._router.navigateByUrl('/charts/new');
   }

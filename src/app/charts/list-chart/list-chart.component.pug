@@ -9,14 +9,7 @@
         (onScroll)="handleScroll($event)",
         [bottomOffset]="100",
         [topOffset]="100")
-        // for Bigs Maps
-        div(flex, layout="row", layout-wrap, layout-padding, layout-align="start start")
-            .box(
-                [ngClass]="{'box-margin': (inspectorOpen$ | async)}",
-                flex="100",
-                *ngFor="let mapMarkers of visibleBigMaps")
-                    kpi-map-view-big.pointer-cursor([item]="mapMarkers", [legendColors]="legendColors")
-        // for small Maps
+        
         div(flex, layout="row", layout-wrap, layout-padding, layout-align="start start")
             .box(
                 [ngClass]="{'box-margin': (inspectorOpen$ | async)}",
@@ -24,7 +17,7 @@
                 flex-gt-xs="50",
                 flex-gt-md="33",
                 flex-gt-lg="25",
-                *ngFor="let mapMarkers of visibleSmallMaps")
+                *ngFor="let mapMarkers of visibleMaps")
                     kpi-map-view-mini.pointer-cursor([item]="mapMarkers", [legendColors]="legendColors")
         
         div(layout="row", layout-wrap, layout-padding, layout-align="start start")
