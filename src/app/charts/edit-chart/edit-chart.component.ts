@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
@@ -17,6 +17,9 @@ import { SingleChartQuery, UpdateChartMutation } from '../shared/graphql/charts.
 import { ChartModel, IChart, IUpdateChartResponse, SingleChartResponse } from '../shared/models';
 import { ChartFormComponent } from '../shared/ui/chart-form';
 
+import { ModifyChartActivity } from '../../shared/authorization/activities/charts/modify-chart.activity';
+import { Activity } from '../../shared/authorization/decorators/component-activity.decorator';
+
 
 const Highcharts = require('highcharts/js/highcharts');
 const getChartByTitle = require('graphql-tag/loader!../shared/graphql/get-chart-by-title.gql');
@@ -26,8 +29,18 @@ const getChartByTitle = require('graphql-tag/loader!../shared/graphql/get-chart-
   templateUrl: './edit-chart.component.pug',
   styleUrls: ['./edit-chart.component.scss'],
 })
+
+@Activity(ModifyChartActivity)
+
 export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
     @ViewChild(ChartFormComponent) private chartFormComponent: ChartFormComponent;
+
+    @Input() isFromDashboard = false;
+    @Input() isEditFromDashboardShow = false;
+    @Input() chartId: string;
+    @Output() goToDashboardShow = new EventEmitter();
+    @Output() result = new EventEmitter();
+
     fg: FormGroup = new FormGroup({});
 
     chart: IChart;
@@ -57,6 +70,16 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
 
     ngAfterViewInit() {
         const that = this;
+        if (this.chartId) {
+            this.id = this.chartId;
+            this._getChartByIdApolloQuery(this.chartId)
+            .subscribe((response: ApolloQueryResult<any>) => {
+                setTimeout(() => {
+                    that._setRemoveTargetData(response);
+                    that._processChartResponse(response);
+                }, 500);
+            })
+        } else {
         this._subscription.push(this._route.params
             .do((params: Params) => that.id = params['id'])
             .switchMap((params: Params) => that._getChartByIdApolloQuery(params['id']))
@@ -65,14 +88,26 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
                 that._setRemoveTargetData(response);
                 that._processChartResponse(response);
                }, 500);
-        }));
+            }));
+        }
+    }
 
+    private exitEditChart() {
+    if (this.isFromDashboard) {
+        this.result.emit('charts');
+    }    
+    if (this.chartId) {
+        this.goToDashboardShow.emit();
+    } else {
+        this._router.navigateByUrl('/charts');
+    }
     }
 
     onChartFormEvent($event: DialogResult) {
         switch ($event) {
           case DialogResult.CANCEL:
-               return this._router.navigateByUrl('/charts');
+            this.exitEditChart();
+                        break;
 
           case DialogResult.SAVE:
                return this.updateChart();
@@ -113,7 +148,8 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
             .toPromise()
             .then(response => {
                 if (response.data.updateChart.success) {
-                    this._router.navigateByUrl('/charts/list');
+                    this.exitEditChart();
+                    //this._router.navigateByUrl('/charts/list');
                 }
 
                 if (response.data.updateChart.errors) {

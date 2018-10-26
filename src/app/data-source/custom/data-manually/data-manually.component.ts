@@ -1,3 +1,4 @@
+import Sweetalert from 'sweetalert2';
 import { Router } from '@angular/router';
 import { ApolloService } from '../../../shared/services/apollo.service';
 import { ICustomData } from '../../shared/models/data-sources/custom-form.model';
@@ -7,6 +8,7 @@ import { DialogResult } from '../../../shared/models/dialog-result';
 import { FormArray, FormGroup, FormControl } from '@angular/forms';
 
 const addCustomMutation = require('graphql-tag/loader!../custom-datasource.connect.gql');
+const dataSourceByNameQuery = require('graphql-tag/loader!../data-source-by-name.query.gql');
 
 @Component({
   selector: 'kpi-data-manually',
@@ -33,7 +35,7 @@ export class DataManuallyComponent implements OnInit {
       this.vm.isEdit$.subscribe(v => this.isEditing = v);
   }
 
-   selectTableType(tableOption) {
+  selectTableType(tableOption) {
     this.vm.setSelectedTableOption(tableOption);
     if (tableOption === 'blank_table') {
       this.vm.initialize(this.vm.getDefaultInputSchema());
@@ -84,15 +86,30 @@ export class DataManuallyComponent implements OnInit {
 
     const tableData: ICustomData = {
       inputName: this.vm.fg.controls['dataName'].value,
-      fields: tableFields,
-      records: JSON.stringify(tableRecords)
+      fields: JSON.stringify(tableFields),
+      records: JSON.stringify(tableRecords),
+      dateRangeField: tableFields[this.vm.fg.controls['dateRangeField'].value].columnName
     };
 
-    this._apolloService.mutation < ICustomData > (addCustomMutation, { input: tableData }, ['ServerSideConnectors'])
+    this._apolloService.networkQuery(dataSourceByNameQuery, { name: tableData.inputName })
       .then(res => {
-        this._resetFormGroupData();
-        this.dialogResult.emit(DialogResult.CANCEL);
-        this._router.navigateByUrl('/datasource/listConnectedDataSourcesComponent');
+        if (res.dataSourceByName && !this.isEditing) {
+          return Sweetalert({
+            title: 'Data name exists!',
+            text: `Already exists data with name: '${tableData.inputName}'. Please change the data name.`,
+            type: 'error',
+            showConfirmButton: true,
+            confirmButtonText: 'Ok'
+          });
+        }
+
+        this._apolloService.mutation < ICustomData > (addCustomMutation, { input: tableData }, ['ServerSideConnectors'])
+          .then(() => {
+            this._resetFormGroupData();
+            this.dialogResult.emit(DialogResult.CANCEL);
+            this._router.navigateByUrl('/datasource/listConnectedDataSourcesComponent');
+          })
+          .catch(err => console.log('Server errors: ' + JSON.stringify(err)));
       })
       .catch(err => console.log('Server errors: ' + JSON.stringify(err)));
   }
@@ -113,7 +130,7 @@ export class DataManuallyComponent implements OnInit {
           }
         });
 
-        if (!this.vm.isRequiredDataTypePresent(schema)) {
+        if (!this.vm.isRequiredDataTypePresent(schema) || !this._isValidDateRangeField()) {
           returnValue = false;
         }
         break;
@@ -137,6 +154,14 @@ export class DataManuallyComponent implements OnInit {
       this.vm.fg.get('data').reset();
     }
     this.vm.updateIsEdit(false);
+  }
+
+  private _isValidDateRangeField(): boolean {
+    const dateRangeFields = this.vm.fg.controls.schema.value.filter(f => f.dataType === 'Date');
+    if (dateRangeFields.length >= 1) {
+      return true;
+    }
+
   }
 
 }

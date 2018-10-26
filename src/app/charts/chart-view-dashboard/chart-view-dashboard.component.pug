@@ -5,6 +5,6 @@
                 .text-center.text-wrap.mini-chart-title(flex-none) {{ item.title }}
                 div(*ngIf="loading", flex, style="text-align: center")
                     bw-preloader(color="gray")
-                .animated.fadeIn.p-25(*ngIf="!loading", flex-xs="50", flex-gt-xs="100", flex-gt-sm="50", flex-gt-lg="33", [chart]="chart", [style.min-height.px]="minHeight")
+                .animated.fadeIn.p-25.remove-gridlines(*ngIf="!loading", flex-xs="50", flex-gt-xs="100", flex-gt-sm="50", flex-gt-lg="33", [chart]="chart", [style.min-height.px]="minHeight")
         .marker.animated.fadeIn(*ngIf="selected")
             i.zmdi.zmdi-check-circle.text-right.c-blue.b-blue.checked

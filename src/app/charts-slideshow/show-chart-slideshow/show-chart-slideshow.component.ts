@@ -7,20 +7,22 @@ import { IChart, ListChartsQueryResponse } from '../../charts/shared/models/char
 import { ModalComponent } from '../../ng-material-components';
 import { CommonService } from '../../shared/services/common.service';
 import { IChartSlideshow } from '../shared/model/chartslideshow.model';
+import { IchartAndId } from 'src/app/charts/chart-view-dashboard';
 
 
 const SlideshowById = require('graphql-tag/loader!../shared/graphql/chart-slideshow-by-id.query.gql');
 const ListChartsQuery = require('graphql-tag/loader!../shared/graphql/list-charts.query.gql');
 const SLIDESHOW_INTERVAL = 10000;
 
+
 @Component({
     selector: 'kpi-show-chart-slideshow',
     templateUrl: './show-chart-slideshow.component.pug',
     styleUrls: ['./show-chart-slideshow.component.scss']
 })
-export class ShowChartSlideshowComponent implements OnInit, OnDestroy {
+export class ShowChartSlideshowComponent implements OnInit, OnDestroy{
     @Input() slideshow: IChartSlideshow;
-    @Output() onPresentationStopped= new EventEmitter();
+    @Output() onPresentationStopped = new EventEmitter();
 
     @ViewChild('slideshow') slideshowModal: ModalComponent;
 
@@ -28,6 +30,8 @@ export class ShowChartSlideshowComponent implements OnInit, OnDestroy {
     allCharts: IChart[] = [];
     minHeight = 0;
     animation = 'fadeIn';
+
+    chartObjArray : IchartAndId[] = [];
 
     private _slideshowTimer: any;
     private currentIndex = -1;
@@ -63,7 +67,7 @@ export class ShowChartSlideshowComponent implements OnInit, OnDestroy {
       setTimeout(function() {
         that.onPresentationStopped.emit();
         that.animation = 'fadeIn';
-      }, 1000);
+      }, 200);
     }
 
     private _calculateMinHeight() {
@@ -86,6 +90,7 @@ export class ShowChartSlideshowComponent implements OnInit, OnDestroy {
 
     private _startSlideshow() {
         const that = this;
+        let reflowCount = 0;
 
         if (!this.charts) {
             return;
@@ -96,7 +101,20 @@ export class ShowChartSlideshowComponent implements OnInit, OnDestroy {
         this._clearInterval();
 
         this._slideshowTimer = setInterval(function() {
-            that.currentIndex = (that.currentIndex < that.charts.length - 1) ? that.currentIndex + 1 : 0;
+            let index = (that.currentIndex < that.charts.length - 1) ? that.currentIndex + 1 : 0;
+                 
+            //because we need to reflow each chart just once
+            if(reflowCount < that.charts.length){
+                
+                //- Find the chart that will be visible next
+                let visibleChartObj = that.chartObjArray.find(chObj => chObj.chartId == that.charts[index]._id)
+                if(visibleChartObj)
+                    that.reflowChart(visibleChartObj);
+               
+                reflowCount++;
+            }
+            
+            that.currentIndex = index;
         }, SLIDESHOW_INTERVAL);
     }
 
@@ -105,4 +123,27 @@ export class ShowChartSlideshowComponent implements OnInit, OnDestroy {
             clearInterval(this._slideshowTimer);
         }
     }
-}
+
+    chartRefMethod(e){
+    this.chartObjArray.push(e);
+    }
+
+    reflowChart(chartObj){
+        const that = this;
+        that._subscription.push( chartObj.chart.ref$.subscribe(ref => {
+
+        setTimeout(() => {
+            try{
+                ref.reflow();
+                //console.log("CHART w index %s reflowed ", chartObj.chartId)
+              }
+              catch(e){
+                console.log("HIghchart error: ", e);
+              }
+
+            }, 0)}
+            
+        ))
+    }      
+    }
+
