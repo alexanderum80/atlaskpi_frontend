@@ -23,6 +23,7 @@ export class ChartFormatInfoComponent implements OnInit, AfterViewInit {
   @Input() chartDefinition: any;
   @Input() isLegendEnabled: boolean|string;
   @Input() isInvertAxisEnabled: boolean|string;
+  @Input() isRemoveGridlinesEnabled: boolean|string;
   @Input() tooltip_state: any;
 
   @Output() TooltipChanges = new EventEmitter <any>();

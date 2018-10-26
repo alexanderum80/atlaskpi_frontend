@@ -34,6 +34,7 @@ export class ChartPreviewComponent implements OnChanges, AfterViewInit {
     title = 'Chart Name';
     chart: Chart;
     comparison = '';
+    vari = true;
 
     ngAfterViewInit() {
         this._subscribeToDefinitionChanges();
@@ -48,7 +49,6 @@ export class ChartPreviewComponent implements OnChanges, AfterViewInit {
         }
         this._chartToolTipFormatterProcess();
         yAxisFormatterProcess(this.chartDefinition);
-
         if (this.size) {
             if (this.chartDefinition) {
                 if (this.chartDefinition.chart) {

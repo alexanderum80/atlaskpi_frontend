@@ -22,7 +22,7 @@ const SLIDESHOW_INTERVAL = 10000;
 })
 export class ShowChartSlideshowComponent implements OnInit, OnDestroy{
     @Input() slideshow: IChartSlideshow;
-    @Output() onPresentationStopped= new EventEmitter();
+    @Output() onPresentationStopped = new EventEmitter();
 
     @ViewChild('slideshow') slideshowModal: ModalComponent;
 
@@ -67,7 +67,7 @@ export class ShowChartSlideshowComponent implements OnInit, OnDestroy{
       setTimeout(function() {
         that.onPresentationStopped.emit();
         that.animation = 'fadeIn';
-      }, 500);
+      }, 200);
     }
 
     private _calculateMinHeight() {
