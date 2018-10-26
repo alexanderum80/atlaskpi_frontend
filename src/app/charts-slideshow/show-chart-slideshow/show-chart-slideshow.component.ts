@@ -12,7 +12,7 @@ import { IchartAndId } from 'src/app/charts/chart-view-dashboard';
 
 const SlideshowById = require('graphql-tag/loader!../shared/graphql/chart-slideshow-by-id.query.gql');
 const ListChartsQuery = require('graphql-tag/loader!../shared/graphql/list-charts.query.gql');
-const SLIDESHOW_INTERVAL = 5000;
+const SLIDESHOW_INTERVAL = 10000;
 
 
 @Component({
@@ -102,13 +102,15 @@ export class ShowChartSlideshowComponent implements OnInit, OnDestroy{
 
         this._slideshowTimer = setInterval(function() {
             let index = (that.currentIndex < that.charts.length - 1) ? that.currentIndex + 1 : 0;
-            
-            //- Find the chart that will be visible next
-            let indChartObj = that.chartObjArray.find(chObj => chObj.chartId == that.charts[index]._id)
-            
+                 
             //because we need to reflow each chart just once
             if(reflowCount < that.charts.length){
-                that.reflowChart(indChartObj);
+                
+                //- Find the chart that will be visible next
+                let visibleChartObj = that.chartObjArray.find(chObj => chObj.chartId == that.charts[index]._id)
+                if(visibleChartObj)
+                    that.reflowChart(visibleChartObj);
+               
                 reflowCount++;
             }
             
@@ -133,7 +135,7 @@ export class ShowChartSlideshowComponent implements OnInit, OnDestroy{
         setTimeout(() => {
             try{
                 ref.reflow();
-                console.log("CHART w index %s reflowed ", chartObj.chartId)
+                //console.log("CHART w index %s reflowed ", chartObj.chartId)
               }
               catch(e){
                 console.log("HIghchart error: ", e);
