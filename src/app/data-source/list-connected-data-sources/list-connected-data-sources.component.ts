@@ -33,6 +33,8 @@ import { CustomFormViewModel } from '../custom/custom-datasource.viewmodel';
 import { FormArray, FormGroup, FormControl } from '@angular/forms';
 import { ApolloService } from '../../shared/services/apollo.service';
 import * as moment from 'moment';
+import { ModalComponent } from 'src/app/ng-material-components/modules/user-interface/modal/modal.component';
+import { IModalError } from 'src/app/shared/interfaces/modal-error.interface';
 
 const ServerSideConnectorsQuery = require('graphql-tag/loader!./list-server-side-connectors.query.gql');
 const RemoveServerSideConnectorQuery = require('graphql-tag/loader!./remove-server-side-connector.mutation.gql');
@@ -54,6 +56,9 @@ export interface IConnectorDetail {
 export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
   @ViewChild(CallRailComponent) callRailComponent: CallRailComponent;
   @ViewChild(CustomComponent) customComponent: CustomComponent;
+  @ViewChild('errorModal') errorModal: ModalComponent;
+
+  lastError: IModalError;
 
   public loading = true;
   public listConnectedDataSources: IOAuthConnector[];
@@ -106,6 +111,8 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
           }
         });
 
+        const dateRangeField = fields.findIndex(f => f.columnName.toLowerCase().replace(' ', '_') === dataSourceCollection.dateRangeField);
+
         const data = [];
         dataCollection.map(d => {
           const dataElement = [];
@@ -124,7 +131,8 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
         const schema = {
           'schema': fields,
           'data': [],
-          'dataName': dataName
+          'dataName': dataName,
+          'dateRangeField': dateRangeField.toString()
         };
 
         this._vm.initialize(schema);
@@ -158,7 +166,7 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
       .then(userResponse => {
         if (userResponse.value === true) {
 
-          this._apollo.mutate<{removeConnector: { success: boolean }}>({
+          this._apollo.mutate<{removeConnector: { success: boolean, entity: string }}>({
             mutation: RemoveServerSideConnectorQuery,
             variables: {
               id: dataSource.getId()
@@ -167,6 +175,22 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
           }).subscribe(response => {
             if (response.data.removeConnector.success) {
               console.log('connector removed...');
+            } else {
+              const entity = JSON.parse(response.data.removeConnector.entity);
+              if (entity && entity.length) {
+                const simpleKPI = entity.filter(s => s.type === 'simple').map(simpleResp => 'Simple KPI: ' + simpleResp.name);
+                const complexKPI = entity.filter(s => s.type === 'complex').map(complexResp => 'Complex KPI: ' + complexResp.name);
+
+                const listNames = [].concat(simpleKPI, complexKPI);
+
+                this.lastError = {
+                  title: 'Error removing Data Source',
+                  msg: 'The file cannot be removed while it\'s being used. ' +
+                          'The following element(s) are currently using this file: ',
+                  items: listNames
+                };
+                this.errorModal.open();
+              }
             }
           });
         }
