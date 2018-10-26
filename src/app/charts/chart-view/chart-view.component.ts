@@ -454,7 +454,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     getDateRangeInPresent(): boolean {
         try {
             if (!this.chartData.dateRange) { return false }
-            if (this.chartData.dateRange[0].custom.from && this.chartData.dateRange[0].custom.to) {
+            if (this.chartData.dateRange[0].custom && this.chartData.dateRange[0].custom.from && this.chartData.dateRange[0].custom.to) {
                 const dateRange = parsePredefinedDate('this year');
                 const from: Date = this.chartData.dateRange[0].custom.from;
                 const to: Date = this.chartData.dateRange[0].custom.to;
