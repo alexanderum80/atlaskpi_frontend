@@ -83,7 +83,7 @@ export class EnterDataFormComponent implements OnInit, AfterViewInit {
               if (fieldData.controls[d].controls[i]) {
                 fieldData.controls[d].controls[i].setErrors({invalidDataType: true});
               }
-            } else {
+            } else if(fieldData.controls[d].controls[i]) {
               fieldData.controls[d].controls[i].setErrors(null);
             }
           }
@@ -101,14 +101,14 @@ export class EnterDataFormComponent implements OnInit, AfterViewInit {
     if (row < dataControls.controls.length) {
       const fieldSchema = schema.controls[field].controls.dataType.value;
       switch (fieldSchema) {
-        case 'Numeric':
-          returnValue = '$ 2,500.00';
+        case 'Number':
+          returnValue = '2500';
           break;
         case 'String':
           returnValue = 'Appliances';
           break;
         case 'Date':
-          returnValue = '10/20/2017';
+          returnValue = '08/07/2018';
           break;
         case 'Boolean':
           returnValue = 'True';

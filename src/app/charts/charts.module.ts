@@ -96,6 +96,7 @@ export function highchartsModules() {
         ChartViewMiniComponent,
         AutoRendereableChartComponent,
         NewChartComponent,
+        EditChartComponent
     ],
     providers: [{ provide: HIGHCHARTS_MODULES, useFactory: highchartsModules }, TableModeService],
 })

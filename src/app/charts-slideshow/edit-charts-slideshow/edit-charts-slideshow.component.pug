@@ -6,4 +6,4 @@
         kpi-chart-slideshow-form([fg]="fg", [editMode]="true", [slideShowModel]="slideshowModel",
                                      [hidden]="inPreview", (dialogResult)="onDialogResult($event)")
 div(*ngIf="inPreview")
-    kpi-show-chart-slideshow([slideshow]="slideshow", (stopPresentation)="stopPreview()")
+    kpi-show-chart-slideshow([slideshow]="slideshow", (onPresentationStopped)="stopPreview()")
