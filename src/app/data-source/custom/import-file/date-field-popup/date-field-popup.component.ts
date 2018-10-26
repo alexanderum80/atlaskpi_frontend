@@ -15,7 +15,7 @@ export class DateFieldPopupComponent implements OnInit {
   defaultValue;
 
   constructor(
-    private vm: CustomFormViewModel
+    public vm: CustomFormViewModel
   ) { }
 
   ngOnInit() {
