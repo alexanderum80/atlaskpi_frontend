@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, Input, OnDestroy, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { Chart } from 'angular-highcharts';
 import { Apollo, QueryRef } from 'apollo-angular';
 import gql from 'graphql-tag';
@@ -29,7 +29,9 @@ import { DrillDownService } from '../shared/services/drilldown.service';
 import { predefinedColors } from './../shared/ui/chart-format-info/material-colors';
 import { ChartViewViewModel } from './chart-view.viewmodel';
 import { TableModeService } from './table-mode/table-mode.service';
-
+import { Router} from '@angular/router';
+import { ModifyChartActivity } from 'src/app/shared/authorization/activities/charts/modify-chart.activity';
+import { ModifyDashboardActivity } from 'src/app/shared/authorization/activities/dashboards/modify-dashboard.activity';
 
 const Highcharts = require('highcharts/js/highcharts');
 
@@ -119,7 +121,8 @@ export interface IRunRate {
         DrillDownService, CommonService, MilestoneService,
         ChartViewViewModel, ViewTargetActivity, AddTargetActivity,
         ChangeSettingsOnFlyActivity, CompareOnFlyActivity,
-        SeeInfoActivity, DownloadChartActivity
+        SeeInfoActivity, DownloadChartActivity, ModifyChartActivity,
+        ModifyDashboardActivity
     ],
     // changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -128,6 +131,10 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     @Input() dateRanges: IDateRangeItem[] = [];
     @Input() isFromDashboard = false;
     @ViewChild(OverlayComponent) overlay: OverlayComponent;
+
+    @Input() dashBoardId: string;
+    @Output() chartSelectedDashId = new EventEmitter();
+    @Output() editChartId = new EventEmitter();
     
     private _subscription: Subscription[] = [];
 
@@ -214,6 +221,11 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 title: 'Download'
             },
             {
+                id: 'edit-chart',
+                title: 'Edit',
+                icon: 'edit'
+            },
+            {
                 id: 'set-target',
                 title: 'Targets',
                 icon: 'check'
@@ -227,12 +239,18 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 id: 'table-mode',
                 title: 'Table View',
                 icon: 'grid'
-            }
+            },
+            {
+                id: 'remove-this-dashboard',
+                icon: 'delete',
+                title: 'Remove from dashboard'
+             }
         ]
     }];
 
 
     constructor(private _apollo: Apollo,
+        private _router: Router,
         private _broserService: BrowserService,
         private _drillDownSvc: DrillDownService,
         private _commonService: CommonService,
@@ -240,6 +258,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         public vm: ChartViewViewModel,
         public addTargetActivity: AddTargetActivity,
         public viewTargetActivity: ViewTargetActivity,
+        public modifyDashboardActivity: ModifyDashboardActivity,
+        public modifyChartActivity: ModifyChartActivity,
         public changeSettingsOnFlyActivity: ChangeSettingsOnFlyActivity,
         public compareOnFlyActivity: CompareOnFlyActivity,
         public seeChartInfoActivity: SeeInfoActivity,
@@ -262,7 +282,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             this.viewTargetActivity, this.addTargetActivity,
             this.changeSettingsOnFlyActivity,
             this.seeChartInfoActivity, this.compareOnFlyActivity,
-            this.downloadChartActivity
+            this.downloadChartActivity, this.modifyDashboardActivity,
+            this.modifyChartActivity
         ]);
         this.isDateRangeInPresent = this.getDateRangeInPresent();
         this.isfrequencyToRunRate = this.getFrecuencyToRunRate();
@@ -825,6 +846,10 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 this.overlay.toggle();
                 break;
 
+            case 'edit-chart':
+                this.editChartId.emit(this.chartData._id);
+                break;
+
             case 'table-mode':
                 if (!this.chartData.chartDefinition.series.length) { return; }
                 this.overlay.backgroundColor = '';
@@ -843,13 +868,38 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 this.getChart();
                 this.subscribeToChartUpdates();
                 break;
+
             case 'run-rate':
                 this.getDataRunRate();
                 break;
+
             case 'download-chart':
                 this._resetOverlayStyle();
                 this.overlay.toggle();
                 break;
+
+            case 'remove-this-dashboard':
+                const that = this;
+
+                if(!this.vm.authorizedTo(this.modifyDashboardActivity.name)){
+                    this._router.navigateByUrl('/unauthorized');
+                    return;
+                 }
+
+                return SweetAlert({
+                    titleText: 'Are you sure you want to remove this chart from this dashboard?',
+                    text: `Remember that you can always put it back either from the chart 
+                            edit screen or from de dashboard edit screen.`,
+                    type: 'warning',
+                    width: '600px',
+                    showConfirmButton: true,
+                    showCancelButton: true
+                })
+                .then((res) => {
+                    if (res.value === true) {
+                        this.chartSelectedDashId.emit({ idDashboard: this.dashBoardId, idChart: this.chartData._id } );
+                    }
+                });
 
             default:
                 return;
@@ -1824,6 +1874,14 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
         this._commonService.disableChildrenActionItems(
             this.actionItems, ['toggle-description'],
             !this.vm.authorizedTo('SeeInfoActivity')
+        );
+        this._commonService.disableChildrenActionItems(
+            this.actionItems, ['edit-chart'],
+            !this.vm.authorizedTo(this.modifyChartActivity.name)
+        );
+        this._commonService.disableChildrenActionItems(
+            this.actionItems, ['remove-this-dashboard'],
+            !this.vm.authorizedTo(this.modifyDashboardActivity.name)
         );
     }
 }
