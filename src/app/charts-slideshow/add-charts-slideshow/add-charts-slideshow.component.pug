@@ -1,6 +1,6 @@
 .z-depth-1.bgm-white.m-10.p-10(layout="column", layout-padding)
     div(flex)
-        kpi-chart-slideshow-form(flex, [hidden]="inPreview", [fg]="fg", (dialogResult)="onDialogResult($event)")
+        kpi-chart-slideshow-form(flex, [fg]="fg", (dialogResult)="onDialogResult($event)")
 
 div(*ngIf="inPreview")
-    kpi-show-chart-slideshow([slideshow]="slideshow", ()="stopPreview()")
+    kpi-show-chart-slideshow([slideshow]="slideshow", (onPresentationStopped)="stopPreview()")
