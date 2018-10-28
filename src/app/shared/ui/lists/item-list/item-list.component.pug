@@ -3,15 +3,19 @@
     kpi-add-item(*ngIf="allowAdd", [itemViewModel]="itemViewModel", [addItemActivityName]="addItemActivityName", (onItemClicked)="addClicked()")
 
     .m-b-10(flex-initial)
-        div(layout="column", layout-gt-xs="row")
-            div(flex)
+        div(layout="column", layout-gt-sm="row")
+            .header-content(layout="row", layout-align="center center", flex, flex-sm="100", flex-xs="100")
+                .title-desktop(flex="0", flex-gt-xs="100")
+                    .list-title(*ngIf="title") {{ title }}
+                .flex(layout="row", layout-align="center")
+                    .m-10.text-center(flex-initial)
+                        .search-box([formGroup]="fg")
+                            input.search-box(formControlName="search", placeholder="Type to filter...", type="text")
+                    .m-t-15.m-r-10.text-center(flex-initial)
+                        //- bw-button-group([options]="viewOptions", type="default", (optionSelected)="onOptionSelected($event)")
+                        bw-actions(*ngIf="viewItems", [showBig]="true", [actionItems]="viewItems", (actionClicked)="onViewItem($event)")
+            .title-mobile.text-center(flex, flex-gt-sm="0", layout-padding)
                 .list-title(*ngIf="title") {{ title }}
-            .m-t-10.m-r-10.text-center(flex-initial)
-                .search-box([formGroup]="fg")
-                    input.search-box(formControlName="search", placeholder="Type to filter...", type="text")
-            .m-t-15.m-r-10.text-center(flex-initial)
-                //- bw-button-group([options]="viewOptions", type="default", (optionSelected)="onOptionSelected($event)")
-                bw-actions(*ngIf="viewItems", [showBig]="true", [actionItems]="viewItems", (actionClicked)="onViewItem($event)")
 
     .overflow-auto(flex)
 
@@ -27,7 +31,7 @@
                 (actionClicked)="itemActionClicked($event)")
 
         //- table view
-        .tabular-container.bgm-white.z-depth-1.p-20.m-l-10.m-r-10.margin-b-80(*ngIf="showTabularItems", layout="column", layout-gt-sm="row")
+        .tabular-container.bgm-white.z-depth-1.p-20.m-l-10.m-r-10.m-b-20(*ngIf="showTabularItems", layout="column", layout-gt-sm="row")
             div(flex)
                 kpi-list-item-tabular(
                     *ngFor="let item of filteredItems",

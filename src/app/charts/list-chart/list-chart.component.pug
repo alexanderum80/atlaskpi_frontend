@@ -1,28 +1,27 @@
-.h-100(layout="row")
-    
-    //- add button
-    .add-button([ngClass]="{'inspector-margin': (inspectorOpen$ | async)}")
-        bw-button(flex-none, color="blue", icon="plus", size="sm", [disabled]="!vm.authorizedTo('AddChartActivity')", [circular]="true", (clicked)="addChart()" )
+kpi-item-list(
+    title="CHART LIST",
+    [items]="vm.chartsList",
+    [itemViewModel]="vm",
+    [addItemActivityName]="'AddChartActivity'",
+    [itemListActivityName]="'ListChartActivity'",
+    [actionItems] = "vm.menuItems",
+    itemType="table",
+    [tableRowTemplate]="tableItem",
+    (onAddActionClicked)="addChart()",
+    (onItemActionClicked)="actionClicked($event)",
+    (onItemClicked)="editClickedList($event)")
 
-    //- chart container
-    .h-100.overflow-auto.transition.p-relative.mobile-chart-fit-content(flex, 
-        detect-scroll,
-        (onScroll)="handleScroll($event)",
-        [bottomOffset]="100",
-        [topOffset]="100")
 
+bw-modal(#errorModal='', animation="true", keyboard="true", backdrop="true")
+    bw-modal-header
+        h4.modal-title-c-black {{ lastError?.title }}
 
-        div(layout="row", layout-wrap, layout-padding, layout-align="start start")
-            .box(
-                [ngClass]="{'box-margin': (inspectorOpen$ | async)}",
-                flex-xs="100",
-                flex-gt-xs="50",
-                flex-gt-md="33",
-                flex-gt-lg="25",
-                *ngFor="let chart of visibleCharts")
-                    kpi-chart-view-mini.pointer-cursor([item]="chart")
-    //- chart inspector
-    div([ngClass]="{'flex-5': (inspectorOpen$ | async)}")
-        //- div(flex-none)
-        .right_sidebar.h-100([ngClass]="{'right_sidebar_open': (inspectorOpen$ | async)}")
-            kpi-chart-inspector
+    bw-modal-body
+        div(layout="row", layout-padding, layout-align="center center")
+            i.zmdi.zmdi-alert-octagon.c-red.big-icon.m-r-20(flex-none)
+            div(layout="column", flex)
+                .m-b-10(flex) {{ lastError?.msg }}
+                div(*ngFor="let item of lastError?.items", flex)
+                    strong {{item}}
+    bw-modal-footer
+        bw-button(color="blue", title="OK", [simple]="true", icon="close", (clicked)="errorModal.close()")
