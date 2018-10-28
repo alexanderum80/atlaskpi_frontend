@@ -19,7 +19,7 @@ export class ComplexKpiFormViewModel extends ViewModel<IKPI> {
     private _originalExpression: string;
     private existDuplicatedName: boolean;
 
-    valuesPreviewWidget : IWidgetFormGroupValues = {
+    valuesPreviewWidget: IWidgetFormGroupValues = {
         name: '',
         description: '',
         type: 'numeric',
@@ -32,8 +32,7 @@ export class ComplexKpiFormViewModel extends ViewModel<IKPI> {
         comparison: 'previousPeriod',
         comparisonArrowDirection: 'up'
       };
-      
-      valuesPreviewChart : IChartFormValues = {
+      valuesPreviewChart: IChartFormValues = {
         name: '',
         description: '',
         dashboards: '',
@@ -178,8 +177,7 @@ export class ComplexKpiFormViewModel extends ViewModel<IKPI> {
     }
 
     selectColorWidget() {
-        
-        switch (Math.round(Math.random()*10)) {
+        switch (Math.round(Math.random() * 10)) {
             case 0:
                 return 'white';
             case 1:
@@ -196,8 +194,8 @@ export class ComplexKpiFormViewModel extends ViewModel<IKPI> {
                 return 'purple';
             case 7:
                 return 'light-purple';
-            case 8: 
-                return "pink";
+            case 8:
+                return 'pink';
             default:
                 return 'white';
         }
