@@ -25,7 +25,7 @@
                         noneSelectedText="NOTHING SELECTED",
                         [disabled]="filterDisabled")  
             
-                //- dashboard
+                //- users
                 #select-users(flex)
                     bw-select-picker.text-ellip(flex, [fg]="fg",
                         label="Dashboard Users",
@@ -34,7 +34,9 @@
                         [multiple]="true",
                         [items]="allUsers",
                         noneSelectedText="Select Users")
-                
+                //- order
+                bw-text-box(flex, [fg]="fg", leftIcon="sort-amount-desc", field="order", label="Order", [required]="false", [value]="newOrder")
+                .err-message(*ngIf="fg.controls['order'].errors && fg.controls['order'].errors.invalidDataType") Invalid order. Please enter a numeric value
                 div(flex)
                     .hide-xs(layout="row", layout-align="end end")
                         bw-button.m-5(flex="30", color="green", title="PREVIEW",

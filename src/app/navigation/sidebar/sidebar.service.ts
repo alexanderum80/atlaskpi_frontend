@@ -7,7 +7,6 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
-
 import { IDashboard } from '../../dashboards/shared/models';
 import { MenuItem } from '../../ng-material-components';
 import { AddDashboardActivity } from '../../shared/authorization/activities/dashboards/add-dashboard.activity';
@@ -15,6 +14,7 @@ import { IUserInfo } from '../../shared/models';
 import { StoreHelper } from '../../shared/services';
 import { UserService } from '../../shared/services/user.service';
 import { SideBarViewModel } from './sidebar.viewmodel';
+import { sortBy } from 'lodash';
 
 export interface ISidebarItemSearchResult {
     parent?: MenuItem;
@@ -128,6 +128,7 @@ query Dashboards($group: String!) {
         _id
         name
         visible
+        order
     }
 }
 `;
@@ -215,11 +216,14 @@ export class SidebarService {
                 }
             });
             this.subscription.push(this._dashboardQuery.valueChanges.subscribe(({ data }: any) => {
-                that._processDashboardsSubmenu(data.dashboards);
+                debugger;
+                const dashboardsSorted = sortBy(data.dashboards, ['order', '_id']);
+                that._processDashboardsSubmenu(dashboardsSorted);
             }));
         } else {
             this._dashboardQuery.refetch({ group: 'all' }).then((res: any) => {
-                that._processDashboardsSubmenu(res.data.dashboards);
+                const dashboardsSorted = sortBy(res.data.dashboards, ['order', '_id']);
+                that._processDashboardsSubmenu(dashboardsSorted);
             });
         }
     }
@@ -228,9 +232,10 @@ export class SidebarService {
         const that = this;
         const items = this._itemsSubject.value;
         let isDashboardRoute = false;
-        let isVisible: boolean = true;
+        let isVisible = true;
         let listdashboardIdNoVisible;
-        if (this._userService.user && this._userService.user.preferences && this._userService.user.preferences.dashboardIdNoVisible !== null) {
+        if (this._userService.user && this._userService.user.preferences
+            && this._userService.user.preferences.dashboardIdNoVisible !== null) {
             listdashboardIdNoVisible = this._userService.user.preferences.dashboardIdNoVisible.split('|');
         }
 
@@ -248,7 +253,7 @@ export class SidebarService {
             }
             if (!listdashboardIdNoVisible) {
                 isVisible = true;
-            }else{
+            } else {
                 isVisible = listdashboardIdNoVisible.find(l => l === d._id) ? false : true;
             }
             if (isVisible === false) {
