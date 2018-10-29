@@ -216,7 +216,6 @@ export class SidebarService {
                 }
             });
             this.subscription.push(this._dashboardQuery.valueChanges.subscribe(({ data }: any) => {
-                debugger;
                 const dashboardsSorted = sortBy(data.dashboards, ['order', '_id']);
                 that._processDashboardsSubmenu(dashboardsSorted);
             }));
