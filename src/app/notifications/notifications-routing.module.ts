@@ -5,7 +5,8 @@ import { AuthGuard } from '../shared/services';
 import { NotificationsComponent } from './notifications.component';
 
 const routes: Routes = [
-    { path: 'notifications', component: NotificationsComponent, canActivate: [AuthGuard] }
+    { path: 'notifications', component: NotificationsComponent, canActivate: [AuthGuard] },
+    { path: 'notifications/:id', component: NotificationsComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({
