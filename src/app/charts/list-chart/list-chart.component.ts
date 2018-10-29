@@ -19,8 +19,10 @@ import { ViewChartActivity } from '../../shared/authorization/activities/charts/
 import { Subscription } from 'rxjs/Subscription';
 import { ScrollEvent } from 'ngx-scroll-event';
 import { BrowserService } from '../../shared/services/browser.service';
-import { ModalComponent } from 'src/app/ng-material-components';
 import { DeleteChartMutation } from '../shared/graphql';
+import { RemoveConfirmationComponent } from '../../shared/ui/remove-confirmation/remove-confirmation.component';
+import { ErrorComponent } from '../../shared/ui/error/error.component';
+import { DialogResult } from '../../shared/models/dialog-result';
 
 const Highcharts = require('highcharts/js/highcharts');
 
@@ -38,7 +40,8 @@ interface IDeleteChartResponse {
   providers: [ListChartService, ListChartViewModel, AddChartActivity]
 })
 export class ListChartComponent implements OnInit, OnDestroy {
-    @ViewChild('errorModal') errorModal: ModalComponent;
+    @ViewChild(RemoveConfirmationComponent) removeConfirmModal: RemoveConfirmationComponent;
+    @ViewChild(ErrorComponent) errorModal: ErrorComponent;
 
     charts: IChart[] = [];
     fg: FormGroup = new FormGroup({});
@@ -47,8 +50,9 @@ export class ListChartComponent implements OnInit, OnDestroy {
     showAddBtn: boolean;
 
     private _subscription: Subscription[] = [];
-    private _pageSize = 9;
+
     lastError: IModalError;
+    selectedChartId: string;
 
     constructor(private _apollo: Apollo,
                 private _router: Router,
@@ -124,36 +128,59 @@ export class ListChartComponent implements OnInit, OnDestroy {
 
     edit(chartId) {
         this._router.navigate(['/charts/edit', chartId]);
-     }
+    }
 
-     clone(chartId) {
-       this._router.navigate(['/charts/clone', chartId]);
-     }
+    clone(chartId) {
+    this._router.navigate(['/charts/clone', chartId]);
+    }
 
-     delete(chartId) {
-       const that = this;
-       this._subscription.push(
-         this._apollo.mutate<IDeleteChartResponse>({
-             mutation: DeleteChartMutation,
-             variables: { id: chartId },
-             refetchQueries: ['ListChartsQuery']
-         })
-         .subscribe(response => {
-            const { deleteChart } = response.data;
-            const { success, errors } = deleteChart;
+    delete(chartId) {
+        this.selectedChartId = chartId;
+        this.removeConfirmModal.open();
+    }
 
-            if (!success && errors && errors.length) {
-              const dependency = errors.find(e => e.field === '__isDependencyOf');
-              that.lastError = {
-                title: 'Error removing chart',
-                msg: 'A chart cannot be remove while it\'s being used. The following element(s) are currently using this chart: ',
-                items: dependency.errors
-              };
-              that.errorModal.open();
-              return;
-            }
-         })
-       );
-     }
+    onDialogResult(result: DialogResult) {
+        switch (result) {
+            case DialogResult.OK:
+                this.confirmRemove();
+                break;
+            case DialogResult.CANCEL:
+                this.removeConfirmModal.close();
+                break;
+        }
+    }
 
+    confirmRemove() {
+        const that = this;
+        this._subscription.push(
+            this._apollo.mutate<IDeleteChartResponse>({
+                mutation: DeleteChartMutation,
+                variables: { id: this.selectedChartId },
+                refetchQueries: ['ListChartsQuery']
+            })
+            .subscribe(response => {
+                const { deleteChart } = response.data;
+                const { success, errors } = deleteChart;
+
+                this.removeConfirmModal.close();
+
+                if (!success && errors && errors.length) {
+                    const dependency = errors.find(e => e.field === '__isDependencyOf');
+                    that.lastError = {
+                        title: 'Error removing chart',
+                        msg: 'A chart cannot be remove while it\'s being used. ' +
+                                'The following element(s) are currently using this chart: ',
+                        items: dependency.errors
+                    };
+                    that.errorModal.open();
+                    return;
+                }
+            })
+        );
+    }
+
+    cancelRemove() {
+        this.selectedChartId = undefined;
+        this.removeConfirmModal.close();
+    }
 }

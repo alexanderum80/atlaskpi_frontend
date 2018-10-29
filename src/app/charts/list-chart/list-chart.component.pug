@@ -11,17 +11,8 @@ kpi-item-list(
     (onItemActionClicked)="actionClicked($event)",
     (onItemClicked)="editClickedList($event)")
 
+//- confirm remove widget modal
+app-remove-confirmation([element]="'chart'", (dialogResult)="onDialogResult($event)")
 
-bw-modal(#errorModal='', animation="true", keyboard="true", backdrop="true")
-    bw-modal-header
-        h4.modal-title-c-black {{ lastError?.title }}
-
-    bw-modal-body
-        div(layout="row", layout-padding, layout-align="center center")
-            i.zmdi.zmdi-alert-octagon.c-red.big-icon.m-r-20(flex-none)
-            div(layout="column", flex)
-                .m-b-10(flex) {{ lastError?.msg }}
-                div(*ngFor="let item of lastError?.items", flex)
-                    strong {{item}}
-    bw-modal-footer
-        bw-button(color="blue", title="OK", [simple]="true", icon="close", (clicked)="errorModal.close()")
+//- error modal
+app-error([error]="lastError")

@@ -2,9 +2,9 @@
     //- show the add button
     kpi-add-item(*ngIf="allowAdd", [itemViewModel]="itemViewModel", [addItemActivityName]="addItemActivityName", (onItemClicked)="addClicked()")
 
-    .m-b-10(flex-initial)
-        div(layout="column", layout-gt-sm="row")
-            .header-content(layout="row", layout-align="center center", flex, flex-sm="100", flex-xs="100")
+    .m-b-5(flex-initial)
+        .header-content.flex(layout="column")
+            .flex(layout="row")
                 .title-desktop(flex="0", flex-gt-xs="100")
                     .list-title(*ngIf="title") {{ title }}
                 .flex(layout="row", layout-align="center")

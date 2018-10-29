@@ -1,0 +1,13 @@
+bw-modal(#removeConfirmationModal='', animation="true", keyboard="true", backdrop="true", size="md",
+         (onClosed)="cancelRemove()", (onDismiss)="cancelRemove()")
+  bw-modal-header
+    h4.modal-title.c-black Remove {{element}}
+  bw-modal-body
+    
+    div(layout="row", layout-padding, layout-align="center center")
+        i.zmdi.zmdi-delete.c-red.big-icon.m-r-20(flex-none)
+        strong(flex) Are you sure you want to permanently remove this {{element}}?
+      
+  bw-modal-footer
+    bw-button(color="blue", title="Confirm", class="normal", (clicked)="confirmRemove()")
+    bw-button(title="Cancel", [simple]="true", icon="close", (clicked)="cancelRemove()")
