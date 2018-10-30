@@ -3,17 +3,15 @@
 .block-header
     h2.m-t-30.text-center  {{ title }}
 .h-100(layout="column", layout-align="start center")
-    // show map
+    //- show map
     .div-map(*ngIf="ischartTypeMap", flex)
         kpi-show-map(*ngIf="mapMarkers.length > 0", [markers]="mapMarkers", [legendColors]="legendColors", [legendClosed]="true")
         div.text-center(*ngIf="mapMarkers.length === 0", flex)
                     img(src="/assets/img/charts/others/map-preview-no-data.png", alt="Map no data")
         div.m-t-20(flex)
             h2.text-center Map Preview            
-    // show chart    
-    .chart-fit-mobile.overflow-auto(*ngIf="!ischartTypeMap", flex)
-        div([chart]="chart", *ngIf="hasSeries")
-    .chart-fit-mobile.overflow-auto.highcharts-grid-line(flex)
+    //- show chart    
+    .chart-fit-mobile.overflow-auto.highcharts-grid-line(*ngIf="!ischartTypeMap", flex)
         div.remove-gridlines([chart]="chart", *ngIf="hasSeries")
         div(*ngIf="isSeriesEmpty")
             .h-100(layout="row", layout-padding, layout-align="center center")
