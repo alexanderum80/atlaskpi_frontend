@@ -1,0 +1,15 @@
+mutation DeleteChartIdFromDashboard ($id: String!, $charts: [String]) {
+  deleteChartIdFromDashboard (id:$id, charts: $charts){
+    entity {
+      name
+      description
+      charts
+      widgets
+    }
+     errors {
+      field
+      errors
+    }
+    success
+  }
+}

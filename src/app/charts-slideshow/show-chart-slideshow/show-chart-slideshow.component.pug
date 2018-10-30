@@ -2,6 +2,6 @@
     .close-button
       span((click)="closeSlideshow()") X
 
-    .layout-chart(*ngFor="let chart of charts; let i = index", [class.hide]="i !== currentIndex")
-        kpi-chart-view-dashboard([selectable]="false", [item]="chart", [minHeight]="minHeight")
+    .layout-chart(*ngFor="let chart of charts; let i = index", [class.hidden]="i !== currentIndex")
+        kpi-chart-view-dashboard([selectable]="false", [item]="chart", [minHeight]="minHeight", (chartRef)="chartRefMethod($event)")
 

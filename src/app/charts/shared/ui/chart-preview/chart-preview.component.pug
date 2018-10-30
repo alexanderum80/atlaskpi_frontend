@@ -13,6 +13,8 @@
     // show chart    
     .chart-fit-mobile.overflow-auto(*ngIf="!ischartTypeMap", flex)
         div([chart]="chart", *ngIf="hasSeries")
+    .chart-fit-mobile.overflow-auto.highcharts-grid-line(flex)
+        div.remove-gridlines([chart]="chart", *ngIf="hasSeries")
         div(*ngIf="isSeriesEmpty")
             .h-100(layout="row", layout-padding, layout-align="center center")
                 div.text-center(flex)    

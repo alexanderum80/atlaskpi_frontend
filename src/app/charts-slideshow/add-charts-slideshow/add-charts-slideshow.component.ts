@@ -131,7 +131,6 @@ export class AddChartsSlideshowComponent implements OnInit, AfterViewInit, OnDes
   }
 
   private _generateSlideShowModel(): IChartSlideshow {
-
     return ChartSlideshow.Create(
       null,
       this.fg.value.name || null,

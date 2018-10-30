@@ -9,7 +9,7 @@
     position: relative;
 
     .zmdi.zmdi-view-headline {
-        padding-top: 25px;
+        padding-top: 20px;
         padding-right: 15px;
         font-size: 25px;
     }
@@ -40,4 +40,9 @@
             cursor: pointer;
         }
     }
+}
+
+.date-field {
+    font-size: 12px;
+    margin: -20px 0 -10px 35px !important;
 }

@@ -12,11 +12,11 @@ const routes: Routes = [
   {
     path: 'dashboards', component: DashboardsComponent, canActivate: [ AuthGuard ], children:
     [
-        { path: 'new', component: AddDashboardComponent },
-        { path: 'add', component: AddDashboardComponent },
-        { path: 'list', component: ListDashboardComponent },
-        { path: `edit/:id`, component: EditDashboardComponent },
-        { path: ':id', component: DashboardShowComponent }
+        { path: 'new', component: AddDashboardComponent, canActivate: [ AuthGuard ]},
+        { path: 'add', component: AddDashboardComponent, canActivate: [ AuthGuard ] },
+        { path: 'list', component: ListDashboardComponent, canActivate: [ AuthGuard ] },
+        { path: `edit/:id`, component: EditDashboardComponent, canActivate: [ AuthGuard ] },
+        { path: ':id', component: DashboardShowComponent, canActivate: [ AuthGuard ] }
     ]
   }
 ];

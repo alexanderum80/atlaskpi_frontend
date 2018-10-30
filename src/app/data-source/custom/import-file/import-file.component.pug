@@ -19,3 +19,6 @@
   bw-modal-footer
     bw-button(icon="floppy", title="SAVE", color="blue", (clicked)="connect()", [disabled]="noFileImported")
     bw-button(icon="close", title="CANCEL", [simple]="true", (clicked)="cancel()")
+
+//- Popup for select date field
+app-date-field-popup((done)="closeModal()")
