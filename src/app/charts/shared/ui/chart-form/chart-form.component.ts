@@ -241,7 +241,13 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                if (this.ischartTypeMap) {
                 // Here i must run the query
                 // to obtain map data
-                that._bringMapMarkers();
+                if (this.fg.value.grouping && this.fg.value.grouping !== ''
+                    && this.fg.value.kpi && this.fg.value.kpi !== ''
+                    && (this.fg.value.predefinedDateRange !== ''
+                    || this.fg.value.predefinedDateRange === 'custom' && this.fg.value.customFrom !== ''
+                    && this.fg.value.customTo !== '')) {
+                    that._bringMapMarkers();
+                }
                 this.canSave = this.formValid;
                } else {
                     if (this.chartModel) {
