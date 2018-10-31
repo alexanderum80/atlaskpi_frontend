@@ -1,3 +1,4 @@
+import { IItemListActivityName } from './../../shared/interfaces/item-list-activity-names.interface';
 import { IModalError } from './../../shared/interfaces/modal-error.interface';
 import { IMutationResponse } from './../../shared/interfaces/mutation-response.interface';
 import { IActionItemClickedArgs } from './../../shared/ui/lists/item-clicked-args';
@@ -23,6 +24,8 @@ import { DeleteChartMutation } from '../shared/graphql';
 import { RemoveConfirmationComponent } from '../../shared/ui/remove-confirmation/remove-confirmation.component';
 import { ErrorComponent } from '../../shared/ui/error/error.component';
 import { DialogResult } from '../../shared/models/dialog-result';
+import { ModifyChartActivity } from 'src/app/shared/authorization/activities/charts/modify-chart.activity';
+import { DeleteChartActivity } from 'src/app/shared/authorization/activities/charts/delete-chart.activity';
 
 const Highcharts = require('highcharts/js/highcharts');
 
@@ -37,7 +40,7 @@ interface IDeleteChartResponse {
   selector: 'kpi-list-chart',
   templateUrl: './list-chart.component.pug',
   styleUrls: ['./list-chart.component.scss'],
-  providers: [ListChartService, ListChartViewModel, AddChartActivity]
+  providers: [ListChartService, ListChartViewModel, AddChartActivity, ModifyChartActivity, DeleteChartActivity]
 })
 export class ListChartComponent implements OnInit, OnDestroy {
     @ViewChild(RemoveConfirmationComponent) removeConfirmModal: RemoveConfirmationComponent;
@@ -50,9 +53,11 @@ export class ListChartComponent implements OnInit, OnDestroy {
     showAddBtn: boolean;
 
     private _subscription: Subscription[] = [];
+    actionActivityNames: IItemListActivityName = {};
 
     lastError: IModalError;
     selectedChartId: string;
+
 
     constructor(private _apollo: Apollo,
                 private _router: Router,
@@ -60,6 +65,8 @@ export class ListChartComponent implements OnInit, OnDestroy {
                 private _userService: UserService,
                 public vm: ListChartViewModel,
                 public addChartActivity: AddChartActivity,
+                public modifyChartActivity: ModifyChartActivity,
+                public deleteChartActivity: DeleteChartActivity,
                 private _browser: BrowserService) {
             Highcharts.setOptions({
                 lang: {
@@ -67,12 +74,17 @@ export class ListChartComponent implements OnInit, OnDestroy {
                     thousandsSep: ','
                 }
             });
+            this.actionActivityNames = {
+                edit: this.modifyChartActivity.name,
+                delete: this.deleteChartActivity.name,
+                visible: this.modifyChartActivity.name
+            };
         }
 
     ngOnInit() {
         this._subscribeToListOfCharts();
         this.inspectorOpen$ = this._svc.inspectorOpen$;
-        this.vm.addActivities([this.addChartActivity]);
+        this.vm.addActivities([this.addChartActivity, this.modifyChartActivity, this.deleteChartActivity]);
     }
 
     ngOnDestroy() {

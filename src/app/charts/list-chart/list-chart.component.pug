@@ -3,7 +3,7 @@ kpi-item-list(
     [items]="vm.chartsList",
     [itemViewModel]="vm",
     [addItemActivityName]="'AddChartActivity'",
-    [itemListActivityName]="'ListChartActivity'",
+    [itemListActivityName]="actionActivityNames",
     [actionItems] = "vm.menuItems",
     itemType="table",
     [tableRowTemplate]="tableItem",

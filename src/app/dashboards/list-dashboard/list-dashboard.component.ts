@@ -54,7 +54,7 @@ export class ListDashboardComponent implements OnInit {
             .distinctUntilChanged()
             .subscribe((user: IUserInfo) => {
                 that.user = user;
-            }))
+            }));
         this.actionActivityNames = {
             edit: this.updateDashboardActivity.name,
             delete: this.deleteDashboardActivity.name,
