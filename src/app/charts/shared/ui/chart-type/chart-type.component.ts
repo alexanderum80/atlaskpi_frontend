@@ -1,7 +1,7 @@
 import { FormGroup } from '@angular/forms';
-import { Component, Input, OnInit, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ChartGalleryService } from '../../services';
-import { IChartGalleryItem } from '../../models';
+import SweetAlert from 'sweetalert2';
 
 @Component({
   selector: 'kpi-chart-type',
@@ -11,6 +11,7 @@ import { IChartGalleryItem } from '../../models';
 export class ChartTypeComponent implements OnInit {
     @Input() fg: FormGroup;
     @Input() chartType: string;
+    @Input() isnewChartOrMap = true;
 
     showing = false;
 
@@ -25,6 +26,16 @@ export class ChartTypeComponent implements OnInit {
     }
 
     toggle() {
+      if (!this.isnewChartOrMap && this.chartType === 'map') {
+        SweetAlert({
+          type: 'info',
+          title: 'Edit map',
+          text: 'Its not allow to change the type chart of map.'
+      });
+        return this._hide();
+      } else if (!this.isnewChartOrMap && this.chartType !== 'map') {
+        this._chartGalleryService.showMap = false;
+      }
       if (!this.showing) {
         return this._show();
       }

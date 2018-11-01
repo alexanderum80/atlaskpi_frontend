@@ -109,15 +109,16 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
             }));
         }
     }
+
     private exitEditChart() {
-    if (this.isFromDashboard) {
-        this.result.emit('charts');
-    }
-    if (this.chartId) {
-        this.goToDashboardShow.emit();
-    } else {
-        this._router.navigateByUrl('/charts');
-    }
+        if (this.isFromDashboard) {
+            this.result.emit('charts');
+        }
+        if (this.chartId) {
+            this.goToDashboardShow.emit();
+        } else {
+            this._router.navigateByUrl('/charts');
+        }
     }
 
     onChartFormEvent($event: DialogResult) {

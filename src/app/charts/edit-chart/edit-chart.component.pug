@@ -3,5 +3,5 @@
         div(flex="45")
         bw-preloader(flex, color="gray")
     div(flex)
-        kpi-chart-form.animated.fadeIn(*ngIf="(chart || map) && !loading", [fg]="fg", [chartModel]="chartModel", [mapModel]="mapModel", [chartId]="id",
+        kpi-chart-form.animated.fadeIn(*ngIf="(chart || map) && !loading", [fg]="fg", [chartModel]="chartModel", [mapModel]="mapModel", [isnewChartOrMap]="false", [chartId]="id",
                                          (result)="onChartFormEvent($event)")

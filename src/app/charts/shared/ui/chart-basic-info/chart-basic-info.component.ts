@@ -74,6 +74,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
     @Input() chartType = 'pie';
     @Input() kpiList: SelectionItem[] = [];
     @Input() dashboardList: SelectionItem[] = [];
+    @Input() isnewChartOrMap = true;
     sortingCriteriaList: SelectionItem[] = [];
     private sortingCriteriaList$: Observable <SelectionItem[]>;
     frequencyPicker: SelectPickerComponent;

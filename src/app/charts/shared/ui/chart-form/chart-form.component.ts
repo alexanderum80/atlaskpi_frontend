@@ -151,6 +151,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     @Input() mapModel: MapModel;
     @Input() chartId: string;
     @Input() chartDataFromKPI: any;
+    @Input() isnewChartOrMap: boolean;
     @Output() result = new EventEmitter < DialogResult > ();
     @ViewChild(ChartFormatInfoComponent) ChartFormatInfo: ChartFormatInfoComponent;
 
@@ -543,8 +544,9 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                 false : this.chartModel.chartDefinition['invertAxis']['enabled'];
         }
     }
-    //remove gridlines
+    // remove gridlines
     isRemoveGridlinesEnabled() {
+        if (!this.chartModel) { return false; }
         if (!this.chartModel.hasOwnProperty('chartDefinition') || !this.chartModel.chartDefinition.hasOwnProperty('yAxis') ||
         this.chartModel.chartDefinition['yAxis']['gridLineWidth'] !== 0) {
             return false;
@@ -768,7 +770,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             }
         }
     }
-    //remove gridlines
+    // remove gridlines
      private _proccessRemoveGridlines(values) {
         const newValue = (values.removeGridlines) ? true : false;
 
@@ -805,6 +807,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             this.chartDefinition.plotOptions = Object.assign({}, plotOptions);
         }
     }
+
     private _setChartType() {
         if (this.chartDefinition && this.chartDefinition.chart.hasOwnProperty('type')) {
             if (this.chartType !== this.chartDefinition.chart.type) {
@@ -823,8 +826,6 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             const model = ChartModel.fromFormGroup(this.fg, this.chartDefinition);
             this._chartDetailsSubject.next(model);
         }*/
-
-
 
         if (!values.tooltipEnabled) {
             this.chartDefinition.tooltip = Object.assign({}, { enabled: false });

@@ -49,7 +49,6 @@ export class NewChartComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private readyToSave = false;
     private _subscription: Subscription[] = [];
-    ischartTypeMap = false;
 
     constructor(private _apollo: Apollo,
                 private _apolloService: ApolloService,
@@ -76,16 +75,18 @@ export class NewChartComponent implements OnInit, AfterViewInit, OnDestroy {
             this.chartFormComponent.updateFormFields();
         }, 200);
     }
+
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
     }
+
     onChartFormEvent($event: DialogResult) {
         switch ($event) {
           case DialogResult.CANCEL:
             this.exitNewChart();
             break;
           case DialogResult.SAVE:
-            if (this.ischartTypeMap) {
+            if (this.fg.value.mapsize) {
                 this.saveMap();
             } else {
                 this.saveChart();
@@ -150,6 +151,7 @@ export class NewChartComponent implements OnInit, AfterViewInit, OnDestroy {
             .catch(err => console.log(err));
         });
     }
+
     saveMap() {
         const that = this;
         this._selectMapService.updateExistDuplicatedName(false);
@@ -206,9 +208,6 @@ export class NewChartComponent implements OnInit, AfterViewInit, OnDestroy {
                         }
                     });
                 }
-            }
-            if (this.fg.value.mapsize) {
-                this.ischartTypeMap = true;
             }
         });
     }
