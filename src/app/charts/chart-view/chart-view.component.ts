@@ -671,7 +671,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                             this.series.chart.tooltip.refresh(param);
                         },
                         dblclick: function (event) {
-                            const chart = event.target.point;
+                            const chart = event.target.point || event.point;
                             // if you click on a target, the chart will be undefined so no need to call processDrilldown 
                             if(chart){
                                 that.processDrillDown(chart);
@@ -690,8 +690,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             point: {
                 events: {
                     click: function (event) {
-                        
-                        const chart = event.target.point;
+                        debugger;
+                        const chart = event.target.point || event.point;
                         // if you click on a target, the chart will be undefined so no need to call processDrilldown 
                         if(chart){
                             that.processDrillDown(chart);
