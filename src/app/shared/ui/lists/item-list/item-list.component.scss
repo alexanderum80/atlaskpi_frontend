@@ -23,3 +23,21 @@
 .margin-b-80{
     margin-bottom: 80px !important; 
 }
+
+@media screen and (max-width: 599px) {
+    .title-desktop {
+        visibility: hidden;
+    }
+
+    .list-title {
+        margin: 10px !important;
+        // font-weight: bold;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    .title-mobile {
+        visibility: hidden;
+        height: 0;
+    }
+}

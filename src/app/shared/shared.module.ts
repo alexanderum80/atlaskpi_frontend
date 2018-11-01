@@ -56,6 +56,8 @@ import { TagsComponent } from './ui/tags/tags.component';
 import { ListItemTabularComponent } from './ui/lists/list-item-tabular/list-item-tabular.component';
 import { FileUploadClientService } from './services/upload.service';
 import { FileInputComponent } from './ui/file-input/file-input.component';
+import { RemoveConfirmationComponent } from './ui/remove-confirmation/remove-confirmation.component';
+import { ErrorComponent } from './ui/error/error.component';
 
 @NgModule({
     imports: [
@@ -91,7 +93,9 @@ import { FileInputComponent } from './ui/file-input/file-input.component';
         NgxResizeWatcherDirective,
         TagsComponent,
         ListItemTabularComponent,
-        FileInputComponent
+        FileInputComponent,
+        RemoveConfirmationComponent,
+        ErrorComponent
     ],
     exports: [
         BackgroundComponent,
@@ -115,7 +119,9 @@ import { FileInputComponent } from './ui/file-input/file-input.component';
         FileInputComponent,
         // pipes
         MomentFormatPipe,
-        ListItemTabularComponent
+        ListItemTabularComponent,
+        ErrorComponent,
+        RemoveConfirmationComponent
     ],
     providers: [
         ApiService,

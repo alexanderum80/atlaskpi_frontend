@@ -14,11 +14,17 @@
         font-size: 14px;
         font-weight: normal;
         text-transform: uppercase; // color: white;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
     }
     .subtitle {
         margin-top: 10px;
         font-size: 13px;
         color: gray;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
     }
     &.hover {
         border: 2px solid $lightBlueColor;

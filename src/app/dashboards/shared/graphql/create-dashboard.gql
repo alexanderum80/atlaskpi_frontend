@@ -7,6 +7,7 @@
       widgets
       owner
       users
+      order
     }
      errors {
       field
