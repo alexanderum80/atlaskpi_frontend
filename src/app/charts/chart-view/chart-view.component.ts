@@ -439,7 +439,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             frequency: this.chartData.frequency,
             isDataOnFly: false,
             isDrillDown: false,
-            isCompared: false,
+            isCompared: ( this.chartData.comparison && this.chartData.comparison.length > 0 &&  this.chartData.comparison[0] !== "" ),
             comparison: this.chartData.comparison
         };
 
@@ -770,6 +770,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 that.enableDrillDown();
 
                 const nodeId = that._nonce();
+                const isCompareValue= ( that.currentNode.comparison && that.currentNode.comparison.length > 0 &&  that.currentNode.comparison[0] !== "" );
 
                 const newNode: IChartTreeNode = {
                     id: nodeId,
@@ -785,7 +786,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                     frequency: rawChart.frequency,
                     isDataOnFly: that.currentNode.isDataOnFly,
                     isDrillDown: true,
-                    isCompared: false,
+                    isCompared: isCompareValue,
                     comparison: rawChart.comparison
                 };
 
@@ -1284,7 +1285,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 frequency: rawChart.frequency,
                 isDataOnFly: this.isDataOnFly,
                 isDrillDown: false,
-                isCompared: false,
+                isCompared: ( this.currentNode.comparison && this.currentNode.comparison.length > 0 &&  this.currentNode.comparison[0] !== "" ),
                 comparison: rawChart.comparison
             };
 
@@ -1321,7 +1322,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             frequency: rawChart.frequency,
             isDataOnFly: this.isDataOnFly,
             isDrillDown: false,
-            isCompared: false,
+            isCompared: ( this.currentNode.comparison && this.currentNode.comparison.length > 0 &&  this.currentNode.comparison[0] !== "" ),
             comparison: rawChart.comparison
         };
 
