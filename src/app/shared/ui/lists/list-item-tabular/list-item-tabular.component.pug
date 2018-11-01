@@ -2,8 +2,9 @@
     ng-container(*ngTemplateOutlet="(tableRowTemplate ? tableRowTemplate : defaultTemplate);context:{ item: item }")
 
     //- actions
-    .p-15(flex-initial)
+    .p-15(flex-initial, layout="row")
         bw-actions(*ngIf="actionItems", [actionItems]="actionItems", (actionClicked)="onActionClicked($event)")
+        .f-12.p-t-5 ACTIONS
 
 ng-template(#defaultTemplate)
     //- image

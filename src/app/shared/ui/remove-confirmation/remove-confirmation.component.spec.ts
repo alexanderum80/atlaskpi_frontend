@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChartInspectorComponent } from './chart-inspector.component';
+import { RemoveConfirmationComponent } from './remove-confirmation.component';
 
-describe('ChartInspectorComponent', () => {
-  let component: ChartInspectorComponent;
-  let fixture: ComponentFixture<ChartInspectorComponent>;
+describe('RemoveConfirmationComponent', () => {
+  let component: RemoveConfirmationComponent;
+  let fixture: ComponentFixture<RemoveConfirmationComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChartInspectorComponent ]
+      declarations: [ RemoveConfirmationComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ChartInspectorComponent);
+    fixture = TestBed.createComponent(RemoveConfirmationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

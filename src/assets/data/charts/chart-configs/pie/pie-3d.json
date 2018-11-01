@@ -10,7 +10,8 @@
                         "enabled": true,
                          "format": "{point.name}:<br/> <b>{point.y:,.2f} ({point.percentage:.2f}%)</b>",
                         "connectorWidth": 2
-                      }
+                      },
+                      "stacking": "pie-3d"
                     }
                   },
   "series"      : [ { "name" : "Delivered amount",

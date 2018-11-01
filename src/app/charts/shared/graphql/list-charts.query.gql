@@ -1,4 +1,4 @@
-query ListChartQuery {
+query ListChartsQuery {
     listCharts {
       data {
         _id
@@ -16,6 +16,7 @@ query ListChartQuery {
               to
             }
           }
+        chartDefinition
         }
     }
 }
