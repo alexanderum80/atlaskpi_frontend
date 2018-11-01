@@ -1356,8 +1356,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     chartIsEmpty(): boolean {
-        const value =_get(this.chartData, 'chartDefinition.series', 0) === 0;
-        return value;
+        const value =_get(this.chartData, 'chartDefinition.series', 0);
+        return !value || value === 0 || value.length === 0;
     }
 
     get drilledDown(): boolean {
