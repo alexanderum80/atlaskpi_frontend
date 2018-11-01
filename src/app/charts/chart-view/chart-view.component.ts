@@ -672,7 +672,6 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                         },
                         dblclick: function (event) {
                             const chart = event.target.point || event.point;
-                            // if you click on a target, the chart will be undefined so no need to call processDrilldown 
                             if(chart){
                                 that.processDrillDown(chart);
                             }
@@ -690,9 +689,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             point: {
                 events: {
                     click: function (event) {
-                        debugger;
                         const chart = event.target.point || event.point;
-                        // if you click on a target, the chart will be undefined so no need to call processDrilldown 
                         if(chart){
                             that.processDrillDown(chart);
                         }
@@ -708,8 +705,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
 
     processDrillDown(chart): void{
         const that = this;
-        
-        if (that._drillDownSvc.getFrequencyType(chart.category)) {
+        if (that._drillDownSvc.getFrequencyType(chart.category) && !chart.series.userOptions.targetId) {
 
             const isYear: boolean = moment(chart.category, 'YYYY', true).isValid();
             const checkYear = isYear ? chart.category : null;
