@@ -415,11 +415,10 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private _actionUpdate() {
     const that = this;
-
     this._dashboardService.updateExistDuplicatedName(false);
 
     this._apolloService.networkQuery < IDashboard > (dashboardByNameQuery, { name: this.fg.controls['name'].value }).then(d => {
-      if (d.dashboardByName && d.dashboardByName._id !== this.dashboardId) {
+      if (d.dashboardByName && d.dashboardByName._id !== that.dashboardId) {
 
           this._dashboardService.updateExistDuplicatedName(true);
 
