@@ -1,36 +1,18 @@
-.h-100(layout="row")
-    
-    //- add button
-    .add-button([ngClass]="{'inspector-margin': (inspectorOpen$ | async)}")
-        bw-button(flex-none, color="blue", icon="plus", size="sm", [disabled]="!vm.authorizedTo('AddChartActivity')", [circular]="true", (clicked)="addChart()" )
-    //- chart container
-    .h-100.overflow-auto.transition.p-relative.mobile-chart-fit-content(flex, 
-        detect-scroll,
-        (onScroll)="handleScroll($event)",
-        [bottomOffset]="100",
-        [topOffset]="100")
-        
-        div(flex, layout="row", layout-wrap, layout-padding, layout-align="start start")
-            .box(
-                [ngClass]="{'box-margin': (inspectorOpen$ | async)}",
-                flex-xs="100",
-                flex-gt-xs="50",
-                flex-gt-md="33",
-                flex-gt-lg="25",
-                *ngFor="let mapMarkers of visibleMaps")
-                    kpi-map-view-mini.pointer-cursor([item]="mapMarkers", [legendColors]="legendColors")
-        
-        div(layout="row", layout-wrap, layout-padding, layout-align="start start")
-            .box(
-                [ngClass]="{'box-margin': (inspectorOpen$ | async)}",
-                flex-xs="100",
-                flex-gt-xs="50",
-                flex-gt-md="33",
-                flex-gt-lg="25",
-                *ngFor="let chart of visibleCharts")
-                    kpi-chart-view-mini.pointer-cursor([item]="chart")
-    //- chart inspector
-    div([ngClass]="{'flex-5': (inspectorOpen$ | async)}")
-        //- div(flex-none)
-        .right_sidebar.h-100([ngClass]="{'right_sidebar_open': (inspectorOpen$ | async)}")
-            kpi-chart-inspector
+kpi-item-list(
+    title="CHART LIST",
+    [items]="vm.chartsList",
+    [itemViewModel]="vm",
+    [addItemActivityName]="'AddChartActivity'",
+    [itemListActivityName]="actionActivityNames",
+    [actionItems] = "vm.menuItems",
+    itemType="table",
+    [tableRowTemplate]="tableItem",
+    (onAddActionClicked)="addChart()",
+    (onItemActionClicked)="actionClicked($event)",
+    (onItemClicked)="editClickedList($event)")
+
+//- confirm remove widget modal
+app-remove-confirmation([element]="'chart'", (dialogResult)="onDialogResult($event)")
+
+//- error modal
+app-error([error]="lastError")

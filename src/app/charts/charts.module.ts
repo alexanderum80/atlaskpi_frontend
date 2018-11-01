@@ -87,7 +87,6 @@ export function highchartsModules() {
         ChangeSettingsOnFlyComponent,
         AutoRendereableChartComponent,
         ChartDetailFilterComponent,
-        ChartInspectorComponent,
     ],
     exports: [
         ChartViewComponent,

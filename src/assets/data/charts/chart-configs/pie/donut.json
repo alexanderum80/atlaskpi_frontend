@@ -5,7 +5,8 @@
                                 "enabled": true,
                                  "format": "{point.name}:<br/> <b>{point.y:,.2f} ({point.percentage:.2f}%)</b>"
                               },
-                              "showInLegend": false } },
+                            "stacking": "donut",
+                            "showInLegend": false } },
   "series"      : [ { "name" : "Delivered amount",
                       "data" : [ [ "Bananas",
                                    8 ],

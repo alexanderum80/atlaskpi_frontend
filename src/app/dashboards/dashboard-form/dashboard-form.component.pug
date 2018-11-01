@@ -2,7 +2,7 @@
     //-.z-depth-1.h-100.bgm-white(*ngIf="!isAddChart && !isAddWidget && !loading && !isPreviewDashboard",
     .dashboard-container.z-depth-1.bgm-white.h-100(*ngIf="!loading", layout="column", layout-gt-sm="row")
         //- left panel ( first panel if mobile)
-        div(flex, flex-gt-sm="40")
+        div(flex, flex-initial)
             .m-20(layout="column", layout-padding)
                 h2.m-b-10(flex) {{ formTitle }}
                 bw-text-box(flex, [fg]="fg", leftIcon="label", field="name", label="Name", [required]="true")
@@ -12,9 +12,8 @@
                                             placeholder="Some description go here and this is another line.",
                                             [autosize]="false")
                 //- filters
-                div([ngClass]="{'is-disabled': filterDisabled }")
+                div(flex, [ngClass]="{'is-disabled': filterDisabled }")
                     bw-select-picker.text-ellip([fg]="fg", 
-                        flex,
                         label="Filter",
                         leftIcon="filter-list",
                         field="filter",
@@ -25,7 +24,7 @@
                         noneSelectedText="NOTHING SELECTED",
                         [disabled]="filterDisabled")  
             
-                //- dashboard
+                //- users
                 #select-users(flex)
                     bw-select-picker.text-ellip(flex, [fg]="fg",
                         label="Dashboard Users",
@@ -34,7 +33,9 @@
                         [multiple]="true",
                         [items]="allUsers",
                         noneSelectedText="Select Users")
-                
+                //- order
+                bw-text-box(flex, [fg]="fg", leftIcon="sort-amount-desc", field="order", label="Order", [required]="false", [value]="newOrder")
+                .err-message(*ngIf="fg.controls['order'].errors && fg.controls['order'].errors.invalidDataType") Invalid order. Please enter a numeric value
                 div(flex)
                     .hide-xs(layout="row", layout-align="end end")
                         bw-button.m-5(flex="30", color="green", title="PREVIEW",

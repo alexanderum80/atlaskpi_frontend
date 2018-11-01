@@ -25,11 +25,11 @@ export class ListDashboardViewModel extends ViewModel<IFilter> {
 
         this.setActionItems();
     }
-    
+
     get alistDashboardIdNoVisible() {
         return this._listDashboardIdNoVisible;
     }
-    
+
     get dashboards(): IDashboard[] {
         return this._dashboards;
     }
@@ -46,12 +46,12 @@ export class ListDashboardViewModel extends ViewModel<IFilter> {
         if (!upatedUserInfo) {
             return;
         }
-        this._listDashboardIdNoVisible 
-            = upatedUserInfo.preferences.dashboardIdNoVisible === null 
-            ? undefined 
+        this._listDashboardIdNoVisible
+            = upatedUserInfo.preferences.dashboardIdNoVisible === null
+            ? undefined
             : upatedUserInfo.preferences.dashboardIdNoVisible.split('|');
-    }   
-    
+    }
+
     set dashboards(list: IDashboard[]) {
         if (list === this._dashboards) {
             return;
@@ -61,10 +61,10 @@ export class ListDashboardViewModel extends ViewModel<IFilter> {
         this._dashboardItemList = this._dashboards.map(d => {
             if (!this._listDashboardIdNoVisible) {
                 isVisible = true;
-            }else{
-                    isVisible 
-                        = this._listDashboardIdNoVisible.find(l => l === d._id) 
-                        ? false 
+            } else {
+                    isVisible
+                        = this._listDashboardIdNoVisible.find(l => l === d._id)
+                        ? false
                         : true;
             }
             return {
