@@ -107,9 +107,8 @@ export class User implements IUserInfo {
     hasAllPermissions(permissions: IPermission[]) {
         const that = this;
         let ownAllPermissions = true;
-        
         permissions.forEach(p => {
-            if (!that.hasPermission(p)) ownAllPermissions = false;
+            if (!that.hasPermission(p))  { ownAllPermissions = false; }
         });
 
         return ownAllPermissions;
@@ -126,8 +125,8 @@ export class User implements IUserInfo {
         const serverPermissions: IPermission[] = uniqBy(flattenPermissions, (p) => `${p.subject}-${p.action}`);
 
         this.permissions = AllPermissions.filter(p => {
-            return serverPermissions.findIndex(perm => 
-                perm.subject.toLowerCase() === p.subject.toLowerCase() 
+            return serverPermissions.findIndex(perm =>
+                perm.subject.toLowerCase() === p.subject.toLowerCase()
                 && perm.action.toLowerCase() === p.action.toLowerCase()) !== -1;
         });
     }
