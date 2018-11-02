@@ -6,6 +6,7 @@ mutation UpdateDashboard($id: String!, $input: DashboardInput!){
       charts
       widgets
       visible
+      order
     }
      errors {
       field

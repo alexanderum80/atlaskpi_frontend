@@ -1,10 +1,11 @@
+import { filter } from 'rxjs/operators';
 import { IMutationError, IMutationResponse } from '../../shared/interfaces/mutation-response.interface';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { ApolloQueryResult } from 'apollo-client';
-import { uniq, isEmpty } from 'lodash';
+import { uniq, isEmpty, sortBy, isNumber } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 import Sweetalert from 'sweetalert2';
 
@@ -36,6 +37,7 @@ export interface IMap {
 }
 
 const dashboardByNameQuery = require('graphql-tag/loader!../shared/graphql/dashboard-by-name.gql');
+const dashboardsQuery = require('graphql-tag/loader!../shared/graphql/all-dashboard.query.gql');
 const socialwidgetsQuery = require('graphql-tag/loader!../dashboard-show/social-widgets.query.gql');
 
 @Component({
@@ -98,7 +100,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
   dashboardId: string;
   chartGroupList: SelectionItem[] = [];
   previewDashboardModel: IDashboard;
-
+  newOrder = 1;
   errorMessage: string;
 
   private _filteredVisibleCharts: IChart[] = [];
@@ -131,6 +133,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
       search: new FormControl(null)
     });
     if ( that.actionAdd === 'actionAdd' ) {
+      that._loadDashboards();
       that._loadUsers();
       that._loadWidgets();
       that._loadSocialWidgets();
@@ -148,7 +151,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
         that._dashboardModelSubscription();
       });
     }
-
+    // this.fg.controls['order'].setAsyncValidators([Validators.min,])
     this.switchTab('widgets');
 
   //add-search-bar
@@ -394,7 +397,6 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private _actionAdd() {
     const that = this;
-
     this._dashboardService.updateExistDuplicatedName(false);
 
     this._apolloService.networkQuery < IDashboard > (dashboardByNameQuery, { name: this.fg.controls['name'].value }).then(d => {
@@ -420,7 +422,8 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
         socialwidgets: that.selectedSocialWidgets.map((sw: SocialWidgetBase) => sw.connectorId),
         maps: that.selectedMaps.map((m: IMap) => m._id),
         users: that.dashboardModel.users,
-        owner: that.currentUser._id
+        owner: that.currentUser._id,
+        order: Math.round(that.dashboardModel.order)
       };
       this._apollo.mutate({
         mutation: dashboardGraphqlActions.createDashboard,
@@ -439,11 +442,10 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private _actionUpdate() {
     const that = this;
-
     this._dashboardService.updateExistDuplicatedName(false);
 
     this._apolloService.networkQuery < IDashboard > (dashboardByNameQuery, { name: this.fg.controls['name'].value }).then(d => {
-      if (d.dashboardByName && d.dashboardByName._id !== this.dashboardId) {
+      if (d.dashboardByName && d.dashboardByName._id !== that.dashboardId) {
 
           this._dashboardService.updateExistDuplicatedName(true);
 
@@ -465,7 +467,8 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
         widgets: that.selectedWidgets.map((w: IWidget) => w._id),
         socialwidgets: that.selectedSocialWidgets.map((sw: SocialWidgetBase) => sw.connectorId),
         maps: that.selectedMaps.map((m: IMap) => m._id),
-        users: that.dashboardModel.users
+        users: that.dashboardModel.users,
+        order: Math.round(that.dashboardModel.order)
       };
 
       this._apollo.mutate({
@@ -500,9 +503,25 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
           this.selectedSocialWidgets.map((sw: SocialWidgetBase) => sw.connectorId),
           this.selectedMaps.map((m: IMap) => m._id),
           that.dashboardModel && that.dashboardModel.owner || that.currentUser._id,
-          (dashboard.users.length > 0) && dashboard.users.split('|') || []
+          (dashboard.users.length > 0) && dashboard.users.split('|') || [],
+          true, dashboard.order
       );
+      if (isNaN(that.fg.controls['order'].value)) {
+        that.fg.controls['order'].setErrors({invalidDataType: true});
+      }
     }));
+  }
+
+  private _loadDashboards() {
+    this._apolloService.networkQuery < IDashboard[] > (dashboardsQuery)
+    .then(d => {
+      if (!d.dashboards || d.dashboards.lenght === 0) {
+          this.newOrder = 1;
+      } else {
+        this.newOrder = d.dashboards.length + 1;
+      }
+      this.fg.controls['order'].patchValue(this.newOrder);
+    });
   }
 
   private _loadDashboard(): Promise<any> {
@@ -524,7 +543,8 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
             _id: rawDashboard._id,
             name: rawDashboard.name,
             description: rawDashboard.description,
-            users: rawDashboard.users
+            users: rawDashboard.users,
+            order: rawDashboard.order
           };
           that.dashboardModel = {
             name: rawDashboard.name,
@@ -534,7 +554,8 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
             socialwidgets: rawDashboard.socialwidgets.map(sw => JSON.parse(sw).connectorId),
             maps: rawDashboard.maps.map(m => JSON.parse(m)),
             users: rawDashboard.users,
-            owner: rawDashboard.owner
+            owner: rawDashboard.owner,
+            order: rawDashboard.order
           };
 
           that.rawDashboard = rawDashboard;

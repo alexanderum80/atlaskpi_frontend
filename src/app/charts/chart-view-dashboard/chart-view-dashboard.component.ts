@@ -2,7 +2,7 @@ import { CommonService } from '../../shared/services/common.service';
 import { Subscription } from 'rxjs/Subscription';
 import { SelectedChartsService } from '../shared/services/selected-charts.service';
 import { SingleChartQuery } from '../shared/graphql';
-import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { ChartData, IChartVariable } from '../shared/models';
 import { IChart } from '../shared/models/chart.models';
 import { Apollo } from 'apollo-angular';
@@ -11,6 +11,11 @@ import { Observable } from 'rxjs/Observable';
 
 interface SingleChartResponse {
   chart: string;
+}
+
+export interface IchartAndId{
+chart: Chart;
+chartId: string;
 }
 
 @Component({
@@ -24,6 +29,8 @@ export class ChartViewDashboardComponent implements OnInit, OnDestroy {
     @Input() minHeight = 0;
     @Input() selectable = true;
 
+    @Output() chartRef: EventEmitter<IchartAndId> = new EventEmitter();
+
     private _subscription: Subscription[] = [];
     public selected = false;
 
@@ -36,9 +43,11 @@ export class ChartViewDashboardComponent implements OnInit, OnDestroy {
                 private _el: ElementRef) {}
 
     ngOnInit() {
-      this._subscribeToChartQuery();
-      this.areSelected(this.item._id);
 
+      this._subscribeToChartQuery();
+         
+      this.areSelected(this.item._id);
+     
       if (!this.selectable) {
         return;
       }
@@ -53,7 +62,7 @@ export class ChartViewDashboardComponent implements OnInit, OnDestroy {
       }));
 
     }
-
+ 
     ngOnDestroy() {
       CommonService.unsubscribe(this._subscription);
     }
@@ -66,7 +75,7 @@ export class ChartViewDashboardComponent implements OnInit, OnDestroy {
         definition.exporting = definition.exporting || { };
         definition.exporting.enabled = false;
         definition.credits = { enabled: false };
-        definition.legend = { enabled: false };
+        //definition.legend = { enabled: false };
         definition.tooltip = { enabled: false };
         definition.plotOptions = definition.plotOptions || {};
         definition.plotOptions.series = definition.plotOptions.series || {};
@@ -94,7 +103,22 @@ export class ChartViewDashboardComponent implements OnInit, OnDestroy {
             const chart = JSON.parse(response.data.chart);
             chart.chartDefinition = that._simplifyChartDefinition(chart.chartDefinition);
             that.chart = new Chart(chart.chartDefinition);
-        }));
+                
+            that.chartRef.emit({ chart: that.chart, chartId: chart._id });
+          
+            //- reflow first chart of the slideshow here
+            that._subscription.push( that.chart.ref$.subscribe(ref => {
+              setTimeout(() => {
+                      try{
+                        ref.reflow();
+                        }
+                        catch(e){
+                          console.log("HIghchart error: ", e);
+                        }
+              }, 0)}
+           ));
+
+        }));        
     }
 
     private areSelected(id: string) {

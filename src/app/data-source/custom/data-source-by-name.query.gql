@@ -1,0 +1,7 @@
+query DataSourceByName ($name: String!) {
+  dataSourceByName(name: $name) {
+    name
+    description
+    dataSource
+  }
+}

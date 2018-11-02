@@ -26,7 +26,7 @@ div(layout-xs="column", layout-gt-sm="row")
         div(layout-xs="column", layout-gt-sm="row", layout-wrap, layout-padding)
             div(flex-xs="100", flex-sm="100", flex-md="50", flex-gt-md="33", *ngFor="let chart of filteredItems")
                 kpi-selectable-item-frame([item]="chart", (click)="toggleChartSelection(chart)")
-                    kpi-auto-rendereable-chart.pointer-cursor([item]="chart", [minHeight]="200")
+                    kpi-auto-rendereable-chart.pointer-cursor([item]="chart", [minHeight]="200", [autoRender]="false")
 
 
 

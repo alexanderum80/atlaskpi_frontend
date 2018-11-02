@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChartInspectorComponent } from './chart-inspector.component';
+import { DateFieldPopupComponent } from './date-field-popup.component';
 
-describe('ChartInspectorComponent', () => {
-  let component: ChartInspectorComponent;
-  let fixture: ComponentFixture<ChartInspectorComponent>;
+describe('DateFieldPopupComponent', () => {
+  let component: DateFieldPopupComponent;
+  let fixture: ComponentFixture<DateFieldPopupComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChartInspectorComponent ]
+      declarations: [ DateFieldPopupComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ChartInspectorComponent);
+    fixture = TestBed.createComponent(DateFieldPopupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

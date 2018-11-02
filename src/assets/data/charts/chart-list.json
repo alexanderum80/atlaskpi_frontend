@@ -11,7 +11,7 @@
         },
         {
             "name": "Stacked Percentage",
-            "img": "/assets/img/charts/area/stacked-percentage.svg",
+            "img": "/assets/img/charts/area/percent.svg",
             "configName": "percentage-area"
         }
     ],
@@ -27,7 +27,7 @@
         },
         {
             "name": "Stacked Percent",
-            "img": "/assets/img/charts/bar/stacked-percent.svg",
+            "img": "/assets/img/charts/bar/percent.svg",
             "configName": "stacked-percentage"
         }
     ],
@@ -43,7 +43,7 @@
         },
         {
             "name": "Stacked Percent",
-            "img": "/assets/img/charts/column/stacked-percent.svg",
+            "img": "/assets/img/charts/column/percent.svg",
             "configName": "stacked-percent"
         }
     ],

@@ -1,3 +1,4 @@
+import { sortBy } from 'lodash';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import SweetAlert from 'sweetalert2';
@@ -15,14 +16,13 @@ import { ListDashboardViewModel } from './list-dashboard.viewmodel';
 import { IUserInfo } from '../../shared/models';
 import { UserService } from '../../shared/services/user.service';
 import { Subscription } from 'rxjs/Subscription';
-import { id } from '@swimlane/ngx-datatable/release/utils';
 
 const dashboardsQuery = require('graphql-tag/loader!../shared/graphql/all-dashboard.query.gql');
 const dashboardQuery = require('graphql-tag/loader!../shared/graphql/dashboard.gql');
 const deleteDashboardMutation = require('graphql-tag/loader!../shared/graphql/delete-dashboard.gql');
 const updateVisibleDashboardMutation = require('graphql-tag/loader!../shared/graphql/updatevisible-dashboard.gql');
 const updateUserPreference = require('graphql-tag/loader!../shared/graphql/update-user-preference.mutation.gql');
-const updateUserInfo = require('graphql-tag/loader!../shared/graphql/current-user.gql')
+const updateUserInfo = require('graphql-tag/loader!../shared/graphql/current-user.gql');
 
 @Activity(ViewDashboardActivity)
 @Component({
@@ -37,7 +37,7 @@ export class ListDashboardComponent implements OnInit {
     xsSize = '75';
     user: IUserInfo;
     subscriptions: Subscription[] = [];
-    timeWait: boolean = true;
+    timeWait = true;
 
     constructor(
         private _route: ActivatedRoute,
@@ -54,7 +54,7 @@ export class ListDashboardComponent implements OnInit {
             .distinctUntilChanged()
             .subscribe((user: IUserInfo) => {
                 that.user = user;
-            }))
+            }));
         this.actionActivityNames = {
             edit: this.updateDashboardActivity.name,
             delete: this.deleteDashboardActivity.name,
@@ -118,7 +118,7 @@ export class ListDashboardComponent implements OnInit {
                               }
                     })
                 );
-            }    
+            }
     }
 
     editClickedList($event) {
@@ -128,11 +128,11 @@ export class ListDashboardComponent implements OnInit {
         return;
     }
 
-    edit(id) {
-        this._router.navigateByUrl('/dashboards/edit/' + id);
+    edit(idDashboard: any) {
+        this._router.navigateByUrl('/dashboards/edit/' + idDashboard);
     }
 
-    delete(id) {
+    delete(idDashboard: any) {
         const that = this;
 
         SweetAlert({
@@ -149,7 +149,7 @@ export class ListDashboardComponent implements OnInit {
                                 success: boolean
                             }
                         } > (deleteDashboardMutation, {
-                            id: id
+                            id: idDashboard
                         }, [
                             'Dashboards',
                             'allDashboard',
@@ -173,28 +173,28 @@ export class ListDashboardComponent implements OnInit {
         this.vm.alistDashboardIdNoVisible = user;
     }
 
-    private _refresUserInfo(refresh ? : boolean) {
+    private _refresUserInfo(refresh ?: boolean) {
         const that = this;
         this.timeWait = false;
             this._apolloService.networkQuery < IUserInfo > (updateUserInfo).then(d => {
                 that.vm.alistDashboardIdNoVisible = d.User;
                 this.timeWait = true;
-            }); 
+            });
         }
 
-        private _timeWait(){
+        private _timeWait() {
                 setTimeout(() => {
                     this._refreshDashboards();
-                },100);
+                }, 100);
         }
-        
-        private _refreshDashboards(refresh ? : boolean) {
+
+        private _refreshDashboards(refresh?: boolean) {
         const that = this;
         if (this.timeWait === false) {
-            this._timeWait()
-        }else{
+            this._timeWait();
+        } else {
             this._apolloService.networkQuery < IDashboard[] > (dashboardsQuery).then(d => {
-                that.vm.dashboards = d.dashboards;
+                that.vm.dashboards = sortBy(d.dashboards, ['order', '_id']);
             });
         }
     }

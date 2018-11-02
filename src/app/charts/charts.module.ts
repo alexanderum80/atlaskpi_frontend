@@ -37,7 +37,6 @@ import { ChartGalleryComponent } from './shared/ui/chart-gallery/chart-gallery.c
 import { ChartItemDetailsComponent } from './shared/ui/chart-item-details/chart-item-details.component';
 import { ChartPreviewComponent } from './shared/ui/chart-preview/chart-preview.component';
 import { ChartTypeComponent } from './shared/ui/chart-type/chart-type.component';
-import { ChartInspectorComponent } from './chart-inspector/chart-inspector.component';
 import highchartEvents from 'highcharts-custom-events';
 
 // import { MyDatePickerModule } from 'mydatepicker';
@@ -85,7 +84,6 @@ export function highchartsModules() {
         ChangeSettingsOnFlyComponent,
         AutoRendereableChartComponent,
         ChartDetailFilterComponent,
-        ChartInspectorComponent,
     ],
     exports: [
         ChartViewComponent,
@@ -96,6 +94,7 @@ export function highchartsModules() {
         ChartViewMiniComponent,
         AutoRendereableChartComponent,
         NewChartComponent,
+        EditChartComponent
     ],
     providers: [{ provide: HIGHCHARTS_MODULES, useFactory: highchartsModules }, TableModeService],
 })

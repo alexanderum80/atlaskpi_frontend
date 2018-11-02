@@ -6,8 +6,10 @@ import { Apollo } from 'apollo-angular';
 import { ModalComponent } from '../../ng-material-components';
 import { FormGroup } from '@angular/forms';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Activity } from 'src/app/shared/authorization/decorators/component-activity.decorator';
+import { ModifyDashboardActivity } from 'src/app/shared/authorization/activities/dashboards/modify-dashboard.activity';
 
-
+@Activity(ModifyDashboardActivity)
 @Component({
   selector: 'kpi-edit-dashboard',
   templateUrl: './edit-dashboard.component.pug',

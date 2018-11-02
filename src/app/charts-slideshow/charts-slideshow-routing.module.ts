@@ -14,7 +14,7 @@ const routes: Routes = [
         { path: '', component: ListChartsSlideshowComponent, canActivate: [ AuthGuard ] },
         { path: 'add', component: AddChartsSlideshowComponent, canActivate: [ AuthGuard ] },
         { path: 'edit/:id', component: EditChartsSlideshowComponent, canActivate: [ AuthGuard ] },
-        { path: 'show/:id', component: ShowChartSlideshowComponent }
+        { path: 'show/:id', component: ShowChartSlideshowComponent, canActivate: [ AuthGuard ] }
     ]
   }
 ];
