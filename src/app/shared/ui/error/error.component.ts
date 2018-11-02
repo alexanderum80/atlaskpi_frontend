@@ -8,7 +8,7 @@ import { ModalComponent } from 'src/app/ng-material-components';
   styleUrls: ['./error.component.scss']
 })
 export class ErrorComponent implements OnInit {
-  @Input() error: string;
+  @Input() error: any;
   @Output() dialogResult = new EventEmitter<DialogResult>();
   @ViewChild('errorModal') errorModal: ModalComponent;
 

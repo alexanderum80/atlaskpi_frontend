@@ -6,7 +6,6 @@ kpi-item-list(
     [itemListActivityName]="actionActivityNames",
     [actionItems] = "vm.menuItems",
     itemType="table",
-    [tableRowTemplate]="tableItem",
     (onAddActionClicked)="addChart()",
     (onItemActionClicked)="actionClicked($event)",
     (onItemClicked)="editClickedList($event)")

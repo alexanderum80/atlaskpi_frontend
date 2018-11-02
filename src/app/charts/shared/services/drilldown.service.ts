@@ -999,9 +999,15 @@ export class DrillDownService {
     }
 
     private _getCustomYears(dateRange: any): number[] {
-        const momentFormat = 'YYYY';
-        const from = parseInt(moment(dateRange.from, momentFormat).format(momentFormat), 10);
-        const to = parseInt(moment(dateRange.to, momentFormat).format(momentFormat), 10);
+       // const momentFormat = 'YYYY';
+        const momentFormat = "DD/MM/YYYY";
+
+        // const from = parseInt(moment(dateRange.from, momentFormat).format(momentFormat), 10);
+        // const to = parseInt(moment(dateRange.to, momentFormat).format(momentFormat), 10);
+
+
+        const from = moment(dateRange.from, momentFormat).year();
+        const to = moment(dateRange.from, momentFormat).year();
 
         const diff = to - from;
         let customYears = [from, to];

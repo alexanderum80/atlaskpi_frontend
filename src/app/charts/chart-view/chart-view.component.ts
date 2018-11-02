@@ -439,7 +439,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             frequency: this.chartData.frequency,
             isDataOnFly: false,
             isDrillDown: false,
-            isCompared: false,
+            isCompared: ( this.chartData.comparison && this.chartData.comparison.length > 0 &&  this.chartData.comparison[0] !== "" ),
             comparison: this.chartData.comparison
         };
 
@@ -671,8 +671,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                             this.series.chart.tooltip.refresh(param);
                         },
                         dblclick: function (event) {
-                            const chart = event.target.point;
-                            // if you click on a target, the chart will be undefined so no need to call processDrilldown 
+                            const chart = event.target.point || event.point;
                             if(chart){
                                 that.processDrillDown(chart);
                             }
@@ -690,9 +689,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             point: {
                 events: {
                     click: function (event) {
-                        
-                        const chart = event.target.point;
-                        // if you click on a target, the chart will be undefined so no need to call processDrilldown 
+                        const chart = event.target.point || event.point;
                         if(chart){
                             that.processDrillDown(chart);
                         }
@@ -708,8 +705,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
 
     processDrillDown(chart): void{
         const that = this;
-        
-        if (that._drillDownSvc.getFrequencyType(chart.category)) {
+        if (that._drillDownSvc.getFrequencyType(chart.category) && !chart.series.userOptions.targetId) {
 
             const isYear: boolean = moment(chart.category, 'YYYY', true).isValid();
             const checkYear = isYear ? chart.category : null;
@@ -770,6 +766,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 that.enableDrillDown();
 
                 const nodeId = that._nonce();
+                const isCompareValue= ( that.currentNode.comparison && that.currentNode.comparison.length > 0 &&  that.currentNode.comparison[0] !== "" );
 
                 const newNode: IChartTreeNode = {
                     id: nodeId,
@@ -785,7 +782,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                     frequency: rawChart.frequency,
                     isDataOnFly: that.currentNode.isDataOnFly,
                     isDrillDown: true,
-                    isCompared: false,
+                    isCompared: isCompareValue,
                     comparison: rawChart.comparison
                 };
 
@@ -1284,7 +1281,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
                 frequency: rawChart.frequency,
                 isDataOnFly: this.isDataOnFly,
                 isDrillDown: false,
-                isCompared: false,
+                isCompared: ( this.currentNode.comparison && this.currentNode.comparison.length > 0 &&  this.currentNode.comparison[0] !== "" ),
                 comparison: rawChart.comparison
             };
 
@@ -1321,7 +1318,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
             frequency: rawChart.frequency,
             isDataOnFly: this.isDataOnFly,
             isDrillDown: false,
-            isCompared: false,
+            isCompared: ( this.currentNode.comparison && this.currentNode.comparison.length > 0 &&  this.currentNode.comparison[0] !== "" ),
             comparison: rawChart.comparison
         };
 
@@ -1355,8 +1352,8 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     chartIsEmpty(): boolean {
-        const value =_get(this.chartData, 'chartDefinition.series', 0) === 0;
-        return value;
+        const value =_get(this.chartData, 'chartDefinition.series', 0);
+        return !value || value === 0 || value.length === 0;
     }
 
     get drilledDown(): boolean {
