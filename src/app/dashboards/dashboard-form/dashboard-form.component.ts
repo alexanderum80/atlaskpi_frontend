@@ -1,6 +1,6 @@
 import { IMutationError, IMutationResponse } from '../../shared/interfaces/mutation-response.interface';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { ApolloQueryResult } from 'apollo-client';
@@ -28,6 +28,7 @@ import { UserService } from '../../shared/services/user.service';
 import { IWidget, WidgetSizeEnum, WidgetSizeMap } from '../../widgets/shared/models/widget.models';
 import { SocialWidgetBase } from './../../social-widgets/models/social-widget-base';
 import { objectWithoutProperties } from '../../shared/helpers/object.helpers';
+import { filterSearch } from 'src/app/shared/models/search';
 
 export interface IMap {
   _id: string;
@@ -102,6 +103,11 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private _filteredVisibleCharts: IChart[] = [];
 
+  //add-search-bar
+  public fgs: FormGroup;
+  private _filteredWidgets: IWidget[] = [];
+  private _filteredCharts: IChart[] = [];
+
   constructor(private _apollo: Apollo, private _apolloService: ApolloService, private _router: Router,
               private _routeActivited: ActivatedRoute, private _dashboardService: DashboardService,
               private _serviceMenu: MenuService, private _selectionService: GenericSelectionService,
@@ -120,7 +126,10 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     this.subscriptions.push(this._selectionService.selection$.subscribe(selectedItems => {
       that.selectedItems = selectedItems;
     }));
-
+    //add-search-bar
+    this.fgs = new FormGroup({
+      search: new FormControl(null)
+    });
     if ( that.actionAdd === 'actionAdd' ) {
       that._loadUsers();
       that._loadWidgets();
@@ -142,6 +151,17 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
     this.switchTab('widgets');
 
+  //add-search-bar
+    this.subscriptions.push((this.fgs.valueChanges.subscribe(values => {
+      switch (this.selectedTab) {
+        case 'widgets':
+          this._filteredWidgets = filterSearch<IWidget>(this.allWidgets, 'name', values);
+          break;
+        case 'charts':
+          this._filteredCharts = filterSearch<IChart>(this.allCharts, 'title', values);
+          break;
+      }
+    })));
   }
 
   ngAfterViewInit() {
@@ -281,6 +301,9 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     .then(response => {
       that.widgetsLoading = false;
       that.allWidgets = response.data.listWidgets;
+
+       //add-search-bar
+      that._filteredWidgets = that.allWidgets;
       if (options.updateSelection) {  that._updateWidgetSelection(); }
     });
   }
@@ -324,6 +347,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
       .toPromise()
       .then((response => {
         that.allCharts = response.data.listCharts.data;
+        that._filteredCharts = that.allCharts;
         that.chartsLoading = false;
         that._groupCharts();
         if (options.updateSelection) {  that._updateChartSelection(); }
@@ -601,7 +625,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
       });
     }
 
-    // this.fg.controls['filter'].setValue(null);
+    this.fgs.controls['search'].setValue(null);
   }
 
   private _updateWidgetSelection() {
@@ -809,5 +833,15 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
     return spaceOnly.test(dashboardName);
   }
+  get filteredItemsWidgetsBig(): IWidget[] {
+    return this._filteredWidgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Big);
+  }
+  get filteredItemsWidgetsSmall(): IWidget[] {
+    return this._filteredWidgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Small);
+  }
+  get filteredItemsCharts(): IChart[] {
+    return this._filteredCharts;
+  }
+
 
 }

@@ -98,7 +98,10 @@
 
     z-index: 100;
 }
-
+.tab-content {
+    padding: 10px 0 !important;
+    height: 90% !important;
+}
 .btn-addWidget, .btn-addChart {
     position: fixed;
     right: 20px;
@@ -144,4 +147,15 @@
     .charts, .widgets, .access-levels {
         overflow: unset !important;
     }
+}
+.search-bar input {
+    margin-bottom: 0px;
+    border: 0px;
+    width: 300px;
+    border-radius: 100px;
+    height: 40px;
+    font-size: 12px;
+    color: #4a5054;
+    background-color: #fbfbfb; 
+    padding: 0px 20px;
 }
