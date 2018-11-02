@@ -7,7 +7,7 @@ kpi-widget-alert(#widgetAlert)
 //- Big widgets
 div(layout="column", layout-padding, *ngIf="!bigWidgetsCollectionEmpty")
     div(layout="column", layout-gt-xs="row")
-        h2.m-t-10(flex) Size: Big
+        h2.m-t-15(flex) Size: Big
         .search-bar([formGroup]="fgs")
             input.search-bar(formControlName="search", placeholder="Type to filter...", type="text")
     div(layout="row", layout-wrap, layout-padding)
