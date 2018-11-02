@@ -49,7 +49,8 @@ export class ListChartViewModel extends ViewModel<any> {
         this._chartsItemList = charts.map(c => {
             const chartDefinition = JSON.parse(c.chartDefinition);
             let chartType = chartDefinition.chart.type;
-            let chartOption = chartDefinition.plotOptions && chartDefinition.plotOptions[chartType].stacking ?
+
+            let chartOption = chartDefinition.plotOptions && chartDefinition.plotOptions[chartType] && chartDefinition.plotOptions[chartType].stacking ?
                             chartDefinition.plotOptions[chartType].stacking :
                             'basic';
 
