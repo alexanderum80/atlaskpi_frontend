@@ -3,7 +3,6 @@ import { pull } from 'lodash';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 
-import { IChart } from '../models';
 
 @Injectable()
 export class ListChartService {
@@ -45,5 +44,4 @@ export class ListChartService {
             this.selectedArray.push(chart);
         }
     }
-
 }

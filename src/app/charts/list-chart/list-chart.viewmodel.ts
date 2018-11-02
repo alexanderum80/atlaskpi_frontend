@@ -12,6 +12,7 @@ export class ListChartViewModel extends ViewModel<any> {
     private _chartGalleryService: ChartGalleryService;
 
     private _chartsItemList: IListItem[] = [];
+    private _mapsItemList: IListItem[] = [];
 
     private _menuItems = [{
         id: 'more-options',
@@ -46,7 +47,10 @@ export class ListChartViewModel extends ViewModel<any> {
     }
 
     setChartsList(charts: IChart[]) {
-        this._chartsItemList = charts.map(c => {
+        if (this._chartsItemList.length > 0) {
+            this._chartsItemList = this._chartsItemList.filter( c => c.type !== 'chart');
+        }
+        charts.map(c => {
             const chartDefinition = JSON.parse(c.chartDefinition);
             let chartType = chartDefinition.chart.type;
             let chartOption = chartDefinition.plotOptions && chartDefinition.plotOptions[chartType].stacking ?
@@ -73,8 +77,7 @@ export class ListChartViewModel extends ViewModel<any> {
                     chartOption = 'spline';
                     break;
             }
-
-            return {
+            this._chartsItemList.push({
                 id: c._id,
                 imagePath: `../../../assets/img/charts/${chartType}/${chartOption}.svg`,
                 title: c.title,
@@ -82,14 +85,43 @@ export class ListChartViewModel extends ViewModel<any> {
                 extras: {
                    // access: d.accessLevels
                 },
-                visible: true
-            };
+                visible: true,
+                type: 'chart'
+            });
         });
 
     }
 
+    setMapsList(maps: any[]) {
+        if (this._chartsItemList.length > 0) {
+            this._chartsItemList = this._chartsItemList.filter( c => c.type !== 'map');
+        }
+        this._mapsItemList = maps.map(c => {
+            return {
+                id: c._id,
+                imagePath: '../../../assets/img/charts/others/map.png',
+                title: c.title,
+                subtitle: c.subtitle,
+                extras: {
+                   // access: d.accessLevels
+                },
+                visible: true,
+                type: 'map'
+            };
+        });
+        this._mapsItemList.map(m => this._chartsItemList.push(m) );
+    }
+
     get chartsList() {
         return this._chartsItemList;
+    }
+
+    set chartsList(item: any) {
+        this._chartsItemList = item;
+    }
+
+    get mapsLists() {
+        return this._mapsItemList;
     }
 
 }

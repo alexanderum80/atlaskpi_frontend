@@ -93,6 +93,12 @@ export interface ListChartsQueryResponse {
   };
 }
 
+export interface ListMapsQueryResponse {
+  listMaps: {
+      data: any[]
+  };
+}
+
 export interface DateRange {
   from: string;
   to: string;
@@ -140,7 +146,7 @@ export interface IChartFormValues {
   tooltipEnabled: boolean;
   predefinedTooltipFormat?: string;
   seriesDataLabels: boolean;
-  //gridlines
+  // gridlines
   gridLineWidth?: number;
 
 }
@@ -275,7 +281,7 @@ export class ChartModel {
         }
       }
       proxyChartModel.chartDefinition.invertAxis = {enabled: fg.value.invertedAxis || false};
-      //removegridlines
+      // removegridlines
       if (proxyChartModel.chartDefinition.yAxis) {
         proxyChartModel.chartDefinition.yAxis.gridLineWidth = fg.value.removeGridlines ? 0 : 1;
       }
@@ -323,7 +329,7 @@ export class ChartModel {
         tooltipEnabled: this.isTooltipEnabled,
         predefinedTooltipFormat: this.predefinedTooltipDefinition,
         seriesDataLabels: this.isSerieDataLabelsEnabled,
-        //remove gridlines
+        // remove gridlines
         gridLineWidth: this.removeGridlines
             };
     }
@@ -363,7 +369,7 @@ export class ChartModel {
       }
       return undefined;
     }
-    //gridlines
+    // gridlines
     get removeGridlines(): number {
       if (this.chartDefinition.yAxis && (this.chartDefinition.yAxis.gridLineWidth >= 0)) {
       return  this.chartDefinition.yAxis.gridLineWidth;

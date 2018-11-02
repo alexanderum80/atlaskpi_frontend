@@ -1,32 +1,24 @@
-import { isString } from 'lodash';
-import { map } from 'rxjs/operators';
+import { ListMapsQueryResponse } from './../../maps/shared/models/map.models';
 import { IItemListActivityName } from './../../shared/interfaces/item-list-activity-names.interface';
 import { IModalError } from './../../shared/interfaces/modal-error.interface';
 import { IMutationResponse } from './../../shared/interfaces/mutation-response.interface';
 import { IActionItemClickedArgs } from './../../shared/ui/lists/item-clicked-args';
 import { CommonService } from '../../shared/services/common.service';
-import { AutoUnsubscribe } from '../../data-source/shared/auto-unsubscribe';
 import { ListChartViewModel } from './list-chart.viewmodel';
 import { UserService } from '../../shared/services/user.service';
 import { Observable } from 'rxjs/Observable';
 import { ListChartService } from '../shared/services/list-chart.service';
 import { Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
-import { Component, OnDestroy, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { FormatterFactory } from '../../dashboards/shared/extentions/chart-formatter.extention';
 import { IChart, ListChartsQueryResponse } from '../shared/models';
 import { AddChartActivity } from '../../shared/authorization/activities/charts/add-chart.activity';
 import { Activity } from '../../shared/authorization/decorators/component-activity.decorator';
 import { ViewChartActivity } from '../../shared/authorization/activities/charts/view-chart.activity';
 import { Subscription } from 'rxjs/Subscription';
-import { ScrollEvent } from 'ngx-scroll-event';
 import { BrowserService } from '../../shared/services/browser.service';
-import { IMap } from '../../maps/shared/models/map.models';
-import { ILegendColorConfig } from '../../maps/show-map/show-map.component';
-import { LegendService } from '../../maps/shared/legend.service';
-import { objectWithoutProperties } from '../../shared/helpers/object.helpers';
-import { DeleteChartMutation } from '../shared/graphql';
+import { DeleteChartMutation, DeleteMapMutation } from '../shared/graphql';
 import { RemoveConfirmationComponent } from '../../shared/ui/remove-confirmation/remove-confirmation.component';
 import { ErrorComponent } from '../../shared/ui/error/error.component';
 import { DialogResult } from '../../shared/models/dialog-result';
@@ -54,6 +46,7 @@ export class ListChartComponent implements OnInit, OnDestroy {
     @ViewChild(ErrorComponent) errorModal: ErrorComponent;
 
     charts: IChart[] = [];
+    maps: any[] = [];
     fg: FormGroup = new FormGroup({});
 
     inspectorOpen$: Observable<boolean>;
@@ -64,6 +57,7 @@ export class ListChartComponent implements OnInit, OnDestroy {
 
     lastError: IModalError;
     selectedChartId: string;
+    selectedType: string;
 
 
     constructor(private _apollo: Apollo,
@@ -89,6 +83,7 @@ export class ListChartComponent implements OnInit, OnDestroy {
         }
 
     ngOnInit() {
+        this._subscribeToListOfMaps();
         this._subscribeToListOfCharts();
         this.inspectorOpen$ = this._svc.inspectorOpen$;
         this.vm.addActivities([this.addChartActivity, this.modifyChartActivity, this.deleteChartActivity]);
@@ -120,6 +115,22 @@ export class ListChartComponent implements OnInit, OnDestroy {
             if (response && response.data.listCharts.data.length) {
                 that.charts = response.data.listCharts.data;
                 this.vm.setChartsList(this.charts);
+                const cdcd = this.vm.chartsList;
+            }
+        }));
+    }
+
+    private _subscribeToListOfMaps() {
+        const that = this;
+        this._subscription.push(this._apollo.watchQuery <ListMapsQueryResponse> ({
+            query: ListMapsQuery,
+            fetchPolicy: 'network-only'
+        })
+        .valueChanges.subscribe(response => {
+            if (response && response.data.listMaps) {
+                const asa: any[] = <any>response.data.listMaps;
+                that.maps = asa.map( m => JSON.parse(m));
+                this.vm.setMapsList(that.maps);
             }
         }));
     }
@@ -127,34 +138,35 @@ export class ListChartComponent implements OnInit, OnDestroy {
     actionClicked(item: IActionItemClickedArgs) {
         switch (item.action.id) {
             case 'edit':
-                this.edit(item.item.id);
+                this.edit(item.item);
                 break;
             case 'delete':
-                this.delete(item.item.id);
+                this.delete(item.item);
                 break;
             case 'clone':
-                this.clone(item.item.id);
+                this.clone(item.item);
                 break;
         }
     }
 
     editClickedList($event) {
         if ($event.itemType === 'standard') {
-            this.edit($event.item.id);
+            this.edit($event.item);
         }
         return;
     }
 
-    edit(chartId) {
-        this._router.navigate(['/charts/edit', chartId]);
+    edit(item: any) {
+        this._router.navigate(['/charts/edit', item.id, item.type]);
     }
 
-    clone(chartId) {
-    this._router.navigate(['/charts/clone', chartId]);
+    clone(item: any) {
+        this._router.navigate(['/charts/clone', item.id, item.type]);
     }
 
-    delete(chartId) {
-        this.selectedChartId = chartId;
+    delete(item: any) {
+        this.selectedChartId = item.id;
+        this.selectedType = item.type;
         this.removeConfirmModal.open();
     }
 
@@ -171,6 +183,15 @@ export class ListChartComponent implements OnInit, OnDestroy {
 
     confirmRemove() {
         const that = this;
+        if (this.selectedType === 'chart') {
+            this.deleteChart();
+        } else {
+            this.deleteMap();
+        }
+    }
+
+    deleteChart() {
+        const that = this;
         this._subscription.push(
             this._apollo.mutate<IDeleteChartResponse>({
                 mutation: DeleteChartMutation,
@@ -182,13 +203,46 @@ export class ListChartComponent implements OnInit, OnDestroy {
                 const { success, errors } = deleteChart;
 
                 this.removeConfirmModal.close();
-
+                if (success) {
+                    that.vm.chartsList = that.vm.chartsList.filter(c => c.id !== this.selectedChartId);
+                }
                 if (!success && errors && errors.length) {
                     const dependency = errors.find(e => e.field === '__isDependencyOf');
                     that.lastError = {
                         title: 'Error removing chart',
                         msg: 'A chart cannot be remove while it\'s being used. ' +
                                 'The following element(s) are currently using this chart: ',
+                        items: dependency.errors
+                    };
+                    that.errorModal.open();
+                    return;
+                }
+            })
+        );
+    }
+
+    deleteMap() {
+        const that = this;
+        this._subscription.push(
+            this._apollo.mutate<IDeleteChartResponse>({
+                mutation: DeleteMapMutation,
+                variables: { id: this.selectedChartId },
+                refetchQueries: ['ListMapsQuery']
+            })
+            .subscribe(response => {
+                const { deleteMap } = response.data;
+                const { success, errors } = deleteMap;
+
+                this.removeConfirmModal.close();
+                if (success) {
+                    that.vm.chartsList = that.vm.chartsList.filter(c => c.id !== this.selectedChartId);
+                }
+                if (!success && errors && errors.length) {
+                    const dependency = errors.find(e => e.field === '__isDependencyOf');
+                    that.lastError = {
+                        title: 'Error removing map',
+                        msg: 'A map cannot be remove while it\'s being used. ' +
+                                'The following element(s) are currently using this map: ',
                         items: dependency.errors
                     };
                     that.errorModal.open();

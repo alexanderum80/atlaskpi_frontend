@@ -48,24 +48,29 @@ export class CloneChartComponent implements AfterViewInit, OnDestroy {
 
     ngAfterViewInit() {
       const that = this;
-      this._subscription.push(this._route.params
-          .switchMap((params: Params) => that._getChartByIdApolloQuery(params['id']).valueChanges)
-          .subscribe((response: ApolloQueryResult<any>) => {
-            if (response.data.chart) {
-                setTimeout(() => {
-                    that._processChartResponse(response);
-                }, 500);
-            }
-      }));
-      this._subscription.push(this._route.params
-        .switchMap((params: Params) => that._getMapByIdApolloQuery(params['id']).valueChanges)
-        .subscribe((response: ApolloQueryResult<any>) => {
-          if (response.data.map) {
-              setTimeout(() => {
-                  that._processMapResponse(response);
-              }, 500);
-          }
-    }));
+      this._route.params.subscribe(param => {
+        if (param['chartType'] === 'chart') {
+            this._subscription.push(this._route.params
+                .switchMap((params: Params) => that._getChartByIdApolloQuery(params['id']).valueChanges)
+                .subscribe((response: ApolloQueryResult<any>) => {
+                  if (response.data.chart) {
+                      setTimeout(() => {
+                          that._processChartResponse(response);
+                      }, 500);
+                  }
+            }));
+        } else if (param['chartType'] === 'map') {
+            this._subscription.push(this._route.params
+                .switchMap((params: Params) => that._getMapByIdApolloQuery(params['id']).valueChanges)
+                .subscribe((response: ApolloQueryResult<any>) => {
+                  if (response.data.map) {
+                      setTimeout(() => {
+                          that._processMapResponse(response);
+                      }, 500);
+                  }
+            }));
+        }
+      });
     }
 
     onChartFormEvent($event: DialogResult) {
@@ -99,12 +104,12 @@ export class CloneChartComponent implements AfterViewInit, OnDestroy {
         .then(response => {
             if (response.data.createChart.success) {
                 this._router.navigateByUrl('/charts/list');
-            };
+            }
 
             if (response.data.createChart.errors) {
                 // perform an error message
                 console.dir(response.data.createChart.errors);
-            };
+            }
         })
         .catch(err => console.log(err));
     }
