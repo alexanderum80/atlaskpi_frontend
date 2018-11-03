@@ -83,6 +83,9 @@ export class ListWidgetsComponent implements OnInit, OnDestroy {
       case 'edit':
         this._router.navigateByUrl(`/widgets/edit/${item.payload.id}`);
         break;
+      case 'clone':
+        this._router.navigateByUrl(`/widgets/clone/${item.payload.id}`);
+        break;
       case 'alert':
         this.widgetAlert.open(item.widget);
         break;

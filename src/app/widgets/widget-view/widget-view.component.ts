@@ -58,6 +58,11 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
                 icon: 'notifications',
                 title: 'Alerts'
             }, {
+                id: 'clone',
+                icon: 'copy',
+                title: 'Clone'
+            },            
+            {
                 id: 'edit',
                 icon: 'edit',
                 title: 'Edit'
@@ -234,6 +239,9 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
                 }
                 break;
             case 'alert':
+                this.done.emit(item);
+                break;
+            case 'clone':
                 this.done.emit(item);
                 break;
             case 'edit':
