@@ -9,5 +9,6 @@ query DashboardGQL($id: String!){
     maps
     owner
     users
+    order
   }
 }

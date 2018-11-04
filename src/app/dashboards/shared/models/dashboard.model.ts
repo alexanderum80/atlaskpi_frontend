@@ -9,6 +9,7 @@ export interface IDashboard {
   users: string[];
   owner?: string;
   visible?: boolean;
+  order?: number;
 }
 
 
@@ -43,20 +44,23 @@ export class Dashboard implements IDashboard {
   private _visible: boolean;
   get visible(): boolean { return this._visible; }
 
+  private _order: number;
+  get order(): number { return this._order; }
+
 
   static Create(id: string, name: string, description: string, charts: string[], widgets: string[],
                 socialwidgets: string[], maps: string[] , owner: string,
-                users: string[], visible?: boolean):
+                users: string[], visible?: boolean, order?: number):
     IDashboard {
       const instance = new Dashboard(id, name, description, charts, widgets, socialwidgets, maps,
                                      owner,
-                                     users, visible);
+                                     users, visible, order);
       return instance.name ? instance : null;
   }
 
   private constructor(id: string, name: string, description: string, charts: string[], widgets: string[],
                       socialwidgets: string[], maps: string[], owner: string,
-                      users: string[], visible?: boolean) {
+                      users: string[], visible?: boolean, order?: number) {
       if (!name || !description) {
           return;
       }
@@ -70,5 +74,6 @@ export class Dashboard implements IDashboard {
       this._users = users;
       this._owner = owner;
       this._visible = visible;
+      this._order = order;
   }
 }
