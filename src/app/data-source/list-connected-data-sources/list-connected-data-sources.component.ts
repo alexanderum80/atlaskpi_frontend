@@ -178,15 +178,15 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
             } else {
               const entity = JSON.parse(response.data.removeConnector.entity);
               if (entity && entity.length) {
-                const simpleKPI = entity.filter(s => s.type === 'simple').map(simpleResp => 'Simple KPI: ' + simpleResp.name);
-                const complexKPI = entity.filter(s => s.type === 'complex').map(complexResp => 'Complex KPI: ' + complexResp.name);
+                const dashboard = entity.filter(s => s.type === 'dashboard').map(d => 'Dashboard: ' + d.name);
+                const kpi = entity.filter(s => s.type === 'kpi').map(k => 'KPI: ' + k.name);
 
-                const listNames = [].concat(simpleKPI, complexKPI);
+                const listNames = [].concat(dashboard, kpi);
 
                 this.lastError = {
-                  title: 'Error removing Data Source',
-                  msg: 'The file cannot be removed while it\'s being used. ' +
-                          'The following element(s) are currently using this file: ',
+                  title: 'Error removing connector',
+                  msg: 'A connector cannot be removed while it\'s being used. ' +
+                        'The following element(s) are currently using it: ',
                   items: listNames
                 };
                 this.errorModal.open();

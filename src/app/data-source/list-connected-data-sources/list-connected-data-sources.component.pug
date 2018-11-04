@@ -42,10 +42,10 @@ div(layout="row", layout-wrap, layout-padding, layout-align="start start")
                         .m-b-10(layout="row", layout-padding, layout-align="center end")
                             bw-button.p-r-10(*ngIf="dataSource.getTypeString() === 'CustomTable'", title="Edit", flex-none, color="blue", icon="edit",
                                     class="normal", [block]="true", (clicked)="editDataSource(dataSource)")
-                            bw-button(*ngIf="dataSource.getActive()", flex-none, color="blue", [title]="dataSource.getDisconnectButtonTitle()", icon="delete",
-                                      class="normal", [disabled]="!vm.authorizedTo('DeleteConnectorActivity')", [block]="true", (clicked)="removeServerSideConnector(dataSource)")
-                            bw-button(*ngIf="!dataSource.getActive()", flex-none, color="red", title="Reconnect", icon="trending-up",
+                            bw-button.p-r-10(*ngIf="!dataSource.getActive()", flex-none, color="red", title="Reconnect", icon="trending-up",
                                       class="normal", [block]="true", (clicked)="reconnectDataSource(dataSource)")
+                            bw-button(flex-none, color="blue", [title]="dataSource.getDisconnectButtonTitle()", icon="delete",
+                                      class="normal", [disabled]="!vm.authorizedTo('DeleteConnectorActivity')", [block]="true", (clicked)="removeServerSideConnector(dataSource)")
 
 kpi-add-item(*ngIf="!serverSideDataSourcesEmpty", [itemViewModel]="vm", [addItemActivityName]="'AddConnectorActivity'", (onItemClicked)="addDataSource()")
 
