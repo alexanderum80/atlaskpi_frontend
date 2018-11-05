@@ -53,6 +53,7 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
     id: string;
     chartModel: ChartModel;
     mapModel: MapModel;
+    isChartOrMap = '';
     loading = true;
 
     removeTargetData: any = {};
@@ -89,7 +90,8 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
             });
         } else {
             this._route.params.subscribe(param => {
-               if (param['chartType'] === 'chart') {
+               this.isChartOrMap = param['chartType'];
+               if (this.isChartOrMap === 'chart') {
                     this._subscription.push(this._route.params
                         .do((params: Params) => that.id = params['id'])
                         .switchMap((params: Params) => that._getChartByIdApolloQuery(params['id']))
@@ -101,7 +103,7 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
                             }
                         }, 500);
                     }));
-               } else if (param['chartType'] === 'map') {
+               } else if (this.isChartOrMap === 'map') {
                 this._subscription.push(this._route.params
                     .do((params: Params) => that.id = params['id'])
                     .switchMap((params: Params) => that._getMapByIdApolloQuery(params['id']))
@@ -135,7 +137,7 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
                         break;
 
           case DialogResult.SAVE:
-            if (MapModel) {
+            if (this.isChartOrMap === 'map') {
                 return this.updateMap();
             } else {
                 return this.updateChart();
@@ -178,7 +180,6 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
             .then(response => {
                 if (response.data.updateChart.success) {
                     this.exitEditChart();
-                    // this._router.navigateByUrl('/charts/list');
                 }
 
                 if (response.data.updateChart.errors) {
@@ -221,7 +222,7 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
             .toPromise()
             .then(response => {
                 if (response.data.updateMap.success) {
-                    this._router.navigateByUrl('/charts/list');
+                    this.exitEditChart();
                 }
 
                 if (response.data.updateMap.errors) {

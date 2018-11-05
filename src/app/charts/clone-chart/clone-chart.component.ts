@@ -32,6 +32,7 @@ export class CloneChartComponent implements AfterViewInit, OnDestroy {
     map: any;
     chartModel: ChartModel;
     mapModel: MapModel;
+    isChartOrMap = '';
     loading = true;
 
     private _chartModel: IChart;
@@ -49,7 +50,8 @@ export class CloneChartComponent implements AfterViewInit, OnDestroy {
     ngAfterViewInit() {
       const that = this;
       this._route.params.subscribe(param => {
-        if (param['chartType'] === 'chart') {
+        this.isChartOrMap = param['chartType'];
+        if (this.isChartOrMap === 'chart') {
             this._subscription.push(this._route.params
                 .switchMap((params: Params) => that._getChartByIdApolloQuery(params['id']).valueChanges)
                 .subscribe((response: ApolloQueryResult<any>) => {
@@ -59,7 +61,7 @@ export class CloneChartComponent implements AfterViewInit, OnDestroy {
                       }, 500);
                   }
             }));
-        } else if (param['chartType'] === 'map') {
+        } else if (this.isChartOrMap === 'map') {
             this._subscription.push(this._route.params
                 .switchMap((params: Params) => that._getMapByIdApolloQuery(params['id']).valueChanges)
                 .subscribe((response: ApolloQueryResult<any>) => {
@@ -79,7 +81,7 @@ export class CloneChartComponent implements AfterViewInit, OnDestroy {
                return this._router.navigateByUrl('/charts');
 
           case DialogResult.SAVE:
-            if (this.chartModel) {
+            if (this.isChartOrMap === 'chart') {
                return this.cloneChart();
             } else {
                 return this.cloneMap();
