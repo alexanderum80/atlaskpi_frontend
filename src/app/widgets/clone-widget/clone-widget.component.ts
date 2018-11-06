@@ -7,6 +7,7 @@ import { ApolloQueryResult } from 'apollo-client/core/types';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import Sweetalert from 'sweetalert2';
+import * as moment from 'moment';
 
 import { CloneWidgetActivity } from '../../shared/authorization/activities/widgets/clone-widget.activity';
 import { Activity } from '../../shared/authorization/decorators/component-activity.decorator';
@@ -50,6 +51,7 @@ export class CloneWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
         .switchMap((params: Params) => that._getWidgetByIdQuery(params['id']))
         .subscribe(response => {
           const data: IWidget = Object.assign({ preview: true}, response.data.widget);
+          data.name += ` (copy ${moment().format('H:mm:ss')})`;
           that._widgetFormService.loadModel(data);
           that.loading = false;
         })
