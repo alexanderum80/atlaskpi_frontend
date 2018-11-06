@@ -11,6 +11,7 @@ import { sortBy } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 import {objectWithoutProperties} from '../../shared/helpers/object.helpers';
 import {CommonService} from '../../shared/services/common.service';
+import { Store } from 'src/app/shared/services';
 
 const mapMarkerQuery = require('graphql-tag/loader!./map-markers.query.gql');
 
@@ -279,7 +280,12 @@ export class ShowMapComponent implements OnChanges, OnDestroy {
 
     private _subscription: Subscription[] = [];
 
-    constructor(private _apollo: Apollo) {}
+    constructor(private _apollo: Apollo,
+                private _store: Store) {
+                    this._store.changes$.subscribe(
+                        (state) => this.checkAppTheme(state)
+                    )
+                }
 
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
@@ -358,5 +364,17 @@ export class ShowMapComponent implements OnChanges, OnDestroy {
                 m.iconUrl = `assets/img/maps/${m.color}-pin.png`;
             }
         });
+    }
+
+    checkAppTheme(state){
+
+        // Check theme in app state
+        debugger;
+        console.log(state);
+    if(state.theme == 'dark'){
+            this.style = this.style_dark;
+        }else{
+            this.style = []; 
+        }
     }
 }
