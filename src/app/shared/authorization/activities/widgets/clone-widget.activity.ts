@@ -10,7 +10,7 @@ import { Injectable } from '@angular/core';
 export class CloneWidgetActivity extends BaseActivity implements IActivity {
     name = 'CloneWidgetActivity';
 
-    private _permissions = getPermissions(SubjectEnum.widget, [ActionsMap.Modify]);
+    private _permissions = getPermissions(SubjectEnum.widget, [ActionsMap.Clone]);
 
     check(user: IUserInfo): boolean {
         return this.hasAllPermissions(user, this._permissions);
