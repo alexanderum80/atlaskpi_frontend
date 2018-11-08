@@ -35,6 +35,8 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     @Input() legendColors: ILegendColorConfig[];
     @Input() legendClosed = false;
     @Input() Height = '400px';
+    @Input() showSettingsBtn = true;
+    @Input() showLegendBtn = true;
     @ViewChild('showMapForm') private _form: ShowMapFormComponent;
 
     lat: number;

@@ -1,6 +1,6 @@
 
-.show-map-container.z-depth-1.bgm-white(layout="column", layout-padding)
-    .legend-settings-btn
+.show-map-container.bgm-white(layout="column", layout-padding)
+    .legend-settings-btn(*ngIf="showSettingsBtn")
         bw-button(color="white", icon="settings", (clicked)="showMapSettings()")
     
     .legend-settings.z-depth-1.bgm-white(*ngIf="showingMapSettings")
@@ -43,7 +43,7 @@
                             small &nbsp; &nbsp; {{ list.groupName }} : {{ list.amount | currency}}
                         div.t-bold.m-t-5 Total: {{ m.value | currency }}
 
-    .legend-button
+    .legend-button(*ngIf="showLegendBtn")
         bw-button(color="white", title="Legend", (clicked)="showLegend()")
 
     .legend.z-depth-1.bgm-white(*ngIf="showingLegend", class="{{legendEffect}}")
