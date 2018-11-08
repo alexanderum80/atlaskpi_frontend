@@ -6,9 +6,12 @@ kpi-widget-alert(#widgetAlert)
 
 //- Big widgets
 div(layout="column", layout-padding, *ngIf="!bigWidgetsCollectionEmpty")
-    h2(flex) Size: Big
+    div(layout="column", layout-gt-xs="row")
+        h2.m-t-15(flex) Size: Big
+        .search-bar([formGroup]="fgs")
+            input.search-bar(formControlName="search", placeholder="Type to filter...", type="text")
     div(layout="row", layout-wrap, layout-padding)
-        div(*ngFor="let bigWidget of bigWidgets", 
+        div(*ngFor="let bigWidget of filteredItemsBig", 
             flex-xs="100",
             flex-sm="50",
             flex-lg="25")
@@ -19,7 +22,7 @@ div(layout="column", layout-padding, *ngIf="!bigWidgetsCollectionEmpty")
 div(layout="column", layout-padding, *ngIf="!smallWidgetsCollectionEmpty")
     h2.flex Size: Small
     .h-auto(layout="row", layout-wrap, layout-padding)
-        div(*ngFor="let smallWidget of smallWidgets",
+        div(*ngFor="let smallWidget of filteredItemsSmall",
             flex-xs="50",
             flex-sm="25",
             flex-lg="12-5")
