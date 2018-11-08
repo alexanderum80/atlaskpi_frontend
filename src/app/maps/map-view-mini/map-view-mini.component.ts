@@ -17,8 +17,10 @@ export class MapViewMiniComponent implements OnInit, OnDestroy {
     @Input() legendColors: ILegendColorConfig[];
     @Input() allowSelected = true;
     @Input() padded = true;
-    @Input() showSettingsBtn = true;
+    //hiding this until fully functional    
+    @Input() showSettingsBtn = false;
     @Input() showLegendBtn = true;
+    @Input() Height: string = '400px';
 
     selected$: Observable<any>;
     inspectorOpen$: Observable<boolean>;

@@ -35,13 +35,13 @@
                     agm-info-window(*ngIf="!isMapMarkerGrouping")
                         div([ngClass]="'c-' + m.color") Zip Code: {{ m.name }}
                         div(*ngIf="m.groupingName") {{ m.groupingName }}
-                        strong Total: {{ m.value | currency }}
+                        strong Total: {{ m.value | number: '1.1-2' }}
 
                     agm-info-window(*ngIf="isMapMarkerGrouping")
                         div.m-b-5.t-bold([ngClass]="'c-' + m.color") Zip Code: {{ m.name }}
                         div(*ngFor="let list of m.itemList; let idx = index")
                             small &nbsp; &nbsp; {{ list.groupName }} : {{ list.amount | currency}}
-                        div.t-bold.m-t-5 Total: {{ m.value | currency }}
+                        div.t-bold.m-t-5 Total: {{ m.value | number: '1.1-2' }}
 
     .legend-button(*ngIf="showLegendBtn")
         bw-button(color="white", title="Legend", (clicked)="showLegend()")
