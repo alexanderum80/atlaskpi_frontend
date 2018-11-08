@@ -9,8 +9,6 @@
     margin: 4px;
     padding: 2px;
     agm-map {
-        height: 400px;
-
         .gm-style-pbt {
             color: white;
             font-size: 28px;
@@ -29,7 +27,7 @@
         top: 10px;
         left: 10px;
         text-align: center;
-        transform: scale(1.4);
+        transform: scale(1.2);
     }
     .legend {
         position: absolute;

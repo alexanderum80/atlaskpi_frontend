@@ -1,3 +1,4 @@
+import { map } from 'rxjs/operators';
 import { filter } from 'rxjs/operators';
 import { IMutationError, IMutationResponse } from '../../shared/interfaces/mutation-response.interface';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
@@ -38,6 +39,7 @@ export interface IMap {
 const dashboardByNameQuery = require('graphql-tag/loader!../shared/graphql/dashboard-by-name.gql');
 const dashboardsQuery = require('graphql-tag/loader!../shared/graphql/all-dashboard.query.gql');
 const socialwidgetsQuery = require('graphql-tag/loader!../dashboard-show/social-widgets.query.gql');
+const ListMapsQuery = require('graphql-tag/loader!../../charts/shared/graphql/list-maps.query.gql');
 
 @Component({
   selector: 'kpi-dashboard-form',
@@ -63,7 +65,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
   mapsLoading = true;
   allWidgets: IWidget[] = [];
   allSocialWidgets: SocialWidgetBase[] = [];
-  allMaps: IMap[] = [];
+  allMaps: any[] = [];
   allCharts: IChart[] = [];
 
   filterList: SelectionItem[] = [];
@@ -307,12 +309,19 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private _loadMaps(options = { updateSelection: true }) {
     this.mapsLoading = true;
-    this.allMaps = [{
-        _id: '1',
-        imgpath: '/assets/img/datasources/mapa.logo.png'
-      }];
-    this.mapsLoading = false;
-    if (options.updateSelection) {  this._updateMapSelection(); }
+    this._apollo.query<any> ({
+      query: ListMapsQuery,
+      fetchPolicy: 'network-only'
+    })
+    .toPromise()
+    .then(response => {
+      this.allMaps = response.data.listMaps.map(m => JSON.parse(m));
+      this.allMaps.forEach(m => {
+        m.markers = m.markers.map(mk => objectWithoutProperties(mk, ['__typename']));
+      });
+      this.mapsLoading = false;
+      if (options.updateSelection) {  this._updateMapSelection(); }
+    });
   }
 
   private _loadCharts(options = { updateSelection: true }): Promise<any> {
@@ -435,7 +444,6 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
               confirmButtonText: 'Ok'
           });
       }
-
       const dashboardPayload = {
         name: that.dashboardModel.name.trim(),
         description: that.dashboardModel.description,
@@ -651,7 +659,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     if (!this.rawDashboard || !this.rawDashboard.maps) { return; }
     const that = this;
     this.allMaps.forEach(m => {
-      const initialMapsSelection = (<any>that.rawDashboard.maps);
+      const initialMapsSelection = (<any>that.rawDashboard.maps).map(mw => JSON.parse(mw)._id);
       if (initialMapsSelection.includes(m._id)) {
         that.toggleMapSelection(m);
       }

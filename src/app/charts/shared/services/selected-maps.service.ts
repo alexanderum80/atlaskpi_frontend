@@ -2,30 +2,27 @@ import { Injectable } from '@angular/core';
 import { pull } from 'lodash';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-
 import { IUser } from '../../../users/shared/models';
-import { IChart } from '../models';
 import { IMap } from '../../../maps/shared/models/map.models';
 
 @Injectable()
-export class SelectedChartsService {
-  private _selectionSubject = new BehaviorSubject<IChart>(null);
+export class SelectedMapsService {
+  private _selectionSubject = new BehaviorSubject<IMap>(null);
 
   private _inspectorOpenSubject = new BehaviorSubject<boolean>(false);
 
   private _selectUsersSubject = new BehaviorSubject<IUser>(null);
 
   private selectedArray: string[] = [];
-
   private usersArray: string[] = [];
 
   private _existDuplicatedName: boolean;
 
-  get selected$(): Observable<IChart> {
+  get selected$(): Observable<IMap> {
     return this._selectionSubject.asObservable();
   }
 
-  get selectedCharts() {
+  get selectedMaps() {
     return this.selectedArray;
   }
 
@@ -45,7 +42,7 @@ export class SelectedChartsService {
     return this._existDuplicatedName;
   }
 
-  setActive(item: IChart) {
+  setActive(item: IMap) {
     if (!item) {
       return;
     }
@@ -53,12 +50,12 @@ export class SelectedChartsService {
     this._selectionSubject.next(item);
   }
 
-  updateSelected(chart: string) {
-    if (this.selectedArray.find(a => a === chart)) {
-      pull(this.selectedArray, chart);
+  updateSelected(map: string) {
+    if (this.selectedArray.find(a => a === map)) {
+      pull(this.selectedArray, map);
     } else {
-      if (chart !== null) {
-        this.selectedArray.push(chart);
+      if (map !== null) {
+        this.selectedArray.push(map);
       }
     }
   }
@@ -77,8 +74,8 @@ export class SelectedChartsService {
     this._existDuplicatedName = exist;
   }
 
-  setSelectedCharts(chart: string) {
-    this.selectedArray.push(chart);
+  setSelectedMaps(map: string) {
+    this.selectedArray.push(map);
   }
 
   clearSelectedCharts() {

@@ -7,4 +7,5 @@ export interface IListItem {
     extras?: any;
     visible?: boolean;
     selected?: boolean;
+    type?: string;
 }

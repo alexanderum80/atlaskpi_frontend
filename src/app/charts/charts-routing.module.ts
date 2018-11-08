@@ -18,8 +18,8 @@ const routes: Routes = [
         { path: 'list', component: ListChartComponent, canActivate: [ AuthGuard ] },
         { path: 'new', component: NewChartComponent, canActivate: [ AuthGuard ] },
         { path: 'test', component: ChartTestComponent, canActivate: [ AuthGuard ] },
-        { path: 'edit/:id', component: EditChartComponent, canActivate: [ AuthGuard ] },
-        { path: 'clone/:id', component: CloneChartComponent, canActivate: [ AuthGuard ] },
+        { path: 'edit/:id/:chartType', component: EditChartComponent, canActivate: [ AuthGuard ] },
+        { path: 'clone/:id/:chartType', component: CloneChartComponent, canActivate: [ AuthGuard ] },
     ]
   }
 ];

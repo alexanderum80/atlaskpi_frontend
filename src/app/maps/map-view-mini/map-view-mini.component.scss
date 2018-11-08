@@ -1,0 +1,26 @@
+.mini-chart-title {
+    font-size: 0.9em;
+    font-weight: normal;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.marker {
+    color: white;
+    position: absolute;
+    bottom: 0;
+    display: block;
+    text-align: center;
+    opacity: 0.8;
+    padding: 15px;
+    min-height: 40px;
+    background-color: #324366;
+    width: 100%;
+}
+
+.checked {
+    font-size: 1.7em !important;
+    vertical-align: middle;
+}
+
