@@ -11,6 +11,8 @@ import { sortBy } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 import {objectWithoutProperties} from '../../shared/helpers/object.helpers';
 import {CommonService} from '../../shared/services/common.service';
+import { Store } from 'src/app/shared/services';
+import { style_dark } from './dark-map-styles';
 
 const mapMarkerQuery = require('graphql-tag/loader!./map-markers.query.gql');
 
@@ -42,6 +44,8 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
 
     lat: number;
     lng: number;
+    style = [];
+
     showingLegend = true;
 
     showingMapSettings = false;
@@ -49,7 +53,12 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
 
     private _subscription: Subscription[] = [];
 
-    constructor(private _apollo: Apollo) {}
+    constructor(private _apollo: Apollo,
+                private _store: Store) {
+                    this._store.changes$.subscribe(
+                        (state) => this.checkAppTheme(state)
+                    )
+                }
 
     ngOnInit() {
         this.showingLegend = !this.legendClosed;
@@ -130,5 +139,15 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
                 m.iconUrl = `assets/img/maps/${m.color}-pin.png`;
             }
         });
+    }
+
+    checkAppTheme(state){
+        // Check theme in app state
+        console.log(state);
+    if(state.theme == 'dark'){
+            this.style = style_dark;
+        }else{
+            this.style = []; 
+        }
     }
 }
