@@ -18,7 +18,7 @@
                 flex-gt-md="25")
                 kpi-social-widget.pointer-cursor([socialWidget]="sw")
     
-    .Maps(*ngIf="showMap", layout="column", flex="100")
+    .Maps(*ngIf="showMap", layout="column", layout-padding, flex="100")
         div(*ngFor="let mapMarkers of bigMaps",flex)
             kpi-map-view-big.pointer-cursor([item]="mapMarkers", [allowSelected]="false",[padded]="false", [legendColors]="legendColors")
     
