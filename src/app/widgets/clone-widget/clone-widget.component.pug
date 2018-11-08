@@ -1,0 +1,6 @@
+.z-depth-1.bgm-white.m-10.p-10(layout="column", layout-padding)
+    div(layout="row", layout-align="center center", *ngIf="loading")
+        div(flex="45")
+        bw-preloader(flex, color="gray")
+    div(*ngIf="!loading", flex)
+        kpi-widget-form.animated.fadeIn((formResult)="onWidgetFormEvent($event)", [fg]="fg", [widgetId]="widgetId")

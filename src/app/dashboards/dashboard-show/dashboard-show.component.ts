@@ -196,6 +196,9 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             case 'edit':
                 this._router.navigateByUrl(`/widgets/edit/${item.payload.id}`);
                 break;
+            case 'clone':
+                this._router.navigateByUrl(`/widgets/clone/${item.payload.id}`);
+                break;
             case 'delete':
                 this._removeWidget(item.payload.id);
                 break;

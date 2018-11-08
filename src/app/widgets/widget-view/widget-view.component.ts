@@ -14,6 +14,7 @@ import { IWidget } from '../shared/models/widget.models';
 import {WidgetViewViewModel} from './widget-view.viewmodel';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs/Subscription';
+import { CloneWidgetActivity } from 'src/app/shared/authorization/activities/widgets/clone-widget.activity';
 
 const Highcharts = require('highcharts/js/highcharts');
 const alertByWidgetIdGql = require('graphql-tag/loader!./alert-by-widget-id.query.gql');
@@ -22,7 +23,7 @@ const alertByWidgetIdGql = require('graphql-tag/loader!./alert-by-widget-id.quer
     selector: 'kpi-widget-view',
     templateUrl: './widget-view.component.pug',
     styleUrls: ['./widget-view.component.scss'],
-    providers: [WidgetViewViewModel,
+    providers: [WidgetViewViewModel, CloneWidgetActivity,
                 UpdateWidgetActivity, DeleteWidgetActivity]
 })
 export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
@@ -58,6 +59,11 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
                 icon: 'notifications',
                 title: 'Alerts'
             }, {
+                id: 'clone',
+                icon: 'copy',
+                title: 'Clone'
+            },            
+            {
                 id: 'edit',
                 icon: 'edit',
                 title: 'Edit'
@@ -74,7 +80,8 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         private _apollo: Apollo,
         public vm: WidgetViewViewModel,
         public updateWidgetActivity: UpdateWidgetActivity,
-        public deleteWidgetActivity: DeleteWidgetActivity
+        public deleteWidgetActivity: DeleteWidgetActivity,
+        public cloneWidgetActivity: CloneWidgetActivity,
     ) {}
 
     ngOnChanges(changes: SimpleChanges) {
@@ -107,7 +114,9 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnInit() {
-        this.vm.addActivities([this.updateWidgetActivity, this.deleteWidgetActivity]);
+        this.vm.addActivities([this.updateWidgetActivity, 
+                                this.deleteWidgetActivity, 
+                                this.cloneWidgetActivity]);
         this._disabledActionItem();
         this._widgetHasAlerts();
     }
@@ -200,6 +209,9 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
                     if (item.id === 'delete') {
                         item.disabled = this._deleteWidgetPermission();
                     }
+                    if (item.id === 'clone') {
+                        item.disabled = this._cloneWidgetPermission();
+                    }
                 });
             }
         }
@@ -213,6 +225,11 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
     // check if user have permission to delete widget
     private _deleteWidgetPermission() {
         return !this.vm.authorizedTo('DeleteWidgetActivity');
+    }
+
+    // check if user have permission to clone widget
+    private _cloneWidgetPermission() {
+        return !this.vm.authorizedTo('CloneWidgetActivity');
     }
 
     saveInstance(chartInstance: Highcharts.Chart) {
@@ -234,6 +251,9 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
                 }
                 break;
             case 'alert':
+                this.done.emit(item);
+                break;
+            case 'clone':
                 this.done.emit(item);
                 break;
             case 'edit':
