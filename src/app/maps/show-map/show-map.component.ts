@@ -143,7 +143,6 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
 
     checkAppTheme(state){
         // Check theme in app state
-        console.log(state);
     if(state.theme == 'dark'){
             this.style = style_dark;
         }else{
