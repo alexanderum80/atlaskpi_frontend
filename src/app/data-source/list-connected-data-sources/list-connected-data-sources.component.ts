@@ -35,6 +35,7 @@ import { ApolloService } from '../../shared/services/apollo.service';
 import * as moment from 'moment';
 import { ModalComponent } from 'src/app/ng-material-components/modules/user-interface/modal/modal.component';
 import { IModalError } from 'src/app/shared/interfaces/modal-error.interface';
+import { ErrorComponent } from 'src/app/shared/ui/error/error.component';
 
 const ServerSideConnectorsQuery = require('graphql-tag/loader!./list-server-side-connectors.query.gql');
 const RemoveServerSideConnectorQuery = require('graphql-tag/loader!./remove-server-side-connector.mutation.gql');
@@ -56,7 +57,7 @@ export interface IConnectorDetail {
 export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
   @ViewChild(CallRailComponent) callRailComponent: CallRailComponent;
   @ViewChild(CustomComponent) customComponent: CustomComponent;
-  @ViewChild('errorModal') errorModal: ModalComponent;
+  @ViewChild(ErrorComponent) errorModal: ErrorComponent;
 
   lastError: IModalError;
 
@@ -178,15 +179,15 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
             } else {
               const entity = JSON.parse(response.data.removeConnector.entity);
               if (entity && entity.length) {
-                const simpleKPI = entity.filter(s => s.type === 'simple').map(simpleResp => 'Simple KPI: ' + simpleResp.name);
-                const complexKPI = entity.filter(s => s.type === 'complex').map(complexResp => 'Complex KPI: ' + complexResp.name);
+                const dashboard = entity.filter(s => s.type === 'dashboard').map(d => 'Dashboard: ' + d.name);
+                const kpi = entity.filter(s => s.type === 'kpi').map(k => 'KPI: ' + k.name);
 
-                const listNames = [].concat(simpleKPI, complexKPI);
+                const listNames = [].concat(dashboard, kpi);
 
                 this.lastError = {
-                  title: 'Error removing Data Source',
-                  msg: 'The file cannot be removed while it\'s being used. ' +
-                          'The following element(s) are currently using this file: ',
+                  title: 'Error removing connector',
+                  msg: 'A connector cannot be removed while it\'s being used. ' +
+                        'The following element(s) are currently using it: ',
                   items: listNames
                 };
                 this.errorModal.open();

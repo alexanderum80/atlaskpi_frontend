@@ -14,6 +14,10 @@ import { Router } from '@angular/router';
 import { ModalComponent } from '../../ng-material-components';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { IModalError } from '../../shared/interfaces/modal-error.interface';
+import { FormGroup, FormControl } from '@angular/forms';
+import { filterSearch } from 'src/app/shared/models/search';
+
+
 
 @Activity(ViewWidgetActivity)
 @Component({
@@ -38,10 +42,15 @@ export class ListWidgetsComponent implements OnInit, OnDestroy {
 
   lastError: IModalError;
 
+   //add-search-bar
+   public fgs: FormGroup;
+   private _subscription: Subscription[] = [];
+   private _widgetItems: IWidget[];
+
   constructor(private _router: Router,
               private _apollo: Apollo,
               public vm: ListWidgetsViewModel,
-              public addWidgetActivity: AddWidgetActivity) { }
+              public addWidgetActivity: AddWidgetActivity) {}
 
   ngOnInit() {
     const that = this;
@@ -54,6 +63,7 @@ export class ListWidgetsComponent implements OnInit, OnDestroy {
     })
     .valueChanges.subscribe(res => {
       that.widgetsCollection = res.data.listWidgets || [];
+      that._widgetItems = that.widgetsCollection || [];
 
       if (that.widgetsCollection.length > 0) {
         that.bigWidgets = that.widgetsCollection.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Big);
@@ -62,6 +72,14 @@ export class ListWidgetsComponent implements OnInit, OnDestroy {
 
       that.loading = false;
     }));
+    //add-search-bar
+    this.fgs = new FormGroup({
+      search: new FormControl(null)
+    });
+    this._subscription.push(this.fgs.valueChanges.subscribe(values => {
+      this._widgetItems = filterSearch<IWidget>(this.widgetsCollection, 'name', values);
+    }));
+
   }
 
   ngOnDestroy() {
@@ -82,6 +100,9 @@ export class ListWidgetsComponent implements OnInit, OnDestroy {
     switch (item.id) {
       case 'edit':
         this._router.navigateByUrl(`/widgets/edit/${item.payload.id}`);
+        break;
+      case 'clone':
+        this._router.navigateByUrl(`/widgets/clone/${item.payload.id}`);
         break;
       case 'alert':
         this.widgetAlert.open(item.widget);
@@ -162,5 +183,14 @@ export class ListWidgetsComponent implements OnInit, OnDestroy {
   }
 
   // endregion
+ //add-search-bar
+
+  get filteredItemsBig(): IWidget[] {
+    return this._widgetItems.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Big);
+  }
+
+  get filteredItemsSmall(): IWidget[] {
+    return this._widgetItems.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Small);
+  }
 
 }

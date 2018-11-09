@@ -1,0 +1,3 @@
+query GetMapByTitle($title: String!) {
+  getMapByTitle(title: $title)
+}

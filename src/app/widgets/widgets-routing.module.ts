@@ -1,5 +1,6 @@
 import { WidgetAlertComponent } from './widget-alert/widget-alert.component';
 import { EditWidgetComponent } from './edit-widget/edit-widget.component';
+import { CloneWidgetComponent } from './clone-widget/clone-widget.component';
 import { NewWidgetComponent } from './new-widget/new-widget.component';
 import { ListWidgetsComponent } from './list-widgets/list-widgets.component';
 import { AuthGuard } from '../shared/services/auth-guard.service';
@@ -13,6 +14,7 @@ const routes: Routes = [
     [
       { path: '', component: ListWidgetsComponent, canActivate: [ AuthGuard ] },
       { path: 'new', component: NewWidgetComponent, canActivate: [ AuthGuard ] },
+      { path: 'clone/:id', component: CloneWidgetComponent, canActivate: [ AuthGuard ] },
       { path: 'edit/:id', component: EditWidgetComponent, canActivate: [ AuthGuard ]},
       { path: 'alert/:id', component: WidgetAlertComponent, canActivate: [AuthGuard] }
     ]

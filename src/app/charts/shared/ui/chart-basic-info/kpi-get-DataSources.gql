@@ -1,0 +1,3 @@
+query GetKpiDataSource($id: String!) {
+    getKpiDataSources(id: $id)
+}

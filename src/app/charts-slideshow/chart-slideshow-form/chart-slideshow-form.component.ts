@@ -11,6 +11,7 @@ import { IChart, ListChartsQueryResponse } from '../../charts/shared/models';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Component, Input, OnInit, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
+import { filterSearch } from 'src/app/shared/models/search';
 
 
 const ListChartsQuery = require('graphql-tag/loader!../shared/graphql/list-charts.query.gql');
@@ -32,10 +33,24 @@ export class ChartSlideshowFormComponent implements OnInit, OnDestroy {
   listOfChartsQuery: QueryRef<ListChartsQueryResponse>;
   allCharts: IChart[] = [];
 
-  constructor(private _apollo: Apollo, private _selectionService: GenericSelectionService) { }
+  //add-search-bar
+  public fgs: FormGroup;
+  private _subscription: Subscription[] = [];
+  private _chartItems: IChart[];
+
+  constructor(private _apollo: Apollo, private _selectionService: GenericSelectionService) {
+  }
 
   ngOnInit() {
     this._loadCharts();
+    //add-search-bar
+    this.fgs = new FormGroup({
+      search: new FormControl(null)
+    });
+    this._subscription.push(this.fgs.valueChanges.subscribe(values => {
+      this._chartItems = filterSearch<IChart>(this.allCharts, 'title', values)
+    }));
+
   }
 
   ngOnDestroy() {
@@ -53,6 +68,8 @@ export class ChartSlideshowFormComponent implements OnInit, OnDestroy {
         that.listOfChartsQuery.valueChanges.subscribe(response => {
         that.allCharts = response.data.listCharts.data;
         that._initializeForm();
+        //add-search-bar
+        that._chartItems = that.allCharts;
     }));
   }
 
@@ -105,6 +122,10 @@ export class ChartSlideshowFormComponent implements OnInit, OnDestroy {
 
   get validForm(): boolean {
     return this.fg.valid;
+  }
+// add-search-bar
+  get filteredItems(): IChart[] {
+    return this._chartItems;
   }
 
 }
