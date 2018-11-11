@@ -83,5 +83,11 @@
             "img": "/assets/img/charts/pie/donut-3d.svg",
             "configName": "donut-3d"
         }
+    ],
+	"others": [{
+            "name": "map",
+            "img": "/assets/img/charts/others/map.png",
+            "configName": "map"
+        }
     ]
 }

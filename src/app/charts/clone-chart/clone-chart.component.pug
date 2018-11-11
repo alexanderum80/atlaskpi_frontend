@@ -8,5 +8,5 @@
           div(layout="row", layout-align="center center", *ngIf="loading")
               div(flex="45")
               bw-preloader(flex, color="gray")
-          kpi-chart-form.animated.fadeIn(*ngIf="chart && !loading", [fg]="fg", [chartModel]="chartModel",
+          kpi-chart-form.animated.fadeIn(*ngIf="(chart || map) && !loading", [fg]="fg", [chartModel]="chartModel", [mapModel]="mapModel",
                                          (result)="onChartFormEvent($event)")

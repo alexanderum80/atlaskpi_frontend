@@ -21,6 +21,7 @@ import { EditDashboardComponent } from './edit-dashboard/edit-dashboard.componen
 import { MapsModule } from '../maps/maps.module';
 import { DashboardFilterFormComponent } from './shared/dashboard-filter-form/dashboard-filter-form.component';
 import { NavigationModule } from '../navigation/navigation.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
@@ -34,6 +35,7 @@ import { NavigationModule } from '../navigation/navigation.module';
     SharedModule,
     MapsModule,
     SocialWidgetsModule,
+    ReactiveFormsModule
   ],
   declarations: [DashboardsComponent, DashboardShowComponent,
      NewDashboardComponent,  ListDashboardComponent, DashboardFormComponent,

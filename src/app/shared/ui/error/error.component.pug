@@ -10,4 +10,4 @@ bw-modal(#errorModal='', animation="true", keyboard="true", backdrop="true")
                 div(*ngFor="let item of error?.items", flex)
                     strong {{item}}
     bw-modal-footer
-        bw-button(color="blue", title="OK", [simple]="true", icon="close", (clicked)="close()")
+        bw-button(color="blue", title="OK", icon="close", (clicked)="close()")

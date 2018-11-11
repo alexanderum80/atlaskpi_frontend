@@ -1,6 +1,9 @@
+import { IChartGalleryItem } from './../../models/chart.models';
+
+import { OnFieldChanges } from '../../../../ng-material-components/viewModels';
 import 'rxjs/add/operator/debounceTime';
 
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, OnChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { camelCase, title } from 'change-case';
@@ -33,6 +36,7 @@ import { ChartBasicInfoViewModel } from './chart-basic-info.viewmodel';
 
 
 const kpiOldestDateQuery = require('graphql-tag/loader!./kpi-get-oldestDate.gql');
+const kpiDataSourcesQuery = require('graphql-tag/loader!./kpi-get-DataSources.gql');
 
 export const RevenueGroupingList: SelectionItem[] = [
     { id: 'location', title: 'Location', selected: false, disabled: false },
@@ -44,6 +48,10 @@ export const RevenueGroupingList: SelectionItem[] = [
     { id: 'customerCity', title: 'Customer\'s CITY', selected: false, disabled: false},
     { id: 'customerZip', title: 'Customer\'s ZIP', selected: false, disabled: false},
     { id: 'customerGender', title: 'Customer\'s GENDER', selected: false, disabled: false}
+];
+export const MapsGroupingList: SelectionItem[] = [
+    { id: 'customer.zip', title: 'Customer ZIP', selected: false, disabled: false},
+    { id: 'location.zip', title: 'Location ZIP', selected: false, disabled: false}
 ];
 
 const ExpensesGroupingList = [
@@ -60,12 +68,13 @@ const kpiGroupingsQuery = require('graphql-tag/loader!./kpi-groupings.query.gql'
     templateUrl: 'chart-basic-info.component.pug',
     providers: [ ChartBasicInfoViewModel ]
 })
-export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
     @Input() fg: FormGroup;
-    @Input() kpis: IKPI[]= [];
+    @Input() kpis: IKPI[] = [];
     @Input() chartType = 'pie';
     @Input() kpiList: SelectionItem[] = [];
     @Input() dashboardList: SelectionItem[] = [];
+    @Input() isnewChartOrMap = true;
     sortingCriteriaList: SelectionItem[] = [];
     private sortingCriteriaList$: Observable <SelectionItem[]>;
     frequencyPicker: SelectPickerComponent;
@@ -73,6 +82,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
 
     lastKpiDateRangePayload: any;
     lastOldestDatePayload = '';
+    previousChartType = '';
 
     @ViewChild('frequencyPicker') set frequencyContent(content: SelectPickerComponent) {
         if (content) {
@@ -118,12 +128,27 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
     isCollapsedSorting = true;
     frequencyList: SelectionItem[] = [];
     groupingList: SelectionItem[] = [];
+    mapsizeList: SelectionItem[] = [
+        {
+            id: 'small',
+            title: 'SMALL',
+            selected: false,
+            disabled: false
+        },
+        {
+            id: 'big',
+            title: 'BIG',
+            selected: false,
+            disabled: false
+        }
+    ];
     xAxisSourceList: SelectionItem[] = [];
     topList: SelectionItem[] = [
         { id: 'other', title: 'other', selected: false, disabled: false }
     ];
 
     backupChartModel: ChartModel;
+    ischartTypeMap = false;
 
     private _subscription: Subscription[] = [];
 
@@ -147,7 +172,18 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
             format: 'MM/DD/YYYY'
         };
     }
-
+    ngOnChanges() {
+        if (this.chartType === 'map') {
+            this.ischartTypeMap = true;
+            const selectedTypeChart: IChartGalleryItem = {
+                configName: 'map',
+                img: '/assets/img/charts/others/map.png',
+                name: 'map',
+                type: 'others'
+            };
+            this._chartGalleryService.setActive(selectedTypeChart);
+        }
+    }
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
     }
@@ -207,15 +243,27 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
                 .distinctUntilChanged()
                 .debounceTime(400)
                 .subscribe((value) => {
-                const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
-                const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
-                if (value.kpi && value.predefinedDateRange && !loadingGroupings && !loadingComparison) {
-                    const payload = that._getGroupingInfoInput(value);
-                    if (isEqual(that.lastKpiDateRangePayload, payload)) { return; }
-                    that._getGroupingInfo(value);
-                    that._getOldestDate(value.kpi);
-                    that.lastKpiDateRangePayload = payload;
-                }
+                    const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
+                    const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
+                    if (value.kpi && value.predefinedDateRange && !loadingGroupings && !loadingComparison) {
+                        const payload = that._getGroupingInfoInput(value);
+                        if (isEqual(that.lastKpiDateRangePayload, payload)) { return; }
+                        that._getGroupingInfo(value);
+                        that._getOldestDate(value.kpi);
+                        that.lastKpiDateRangePayload = payload;
+                    }
+                    const kpi_id = this.fg.value.kpi;
+                    if (kpi_id !== '') {
+                        this._apolloService.networkQuery < string > (kpiDataSourcesQuery, {id: kpi_id })
+                        .then(sources => {
+                            // Enable-Disable the map type chart
+                            this._chartGalleryService.showMap = sources.getKpiDataSources[0];
+                            if (!this._chartGalleryService.showMap && this.chartType === this.previousChartType) {
+                                this.chartType = 'pie';
+                            }
+                            this.previousChartType = this.chartType;
+                        });
+                    }
         });
     }
 
@@ -248,11 +296,18 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         this._apolloService.networkQuery(kpiGroupingsQuery, { input })
             .then(data => {
                 let groupingList = [];
+                that.groupingList = [];
                 if (data || !isEmpty(data.kpiGroupings)) {
                     groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
                 }
-
-                that.groupingList = groupingList;
+                if (this.ischartTypeMap) {
+                    const exists = MapsGroupingList.map(m => {
+                        return groupingList.find(gl => gl.id === m.id);
+                    });
+                    that.groupingList = exists.filter(e => e !== undefined);
+                } else {
+                    that.groupingList = groupingList;
+                }
 
                 const currentGroupingValue = this.fg.get('grouping').value || '';
                 let nextGropingValue;
@@ -323,7 +378,15 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         const that = this;
         this._chartGalleryService.activeChart$.subscribe((chart) => {
             that.chartType = String(chart.type);
+            this.ischartTypeMap = chart.name === 'map';
+            if (this.ischartTypeMap) {
 
+                that.groupingList = MapsGroupingList;
+                that.fg.controls['grouping'].patchValue(MapsGroupingList, { emitEvent: true });
+            } else {
+                that.groupingList = [];
+                this._getGroupingInfo(chart);
+            }
             that._resetFrequencyAndSource(that.chartType);
         });
     }
