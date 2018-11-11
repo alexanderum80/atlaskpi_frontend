@@ -11,6 +11,10 @@ import { flatten, isEmpty } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 import SweetAlert from 'sweetalert2';
 import { lowerCaseFirst } from 'change-case';
+import { ApolloService } from '../../../../shared/services/apollo.service';
+import { stringify } from 'querystring';
+
+const updateUserPreference = require('graphql-tag/loader!./update-user-preference.mutation.gql');
 
 export interface ISearchArgs {
     search: string;
@@ -28,6 +32,9 @@ enum ItemActionEnum {
     styleUrls: ['./item-list.component.scss']
 })
 export class ItemListComponent implements OnInit, OnDestroy {
+
+    constructor( private _apolloService: ApolloService ) {}
+
     @Input() allowAdd = true;
 
     @Input() itemViewModel?: any;
@@ -35,6 +42,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
     @Input() itemListActivityName?: IItemListActivityName;
 
     @Input() title: string;
+    @Input() aliases: string;
     @Input()
     set items(items: IListItem[]) {
         this._items = items;
@@ -100,6 +108,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
     private _subscription: Subscription[] = [];
 
     ngOnInit() {
+
         this.fg = new FormGroup({
             search: new FormControl(null)
         });
@@ -163,12 +172,36 @@ export class ItemListComponent implements OnInit, OnDestroy {
             // standard
             case items[0].id:
                 this.itemType = 'standard';
+                this.updatePreferences(this.itemType);
                 break;
             // table
             case items[1].id:
                 this.itemType = 'table';
+                this.updatePreferences(this.itemType);
                 break;
         }
+    }
+
+    updatePreferences(itemTypeValue: string){
+        if (!itemTypeValue) { return };
+
+        const that = this;
+        const currentItemType = (itemTypeValue === 'standard') ? 'standardView' : 'tableView';
+        this._subscription.push(
+            that._apolloService.mutation < {
+            updateUserPreference: {
+                success
+            }
+            } > (updateUserPreference, {
+                id: this.itemViewModel._user._id,
+                input: {[this.aliases.toLowerCase()]: { listMode: currentItemType }}
+            })
+            .then(result => {
+                const response = result;
+                    if (response.data.updateUserPreference.success === true) {
+                      }
+            })
+        );
     }
 
     /**
@@ -226,7 +259,6 @@ export class ItemListComponent implements OnInit, OnDestroy {
     private _initializePermissions() {
         const hasActivities = Boolean(this.itemListActivityName && Object.keys(this.itemListActivityName).length);
         if (!this.itemViewModel && !hasActivities) { return; }
-
         const actionItems = flatten(this.actionItems.map(ai => ai.children));
         for (const k of Object.keys(this.itemListActivityName)) {
 

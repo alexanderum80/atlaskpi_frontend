@@ -1,11 +1,12 @@
 kpi-item-list(
     title="KPIs",
+    aliases="kpis",
     [items]="vm.kpiItems",
     [itemViewModel]="vm",
     [addItemActivityName]="'AddKpiActivity'",
     [itemListActivityName]="actionActivityNames",
     [actionItems] = "vm.menuItems",
-    itemType="table",
+    [itemType]="itemType",
     [tableRowTemplate]="tableItem",
     (onAddActionClicked)="add()",
     (onItemActionClicked)="actionClicked($event)",

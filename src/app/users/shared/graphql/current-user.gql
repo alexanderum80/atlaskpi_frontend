@@ -40,6 +40,21 @@ query User {
             providers
             calendarTimeZone
             dashboardIdNoVisible
+            dashboards {
+                listMode
+            }
+            charts {
+                listMode
+            }
+            kpis {
+                listMode
+            }
+            roles {
+                listMode
+            }
+            users {
+                listMode
+            }
         }
         profilePictureUrl
         ownerAgreed

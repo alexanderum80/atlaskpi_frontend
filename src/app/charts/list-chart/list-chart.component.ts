@@ -26,10 +26,13 @@ import { ErrorComponent } from '../../shared/ui/error/error.component';
 import { DialogResult } from '../../shared/models/dialog-result';
 import { ModifyChartActivity } from 'src/app/shared/authorization/activities/charts/modify-chart.activity';
 import { DeleteChartActivity } from 'src/app/shared/authorization/activities/charts/delete-chart.activity';
+import { IUserInfo } from '../../shared/models';
+import { ApolloService } from '../../shared/services/apollo.service';
 
 const Highcharts = require('highcharts/js/highcharts');
 
 const ListChartsQuery = require('graphql-tag/loader!../shared/graphql/list-charts.query.gql');
+const updateUserInfo = require('graphql-tag/loader!../shared/graphql/current-user.gql');
 
 interface IDeleteChartResponse {
     deleteChart: IMutationResponse;
@@ -57,9 +60,11 @@ export class ListChartComponent implements OnInit, OnDestroy {
 
     lastError: IModalError;
     selectedChartId: string;
-
+    itemType: string;
+    user: IUserInfo;
 
     constructor(private _apollo: Apollo,
+                private _apolloService: ApolloService,
                 private _router: Router,
                 private _svc: ListChartService,
                 private _userService: UserService,
@@ -74,6 +79,13 @@ export class ListChartComponent implements OnInit, OnDestroy {
                     thousandsSep: ','
                 }
             });
+            const that = this;
+            this._subscription.push(
+            this._userService.user$
+            .distinctUntilChanged()
+            .subscribe((user: IUserInfo) => {
+                that.user = user;
+            }));
             this.actionActivityNames = {
                 edit: this.modifyChartActivity.name,
                 delete: this.deleteChartActivity.name,
@@ -85,6 +97,7 @@ export class ListChartComponent implements OnInit, OnDestroy {
         this._subscribeToListOfCharts();
         this.inspectorOpen$ = this._svc.inspectorOpen$;
         this.vm.addActivities([this.addChartActivity, this.modifyChartActivity, this.deleteChartActivity]);
+        this._refresUserInfo();
     }
 
     ngOnDestroy() {
@@ -195,4 +208,14 @@ export class ListChartComponent implements OnInit, OnDestroy {
         this.selectedChartId = undefined;
         this.removeConfirmModal.close();
     }
+
+    private _refresUserInfo(refresh ?: boolean) {
+        const that = this;
+        // this.timeWait = false;
+        this._apolloService.networkQuery < IUserInfo > (updateUserInfo).then(d => {
+            this.itemType = d.User.preferences.charts.listMode === "standardView" ? 'standard' : 'table';
+            // this.timeWait = true;
+        });
+    }
+
 }
