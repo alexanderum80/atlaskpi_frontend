@@ -61,14 +61,6 @@ export class ListKpisComponent implements OnInit, OnDestroy {
 
 
         public deleteKpiActivity: DeleteKpiActivity) {
-            const that = this;
-            this._subscription.push(
-            this._userService.user$
-            .distinctUntilChanged()
-            .subscribe((user: IUserInfo) => {
-                that.user = user;
-            }));
-
             this.actionActivityNames = {
                 edit: this.updateKpiActivity.name,
                 delete: this.deleteKpiActivity.name,

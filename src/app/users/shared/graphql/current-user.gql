@@ -55,6 +55,7 @@ query User {
             users {
                 listMode
             }
+            theme
         }
         profilePictureUrl
         ownerAgreed

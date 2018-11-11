@@ -182,7 +182,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
         }
     }
 
-    updatePreferences(itemTypeValue: string){
+    private updatePreferences(itemTypeValue: string){
         if (!itemTypeValue) { return };
 
         const that = this;

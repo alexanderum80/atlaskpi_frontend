@@ -80,6 +80,7 @@ export class IUserPreference {
     users?: {
         listMode: string;
     };
+    theme?: string;
 }
 
 export interface IUserInfo {

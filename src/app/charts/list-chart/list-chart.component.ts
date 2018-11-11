@@ -79,13 +79,6 @@ export class ListChartComponent implements OnInit, OnDestroy {
                     thousandsSep: ','
                 }
             });
-            const that = this;
-            this._subscription.push(
-            this._userService.user$
-            .distinctUntilChanged()
-            .subscribe((user: IUserInfo) => {
-                that.user = user;
-            }));
             this.actionActivityNames = {
                 edit: this.modifyChartActivity.name,
                 delete: this.deleteChartActivity.name,
@@ -211,10 +204,8 @@ export class ListChartComponent implements OnInit, OnDestroy {
 
     private _refresUserInfo(refresh ?: boolean) {
         const that = this;
-        // this.timeWait = false;
         this._apolloService.networkQuery < IUserInfo > (updateUserInfo).then(d => {
             this.itemType = d.User.preferences.charts.listMode === "standardView" ? 'standard' : 'table';
-            // this.timeWait = true;
         });
     }
 
