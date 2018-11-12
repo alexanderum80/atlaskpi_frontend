@@ -79,7 +79,7 @@ export class ListKpisComponent implements OnInit, OnDestroy {
 
         }
         
-        this.itemType = this.user.preferences.charts.listMode === "standardView" ? 'standard' : 'table';
+        this.itemType = this._userService.user.preferences.kpis.listMode === "standardView" ? 'standard' : 'table';
 
         this._subscription.push(this._route.queryParams.subscribe(p => {
             if (p.refresh) {
