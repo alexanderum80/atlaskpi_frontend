@@ -1,6 +1,6 @@
 bw-card.m-b-5.p-relative(flex, [depth]="1")
     bw-card-body.box(flex, [padded]="true", (click)="setActive()")
-        div(layout="column", style="min-height: 300px;")
+        div(layout="column", style="min-height: 200px;")
             .text-center.mini-chart-title(flex) {{ item.title }}
             div(flex, layout="column")
             div(*ngIf="loading", flex, style="text-align: center")

@@ -11,6 +11,8 @@ import { WidgetsComponent } from './widgets.component';
 import { ListWidgetsComponent } from './list-widgets/list-widgets.component';
 import { NewWidgetComponent } from './new-widget/new-widget.component';
 import { EditWidgetComponent } from './edit-widget/edit-widget.component';
+import { CloneWidgetComponent } from './clone-widget/clone-widget.component';
+
 import { NoWidgetsComponent } from './no-widgets/no-widgets.component';
 import { WidgetViewComponent } from './widget-view/widget-view.component';
 import { WidgetSelectionFrameComponent } from './widget-selection-frame/widget-selection-frame.component';
@@ -35,7 +37,7 @@ import { WidgetsAlertListComponent } from './widgets-alert-list/widgets-alert-li
     ChartsModule,
     WidgetsRoutingModule
   ],
-  declarations: [WidgetsComponent, ListWidgetsComponent, NewWidgetComponent, EditWidgetComponent,
+  declarations: [WidgetsComponent, ListWidgetsComponent, NewWidgetComponent, EditWidgetComponent, CloneWidgetComponent,
                  NoWidgetsComponent, WidgetViewComponent, WidgetSelectionFrameComponent, WidgetFormComponent,
                  WidgetAlertComponent, WidgetAlertFormComponent, WidgetNoAlertsComponent, WidgetsAlertListComponent,
                  AutoRenderableWidgetComponent

@@ -15,7 +15,7 @@
             noneSelectedText="NOTHING SELECTED")
 
     #select-chart-type(flex)
-        kpi-chart-type(flex, [fg]="fg", [chartType]="chartType")
+        kpi-chart-type(flex, [fg]="fg", [chartType]="chartType", [isnewChartOrMap]="isnewChartOrMap")
 
     //- date range and frequency
     .m-10(flex, layout-gt-sm="row", layout-xs="column")
@@ -33,9 +33,11 @@
                 bw-date-picker.p-b-5(flex, [fg]="fg", field="customFrom", label="MM/DD/YYYY", [required]="true", [config]="datePickerConfig")
                 bw-date-picker(flex, [fg]="fg", field="customTo", label="MM/DD/YYYY", [required]="true", [config]="datePickerConfig")
 
+        //- empty div to accomodate view
+        div(*ngIf="ischartTypeMap", flex)
 
         //- frequency
-        #select-frequency(flex, [ngClass]="{'is-disabled': isPieChart }")
+        #select-frequency(*ngIf="!ischartTypeMap", flex, [ngClass]="{'is-disabled': isPieChart || ischartTypeMap }")
             bw-select-picker.p-l-35(flex-initial, [fg]="fg",
                 #frequencyPicker, 
                 label="Frequency",
@@ -58,8 +60,18 @@
                 [liveSearch]="true",
                 noneSelectedText="NOTHING SELECTED")
 
+        //- map size
+        #select-map-size(flex, *ngIf="ischartTypeMap")
+            bw-select-picker.p-l-35(flex, [fg]="fg",
+                label="Size",
+                leftIcon="aspect-ratio-alt",
+                field="mapsize",
+                [items]="mapsizeList",
+                [liveSearch]="true",
+                noneSelectedText="NOTHING SELECTED")        
+
         //- xAxis Soruce
-        #select-xaxis-source(flex, [ngClass]="{'is-disabled': isPieChart }")
+        #select-xaxis-source(*ngIf="!ischartTypeMap", flex, [ngClass]="{'is-disabled': isPieChart }")
             bw-select-picker.p-l-35(flex, [fg]="fg",
                 #xSourcePicker,
                 label="xAxis Source",
@@ -73,7 +85,7 @@
                 [required]="true")
 
     //- top N records
-    .m-10(flex, layout="row")
+    .m-10(*ngIf="!ischartTypeMap", flex, layout="row")
         #select-top-records(flex)
             bw-select-picker.p-l-35(flex, [fg]="fg",
                 label="Top N Records",
@@ -90,7 +102,7 @@
                 )
     
     //- Comparison
-    .m-10(flex)
+    .m-10(*ngIf="!ischartTypeMap", flex)
         kpi-collapsable.m-l-15.m-b-15([(collapsed)]="isCollapsedComparison", headerText="Comparison (Optional):", [ngClass]="{'is-disabled': isPieChart }", [color]="'black'")
             .m-t-15.m-l-25(layout="row")
                 bw-select-picker(flex, [fg]="fg",
@@ -102,7 +114,7 @@
                     noneSelectedText="Select Date Range")
 
     //- Sorting
-    .m-10(flex)
+    .m-10(*ngIf="!ischartTypeMap", flex)
         kpi-collapsable.m-l-15.m-b-15([(collapsed)]="isCollapsedSorting", headerText="Sorting (Optional)", [ngClass]="{'is-disabled': isPieChart }", [color]="'black'")
             .m-t-15.m-l-25(layout="row")
                 bw-select-picker.p-l-35(flex, [fg]="fg",

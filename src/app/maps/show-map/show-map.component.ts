@@ -11,6 +11,8 @@ import { sortBy } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 import {objectWithoutProperties} from '../../shared/helpers/object.helpers';
 import {CommonService} from '../../shared/services/common.service';
+import { Store } from 'src/app/shared/services';
+import { style_dark } from './dark-map-styles';
 
 const mapMarkerQuery = require('graphql-tag/loader!./map-markers.query.gql');
 
@@ -30,14 +32,20 @@ export interface IMapMarkerResponse {
     styleUrls: ['./show-map.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class ShowMapComponent implements OnChanges, OnDestroy {
+export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     @Input() markers: IMapMarker[];
     @Input() legendColors: ILegendColorConfig[];
-
+    @Input() legendClosed = false;
+    @Input() Height = '400px';
+    //hiding this until fully functional
+    @Input() showSettingsBtn = false;
+    @Input() showLegendBtn = true;
     @ViewChild('showMapForm') private _form: ShowMapFormComponent;
 
     lat: number;
     lng: number;
+    style = [];
+
     showingLegend = true;
 
     showingMapSettings = false;
@@ -45,8 +53,16 @@ export class ShowMapComponent implements OnChanges, OnDestroy {
 
     private _subscription: Subscription[] = [];
 
-    constructor(private _apollo: Apollo) {}
+    constructor(private _apollo: Apollo,
+                private _store: Store) {
+                    this._store.changes$.subscribe(
+                        (state) => this.checkAppTheme(state)
+                    )
+                }
 
+    ngOnInit() {
+        this.showingLegend = !this.legendClosed;
+    }
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
     }
@@ -85,7 +101,6 @@ export class ShowMapComponent implements OnChanges, OnDestroy {
         if (!Object.keys(this._form.vm.payload).length) { return; }
         const that = this;
         this.isMapMarkerGrouping = this._form.vm.payload.grouping ? true : false;
-
         this._subscription.push(this._apollo.watchQuery<IMapMarkerResponse>({
             query: mapMarkerQuery,
             fetchPolicy: 'network-only',
@@ -124,5 +139,14 @@ export class ShowMapComponent implements OnChanges, OnDestroy {
                 m.iconUrl = `assets/img/maps/${m.color}-pin.png`;
             }
         });
+    }
+
+    checkAppTheme(state){
+        // Check theme in app state
+    if(state.theme == 'dark'){
+            this.style = style_dark;
+        }else{
+            this.style = []; 
+        }
     }
 }
