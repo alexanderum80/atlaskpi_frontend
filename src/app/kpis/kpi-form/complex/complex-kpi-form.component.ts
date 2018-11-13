@@ -18,6 +18,7 @@ const kpiByName = require('graphql-tag/loader!../kpi-by-name.gql');
 const datasourcesQuery = require('graphql-tag/loader!../data-sources.gql');
 const addKpiMutation = require('graphql-tag/loader!../add-kpi.mutation.gql');
 const updateKpiMutation = require('graphql-tag/loader!../update-kpi.mutation.gql');
+const getKpiFilterExpressionQuery = require('graphql-tag/loader!../kpi-filter-expression.gql');
 
 // App Code
 @Component({
@@ -28,6 +29,7 @@ const updateKpiMutation = require('graphql-tag/loader!../update-kpi.mutation.gql
 })
 export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
     @Input() model: IKPI;
+    @Input() clone = false;
     @ViewChild('previewModal') previewModal: ModalComponent;
 
     payload: IKPIPayload;
@@ -48,6 +50,7 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
 
     ngOnInit(): void {
         const that = this;
+        SweetAlert.close();
         this.vm.initialize(this.model);
 
         this._apolloService.networkQuery(kpisQuery).then(res => {
@@ -123,7 +126,6 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
             });
         }
 
-
         this._apolloService.networkQuery<IKPI[]>(kpiByName, { name: that.payload.input.name }).then(d => {
             if ((d.kpiByName && that.resultName === 'createKPI') ||
                 (d.kpiByName && that.resultName === 'updateKPI' && d.kpiByName._id !== that.payload.id)) {
@@ -141,7 +143,31 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
                 });
             }
 
-            this._apolloService.mutation<any>(that.mutation, that.payload)
+            this._apolloService.networkQuery<IKPI>(getKpiFilterExpressionQuery, { input: JSON.stringify(this.payload.input) })
+            .then(result => {
+                let kpiList = result.kpiFilterExpression;
+                if (this.payload.id && !this.clone) {
+                    kpiList = kpiList.filter(c => c._id !== this.payload.id);
+                }
+
+                let kpiListHtml = '';
+
+                kpiList.map(k => {
+                    kpiListHtml += `<br><a href="#/kpis/edit/${k._id}">${k.name}</a>`;
+                });
+
+                if (kpiList.length) {
+                    return SweetAlert({
+                        title: 'Duplicated kpi!',
+                        html: `<h3>The following kpis have the same configuration:</h3>
+                                ${kpiListHtml}`,
+                        type: 'error',
+                        showConfirmButton: true,
+                        confirmButtonText: 'Ok'
+                      });
+                }
+
+                this._apolloService.mutation<any>(that.mutation, that.payload)
                 .then(res => {
                     if (res.data[that.resultName].errors) {
                         return SweetAlert({
@@ -169,6 +195,7 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
                         this._goToListKpis();
                     }
                 });
+            });
         });
     }
 

@@ -30,6 +30,7 @@ export class EditKpiComponent implements OnInit, OnDestroy {
     @ViewChild('externalSourceForm') private _externalSourceForm: ExternalSourceKpiFormComponent;
 
     private _subscription: Subscription[] = [];
+    isLoading = false;
 
     constructor(
         public vm: EditKpiViewModel,
@@ -41,9 +42,11 @@ export class EditKpiComponent implements OnInit, OnDestroy {
         const that = this;
 
         this._subscription.push(this._route.params.subscribe(params => {
+            this.isLoading = true;
             that._getKpiInfo(params['id']).then(kpi => {
                 that.vm.updateKpi(kpi);
                 that.vm.updateSelectedType();
+                this.isLoading = false;
             });
         }));
     }
