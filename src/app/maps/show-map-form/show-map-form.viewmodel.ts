@@ -38,11 +38,9 @@ export class ShowMapFormViewModel extends ViewModel<IShowMapPayload> {
     }
 
     get payload(): IShowMapPayload {
-        const groupField = this.groupings.find(f => f.path === this.grouping);
-        // const groupingName = groupField ? groupField.name : '';
         return {
             dateRange: this.dateRange,
-            grouping: groupField.name,
+            grouping: this.grouping
         };
     }
 
@@ -52,8 +50,6 @@ export class ShowMapFormViewModel extends ViewModel<IShowMapPayload> {
             f.allowGrouping
             && f.available && !f.path.toLocaleLowerCase().match(/zip|city|state|externalId/))
             .map(g => new SelectionItem(g.path, g.name));
-
-        // this.groupingItems = RevenueGroupingList.filter(list => list.id !== 'customerZip');
     }
 
     private _setDateRangeList(): void {

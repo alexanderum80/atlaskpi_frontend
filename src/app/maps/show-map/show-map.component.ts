@@ -1,3 +1,4 @@
+import { FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { ShowMapFormComponent } from '../show-map-form/show-map-form.component';
 import { Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
@@ -33,13 +34,14 @@ export interface IMapMarkerResponse {
     encapsulation: ViewEncapsulation.None
 })
 export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
-    @Input() markers: IMapMarker[];
+    @Input() markers: any[];
     @Input() legendColors: ILegendColorConfig[];
     @Input() legendClosed = false;
     @Input() Height = '400px';
-    //hiding this until fully functional
+    // hiding this until fully functional
     @Input() showSettingsBtn = false;
     @Input() showLegendBtn = true;
+    @Input() fg: FormGroup;
     @ViewChild('showMapForm') private _form: ShowMapFormComponent;
 
     lat: number;
@@ -57,7 +59,7 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
                 private _store: Store) {
                     this._store.changes$.subscribe(
                         (state) => this.checkAppTheme(state)
-                    )
+                    );
                 }
 
     ngOnInit() {
@@ -68,6 +70,9 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     }
 
     ngOnChanges() {
+        if (this.fg.controls['grouping']) {
+            this.isMapMarkerGrouping = this.fg.controls['grouping'].value ? true : false;
+        }
         // calculate middle point
         if (!this.markers || !this.markers.length) {
             return;
@@ -105,14 +110,17 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
             query: mapMarkerQuery,
             fetchPolicy: 'network-only',
             variables: {
-                input: this._form.vm.payload
+                input: {
+                    kpi: this.fg.controls['kpi'].value,
+                    grouping: this._form.vm.payload.grouping ? ['customer.zip', this._form.vm.payload.grouping] : ['customer.zip'],
+                    dateRange: JSON.stringify({predefined: this._form.vm.payload.dateRange, custom: {from: null, to: null}})
+                }
             }
         })
         .valueChanges
         .subscribe(({ data }) => {
             that.closeMapSettings();
             if (!data || !data.mapMarkers || !data.mapMarkers.length) { return; }
-
             that.markers = data.mapMarkers.map(m => objectWithoutProperties(m, ['__typename']));
             that._setLatAndLngMarkers(that.markers);
         }));
@@ -127,6 +135,9 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
         return isValid;
     }
 
+    get actualKpi() {
+        return this.fg.controls['kpi'].value;
+    }
     private _setLatAndLngMarkers(markers: IMapMarker[]): void {
         // center the map on the biggest value
         const markersSorted = sortBy(markers, (m) => m.value * -1);
@@ -141,12 +152,12 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
         });
     }
 
-    checkAppTheme(state){
+    checkAppTheme(state) {
         // Check theme in app state
-    if(state.theme == 'dark'){
+    if (state.theme === 'dark') {
             this.style = style_dark;
-        }else{
-            this.style = []; 
+        } else {
+            this.style = [];
         }
     }
 }
