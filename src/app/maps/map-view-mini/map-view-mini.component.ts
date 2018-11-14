@@ -18,7 +18,7 @@ export class MapViewMiniComponent implements OnInit, OnDestroy {
     @Input() allowSelected = true;
     @Input() padded = true;
     // hiding this until fully functional
-    @Input() showSettingsBtn = false;
+    @Input() showSettingsBtn = true;
     @Input() showLegendBtn = true;
     @Input() Height: string = '400px';
 
