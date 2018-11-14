@@ -41,7 +41,8 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     // hiding this until fully functional
     @Input() showSettingsBtn = false;
     @Input() showLegendBtn = true;
-    @Input() fg: FormGroup;
+    @Input() kpi: string;
+    @Input() grouping: string[];
     @ViewChild('showMapForm') private _form: ShowMapFormComponent;
 
     lat: number;
@@ -70,8 +71,8 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     }
 
     ngOnChanges() {
-        if (this.fg.controls['grouping']) {
-            this.isMapMarkerGrouping = this.fg.controls['grouping'].value ? true : false;
+        if (this.grouping) {
+            this.isMapMarkerGrouping = this.grouping.length > 1;
         }
         // calculate middle point
         if (!this.markers || !this.markers.length) {
@@ -111,7 +112,7 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
             fetchPolicy: 'network-only',
             variables: {
                 input: {
-                    kpi: this.fg.controls['kpi'].value,
+                    kpi: this.kpi,
                     grouping: this._form.vm.payload.grouping ? ['customer.zip', this._form.vm.payload.grouping] : ['customer.zip'],
                     dateRange: JSON.stringify({predefined: this._form.vm.payload.dateRange, custom: {from: null, to: null}})
                 }
@@ -136,7 +137,7 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     }
 
     get actualKpi() {
-        return this.fg.controls['kpi'].value;
+        return this.kpi;
     }
     private _setLatAndLngMarkers(markers: IMapMarker[]): void {
         // center the map on the biggest value
