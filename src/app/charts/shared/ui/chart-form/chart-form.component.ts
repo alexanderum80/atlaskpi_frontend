@@ -48,6 +48,7 @@ import { UserService } from '../../../../shared/services';
 
 const Highcharts = require('highcharts/js/highcharts');
 const getChartByTitle = require('graphql-tag/loader!../../graphql/get-chart-by-title.gql');
+const getKpisToMaps = require('graphql-tag/loader!../../graphql/kpisToMaps.query.gql');
 const mapMarkersQuery = require('graphql-tag/loader!src/app/dashboards/dashboard-show/map-markers.gql');
 
 const initialDefinition = {
@@ -87,13 +88,13 @@ const chartDefinitionFromKPI = {
                 format: '{point.name}:<br/> <b>{point.y:,.2f} ({point.percentage:.2f}%)</b>'
             },
             showInLegend: true,
-            stacking: "normal"
+            stacking: 'normal'
         }
     },
     tooltip: {
-        altas_definition_id: "multiple_percent",
+        altas_definition_id: 'multiple_percent',
         enabled: true,
-        formatter: "kpi_tooltip_with_percentage_and_total",
+        formatter: 'kpi_tooltip_with_percentage_and_total',
         shared: true,
         useHTML: true
     },
@@ -152,13 +153,14 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     @Input() chartId: string;
     @Input() chartDataFromKPI: any;
     @Input() isnewChartOrMap: boolean;
+    @Input() isFromDashboard: boolean;
+    @Input() chartType = 'pie';
     @Output() result = new EventEmitter < DialogResult > ();
     @ViewChild(ChartFormatInfoComponent) ChartFormatInfo: ChartFormatInfoComponent;
 
     public sortingCriteriaList: SelectionItem[] = [];
     chartDefinition: any;
     sortingChart: any;
-    chartType = 'pie';
     kpis: IKPI[] = [];
     dashboardList: SelectionItem[] = [];
     kpiList: SelectionItem[] = [];
@@ -201,7 +203,6 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
     ngOnInit() {
         this._dashboardsQuery();
-
         const that = this;
 
         this.viewportSizeSub = this._browserService.viewportSize$.subscribe(s => {
@@ -229,6 +230,10 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     }
 
     ngAfterViewInit() {
+        if (this.isFromDashboard && this.chartType === 'map') {
+            this.loadKpisToMaps();
+        }
+        // if (this.isFromDashboard && this.chartType === 'chart') { this.chartType = 'pie'; }
         const loadingGroupings = new FormControl(false);
         this.fg.addControl('loadingGroupings', loadingGroupings);
 
@@ -283,6 +288,14 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             chartWidth = 290;
             chartHeight = 260;
         }
+    }
+
+    private loadKpisToMaps() {
+        this._apolloService.networkQuery <any> (getKpisToMaps)
+        .then(res => {
+            this.kpis = res.KpisSourcesMaps;
+            this.kpiList = ToSelectionItemList(this.kpis, '_id', 'name');
+        });
     }
 
     private _bringMapMarkers() {
@@ -354,7 +367,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                         }
                     });
                 }
-                //gridlines
+                // gridlines
                 if (!isEmpty(values.removeGridlines)) {
                     this.chartDefinition.yAxis = Object.assign({}, this.chartDefinition.removeGridlines || {}, {
                         removeGridlines: 0
@@ -372,7 +385,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                 this._processTooltipChanges(values);
                 // invert axis
                 this._processInvertedAxisChanges(values);
-                //remove gridlines
+                // remove gridlines
                 this._proccessRemoveGridlines(values);
                 console.log(this.chartDefinition);
                 return resolve();

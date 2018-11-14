@@ -4,7 +4,7 @@ div(layout-gt-sm="row", layout-sm="column")
     div(flex)
         bw-tab-set
             bwTab(heading="Data")
-                  kpi-chart-basic-info.p-b-40([fg]="fg", [kpis]="kpis", [kpiList]="kpiList", [dashboardList]="dashboardList", [chartType]="chartType", [isnewChartOrMap]="isnewChartOrMap")
+                  kpi-chart-basic-info.p-b-40([fg]="fg", [kpis]="kpis",[isFromDashboard]="isFromDashboard", [kpiList]="kpiList", [dashboardList]="dashboardList", [chartType]="chartType", [isnewChartOrMap]="isnewChartOrMap")
             bwTab(heading="Format", [disabled]="ischartTypeMap")
                   kpi-chart-format-info(flex, [fg]="fg",
                     [chartDefinition]="chartDefinition",

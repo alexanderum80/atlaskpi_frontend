@@ -12,6 +12,7 @@ export class ChartTypeComponent implements OnInit {
     @Input() fg: FormGroup;
     @Input() chartType: string;
     @Input() isnewChartOrMap = true;
+    @Input() isFromDashboard: boolean;
 
     showing = false;
 
@@ -31,10 +32,16 @@ export class ChartTypeComponent implements OnInit {
           type: 'info',
           title: 'Edit map',
           text: 'Its not allow to change the type chart of map.'
-      });
+        });
         return this._hide();
       } else if (!this.isnewChartOrMap && this.chartType !== 'map') {
         this._chartGalleryService.showMap = false;
+      } else if (this.isFromDashboard && this.chartType === 'map') {
+        this._chartGalleryService.showMap = true;
+        this._chartGalleryService.showChart = false;
+      } else if (this.isFromDashboard && this.chartType === 'chart') {
+        this._chartGalleryService.showMap = false;
+        this._chartGalleryService.showChart = true;
       }
       if (!this.showing) {
         return this._show();

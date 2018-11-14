@@ -1,3 +1,4 @@
+import { title } from 'change-case';
 import { map } from 'rxjs/operators';
 import { filter } from 'rxjs/operators';
 import { IMutationError, IMutationResponse } from '../../shared/interfaces/mutation-response.interface';
@@ -30,7 +31,7 @@ import { UserService } from '../../shared/services/user.service';
 import { IWidget, WidgetSizeEnum, WidgetSizeMap } from '../../widgets/shared/models/widget.models';
 import { SocialWidgetBase } from './../../social-widgets/models/social-widget-base';
 import { objectWithoutProperties } from '../../shared/helpers/object.helpers';
-import { filterSearch } from 'src/app/shared/models/search';
+import { filterSearch, filterSearchMultiple } from 'src/app/shared/models/search';
 
 export interface IMap {
   _id: string;
@@ -107,10 +108,11 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private _filteredVisibleCharts: IChart[] = [];
 
-  //add-search-bar
+  // add-search-bar
   public fgs: FormGroup;
   private _filteredWidgets: IWidget[] = [];
   private _filteredCharts: IChart[] = [];
+  private _filteredMaps: any[] = [];
 
   constructor(private _apollo: Apollo, private _apolloService: ApolloService, private _router: Router,
               private _routeActivited: ActivatedRoute, private _dashboardService: DashboardService,
@@ -130,7 +132,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     this.subscriptions.push(this._selectionService.selection$.subscribe(selectedItems => {
       that.selectedItems = selectedItems;
     }));
-    //add-search-bar
+    // add-search-bar
     this.fgs = new FormGroup({
       search: new FormControl(null)
     });
@@ -153,10 +155,9 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
         that._dashboardModelSubscription();
       });
     }
-    // this.fg.controls['order'].setAsyncValidators([Validators.min,])
     this.switchTab('widgets');
 
-  //add-search-bar
+  // add-search-bar
     this.subscriptions.push((this.fgs.valueChanges.subscribe(values => {
       switch (this.selectedTab) {
         case 'widgets':
@@ -164,6 +165,9 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
           break;
         case 'charts':
           this._filteredCharts = filterSearch<IChart>(this.allCharts, 'title', values);
+          break;
+          case 'maps':
+            this._filteredMaps = filterSearchMultiple<any>(this.allMaps, ['title', 'subtitle'], values);
           break;
       }
     })));
@@ -307,7 +311,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
       that.widgetsLoading = false;
       that.allWidgets = response.data.listWidgets;
 
-       //add-search-bar
+       // add-search-bar
       that._filteredWidgets = that.allWidgets;
       if (options.updateSelection) {  that._updateWidgetSelection(); }
     });
@@ -342,6 +346,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
       this.allMaps.forEach(m => {
         m.markers = m.markers.map(mk => objectWithoutProperties(mk, ['__typename']));
       });
+      this._filteredMaps = this.allMaps;
       this.mapsLoading = false;
       if (options.updateSelection) {  this._updateMapSelection(); }
     });
@@ -813,10 +818,6 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     return this.allSocialWidgets;
   }
 
-  get visibleMaps(): IMap[] {
-    return this.allMaps;
-  }
-
   get visibleBigWidgets(): IWidget[] {
     return this.allWidgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Big);
   }
@@ -872,5 +873,8 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     return this._filteredCharts;
   }
 
+  get filteredItemsMaps(): any[] {
+    return this._filteredMaps;
+  }
 
 }
