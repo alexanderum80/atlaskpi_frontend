@@ -1,0 +1,6 @@
+query KpiFilterExpression($input: String) {
+  kpiFilterExpression(input: $input) {
+    _id
+    name
+  }
+ }
