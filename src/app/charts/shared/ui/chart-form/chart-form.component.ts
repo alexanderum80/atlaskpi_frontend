@@ -48,8 +48,8 @@ import { UserService } from '../../../../shared/services';
 
 const Highcharts = require('highcharts/js/highcharts');
 const getChartByTitle = require('graphql-tag/loader!../../graphql/get-chart-by-title.gql');
+const mapMarkersQuery = require('graphql-tag/loader!src/app/maps/show-map/map-markers.query.gql');
 const getKpisToMaps = require('graphql-tag/loader!../../graphql/kpisToMaps.query.gql');
-const mapMarkersQuery = require('graphql-tag/loader!src/app/dashboards/dashboard-show/map-markers.gql');
 
 const initialDefinition = {
     chart: {
@@ -166,7 +166,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     kpiList: SelectionItem[] = [];
     viewportSizeSub: Subscription;
     chartSize: IChartSize;
-    mapMarkers: IMapMarker[] = [];
+    mapMarkers: any[] = [];
 
     // // DEFINICION DE VARIABLES DEL TOOLTIP
     // format: string;
@@ -247,8 +247,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                if (this.ischartTypeMap) {
                 // Here i must run the query
                 // to obtain map data
-                if (this.fg.value.grouping && this.fg.value.grouping !== ''
-                    && this.fg.value.kpi && this.fg.value.kpi !== ''
+                if (this.fg.value.kpi && this.fg.value.kpi !== ''
                     && (this.fg.value.predefinedDateRange !== ''
                     || this.fg.value.predefinedDateRange === 'custom' && this.fg.value.customFrom !== ''
                     && this.fg.value.customTo !== '')) {
@@ -318,12 +317,13 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         this._subscription.push(
             this._apolloService.networkQuery <any> (mapMarkersQuery, { input:
                 { dateRange: JSON.stringify(tmpDateRange),
-                    grouping: this.fg.value.grouping,
+                    grouping: this.fg.value.grouping ? ['customer.zip', this.fg.value.grouping] : ['customer.zip'],
                     kpi: this.fg.value.kpi
-                } }).then(res => {
-                that.mapMarkers = res.mapMarkers.map(m => objectWithoutProperties(m, ['__typename']));
-        }));
-    }
+                } })
+                .then(res => {
+                    that.mapMarkers = res.mapMarkers.map(m => objectWithoutProperties(m, ['__typename']));
+                }));
+        }
 
     saveChart() {
         this.result.emit(DialogResult.SAVE);
@@ -512,7 +512,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                 setTimeout(() => {
                     that.fg.controls['xAxisSource'].setValue(values.xAxisSource);
                     if (that.fg.controls['grouping']) {
-                        that.fg.controls['grouping'].setValue(values.grouping);
+                        that.fg.controls['grouping'].setValue(values.grouping.length === 2 ? values.grouping[1] : '');
                     }
                     // depends on the daterange selection
                     that.fg.controls['comparison'].setValue(values.comparison);

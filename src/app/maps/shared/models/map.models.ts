@@ -77,7 +77,7 @@ export interface IMapFormValues {
   predefinedDateRange?: string;
   customFrom?: string;
   customTo?: string;
-  grouping?: string;
+  grouping?: string[];
   dashboards?: string;
   mapsize: string;
 
@@ -116,7 +116,7 @@ export class MapModel {
     group?: string;
     kpi: string;
     dateRange: IChartDateRange;
-    groupings: string;
+    groupings: string[];
     size: string;
     dashboards: string[];
 
@@ -139,7 +139,7 @@ export class MapModel {
       proxyMapModel.dateRange = { predefined: fg.value.predefinedDateRange,
                                     custom: { from: fg.value.customFrom || null,
                                               to: fg.value.customTo || null  }};
-      proxyMapModel.groupings = fg.value.grouping;
+      proxyMapModel.groupings = fg.value.grouping ? ['customer.zip', fg.value.grouping] : ['customer.zip'];
       proxyMapModel.dashboards = fg.value.dashboards ? fg.value.dashboards.split('|').map(d => d.trim()) : [];
       proxyMapModel.size = fg.value.mapsize;
 
@@ -156,7 +156,7 @@ export class MapModel {
                     moment(this.dateRange.custom.from).format('MM/DD/YYYY') : undefined,
         customTo: (this.dateRange && this.dateRange.custom && this.dateRange.custom.to) ?
                     moment(this.dateRange.custom.to).format('MM/DD/YYYY') : undefined,
-        grouping: this.groupings ? this.groupings || undefined : undefined,
+        grouping: this.groupings ? this.groupings || [] : [],
         kpi: this.kpi ? this.kpi || undefined : undefined,
         dashboards: this.dashboards ? this.dashboards.map(d => d).join('|') : undefined,
         mapsize: this.size

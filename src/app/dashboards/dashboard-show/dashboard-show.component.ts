@@ -130,7 +130,6 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
         this.legendColors = this._legendService.getLegendColors();
 
         const that = this;
-        // this._bringMapMarkers();
         this._getSocialWidgets();
         if (this.isFromDashboard) {
             this._loadDashboardData(this.dashboardPayLoad);
@@ -364,8 +363,6 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
 
         this._rawDashboard = data.dashboard;
         this.dashboardId = data.dashboard._id;
-
-        this.showMap = this.mapMarkers && this.mapMarkers.length > 0 && data.dashboard.maps && data.dashboard.maps[0] === '1';
         this.dashboardName = data.dashboard.name;
 
         if (data.dashboard.maps.length > 0) {
@@ -476,10 +473,6 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
 
     }
 
-
-
-    // }
-
     private _processPieChartPercent(definition: any) {
         // if (definition.plotOptions && definition.plotOptions.pie) {
         //     const formatterFactory = new FormatterFactory();
@@ -522,62 +515,59 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             (this._rawDashboard && this._rawDashboard.users.includes(this._userService.user._id));
     }
 
-    
     private chartIdValues(dataDashboard) {
             const charts: string[] = [];
-    
+
             if (dataDashboard.dashboard.charts) {
                 dataDashboard.dashboard.charts.forEach(item => {
                     charts.push(JSON.parse(item)._id)});
                 return charts;
             }
             return;
-        }
-    
-        delChartId(result): void {
-            const idChart = result.idChart;
-            
-            this._dashboardQuery.refetch({
-                id: result.idDashboard
-     
-            }).then(res => {
-                const that = this;
-                const value = res.data;
-                const chartValues = this.chartIdValues(value).filter(c => c !== idChart);
-    
-                const resultChartValues = {
-                      charts: chartValues
-                } as any;
-                
-                if (value.dashboard._id) {
-                    resultChartValues.id = result.idDashboard;
-                }
-                this._apolloService.mutation < DashboardResponse > (dashboardGraphqlActions.deleteChartIdFromDashboard, resultChartValues)
-                    .then(res => {
-                        //that.ngOnInit();
-                        that._loadDashboard(value.dashboard._id);
-                })
-                    .catch(err => that._displayServerErrors(err));
-            });      
-        } 
-        
-        private _displayServerErrors(err) {
-            console.log('Server errors: ' + JSON.stringify(err));
-        }
-       
-        editingChartFromDashboard($event) {
-            if(!this.modifyChartActivity.check(this._userService.user)){
-                this._router.navigateByUrl('/unauthorized');
+    }
+
+    delChartId(result): void {
+        const idChart = result.idChart;
+
+        this._dashboardQuery.refetch({
+            id: result.idDashboard
+
+        }).then(res => {
+            const that = this;
+            const value = res.data;
+            const chartValues = this.chartIdValues(value).filter(c => c !== idChart);
+
+            const resultChartValues = {
+                    charts: chartValues
+            } as any;
+
+            if (value.dashboard._id) {
+                resultChartValues.id = result.idDashboard;
             }
-           else{
-            this.isEditChartFromDashboard = true;
-            this.idChartSelected = $event;
-           }
+            this._apolloService.mutation < DashboardResponse > (dashboardGraphqlActions.deleteChartIdFromDashboard, resultChartValues)
+                .then(res => {
+                    // that.ngOnInit();
+                    that._loadDashboard(value.dashboard._id);
+            })
+                .catch(err => that._displayServerErrors(err));
+        });
+    }
+
+    private _displayServerErrors(err) {
+        console.log('Server errors: ' + JSON.stringify(err));
+    }
+
+    editingChartFromDashboard($event) {
+        if (!this.modifyChartActivity.check(this._userService.user)) {
+            this._router.navigateByUrl('/unauthorized');
+        } else {
+        this.isEditChartFromDashboard = true;
+        this.idChartSelected = $event;
         }
-     
-        showDashboardShow($event) {
-            this.isEditChartFromDashboard = false;
-            this.ngOnInit();
-        }
+    }
+    showDashboardShow($event) {
+        this.isEditChartFromDashboard = false;
+        this.ngOnInit();
+    }
 
 }

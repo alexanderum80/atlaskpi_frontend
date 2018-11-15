@@ -49,10 +49,6 @@ export const RevenueGroupingList: SelectionItem[] = [
     { id: 'customerZip', title: 'Customer\'s ZIP', selected: false, disabled: false},
     { id: 'customerGender', title: 'Customer\'s GENDER', selected: false, disabled: false}
 ];
-export const MapsGroupingList: SelectionItem[] = [
-    { id: 'customer.zip', title: 'Customer ZIP', selected: false, disabled: false},
-    { id: 'location.zip', title: 'Location ZIP', selected: false, disabled: false}
-];
 
 const ExpensesGroupingList = [
     { id: 'location', title: 'location', selected: false, disabled: false },
@@ -301,15 +297,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                 if (data || !isEmpty(data.kpiGroupings)) {
                     groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
                 }
-                if (this.ischartTypeMap) {
-                    const exists = MapsGroupingList.map(m => {
-                        return groupingList.find(gl => gl.id === m.id);
-                    });
-                    that.groupingList = exists.filter(e => e !== undefined);
-                } else {
-                    that.groupingList = groupingList;
-                }
-
+                that.groupingList = groupingList;
                 const currentGroupingValue = this.fg.get('grouping').value || '';
                 let nextGropingValue;
                 if (!groupingList.map(g => g.id).includes(currentGroupingValue)) {
@@ -377,16 +365,10 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
     private _subscribeToChartTypeChanges() {
         const that = this;
         this._chartGalleryService.activeChart$.subscribe((chart) => {
+            that.groupingList = [];
+            this._getGroupingInfo(chart);
             that.chartType = String(chart.type);
             this.ischartTypeMap = chart.name === 'map';
-            if (this.ischartTypeMap) {
-
-                that.groupingList = MapsGroupingList;
-                that.fg.controls['grouping'].patchValue(MapsGroupingList, { emitEvent: true });
-            } else {
-                that.groupingList = [];
-                this._getGroupingInfo(chart);
-            }
             that._resetFrequencyAndSource(that.chartType);
         });
     }

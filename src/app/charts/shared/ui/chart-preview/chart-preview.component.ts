@@ -41,6 +41,8 @@ export class ChartPreviewComponent implements OnChanges, AfterViewInit {
     comparison = '';
     ischartTypeMap = false;
     legendColors: ILegendColorConfig[];
+    kpiforMap = '';
+    groupingforMap = [];
 
     constructor(private _chartGalleryService: ChartGalleryService,
                 private _legendService: LegendService) {
@@ -80,6 +82,14 @@ export class ChartPreviewComponent implements OnChanges, AfterViewInit {
                     }
                 }
                 this.chart = new Chart(this.chartDefinition);
+            }
+        }
+        if (this.fg) {
+            if (this.fg.value.kpi) {
+                this.kpiforMap = this.fg.value.kpi;
+            }
+            if (this.fg.value.grouping) {
+                this.groupingforMap = this.fg.value.grouping;
             }
         }
     }
