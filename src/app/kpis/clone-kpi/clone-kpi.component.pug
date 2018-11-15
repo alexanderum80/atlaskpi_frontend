@@ -2,8 +2,8 @@
 
     div(flex, [ngSwitch]="vm.selectedType")
     
-        kpi-simple-kpi-form(*ngSwitchCase="1", #simpleForm, [model]="vm.kpi")
+        kpi-simple-kpi-form(*ngSwitchCase="1", #simpleForm, [model]="vm.kpi", [clone]="true")
         
-        kpi-complex-kpi-form(*ngSwitchCase="2", #complexForm, [model]="vm.kpi")
+        kpi-complex-kpi-form(*ngSwitchCase="2", #complexForm, [model]="vm.kpi", [clone]="true")
 
-        kpi-external-source-kpi-form(*ngSwitchCase="4", #externalSourceForm, [model]="vm.kpi")
+        kpi-external-source-kpi-form(*ngSwitchCase="4", #externalSourceForm, [model]="vm.kpi", [clone]="true")

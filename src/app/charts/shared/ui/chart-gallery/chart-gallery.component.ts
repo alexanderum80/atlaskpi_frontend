@@ -28,6 +28,9 @@ export class ChartGalleryComponent {
             if (that.charts['others'].length === 0) {
                 that.chartCategories = that.chartCategories.filter(c => c !== 'others');
             }
+            if (!_galleryService.showChart) {
+                that.chartCategories = that.chartCategories.filter(c => c === 'others');
+            }
         });
     }
 

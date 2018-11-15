@@ -39,6 +39,7 @@ const getMapByTitle = require('graphql-tag/loader!../shared/graphql/get-map-by-t
 })
 export class NewChartComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() isFromDashboard = false;
+    @Input() chartType: string;
     @Output() result = new EventEmitter();
     @Input() chartDataFromKPI: any;
     @ViewChild(ChartFormComponent) private chartFormComponent: ChartFormComponent;

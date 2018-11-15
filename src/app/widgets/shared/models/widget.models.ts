@@ -93,7 +93,7 @@ export interface IWidget {
     color: string;
     chartWidgetAttributes?: IChartWidgetAttributes;
     numericWidgetAttributes?: INumericWidgetAttributes;
-    dashboards? : string[];
+    dashboards?: string[];
 
      // virtual properties ( result of calcs, chart definitions, trending)
     materialized?: IWidgetMaterializedFields;
@@ -112,7 +112,7 @@ export interface IWidgetInput {
     color: string;
     numericWidgetAttributes?: INumericWidgetAttributes;
     chartWidgetAttributes?: IChartWidgetAttributes;
-    dashboards? : string[];
+    dashboards?: string[];
 }
 
 export interface IWidgetFormGroupValues {
@@ -134,7 +134,7 @@ export interface IWidgetFormGroupValues {
 
     // chart attributes
     chart?: string;
-    dashboards? : string;
+    dashboards?: string;
 }
 
 export interface ListWidgetsQueryResponse {

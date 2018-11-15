@@ -27,6 +27,7 @@ export class ChartGalleryService {
     private _charts: IChartGalleryItemWithType[];
 
     private _showMap = true;
+    private _showChart = true;
 
     constructor(private _http: Http) { }
 
@@ -41,6 +42,14 @@ export class ChartGalleryService {
 
     set showMap(item: boolean) {
         this._showMap = item;
+    }
+
+    get showChart() {
+        return this._showChart;
+    }
+
+    set showChart(item: boolean) {
+        this._showChart = item;
     }
 
     getCharList(): Observable<any> {

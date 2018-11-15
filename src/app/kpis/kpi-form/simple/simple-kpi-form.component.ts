@@ -1,3 +1,4 @@
+import { map } from 'rxjs/operators';
 // Angular Import
 import { SelectPickerComponent } from '../../../ng-material-components/modules/forms/select-picker/select-picker.component';
 import { ModalComponent } from '../../../ng-material-components/modules/user-interface/modal/modal.component';
@@ -42,6 +43,7 @@ const updateKpiMutation = require('graphql-tag/loader!../update-kpi.mutation.gql
 
 const getKPIByName = require('graphql-tag/loader!../kpi-by-name.gql');
 const sourceQuery = require('graphql-tag/loader!./get-source-Query.gql');
+const getKpiFilterExpressionQuery = require('graphql-tag/loader!../kpi-filter-expression.gql');
 
 // App Code
 @Component({
@@ -52,7 +54,7 @@ const sourceQuery = require('graphql-tag/loader!./get-source-Query.gql');
 export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() model: IKPI;
     @Input() editing: boolean;
-    @Input() clone: boolean;
+    @Input() clone = false;
     @ViewChild('previewModal') previewModal: ModalComponent;
 
     @ViewChild('numericFieldSelector') set content(content: SelectPickerComponent) {
@@ -95,7 +97,12 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
         this._getDataSources();
     }
 
-    ngAfterViewInit() { }
+    ngAfterViewInit() {
+        this._router.events.subscribe(e => {
+            Sweetalert.close();
+            // this._getDataSources();
+        });
+    }
 
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
@@ -105,21 +112,21 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
         this.fromSaveAndVisualize = true;
         this.save();
     }
-    
+
     _closePreviewModal() {
         if ( this.newWidgetFromKPI === true || this. newChartFromKPI === true ) {
-                        this.previewModal.close();    
+                        this.previewModal.close();
         } else {
             this.previewModal.close();
             this._goToListKpis();
-        }     
+        }
     }
-    
+
     newWidget() {
         this.newWidgetFromKPI = true;
         this._closePreviewModal();
     }
-    
+
     newChart() {
         this.newChartFromKPI = true;
         this._closePreviewModal();
@@ -130,6 +137,7 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
         this.mutation = this.payload.id ? updateKpiMutation : addKpiMutation;
         this.resultName = this.payload.id ? 'updateKPI' : 'createKPI';
         this.vm.updateExistDuplicatedName(false);
+
         if (!this.valid) {
             return SweetAlert({
                 title: 'Make sure you entered all required information before you save this KPI.',
@@ -156,34 +164,59 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
                 });
             }
 
-            this._apolloService.mutation<any>(this.mutation, this.payload)
-            .then(res => {
-                if (res.data[this.resultName].errors) {
-                    return SweetAlert({
-                        title: 'Some errors were found while saving this KPI. Please try again later',
-                        type: 'error',
-                        showConfirmButton: true,
-                        confirmButtonText: 'Ok'
-                      });
-                }
-                if (this.fromSaveAndVisualize) {
-                    // for widget
-                    this.currrentKPI = res.data[this.resultName].entity;
-                    this.vm.valuesPreviewWidget.name = this.currrentKPI.name;
-                    this.vm.valuesPreviewWidget.kpi = this.currrentKPI._id;
-                    this.vm.valuesPreviewWidget.color = this.vm.selectColorWidget();
+            this._apolloService.networkQuery<IKPI>(getKpiFilterExpressionQuery, { input: JSON.stringify(this.payload.input) })
+                .then(result => {
+                    let kpiList = result.kpiFilterExpression;
+                    if (this.payload.id && !this.clone) {
+                        kpiList = kpiList.filter(c => c._id !== this.payload.id);
+                    }
 
-                    // for chart
-                    this.vm.valuesPreviewChart.name = this.currrentKPI.name;
-                    this.vm.valuesPreviewChart.kpi = this.currrentKPI._id;
+                    let kpiListHtml = '';
 
-                    this.fromSaveAndVisualize = !this.fromSaveAndVisualize;
-                    this.previewModal.open();
+                    kpiList.map(k => {
+                        kpiListHtml += `<br><a href="#/kpis/edit/${k._id}">${k.name}</a>`;
+                    });
 
-                }else {
-                    this._router.navigateByUrl('/kpis/list');
-                }
-            });
+                    if (kpiList.length) {
+                        return SweetAlert({
+                            title: 'Duplicated kpi!',
+                            html: `<h3>The following kpis have the same configuration:</h3>
+                                    ${kpiListHtml}`,
+                            type: 'error',
+                            showConfirmButton: true,
+                            confirmButtonText: 'Ok'
+                          });
+                    }
+
+                    this._apolloService.mutation<any>(this.mutation, this.payload)
+                    .then(res => {
+                        if (res.data[this.resultName].errors) {
+                            return SweetAlert({
+                                title: 'Some errors were found while saving this KPI. Please try again later',
+                                type: 'error',
+                                showConfirmButton: true,
+                                confirmButtonText: 'Ok'
+                              });
+                        }
+                        if (this.fromSaveAndVisualize) {
+                            // for widget
+                            this.currrentKPI = res.data[this.resultName].entity;
+                            this.vm.valuesPreviewWidget.name = this.currrentKPI.name;
+                            this.vm.valuesPreviewWidget.kpi = this.currrentKPI._id;
+                            this.vm.valuesPreviewWidget.color = this.vm.selectColorWidget();
+
+                            // for chart
+                            this.vm.valuesPreviewChart.name = this.currrentKPI.name;
+                            this.vm.valuesPreviewChart.kpi = this.currrentKPI._id;
+
+                            this.fromSaveAndVisualize = !this.fromSaveAndVisualize;
+                            this.previewModal.open();
+                        } else {
+                            this._router.navigateByUrl('/kpis/list');
+                        }
+                    });
+                });
+
         });
     }
 
