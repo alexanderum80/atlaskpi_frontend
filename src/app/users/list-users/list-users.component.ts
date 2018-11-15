@@ -17,9 +17,11 @@ import { AddUserComponent } from '../add-user';
 import { EditUserComponent } from '../edit-user';
 import { IManageUsers } from '../shared/models';
 import { ListUsersViewModel } from './list-users.viewmodel';
+import { IUserInfo } from '../../shared/models';
 
 const usersQuery = require('graphql-tag/loader!../shared/graphql/get-all-users.gql');
 const deleteUserMutation = require('graphql-tag/loader!../shared/graphql/remove-user.gql');
+const updateUserInfo = require('graphql-tag/loader!./graphql/current-user.gql');
 
 @Activity(ViewUserActivity)
 @Component({
@@ -37,6 +39,7 @@ export class ListUsersComponent implements OnInit, OnDestroy {
 
     user: IManageUsers;
     private _subscription: Subscription[] = [];
+    itemType: string;
 
     constructor(private _apolloService: ApolloService,
                 private _apollo: Apollo,
@@ -56,6 +59,7 @@ export class ListUsersComponent implements OnInit, OnDestroy {
         if (!this.vm.initialized) {
             this.vm.initialize(null);
             this.vm.addActivities([this.addUserActivity, this.updateUserActivity, this.deleteUserActivity]);
+            this._refresUserInfo();
             this._refreshUsers();
         }
 
@@ -134,6 +138,13 @@ export class ListUsersComponent implements OnInit, OnDestroy {
                         });
                 }
             });
+    }
+
+    private _refresUserInfo(refresh ?: boolean) {
+        const that = this;
+        this._apolloService.networkQuery < IUserInfo > (updateUserInfo).then(d => {
+            this.itemType = d.User.preferences.users.listMode === "standardView" ? 'standard' : 'table';
+        });
     }
 
     private _refreshUsers(refresh ?: boolean) {

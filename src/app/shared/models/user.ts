@@ -65,6 +65,22 @@ export class IUserPreference {
     providers?: string;
     calendarTimeZone?: string;
     dashboardIdNoVisible?: string;
+    dashboards?: {
+        listMode: string;
+    };
+    charts?: {
+        listMode: string;
+    };
+    kpis?: {
+        listMode: string;
+    };
+    roles?: {
+        listMode: string;
+    };
+    users?: {
+        listMode: string;
+    };
+    theme?: string;
 }
 
 export interface IUserInfo {

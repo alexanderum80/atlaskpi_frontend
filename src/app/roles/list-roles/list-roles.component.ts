@@ -19,8 +19,11 @@ import { RoleModel } from '../shared/models/role.model';
 import { IRole } from '../shared/role';
 import { RolesService } from '../shared/services/roles.service';
 import { ListRolesViewModel } from './list-roles.viewmodel';
+import { IUserInfo } from '../../shared/models';
 
 const rolesQuery = require('graphql-tag/loader!./graphql/read-roles.graphql');
+const updateUserInfo = require('graphql-tag/loader!./graphql/current-user.gql');
+
 
 @Activity(ModifyRoleActivity)
 @Component({
@@ -59,6 +62,8 @@ export class ListRolesComponent implements OnInit, OnDestroy {
 
     tableHeight;
     searchString: string;
+    itemType: string;
+
 
   private _subscription: Subscription[] = [];
 
@@ -86,6 +91,7 @@ export class ListRolesComponent implements OnInit, OnDestroy {
         if (!this.vm.initialized) {
             this.vm.initialize(null);
             this.vm.addActivities([this.addRoleActivity, this.updateRoleActivity, this.deleteRoleActivity]);
+            this._refresUserInfo();
             this._refreshRoles();
         }
 
@@ -202,6 +208,13 @@ export class ListRolesComponent implements OnInit, OnDestroy {
                     this.removeRole(id);
                 }
             });
+    }
+
+    private _refresUserInfo(refresh ?: boolean) {
+        const that = this;
+        this._apolloService.networkQuery < IUserInfo > (updateUserInfo).then(d => {
+            this.itemType = d.User.preferences.roles.listMode === "standardView" ? 'standard' : 'table';
+        });
     }
 
     private _refreshRoles(refresh ?: boolean) {

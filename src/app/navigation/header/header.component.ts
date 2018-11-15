@@ -31,6 +31,7 @@ import { HeaderViewModel } from './header.viewmodel';
 
 const helpCenterQueryGql = require('graphql-tag/loader!./help-center.query.gql');
 const updateUserPreference = require('graphql-tag/loader!./update-user-preference.mutation.gql');
+const updateUserInfo = require('graphql-tag/loader!./current-user.gql');
 const visibleToRoles = ['owner', 'admin', 'semi-admin'];
 
 @Component({
@@ -140,7 +141,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 that.currentUser = user;
                 that.avatarAddress = user ? user.profilePictureUrl : '';
             }));
-
             // may not have user by the time user has agreed
             this._subscription.push(
                 Observable.combineLatest(
@@ -166,24 +166,32 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this._subscription.push(this._versionSvc.newVersionAvailable$.subscribe(v => {
             that.newVersion = v;
         }));
-        this._subscription.push(this.fg.valueChanges.subscribe(values => {
-            const themeName = values.theme ? 'dark' : 'light';
 
-            that._setTheme(themeName);
-        }));
+        this._apolloService.networkQuery < IUserInfo > (updateUserInfo).then(d => {
+            that.currentUser = d.User;
 
+            if (!this.currentUser.preferences.theme) {
+                this._subscription.push(this.fg.valueChanges.subscribe(values => {
+                    const themeName = values.theme ? 'dark' : 'light';
+                    that._setTheme(themeName, true);
+                }));
+            }else{
+                const themeNames = this.currentUser.preferences.theme === 'dark' ? 'dark' : 'light'; 
+                that._setTheme(themeNames, true);
+            }
+        });
         // query help center videos
-            this._subscription.push(this._apollo.query<IHelpCenterDataResponse>({
-                query: helpCenterQueryGql,
-                fetchPolicy: 'network-only'
-            })
-            .subscribe(({ data }) => {
-                if (!data || !data.helpCenter) { return; }
-                const response: IHelpCenter[] = data.helpCenter;
+        this._subscription.push(this._apollo.query<IHelpCenterDataResponse>({
+            query: helpCenterQueryGql,
+            fetchPolicy: 'network-only'
+        })
+        .subscribe(({ data }) => {
+            if (!data || !data.helpCenter) { return; }
+            const response: IHelpCenter[] = data.helpCenter;
 
-                if (!response || !response.length) { return; }
-                that._helpCtrService.setVideoItems(response);
-            }));
+            if (!response || !response.length) { return; }
+            that._helpCtrService.setVideoItems(response);
+        }));
     }
 
     ngOnDestroy() {
@@ -196,6 +204,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     smartBarPermission(): boolean {
         return this.vm.authorizedTo('ViewSmartBarActivity');
+    }
+
+    asdas() {
+        const that = this;
+        this._subscription.push(this._userService.user$
+            .distinctUntilChanged()
+            .subscribe((user: IUserInfo) => {
+                that.currentUser = user;
+        }))
     }
 
     get fullname(): string {
@@ -356,8 +373,34 @@ export class HeaderComponent implements OnInit, OnDestroy {
     toggleProfileDetails() {
         this.showSlide = !this.showSlide;
     }
+    private _updateUserThemePreference(id: string, themePreference: string) {
+        if (!id || isEmpty(themePreference)) {
+            return;
+        }
+        const payload: IUserPreference = {
+            theme: themePreference
+        };
 
-    private _setTheme(themeName: 'light' | 'dark') {
+        const that = this;
+        this._subscription.push(this._apollo.mutate({
+            mutation: updateUserPreference,
+            variables: {
+                id: id,
+                input: payload
+            }
+        }).subscribe(({ data }: any) => {
+            if (!data) { return; }
+            const response = data.updateUserPreference;
+
+            if (!response.success || !response.entity.preferences) { return; }
+            // in case preferences is null or undefined
+            if (!that.currentUser.preferences) {
+                that.currentUser.preferences = {};
+            }
+        }));
+    }
+
+    private _setTheme(themeName: 'light' | 'dark', onInit?: boolean) {
         if (themeName === 'light') {
             this.renderer.removeClass(document.body, 'dark');
             this.renderer.addClass(document.body, 'light');
@@ -367,5 +410,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
         }
 
         this._storeHelper.update('theme', themeName);
+
+        if (!this.currentUser.preferences || !this.currentUser.preferences.theme || onInit) { 
+            return; 
+        }
+        
+        this._updateUserThemePreference(this.currentUser._id, themeName);
+
     }
 }

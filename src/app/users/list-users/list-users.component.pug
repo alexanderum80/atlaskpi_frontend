@@ -1,10 +1,11 @@
 kpi-item-list(
     title="Manage Users",
+    aliases="users",
     [items]="vm.userItems",
     [itemViewModel]="vm",
     [addItemActivityName]="'AddUserActivity'",
     [itemListActivityName]="actionActivityNames",
-    itemType="standard",
+    [itemType]="itemType",
     [tableRowTemplate]="tableItem",
     (onAddActionClicked)="add()",
     (onItemActionClicked)="actionClicked($event)",
