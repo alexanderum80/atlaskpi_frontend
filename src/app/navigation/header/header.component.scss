@@ -17,6 +17,10 @@ header#app-header {
 
 .header-logo {
     height: 40px;
+
+    @include for-size(phone-only) {
+        height: 30px;
+    }
 }
 
 @media only screen and (min-width: 768px) and (max-width: 1024px) {

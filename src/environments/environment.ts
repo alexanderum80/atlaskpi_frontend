@@ -6,10 +6,10 @@
 export const environment = {
     production: false,
     BEARER_KEY: 'myapp_bearer_key',
-    restServer: 'http://localhost:9091',
-    graphQlServer: 'http://localhost:9091/graphql',
-    // restServer: 'http://172.16.1.38:9091',
-    // graphQlServer: 'http://172.16.1.38:9091/graphql',
+    // restServer: 'http://localhost:9091',
+    // graphQlServer: 'http://localhost:9091/graphql',
+    restServer: 'http://172.16.1.38:9091',
+    graphQlServer: 'http://172.16.1.38:9091/graphql',
     subdomain: 'dev.atlaskpi.com',
     googleMapApi: 'AIzaSyAhA6DuRTMwb8RrYNnD39C96xoTxqWiMSk',
 
