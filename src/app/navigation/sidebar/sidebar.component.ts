@@ -95,6 +95,8 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this._itemsSub && (typeof this._itemsSub.unsubscribe === 'function')) {
             this._itemsSub.unsubscribe();
         }
+
+        this._subscription.forEach(s => s.unsubscribe());
     }
 
     hideSidebar(e: Event) {
