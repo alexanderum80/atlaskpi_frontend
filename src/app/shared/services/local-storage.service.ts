@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { IUserToken, UserToken } from '../models/user-token';
 import { IVersion } from '../models/version';
+import { IAuthCredentials } from '../models';
 
 const StorageKeys = {
     VERSION: 'version',

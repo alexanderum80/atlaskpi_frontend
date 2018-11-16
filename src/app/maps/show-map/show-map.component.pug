@@ -9,7 +9,7 @@
         h2 Map Settings
         .m-t-20(layout="column")
             div.m-10(flex)
-                kpi-show-map-form(#showMapForm)
+                kpi-show-map-form(#showMapForm, [kpi]="actualKpi")
             div(flex)
                 div(layout="row", layout-align="end end")
                     div(flex-initial)

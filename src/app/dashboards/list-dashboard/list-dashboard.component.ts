@@ -38,6 +38,7 @@ export class ListDashboardComponent implements OnInit {
     user: IUserInfo;
     subscriptions: Subscription[] = [];
     timeWait = true;
+    itemType: string;
 
     constructor(
         private _route: ActivatedRoute,
@@ -68,6 +69,7 @@ export class ListDashboardComponent implements OnInit {
             this.vm.initialize(null);
             this.vm.addActivities([this.addDashboardActivity, this.updateDashboardActivity, this.deleteDashboardActivity]);
             this._currentUserInfo(this.user);
+            this._refresUserInfo();
             this._refreshDashboards();
         }
 
@@ -100,7 +102,6 @@ export class ListDashboardComponent implements OnInit {
             if (!this.user || !this.user._id) {
                 return;
             } else {
-
                 this.subscriptions.push(
                     that._apolloService.mutation < {
                     updateUserPreference: {
@@ -176,20 +177,21 @@ export class ListDashboardComponent implements OnInit {
     private _refresUserInfo(refresh ?: boolean) {
         const that = this;
         this.timeWait = false;
-            this._apolloService.networkQuery < IUserInfo > (updateUserInfo).then(d => {
-                that.vm.alistDashboardIdNoVisible = d.User;
-                this.timeWait = true;
-            });
-        }
+        this._apolloService.networkQuery < IUserInfo > (updateUserInfo).then(d => {
+            that.vm.alistDashboardIdNoVisible = d.User;
+            this.itemType = d.User.preferences.dashboards.listMode === "standardView" ? 'standard' : 'table';
+            this.timeWait = true;
+        });
+    }
 
-        private _timeWait() {
-                setTimeout(() => {
-                    this._refreshDashboards();
-                }, 100);
-        }
+    private _timeWait() {
+        setTimeout(() => {
+            this._refreshDashboards();
+        }, 100);
+    }
 
-        private _refreshDashboards(refresh?: boolean) {
-        const that = this;
+    private _refreshDashboards(refresh?: boolean) {
+    const that = this;
         if (this.timeWait === false) {
             this._timeWait();
         } else {

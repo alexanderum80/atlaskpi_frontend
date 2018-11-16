@@ -22,4 +22,9 @@ export class WindowService {
     get nativeWindow (): Window {
         return getWindow();
     }
+
+    get atlasInterop(): any {
+        return getWindow().atlasKpi;
+    }
+
 }

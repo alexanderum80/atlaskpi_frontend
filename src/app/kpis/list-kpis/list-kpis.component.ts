@@ -20,6 +20,8 @@ import { IKPI } from '../../shared/domain/kpis/kpi';
 import { ISearchArgs } from '../../shared/ui/lists/item-list/item-list.component';
 import { IActionItemClickedArgs } from '../../shared/ui/lists/item-clicked-args';
 import { IListItem } from '../../shared/ui/lists/list-item';
+import { UserService } from '../../shared/services/user.service';
+import { IUserInfo } from '../../shared/models';
 
 // External Libraries
 // App Code
@@ -27,6 +29,7 @@ import { IListItem } from '../../shared/ui/lists/list-item';
 
 const kpisQuery = require('graphql-tag/loader!./kpis.gql');
 const deleteKpiMutation = require('graphql-tag/loader!./delete-kpi.gql');
+const updateUserInfo = require('graphql-tag/loader!./current-user.gql');
 
 @Activity(ViewKpiActivity)
 @Component({
@@ -41,6 +44,8 @@ export class ListKpisComponent implements OnInit, OnDestroy {
     lastError: IModalError;
 
     private _subscription: Subscription[] = [];
+    itemType: string;
+    user: IUserInfo;
 
     constructor(
         private _apolloService: ApolloService,
@@ -50,6 +55,7 @@ export class ListKpisComponent implements OnInit, OnDestroy {
         public addKpiActivity: AddKpiActivity,
         public updateKpiActivity: UpdateKpiActivity,
         public cloneKpiActivity: CloneKpiActivity,
+        private _userService: UserService,
 
 
 
@@ -68,9 +74,11 @@ export class ListKpisComponent implements OnInit, OnDestroy {
         if (!this.vm.initialized) {
             this.vm.initialize(null);
             this.vm.addActivities([this.addKpiActivity, this.updateKpiActivity, this.deleteKpiActivity, this.cloneKpiActivity]);
+            this._refresUserInfo();
             this._refreshKpis();
-        }
 
+        }
+        
         this._subscription.push(this._route.queryParams.subscribe(p => {
             if (p.refresh) {
                 that._refreshKpis();
@@ -167,6 +175,13 @@ export class ListKpisComponent implements OnInit, OnDestroy {
                         });
                 }
             });
+    }
+
+    private _refresUserInfo(refresh ?: boolean) {
+        const that = this;
+        this._apolloService.networkQuery < IUserInfo > (updateUserInfo).then(d => {
+            this.itemType = d.User.preferences.kpis.listMode === "standardView" ? 'standard' : 'table';
+        });
     }
 
     private _refreshKpis(refresh ?: boolean) {

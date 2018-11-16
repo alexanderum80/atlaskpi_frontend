@@ -49,10 +49,6 @@ export const RevenueGroupingList: SelectionItem[] = [
     { id: 'customerZip', title: 'Customer\'s ZIP', selected: false, disabled: false},
     { id: 'customerGender', title: 'Customer\'s GENDER', selected: false, disabled: false}
 ];
-export const MapsGroupingList: SelectionItem[] = [
-    { id: 'customer.zip', title: 'Customer ZIP', selected: false, disabled: false},
-    { id: 'location.zip', title: 'Location ZIP', selected: false, disabled: false}
-];
 
 const ExpensesGroupingList = [
     { id: 'location', title: 'location', selected: false, disabled: false },
@@ -75,6 +71,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
     @Input() kpiList: SelectionItem[] = [];
     @Input() dashboardList: SelectionItem[] = [];
     @Input() isnewChartOrMap = true;
+    @Input() isFromDashboard: boolean;
     sortingCriteriaList: SelectionItem[] = [];
     private sortingCriteriaList$: Observable <SelectionItem[]>;
     frequencyPicker: SelectPickerComponent;
@@ -300,15 +297,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                 if (data || !isEmpty(data.kpiGroupings)) {
                     groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
                 }
-                if (this.ischartTypeMap) {
-                    const exists = MapsGroupingList.map(m => {
-                        return groupingList.find(gl => gl.id === m.id);
-                    });
-                    that.groupingList = exists.filter(e => e !== undefined);
-                } else {
-                    that.groupingList = groupingList;
-                }
-
+                that.groupingList = groupingList;
                 const currentGroupingValue = this.fg.get('grouping').value || '';
                 let nextGropingValue;
                 if (!groupingList.map(g => g.id).includes(currentGroupingValue)) {
@@ -343,14 +332,13 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         if (this.fg.get('grouping')) {
             this._subscription.push(
                 Observable.combineLatest(
-                    this.fg.get('frequency').valueChanges,
+                    this.fg.get('frequency') ? this.fg.get('frequency').valueChanges : '',
                     this.fg.get('grouping').valueChanges
                 )
                 .debounceTime(300)
                 .subscribe(result => {
                     const frequency: string = result[0];
                     const grouping: string = result[1];
-
                     const isBothEmpty: boolean = isEmpty(frequency) && isEmpty(grouping);
 
                     if (!isBothEmpty) {
@@ -377,16 +365,10 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
     private _subscribeToChartTypeChanges() {
         const that = this;
         this._chartGalleryService.activeChart$.subscribe((chart) => {
+            that.groupingList = [];
+            this._getGroupingInfo(chart);
             that.chartType = String(chart.type);
             this.ischartTypeMap = chart.name === 'map';
-            if (this.ischartTypeMap) {
-
-                that.groupingList = MapsGroupingList;
-                that.fg.controls['grouping'].patchValue(MapsGroupingList, { emitEvent: true });
-            } else {
-                that.groupingList = [];
-                this._getGroupingInfo(chart);
-            }
             that._resetFrequencyAndSource(that.chartType);
         });
     }
@@ -434,17 +416,18 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
 
     private _subscribeToXAxisChanges() {
         const that = this;
-
-        that._subscription.push(that.fg.controls['xAxisSource'].valueChanges
-            .debounceTime(100)
-            .distinctUntilChanged()
-            .subscribe(x => {
-                const xAxisSelectionList =  clone(that.xAxisSourceList);
-                for (let i = 0; i < xAxisSelectionList.length; i++) {
-                    xAxisSelectionList[i].selected = xAxisSelectionList[i].id === x ? true : false;
-                }
-                that.xAxisSourceList = xAxisSelectionList;
-        }));
+        if (that.fg.controls['xAxisSource']) {
+            that._subscription.push(that.fg.controls['xAxisSource'].valueChanges
+                .debounceTime(100)
+                .distinctUntilChanged()
+                .subscribe(x => {
+                    const xAxisSelectionList =  clone(that.xAxisSourceList);
+                    for (let i = 0; i < xAxisSelectionList.length; i++) {
+                        xAxisSelectionList[i].selected = xAxisSelectionList[i].id === x ? true : false;
+                    }
+                    that.xAxisSourceList = xAxisSelectionList;
+            }));
+        }
     }
 
     private _updateComparisonData(yearOldestDate: string) {
@@ -476,8 +459,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         }
 
         this.vm.comparisonList = this.comparisonList;
-
-        const currentComparisonValue = this.fg.get('comparison').value || '';
+        const currentComparisonValue = this.fg.get('comparison') ? this.fg.get('comparison').value : '';
         let nextComparisonValue;
         const comparisonIds = this.comparisonList.map(g => g.id);
         if (!comparisonIds.length || !comparisonIds.includes(currentComparisonValue)) {
@@ -485,7 +467,9 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         } else {
             nextComparisonValue = currentComparisonValue;
         }
-        this.fg.controls['comparison'].patchValue(nextComparisonValue, { emitEvent: true });
+        if (this.fg.get('comparison')) {
+            this.fg.controls['comparison'].patchValue(nextComparisonValue, { emitEvent: true });
+        }
         this.fg.controls['loadingComparison'].patchValue(false, { emitEvent: false });
 
     }
@@ -503,13 +487,14 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
 
   private _subscribeToComparisonChanges() {
     const that = this;
-
-    that._subscription.push(that.fg.controls['comparison'].valueChanges.subscribe(c => {
-        if (isEmpty(c)) {
-            return;
-        }
-        this.isCollapsedComparison = false;
-    }));
+    if (that.fg.controls['comparison']) {
+        that._subscription.push(that.fg.controls['comparison'].valueChanges.subscribe(c => {
+            if (isEmpty(c)) {
+                return;
+            }
+            this.isCollapsedComparison = false;
+        }));
+    }
   }
   private _resetCustomDateRangeControls(): void {
     if (this.fg && this.fg.controls && this.fg.controls['predefinedDateRange']) {

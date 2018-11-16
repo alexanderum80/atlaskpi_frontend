@@ -1,11 +1,12 @@
 kpi-item-list(
     title="CHART LIST",
+    aliases="charts",
     [items]="vm.chartsList",
     [itemViewModel]="vm",
     [addItemActivityName]="'AddChartActivity'",
     [itemListActivityName]="actionActivityNames",
     [actionItems] = "vm.menuItems",
-    itemType="table",
+    [itemType]="itemType",
     (onAddActionClicked)="addChart()",
     (onItemActionClicked)="actionClicked($event)",
     (onItemClicked)="editClickedList($event)")

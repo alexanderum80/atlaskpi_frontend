@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { ShowMapFormViewModel } from './show-map-form.viewmodel';
 import {
   Component,
@@ -5,12 +6,16 @@ import {
   OnInit,
   Renderer,
   ViewChild,
-  AfterViewInit
+  AfterViewInit,
+  Input
 } from '@angular/core';
 import {ApolloService} from '../../shared/services/apollo.service';
 import { IDataSource } from '../../shared/domain/kpis/data-source';
+import { SelectionItem } from '../../ng-material-components';
+import { Subscription } from 'rxjs';
 
 const fieldsWithData = require('graphql-tag/loader!./fields-with-data.gql');
+const kpiGroupingsQuery = require('graphql-tag/loader!../../charts/shared/ui/chart-basic-info/kpi-groupings.query.gql');
 
 @Component({
   selector: 'kpi-show-map-form',
@@ -20,6 +25,7 @@ const fieldsWithData = require('graphql-tag/loader!./fields-with-data.gql');
 })
 export class ShowMapFormComponent implements OnInit, AfterViewInit {
   loading: ElementRef;
+  @Input() kpi: string;
   // @ViewChild('loading') loading: ElementRef;
   @ViewChild('loading') set loadingElementRef(content: ElementRef) {
     if (content) {
@@ -28,6 +34,8 @@ export class ShowMapFormComponent implements OnInit, AfterViewInit {
   }
 
   isLoading = true;
+  groupingList: SelectionItem[] = [];
+  subscriptions: Subscription[] = [];
 
   constructor(
       public vm: ShowMapFormViewModel,
@@ -38,6 +46,11 @@ export class ShowMapFormComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this._getDataSources();
+    this.subscriptions.push(
+      this.vm.fg.controls['dateRange'].valueChanges.subscribe(fgValues => {
+        this._getGroupingInfo(fgValues);
+      })
+  );
   }
 
   ngAfterViewInit() {
@@ -79,6 +92,31 @@ export class ShowMapFormComponent implements OnInit, AfterViewInit {
         .then(res => {
             that.isLoading = false;
             that.vm.updateAvailableGroupings(res.fieldsWithData);
+        });
+  }
+
+  private _getGroupingInfo(dateRange: any): void {
+    const that = this;
+
+    if (!dateRange) { return; }
+
+    const dateRangeInput = [{
+      predefined: dateRange,
+      custom: {
+        from: null,
+        to: null
+      }
+    }];
+    const input = {
+      id: this.kpi,
+      dateRange: dateRangeInput
+    };
+
+    this._apolloService.networkQuery(kpiGroupingsQuery, { input })
+        .then(data => {
+            if (data || !isEmpty(data.kpiGroupings)) {
+              that.vm.groupingItems = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
+            }
         });
   }
 

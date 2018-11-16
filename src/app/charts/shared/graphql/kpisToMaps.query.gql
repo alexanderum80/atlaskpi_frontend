@@ -1,0 +1,6 @@
+query {
+   KpisSourcesMaps {
+   _id
+   name
+ }
+}

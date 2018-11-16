@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs/Subscription';
 
-import { AuthenticationService } from '../../shared/services';
+import { AuthenticationService, NativeChannelService, WindowService } from '../../shared/services';
 import { BrowserService } from '../../shared/services/browser.service';
 import { CommonService } from '../../shared/services/common.service';
 import { ICompanyInfo, LocalStorageService } from '../../shared/services/local-storage.service';
@@ -39,6 +39,7 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
     fg = new FormGroup({});
     mobile: boolean;
     companyInfo: ICompanyInfo;
+    password: string;
 
     private _subscription: Subscription[] = [];
 
@@ -46,20 +47,26 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
         private _authSvc: AuthenticationService,
         private _router: Router,
         private _localStorageSvc: LocalStorageService,
-        private _apollo: Apollo) {
+        private _nativeChannelSvc: NativeChannelService,
+        private _windowService: WindowService) {
         this.mobile = browser.isMobile();
     }
 
     ngOnInit() {
         this.companyInfo = this._localStorageSvc.getCompanyInfo() || { companyName: '', email: '', subdomain: '', fullName: '' };
+        this._windowService.atlasInterop.loginWithPassword = (password: string) => {
+            this.fg.get('password').setValue(password);
+            this.signIn(null);
+        };
     }
 
     ngAfterViewInit() {
-        const that = this;
+        this._nativeChannelSvc.loginRequired(this.companyInfo);
     }
 
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
+        delete(this._windowService.atlasInterop.loginWithPassword);
     }
 
     goToSignup(e: Event): void {

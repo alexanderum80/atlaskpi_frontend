@@ -1,6 +1,6 @@
 .edit-kpi-container(layout="column", layout-padding)
 
-    div(flex, [ngSwitch]="vm.selectedType")
+    div(*ngIf="!isLoading", flex, [ngSwitch]="vm.selectedType")
     
         kpi-simple-kpi-form(editing="true", *ngSwitchCase="1", #simpleForm, [model]="vm.kpi")
         
