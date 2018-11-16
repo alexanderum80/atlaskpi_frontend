@@ -6,8 +6,8 @@
 export const environment = {
     production: false,
     BEARER_KEY: 'myapp_bearer_key',
-    restServer: 'http://10.1.10.111:9091',
-    graphQlServer: 'http://10.1.10.111:9091/graphql',
+    restServer: 'http://192.168.100.56:9091',
+    graphQlServer: 'http://192.168.100.56:9091/graphql',
     googleMapApi: 'AIzaSyAhA6DuRTMwb8RrYNnD39C96xoTxqWiMSk',
     // restServer: 'http://192.168.1.67:9091',
     // graphQlServer: 'http://192.168.1.67:9091/graphql',

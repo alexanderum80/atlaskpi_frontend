@@ -3,4 +3,4 @@ export interface IAuthCredentials {
     password: string;
     host?: string;
     grant_type?: string;
-};
+}
