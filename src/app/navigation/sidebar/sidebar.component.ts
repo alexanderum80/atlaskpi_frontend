@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { MenuItem } from '../../ng-material-components';
 import { IMenuItem, IUserInfo } from '../../shared/models';
-import { StoreHelper } from '../../shared/services';
+import { StoreHelper, Store } from '../../shared/services';
 import { CommonService } from '../../shared/services/common.service';
 import { SidebarService } from './sidebar.service';
 
@@ -69,12 +69,20 @@ const menuItems: MenuItem[] = [{
 export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() width = 220;
     items: IMenuItem[];
+    logoPath: string;
 
     private _itemsSub: Subscription;
+    private _subscription: Subscription[] = [];
 
     constructor(
         private _storeHelper: StoreHelper,
-        private _sidebarService: SidebarService) {}
+        private _sidebarService: SidebarService,
+        private _store: Store) {
+            this._subscription.push( 
+                this._store.changes$.subscribe(
+                (state) => this.changeLogo(state)
+            ));
+        }
 
     ngOnInit() {
         this._sidebarService.items$.subscribe(items => this.items = items);
@@ -87,6 +95,8 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this._itemsSub && (typeof this._itemsSub.unsubscribe === 'function')) {
             this._itemsSub.unsubscribe();
         }
+
+        this._subscription.forEach(s => s.unsubscribe());
     }
 
     hideSidebar(e: Event) {
@@ -101,6 +111,14 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
     private _getDashboards(user: IUserInfo) {
         if (!user) {
             this.items[0].children = null;
+        }
+    }
+
+    changeLogo(state){
+        if (state.theme === 'dark') {
+            this.logoPath = 'white-logo.png';
+        } else {
+            this.logoPath = 'logo.png';
         }
     }
 }
