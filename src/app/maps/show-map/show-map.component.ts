@@ -53,12 +53,13 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
 
     showingMapSettings = false;
     isMapMarkerGrouping = false;
+    subscription: Subscription;
 
     private _subscription: Subscription[] = [];
 
     constructor(private _apollo: Apollo,
                 private _store: Store) {
-                    this._store.changes$.subscribe(
+                this.subscription= this._store.changes$.subscribe(
                         (state) => this.checkAppTheme(state)
                     );
                 }
@@ -68,6 +69,7 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     }
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
+        this.subscription.unsubscribe();
     }
 
     ngOnChanges() {

@@ -51,6 +51,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     showSidebarCalendar = false;
     showSidebarActivities = false;
     avatarAddress = '';
+    logoPath: string;
 
     actionItems: MenuItem[] = [
         {
@@ -158,6 +159,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
                     }
                 })
             );
+
+            this._subscription.push( 
+                this._store.changes$.subscribe(
+                (state) => this.changeLogo(state)
+            ));
         }
 
     ngOnInit() {
@@ -417,5 +423,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
         
         this._updateUserThemePreference(this.currentUser._id, themeName);
 
+    }
+
+    changeLogo(state){
+        if (state.theme === 'dark') {
+            this.logoPath = 'white-logo.png';
+        } else {
+            this.logoPath = 'logo.png';
+        }
     }
 }

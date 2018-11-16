@@ -1,17 +1,22 @@
-.show-map-container {
-  background-color: #171d2b !important;
 
-  bw-button {
-    .bgm-white {
-      background-color: #171d2b !important;
-    }
+.Maps{
+  .card-body{
+    background-color: #171d2b !important;
   }
 }
 
-.legend {
+.show-map-container {
   background-color: #171d2b !important;
 }
 
-// .legend-settings.bgm-white{
-//   background-color: #2c3446 !important;
-// }
+.legend {
+  background-color: #2c3446 !important;
+  
+  .money-range{
+    color: white !important;
+    }
+}
+
+.legend-settings.bgm-white{
+  background-color: #2c3446 !important;
+}
