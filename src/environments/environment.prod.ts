@@ -9,5 +9,6 @@ export const environment = {
     subdomain: 'bi.atlaskpi.com',
 
     integrationUrl: 'https://api.atlaskpi.com/integration',
-    twitterIntegrationUrl: 'https://api.atlaskpi.com/integration/twitter/request-token/?company_name={hostname}'
+    twitterIntegrationUrl: 'https://api.atlaskpi.com/integration/twitter/request-token/?company_name={hostname}',
+    remoteSupportModuleUrl: 'https://get.teamviewer.com/atlasremotesupport'
 };
