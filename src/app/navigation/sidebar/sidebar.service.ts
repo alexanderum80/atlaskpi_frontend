@@ -125,7 +125,7 @@ const MENU_ITEMS: MenuItem[] = [{
     id: 'support',
     title: 'Remote Support',
     icon: 'headset-mic',
-    externalUrl: environment.remoteSupportModule
+    externalUrl: environment.remoteSupportModuleUrl
 }
 
 ];

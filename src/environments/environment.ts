@@ -14,5 +14,5 @@ export const environment = {
     // integrationUrl: 'https://af31c66b.ngrok.io/integration',
     integrationUrl: 'http://localhost:9091/integration',
     twitterIntegrationUrl: 'http://localhost:9091/integration/twitter/request-token/?company_name={hostname}',
-    remoteSupportModule: 'https://get.teamviewer.com/atlasremotesupport'
+    remoteSupportModuleUrl: 'https://get.teamviewer.com/atlasremotesupport'
 };
