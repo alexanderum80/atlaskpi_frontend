@@ -1,6 +1,9 @@
+import { IChartGalleryItem } from './../../models/chart.models';
+
+import { OnFieldChanges } from '../../../../ng-material-components/viewModels';
 import 'rxjs/add/operator/debounceTime';
 
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, OnChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { camelCase, title } from 'change-case';
@@ -33,6 +36,7 @@ import { ChartBasicInfoViewModel } from './chart-basic-info.viewmodel';
 
 
 const kpiOldestDateQuery = require('graphql-tag/loader!./kpi-get-oldestDate.gql');
+const kpiDataSourcesQuery = require('graphql-tag/loader!./kpi-get-DataSources.gql');
 
 export const RevenueGroupingList: SelectionItem[] = [
     { id: 'location', title: 'Location', selected: false, disabled: false },
@@ -60,12 +64,14 @@ const kpiGroupingsQuery = require('graphql-tag/loader!./kpi-groupings.query.gql'
     templateUrl: 'chart-basic-info.component.pug',
     providers: [ ChartBasicInfoViewModel ]
 })
-export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
     @Input() fg: FormGroup;
-    @Input() kpis: IKPI[]= [];
+    @Input() kpis: IKPI[] = [];
     @Input() chartType = 'pie';
     @Input() kpiList: SelectionItem[] = [];
     @Input() dashboardList: SelectionItem[] = [];
+    @Input() isnewChartOrMap = true;
+    @Input() isFromDashboard: boolean;
     sortingCriteriaList: SelectionItem[] = [];
     private sortingCriteriaList$: Observable <SelectionItem[]>;
     frequencyPicker: SelectPickerComponent;
@@ -73,6 +79,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
 
     lastKpiDateRangePayload: any;
     lastOldestDatePayload = '';
+    previousChartType = '';
 
     @ViewChild('frequencyPicker') set frequencyContent(content: SelectPickerComponent) {
         if (content) {
@@ -118,12 +125,27 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
     isCollapsedSorting = true;
     frequencyList: SelectionItem[] = [];
     groupingList: SelectionItem[] = [];
+    mapsizeList: SelectionItem[] = [
+        {
+            id: 'small',
+            title: 'SMALL',
+            selected: false,
+            disabled: false
+        },
+        {
+            id: 'big',
+            title: 'BIG',
+            selected: false,
+            disabled: false
+        }
+    ];
     xAxisSourceList: SelectionItem[] = [];
     topList: SelectionItem[] = [
         { id: 'other', title: 'other', selected: false, disabled: false }
     ];
 
     backupChartModel: ChartModel;
+    ischartTypeMap = false;
 
     private _subscription: Subscription[] = [];
 
@@ -147,7 +169,18 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
             format: 'MM/DD/YYYY'
         };
     }
-
+    ngOnChanges() {
+        if (this.chartType === 'map') {
+            this.ischartTypeMap = true;
+            const selectedTypeChart: IChartGalleryItem = {
+                configName: 'map',
+                img: '/assets/img/charts/others/map.png',
+                name: 'map',
+                type: 'others'
+            };
+            this._chartGalleryService.setActive(selectedTypeChart);
+        }
+    }
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
     }
@@ -207,15 +240,27 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
                 .distinctUntilChanged()
                 .debounceTime(400)
                 .subscribe((value) => {
-                const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
-                const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
-                if (value.kpi && value.predefinedDateRange && !loadingGroupings && !loadingComparison) {
-                    const payload = that._getGroupingInfoInput(value);
-                    if (isEqual(that.lastKpiDateRangePayload, payload)) { return; }
-                    that._getGroupingInfo(value);
-                    that._getOldestDate(value.kpi);
-                    that.lastKpiDateRangePayload = payload;
-                }
+                    const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
+                    const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
+                    if (value.kpi && value.predefinedDateRange && !loadingGroupings && !loadingComparison) {
+                        const payload = that._getGroupingInfoInput(value);
+                        if (isEqual(that.lastKpiDateRangePayload, payload)) { return; }
+                        that._getGroupingInfo(value);
+                        that._getOldestDate(value.kpi);
+                        that.lastKpiDateRangePayload = payload;
+                    }
+                    const kpi_id = this.fg.value.kpi;
+                    if (kpi_id !== '') {
+                        this._apolloService.networkQuery < string > (kpiDataSourcesQuery, {id: kpi_id })
+                        .then(sources => {
+                            // Enable-Disable the map type chart
+                            this._chartGalleryService.showMap = sources.getKpiDataSources[0];
+                            if (!this._chartGalleryService.showMap && this.chartType === this.previousChartType) {
+                                this.chartType = 'pie';
+                            }
+                            this.previousChartType = this.chartType;
+                        });
+                    }
         });
     }
 
@@ -248,12 +293,11 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         this._apolloService.networkQuery(kpiGroupingsQuery, { input })
             .then(data => {
                 let groupingList = [];
+                that.groupingList = [];
                 if (data || !isEmpty(data.kpiGroupings)) {
                     groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
                 }
-
                 that.groupingList = groupingList;
-
                 const currentGroupingValue = this.fg.get('grouping').value || '';
                 let nextGropingValue;
                 if (!groupingList.map(g => g.id).includes(currentGroupingValue)) {
@@ -288,14 +332,13 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         if (this.fg.get('grouping')) {
             this._subscription.push(
                 Observable.combineLatest(
-                    this.fg.get('frequency').valueChanges,
+                    this.fg.get('frequency') ? this.fg.get('frequency').valueChanges : '',
                     this.fg.get('grouping').valueChanges
                 )
                 .debounceTime(300)
                 .subscribe(result => {
                     const frequency: string = result[0];
                     const grouping: string = result[1];
-
                     const isBothEmpty: boolean = isEmpty(frequency) && isEmpty(grouping);
 
                     if (!isBothEmpty) {
@@ -322,8 +365,10 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
     private _subscribeToChartTypeChanges() {
         const that = this;
         this._chartGalleryService.activeChart$.subscribe((chart) => {
+            that.groupingList = [];
+            this._getGroupingInfo(chart);
             that.chartType = String(chart.type);
-
+            this.ischartTypeMap = chart.name === 'map';
             that._resetFrequencyAndSource(that.chartType);
         });
     }
@@ -371,17 +416,18 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
 
     private _subscribeToXAxisChanges() {
         const that = this;
-
-        that._subscription.push(that.fg.controls['xAxisSource'].valueChanges
-            .debounceTime(100)
-            .distinctUntilChanged()
-            .subscribe(x => {
-                const xAxisSelectionList =  clone(that.xAxisSourceList);
-                for (let i = 0; i < xAxisSelectionList.length; i++) {
-                    xAxisSelectionList[i].selected = xAxisSelectionList[i].id === x ? true : false;
-                }
-                that.xAxisSourceList = xAxisSelectionList;
-        }));
+        if (that.fg.controls['xAxisSource']) {
+            that._subscription.push(that.fg.controls['xAxisSource'].valueChanges
+                .debounceTime(100)
+                .distinctUntilChanged()
+                .subscribe(x => {
+                    const xAxisSelectionList =  clone(that.xAxisSourceList);
+                    for (let i = 0; i < xAxisSelectionList.length; i++) {
+                        xAxisSelectionList[i].selected = xAxisSelectionList[i].id === x ? true : false;
+                    }
+                    that.xAxisSourceList = xAxisSelectionList;
+            }));
+        }
     }
 
     private _updateComparisonData(yearOldestDate: string) {
@@ -413,8 +459,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         }
 
         this.vm.comparisonList = this.comparisonList;
-
-        const currentComparisonValue = this.fg.get('comparison').value || '';
+        const currentComparisonValue = this.fg.get('comparison') ? this.fg.get('comparison').value : '';
         let nextComparisonValue;
         const comparisonIds = this.comparisonList.map(g => g.id);
         if (!comparisonIds.length || !comparisonIds.includes(currentComparisonValue)) {
@@ -422,7 +467,9 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
         } else {
             nextComparisonValue = currentComparisonValue;
         }
-        this.fg.controls['comparison'].patchValue(nextComparisonValue, { emitEvent: true });
+        if (this.fg.get('comparison')) {
+            this.fg.controls['comparison'].patchValue(nextComparisonValue, { emitEvent: true });
+        }
         this.fg.controls['loadingComparison'].patchValue(false, { emitEvent: false });
 
     }
@@ -440,13 +487,14 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnDestroy
 
   private _subscribeToComparisonChanges() {
     const that = this;
-
-    that._subscription.push(that.fg.controls['comparison'].valueChanges.subscribe(c => {
-        if (isEmpty(c)) {
-            return;
-        }
-        this.isCollapsedComparison = false;
-    }));
+    if (that.fg.controls['comparison']) {
+        that._subscription.push(that.fg.controls['comparison'].valueChanges.subscribe(c => {
+            if (isEmpty(c)) {
+                return;
+            }
+            this.isCollapsedComparison = false;
+        }));
+    }
   }
   private _resetCustomDateRangeControls(): void {
     if (this.fg && this.fg.controls && this.fg.controls['predefinedDateRange']) {

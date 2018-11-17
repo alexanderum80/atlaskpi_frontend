@@ -8,6 +8,8 @@ import { MaterialUserInterfaceModule } from '../ng-material-components';
 import { LegendService } from './shared/legend.service';
 import { ShowMapComponent } from './show-map/show-map.component';
 import { ShowMapFormComponent } from './show-map-form/show-map-form.component';
+import { MapViewMiniComponent } from './map-view-mini/map-view-mini.component';
+import { MapViewBigComponent } from './map-view-big/map-view-big.component';
 
 @NgModule({
     imports: [
@@ -20,10 +22,14 @@ import { ShowMapFormComponent } from './show-map-form/show-map-form.component';
     ],
     declarations: [
         ShowMapComponent,
-        ShowMapFormComponent
+        ShowMapFormComponent,
+        MapViewMiniComponent,
+        MapViewBigComponent
     ],
     exports: [
-        ShowMapComponent
+        ShowMapComponent,
+        MapViewMiniComponent,
+        MapViewBigComponent
     ],
     providers: [
         LegendService

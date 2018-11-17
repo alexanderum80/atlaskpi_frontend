@@ -24,7 +24,11 @@
                 .field-name.p-l-10(flex="35") To:
                 .p-l-10.field-value(flex) {{ momentify(item.dateRange.custom.to) }}
                     
-    div(flex, layout="row", layout-padding, layout-align="start start")
+    div(*ngIf="item.size", flex, layout="row", layout-padding, layout-align="start start")
+        .field-name(flex="35") Size:
+        .p-l-10.field-value(flex) {{ safe(item.size) }}
+
+    div(*ngIf="!item.size", flex, layout="row", layout-padding, layout-align="start start")
         .field-name(flex="35") Frequency:
         .p-l-10.field-value(flex) {{ safe(item.frequency) }}
 
@@ -33,6 +37,6 @@
         .field-name(flex="35") Groupings:
         .p-l-10.field-value(flex) {{ safe(item.groupings) }}
 
-    div(flex, layout="row", layout-padding, layout-align="start start")
+    div(*ngIf="!item.size", flex, layout="row", layout-padding, layout-align="start start")
         .field-name(flex="35") xAxisSource:
         .p-l-10.field-value(flex) {{ safe(item.xAxisSource) }}

@@ -1,10 +1,11 @@
 kpi-item-list(
     title="Roles",
+    aliases="roles",
     [items]="vm.roleItems",
     [itemViewModel]="vm",
     [addItemActivityName]="'AddRoleActivity'",
     [itemListActivityName]="actionActivityNames",
-    itemType="standard",
+    [itemType]="itemType",
     [tableRowTemplate]="tableItem",
     (onAddActionClicked)="add()",
     (onItemActionClicked)="actionClicked($event)",

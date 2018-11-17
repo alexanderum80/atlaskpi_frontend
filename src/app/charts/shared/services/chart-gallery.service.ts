@@ -26,11 +26,30 @@ export class ChartGalleryService {
 
     private _charts: IChartGalleryItemWithType[];
 
+    private _showMap = true;
+    private _showChart = true;
+
     constructor(private _http: Http) { }
 
     get sortingCriteriaList$(): Observable<SelectionItem[]> {
 
         return this.sortingCriteriaListBS.asObservable();
+    }
+
+    get showMap() {
+        return this._showMap;
+    }
+
+    set showMap(item: boolean) {
+        this._showMap = item;
+    }
+
+    get showChart() {
+        return this._showChart;
+    }
+
+    set showChart(item: boolean) {
+        this._showChart = item;
     }
 
     getCharList(): Observable<any> {
@@ -50,6 +69,7 @@ export class ChartGalleryService {
     get activeChart$() {
         return this._activeChartSubject.asObservable();
     }
+
 
     get toolTipList$(): Observable<any[]> {
         return this._toolTipLisSubect.asObservable().distinctUntilChanged();

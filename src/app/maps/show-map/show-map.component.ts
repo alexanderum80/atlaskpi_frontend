@@ -1,3 +1,4 @@
+import { FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { ShowMapFormComponent } from '../show-map-form/show-map-form.component';
 import { Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
@@ -11,6 +12,8 @@ import { sortBy } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 import {objectWithoutProperties} from '../../shared/helpers/object.helpers';
 import {CommonService} from '../../shared/services/common.service';
+import { Store } from 'src/app/shared/services';
+import { style_dark } from './dark-map-styles';
 
 const mapMarkerQuery = require('graphql-tag/loader!./map-markers.query.gql');
 
@@ -30,28 +33,49 @@ export interface IMapMarkerResponse {
     styleUrls: ['./show-map.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class ShowMapComponent implements OnChanges, OnDestroy {
-    @Input() markers: IMapMarker[];
+export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
+    @Input() markers: any[];
     @Input() legendColors: ILegendColorConfig[];
-
+    @Input() legendClosed = false;
+    @Input() Height = '400px';
+    // hiding this until fully functional
+    @Input() showSettingsBtn = false;
+    @Input() showLegendBtn = true;
+    @Input() kpi: string;
+    @Input() grouping: string[];
     @ViewChild('showMapForm') private _form: ShowMapFormComponent;
 
     lat: number;
     lng: number;
+    style = [];
+
     showingLegend = true;
 
     showingMapSettings = false;
     isMapMarkerGrouping = false;
+    subscription: Subscription;
 
     private _subscription: Subscription[] = [];
 
-    constructor(private _apollo: Apollo) {}
+    constructor(private _apollo: Apollo,
+                private _store: Store) {
+                this.subscription= this._store.changes$.subscribe(
+                        (state) => this.checkAppTheme(state)
+                    );
+                }
 
+    ngOnInit() {
+        this.showingLegend = !this.legendClosed;
+    }
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
+        this.subscription.unsubscribe();
     }
 
     ngOnChanges() {
+        if (this.grouping) {
+            this.isMapMarkerGrouping = this.grouping.length > 1;
+        }
         // calculate middle point
         if (!this.markers || !this.markers.length) {
             return;
@@ -85,19 +109,21 @@ export class ShowMapComponent implements OnChanges, OnDestroy {
         if (!Object.keys(this._form.vm.payload).length) { return; }
         const that = this;
         this.isMapMarkerGrouping = this._form.vm.payload.grouping ? true : false;
-
         this._subscription.push(this._apollo.watchQuery<IMapMarkerResponse>({
             query: mapMarkerQuery,
             fetchPolicy: 'network-only',
             variables: {
-                input: this._form.vm.payload
+                input: {
+                    kpi: this.kpi,
+                    grouping: this._form.vm.payload.grouping ? ['customer.zip', this._form.vm.payload.grouping] : ['customer.zip'],
+                    dateRange: JSON.stringify({predefined: this._form.vm.payload.dateRange, custom: {from: null, to: null}})
+                }
             }
         })
         .valueChanges
         .subscribe(({ data }) => {
             that.closeMapSettings();
             if (!data || !data.mapMarkers || !data.mapMarkers.length) { return; }
-
             that.markers = data.mapMarkers.map(m => objectWithoutProperties(m, ['__typename']));
             that._setLatAndLngMarkers(that.markers);
         }));
@@ -112,6 +138,9 @@ export class ShowMapComponent implements OnChanges, OnDestroy {
         return isValid;
     }
 
+    get actualKpi() {
+        return this.kpi;
+    }
     private _setLatAndLngMarkers(markers: IMapMarker[]): void {
         // center the map on the biggest value
         const markersSorted = sortBy(markers, (m) => m.value * -1);
@@ -124,5 +153,14 @@ export class ShowMapComponent implements OnChanges, OnDestroy {
                 m.iconUrl = `assets/img/maps/${m.color}-pin.png`;
             }
         });
+    }
+
+    checkAppTheme(state) {
+        // Check theme in app state
+    if (state.theme === 'dark') {
+            this.style = style_dark;
+        } else {
+            this.style = [];
+        }
     }
 }

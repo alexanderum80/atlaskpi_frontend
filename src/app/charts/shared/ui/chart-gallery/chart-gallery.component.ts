@@ -1,3 +1,4 @@
+import { map, filter } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -20,7 +21,16 @@ export class ChartGalleryComponent {
         const that = this;
         _galleryService.getCharList().subscribe(charts => {
             that.charts = charts;
+            if (!_galleryService.showMap) {
+                that.charts['others'] = that.charts['others'].filter(c => c.name !== 'map');
+            }
             that.chartCategories = Object.keys(charts);
+            if (that.charts['others'].length === 0) {
+                that.chartCategories = that.chartCategories.filter(c => c !== 'others');
+            }
+            if (!_galleryService.showChart) {
+                that.chartCategories = that.chartCategories.filter(c => c === 'others');
+            }
         });
     }
 

@@ -1,9 +1,12 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { NamedType } from './../../shared/models/business-unit';
+import { UpdateMapMutation } from './../shared/graphql/charts.gql';
+import { MapModel } from './../../maps/shared/models/map.models';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, Input, Output, EventEmitter, Inject, Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { ApolloQueryResult } from 'apollo-client';
-import { isEqual, isString, pick } from 'lodash';
+import { isEqual, isString, pick, map } from 'lodash';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import Sweetalert from 'sweetalert2';
@@ -11,23 +14,25 @@ import Sweetalert from 'sweetalert2';
 import { DialogResult } from '../../shared/models/dialog-result';
 import { ApolloService } from '../../shared/services/apollo.service';
 import { CommonService } from '../../shared/services/common.service';
-import { SelectedChartsService } from '../shared';
+import { SelectedChartsService, ListChartService } from '../shared';
 import { prepareChartDefinitionForPreview } from '../shared/extentions';
-import { SingleChartQuery, UpdateChartMutation } from '../shared/graphql/charts.gql';
-import { ChartModel, IChart, IUpdateChartResponse, SingleChartResponse } from '../shared/models';
+import { SingleChartQuery, UpdateChartMutation, SingleMapQuery } from '../shared/graphql/charts.gql';
+import { ChartModel, IChart, IUpdateChartResponse, SingleChartResponse, SingleMapResponse } from '../shared/models';
 import { ChartFormComponent } from '../shared/ui/chart-form';
 
 import { ModifyChartActivity } from '../../shared/authorization/activities/charts/modify-chart.activity';
 import { Activity } from '../../shared/authorization/decorators/component-activity.decorator';
+import { inject } from 'async';
 
 
 const Highcharts = require('highcharts/js/highcharts');
 const getChartByTitle = require('graphql-tag/loader!../shared/graphql/get-chart-by-title.gql');
+const getMapByTitle = require('graphql-tag/loader!../shared/graphql/get-map-by-title.gql');
 
 @Component({
   selector: 'kpi-edit-chart',
   templateUrl: './edit-chart.component.pug',
-  styleUrls: ['./edit-chart.component.scss'],
+  styleUrls: ['./edit-chart.component.scss']
 })
 
 @Activity(ModifyChartActivity)
@@ -44,8 +49,11 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
     fg: FormGroup = new FormGroup({});
 
     chart: IChart;
+    map: any;
     id: string;
     chartModel: ChartModel;
+    mapModel: MapModel;
+    isChartOrMap = '';
     loading = true;
 
     removeTargetData: any = {};
@@ -57,7 +65,8 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
                 private _apolloService: ApolloService,
                 private _router: Router,
                 private _route: ActivatedRoute,
-                private _selectChartService: SelectedChartsService) {
+                private _selectChartService: SelectedChartsService
+                ) {
     }
 
     ngOnDestroy() {
@@ -78,29 +87,47 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
                     that._setRemoveTargetData(response);
                     that._processChartResponse(response);
                 }, 500);
-            })
+            });
         } else {
-        this._subscription.push(this._route.params
-            .do((params: Params) => that.id = params['id'])
-            .switchMap((params: Params) => that._getChartByIdApolloQuery(params['id']))
-            .subscribe((response: ApolloQueryResult<any>) => {
-               setTimeout(() => {
-                that._setRemoveTargetData(response);
-                that._processChartResponse(response);
-               }, 500);
-            }));
+            this._route.params.subscribe(param => {
+               this.isChartOrMap = param['chartType'];
+               if (this.isChartOrMap === 'chart') {
+                    this._subscription.push(this._route.params
+                        .do((params: Params) => that.id = params['id'])
+                        .switchMap((params: Params) => that._getChartByIdApolloQuery(params['id']))
+                        .subscribe((response: ApolloQueryResult<any>) => {
+                        setTimeout(() => {
+                            if (response.data.chart) {
+                                that._setRemoveTargetData(response);
+                                that._processChartResponse(response);
+                            }
+                        }, 500);
+                    }));
+               } else if (this.isChartOrMap === 'map') {
+                this._subscription.push(this._route.params
+                    .do((params: Params) => that.id = params['id'])
+                    .switchMap((params: Params) => that._getMapByIdApolloQuery(params['id']))
+                    .subscribe((response: ApolloQueryResult<any>) => {
+                    setTimeout(() => {
+                        if (response.data.map) {
+                            that._processMapResponse(response);
+                        }
+                    }, 2000);
+                }));
+               }
+            });
         }
     }
 
     private exitEditChart() {
-    if (this.isFromDashboard) {
-        this.result.emit('charts');
-    }    
-    if (this.chartId) {
-        this.goToDashboardShow.emit();
-    } else {
-        this._router.navigateByUrl('/charts');
-    }
+        if (this.isFromDashboard) {
+            this.result.emit('charts');
+        }
+        if (this.chartId) {
+            this.goToDashboardShow.emit();
+        } else {
+            this._router.navigateByUrl('/charts');
+        }
     }
 
     onChartFormEvent($event: DialogResult) {
@@ -110,7 +137,11 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
                         break;
 
           case DialogResult.SAVE:
-               return this.updateChart();
+            if (this.isChartOrMap === 'map') {
+                return this.updateMap();
+            } else {
+                return this.updateChart();
+            }
         }
     }
 
@@ -149,12 +180,54 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
             .then(response => {
                 if (response.data.updateChart.success) {
                     this.exitEditChart();
-                    //this._router.navigateByUrl('/charts/list');
                 }
 
                 if (response.data.updateChart.errors) {
                     // perform an error message
                     console.log(response.data.updateChart.errors);
+                }
+            })
+            .catch(err => console.log(err));
+        });
+    }
+
+    updateMap() {
+        const that = this;
+
+        this._selectChartService.updateExistDuplicatedName(false);
+
+        this._apolloService.networkQuery < String > (getMapByTitle, { title: this.fg.controls.name.value }).then(d => {
+            const mapResponse = JSON.parse(d.getMapByTitle);
+            if (mapResponse && mapResponse._id !== this.id) {
+                this._selectChartService.updateExistDuplicatedName(true);
+
+                this.fg.controls['name'].setErrors({forbiddenName: true});
+
+                return Sweetalert({
+                    title: 'Duplicated name!',
+                    text: 'You already have a Map with that name. Please change the name and try again.',
+                    type: 'error',
+                    showConfirmButton: true,
+                    confirmButtonText: 'Ok'
+                  });
+            }
+
+            // this.chartFormComponent.processFormatChanges(this.fg.value);
+            const model = MapModel.fromFormGroup(this.fg);
+
+            this._apollo.mutate<IUpdateChartResponse>({
+                mutation: UpdateMapMutation,
+                variables: { id: that.id, input: model }
+            })
+            .toPromise()
+            .then(response => {
+                if (response.data.updateMap.success) {
+                    this.exitEditChart();
+                }
+
+                if (response.data.updateMap.errors) {
+                    // perform an error message
+                    console.log(response.data.updateMap.errors);
                 }
             })
             .catch(err => console.log(err));
@@ -190,6 +263,18 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
         }, 500);
     }
 
+    private _processMapResponse(response: ApolloQueryResult<any>) {
+        this.loading = false;
+        if (!response.data.map) {
+            return this.id = null;
+        }
+        this.map = JSON.parse(response.data.map);
+        this.mapModel = new MapModel(this.map);
+        setTimeout(() => {
+            this.chartFormComponent.updateFormFields();
+        }, 500);
+    }
+
     private _getChartByIdApolloQuery(id: string): Observable<ApolloQueryResult<SingleChartResponse>> {
       return this._apollo.watchQuery <SingleChartResponse> ({
           query: SingleChartQuery,
@@ -199,6 +284,16 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
           fetchPolicy: 'network-only'
         }).valueChanges;
     }
+
+    private _getMapByIdApolloQuery(id: string): Observable<ApolloQueryResult<SingleMapResponse>> {
+        return this._apollo.watchQuery <SingleMapResponse> ({
+            query: SingleMapQuery,
+            variables: {
+              id: id
+            },
+            fetchPolicy: 'network-only'
+          }).valueChanges;
+      }
 
     private _setRemoveTargetData(response: any): void {
         const data = response.data;

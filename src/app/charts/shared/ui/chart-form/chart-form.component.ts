@@ -1,3 +1,5 @@
+import { from } from 'apollo-link';
+import { IChartDateRange } from './../../../../shared/models/date-range';
 import { CommonService } from '../../../../shared/services/common.service';
 import {
     AfterViewInit,
@@ -38,11 +40,16 @@ import { groupBy, includes } from 'lodash';
 import { FormControl } from '@angular/forms';
 import { OnChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 import { ChartFormatInfoComponent } from '../chart-format-info/chart-format-info.component';
+import { IMapMarker } from '../../../../maps/shared/models/map-marker';
+import { objectWithoutProperties } from '../../../../shared/helpers/object.helpers';
+import { MapModel } from '../../../../maps/shared/models/map.models';
 import { UserService } from '../../../../shared/services';
 
 
 const Highcharts = require('highcharts/js/highcharts');
 const getChartByTitle = require('graphql-tag/loader!../../graphql/get-chart-by-title.gql');
+const mapMarkersQuery = require('graphql-tag/loader!src/app/maps/show-map/map-markers.query.gql');
+const getKpisToMaps = require('graphql-tag/loader!../../graphql/kpisToMaps.query.gql');
 
 const initialDefinition = {
     chart: {
@@ -81,13 +88,13 @@ const chartDefinitionFromKPI = {
                 format: '{point.name}:<br/> <b>{point.y:,.2f} ({point.percentage:.2f}%)</b>'
             },
             showInLegend: true,
-            stacking: "normal"
+            stacking: 'normal'
         }
     },
     tooltip: {
-        altas_definition_id: "multiple_percent",
+        altas_definition_id: 'multiple_percent',
         enabled: true,
-        formatter: "kpi_tooltip_with_percentage_and_total",
+        formatter: 'kpi_tooltip_with_percentage_and_total',
         shared: true,
         useHTML: true
     },
@@ -142,20 +149,24 @@ interface Itypography {
 export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     @Input() fg: FormGroup;
     @Input() chartModel: ChartModel;
+    @Input() mapModel: MapModel;
     @Input() chartId: string;
     @Input() chartDataFromKPI: any;
+    @Input() isnewChartOrMap: boolean;
+    @Input() isFromDashboard: boolean;
+    @Input() chartType = 'pie';
     @Output() result = new EventEmitter < DialogResult > ();
     @ViewChild(ChartFormatInfoComponent) ChartFormatInfo: ChartFormatInfoComponent;
 
     public sortingCriteriaList: SelectionItem[] = [];
     chartDefinition: any;
     sortingChart: any;
-    chartType = 'pie';
     kpis: IKPI[] = [];
     dashboardList: SelectionItem[] = [];
     kpiList: SelectionItem[] = [];
     viewportSizeSub: Subscription;
     chartSize: IChartSize;
+    mapMarkers: any[] = [];
 
     // // DEFINICION DE VARIABLES DEL TOOLTIP
     // format: string;
@@ -172,6 +183,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
     canSave = false;
     isEdit = false;
+    ischartTypeMap = false;
 
     constructor(private _apollo: Apollo,
         private _galleryService: ChartGalleryService,
@@ -191,7 +203,6 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
     ngOnInit() {
         this._dashboardsQuery();
-
         const that = this;
 
         this.viewportSizeSub = this._browserService.viewportSize$.subscribe(s => {
@@ -219,6 +230,10 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     }
 
     ngAfterViewInit() {
+        if (this.isFromDashboard && this.chartType === 'map') {
+            this.loadKpisToMaps();
+        }
+        // if (this.isFromDashboard && this.chartType === 'chart') { this.chartType = 'pie'; }
         const loadingGroupings = new FormControl(false);
         this.fg.addControl('loadingGroupings', loadingGroupings);
 
@@ -229,8 +244,22 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         const that = this;
         that.fg.valueChanges.debounceTime(500)
            .subscribe(values => {
-            that.processFormatChanges(values)
-                   .then(() => that.previewChartQuery());
+               if (this.ischartTypeMap) {
+                // Here i must run the query
+                // to obtain map data
+                if (this.fg.value.kpi && this.fg.value.kpi !== ''
+                    && (this.fg.value.predefinedDateRange !== ''
+                    || this.fg.value.predefinedDateRange === 'custom' && this.fg.value.customFrom !== ''
+                    && this.fg.value.customTo !== '')) {
+                    that._bringMapMarkers();
+                }
+                this.canSave = this.formValid;
+               } else {
+                    if (this.chartModel) {
+                        that.processFormatChanges(values)
+                            .then(() => that.previewChartQuery());
+                    }
+               }
             });
         this._selectChartService.updateExistDuplicatedName(false);
         this._subscribeToNameChanges();
@@ -259,6 +288,42 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             chartHeight = 260;
         }
     }
+
+    private loadKpisToMaps() {
+        this._apolloService.networkQuery <any> (getKpisToMaps)
+        .then(res => {
+            this.kpis = res.KpisSourcesMaps;
+            this.kpiList = ToSelectionItemList(this.kpis, '_id', 'name');
+        });
+    }
+
+    private _bringMapMarkers() {
+        const that = this;
+        let tmpDateRange: IChartDateRange;
+        if (this.fg.value.predefinedDateRange === 'custom') {
+            tmpDateRange = {
+                predefined: 'custom',
+                custom: {
+                    from: this.fg.value.customFrom,
+                    to: this.fg.value.customTo
+                }
+            };
+        } else {
+            tmpDateRange = {
+                predefined: this.fg.value.predefinedDateRange,
+                custom: undefined
+            };
+        }
+        this._subscription.push(
+            this._apolloService.networkQuery <any> (mapMarkersQuery, { input:
+                { dateRange: JSON.stringify(tmpDateRange),
+                    grouping: this.fg.value.grouping ? ['customer.zip', this.fg.value.grouping] : ['customer.zip'],
+                    kpi: this.fg.value.kpi
+                } })
+                .then(res => {
+                    that.mapMarkers = res.mapMarkers.map(m => objectWithoutProperties(m, ['__typename']));
+                }));
+        }
 
     saveChart() {
         this.result.emit(DialogResult.SAVE);
@@ -302,7 +367,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                         }
                     });
                 }
-                //gridlines
+                // gridlines
                 if (!isEmpty(values.removeGridlines)) {
                     this.chartDefinition.yAxis = Object.assign({}, this.chartDefinition.removeGridlines || {}, {
                         removeGridlines: 0
@@ -320,7 +385,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                 this._processTooltipChanges(values);
                 // invert axis
                 this._processInvertedAxisChanges(values);
-                //remove gridlines
+                // remove gridlines
                 this._proccessRemoveGridlines(values);
                 console.log(this.chartDefinition);
                 return resolve();
@@ -330,7 +395,12 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
     updateFormFields() {
         const that = this;
-        const values = this.chartDataFromKPI ? this.chartDataFromKPI : this.chartModel.toChartFormValues();
+        let values: any;
+        if (this.mapModel) {
+            values = this.mapModel.toMapFormValues();
+        } else {
+            values = this.chartDataFromKPI ? this.chartDataFromKPI : this.chartModel.toChartFormValues();
+        }
 
         this.ChartFormatInfo.defaultChartColors();
 
@@ -345,14 +415,19 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
                 that.isEdit = true;
             // this.chartType = this.chartModel.type;
-                that.chartDefinition = this.chartDataFromKPI ? chartDefinitionFromKPI : that.chartModel.chartDefinition;
-                that._galleryService.updateToolTipList(that.chartDefinition.chart.type);
-                if (that.chartDefinition && !this.chartDataFromKPI) {
-                    that.chartType = (that.chartModel.type || that.chartDefinition.chart.type)
-                } else {
-                    that.chartType = (that.chartDefinition && this.chartDataFromKPI) ? 
-                        chartDefinitionFromKPI.chart.type : 
-                        initialDefinition.chart.type;
+                if (this.chartModel) {
+                    that.chartDefinition = this.chartDataFromKPI ? chartDefinitionFromKPI : that.chartModel.chartDefinition;
+                    that._galleryService.updateToolTipList(that.chartDefinition.chart.type);
+
+                    if (that.chartDefinition && !this.chartDataFromKPI) {
+                        that.chartType = (that.chartModel.type || that.chartDefinition.chart.type);
+                    } else {
+                        that.chartType = (that.chartDefinition && this.chartDataFromKPI) ?
+                            chartDefinitionFromKPI.chart.type :
+                            initialDefinition.chart.type;
+                    }
+                } else if (MapModel) {
+                    that.chartType = 'map';
                 }
                 // Update formgroup
                 setTimeout(function () {
@@ -361,7 +436,14 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                     that.fg.controls['description'].patchValue(values.description);
                     that.fg.controls['predefinedDateRange'].patchValue(values.predefinedDateRange);
                     that.fg.controls['predefinedTop'].patchValue(values.predefinedTop);
-
+                    if (values.mapsize) {
+                        const mapsize = that.fg.controls['mapsize'];
+                        if (!mapsize) {
+                            that.fg.addControl('mapsize', new FormControl(values.mapsize));
+                        } else {
+                            mapsize.patchValue(values.mapsize);
+                        }
+                    }
                     if (values.predefinedDateRange === 'custom') {
                         const customFrom = that.fg.controls['customFrom'];
 
@@ -429,8 +511,19 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                 }, 800);
                 setTimeout(() => {
                     that.fg.controls['xAxisSource'].setValue(values.xAxisSource);
-                    if (that.fg.controls['grouping']) {
-                        that.fg.controls['grouping'].setValue(values.grouping);
+                    if (that.fg.controls['grouping'] && values.grouping) {
+                
+                        let groupingValue;
+                        //groupings is an array for maps an string for charts
+                        if(Array.isArray(values.grouping) && values.grouping.length === 2 ){
+                            groupingValue = values.grouping[1];
+                        }else if(Array.isArray(values.grouping)){
+                            groupingValue = ''
+                        }else{
+                            groupingValue= values.grouping;
+                        }
+                        that.fg.controls['grouping'].setValue(groupingValue); 
+
                     }
                     // depends on the daterange selection
                     that.fg.controls['comparison'].setValue(values.comparison);
@@ -459,16 +552,25 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     }
 
     isLegendsEnabled() {
-        return (!this.chartModel.hasOwnProperty('chartDefinition') || !this.chartModel.chartDefinition.hasOwnProperty('legend')) ?
-            true : this.chartModel.chartDefinition['legend']['enabled'];
+        if (!this.chartModel) {
+            return false;
+        } else {
+            return (!this.chartModel.hasOwnProperty('chartDefinition') || !this.chartModel.chartDefinition.hasOwnProperty('legend')) ?
+                true : this.chartModel.chartDefinition['legend']['enabled'];
+        }
     }
 
     isInvertAxisEnabled() {
-        return (!this.chartModel.hasOwnProperty('chartDefinition') || !this.chartModel.chartDefinition.hasOwnProperty('invertAxis')) ?
-            false : this.chartModel.chartDefinition['invertAxis']['enabled'];
+        if (!this.chartModel) {
+            return false;
+        } else {
+            return (!this.chartModel.hasOwnProperty('chartDefinition') || !this.chartModel.chartDefinition.hasOwnProperty('invertAxis')) ?
+                false : this.chartModel.chartDefinition['invertAxis']['enabled'];
+        }
     }
-    //remove gridlines
+    // remove gridlines
     isRemoveGridlinesEnabled() {
+        if (!this.chartModel) { return false; }
         if (!this.chartModel.hasOwnProperty('chartDefinition') || !this.chartModel.chartDefinition.hasOwnProperty('yAxis') ||
         this.chartModel.chartDefinition['yAxis']['gridLineWidth'] !== 0) {
             return false;
@@ -477,10 +579,14 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     }
 
     getCustom() {
-              return (!this.chartModel.hasOwnProperty('chartDefinition') ||
-              !this.chartModel.chartDefinition.hasOwnProperty('tooltip') ||
-              !this.chartModel.chartDefinition.tooltip.hasOwnProperty('custom'))
-              ? new CustomFormat() : this.chartModel.chartDefinition.tooltip.custom;
+        if (!this.chartModel) {
+            return new CustomFormat();
+        } else {
+            return (!this.chartModel.hasOwnProperty('chartDefinition') ||
+            !this.chartModel.chartDefinition.hasOwnProperty('tooltip') ||
+            !this.chartModel.chartDefinition.tooltip.hasOwnProperty('custom'))
+            ? new CustomFormat() : this.chartModel.chartDefinition.tooltip.custom;
+        }
     }
 
     get isPredefinedTopOther() {
@@ -501,12 +607,22 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         return true;
     }
 
+    get isMapSizeValid() {
+        return this.fg.value.mapsize && this.fg.value.mapsize.length > 0;
+    }
+
     get formValid() {
-        return !isEmpty(this.fg.value.name) &&
+        if (this.ischartTypeMap) {
+            return this.fg.value.name !== undefined && this.fg.value.name.length > 1 &&
+                this.fg.value.kpi !== undefined && this.fg.value.kpi.length > 0 &&
+                this.fg.value.predefinedDateRange !== undefined && this.isMapSizeValid;
+        } else {
+            return !isEmpty(this.fg.value.name) &&
             !isEmpty(this.fg.value.kpi) &&
             !isEmpty(this.fg.value.predefinedDateRange) &&
             this.isChartCustomTopValid &&
             this.tooltipValid;
+        }
     }
 
     get tooltipValid(): boolean {
@@ -524,8 +640,14 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     private _updateDashboardList(): SelectionItem[] {
         // in this method we put a mark on the items who contains the chart
         const that = this;
-        const chartDashboardsIds = this.chartModel.dashboards ?
+        let chartDashboardsIds: String[] = [];
+        if (this.chartModel) {
+        chartDashboardsIds = this.chartModel.dashboards ?
             this.chartModel.dashboards.map(d => d._id) : [];
+        } else {
+            chartDashboardsIds = this.mapModel.dashboards ?
+            this.mapModel.dashboards.map(d => d) : [];
+        }
         this.fg.controls['dashboards'].setValue(chartDashboardsIds.join('|'));
         return this.dashboardList;
     }
@@ -622,10 +744,13 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         const that = this;
 
         this._subscription.push(this._galleryService.activeChart$.subscribe((chart) => {
-            that._galleryService.getChartSampleDefinition( < any > chart.type, chart)
-                .subscribe((sampleChart) => {
-                    processChartActivityChange(that, chart, sampleChart);
-                });
+            this.ischartTypeMap = chart.name === 'map';
+            if (!this.ischartTypeMap) {
+                that._galleryService.getChartSampleDefinition( < any > chart.type, chart)
+                    .subscribe((sampleChart) => {
+                        processChartActivityChange(that, chart, sampleChart);
+                    });
+                }
         }));
     }
 
@@ -669,7 +794,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             }
         }
     }
-    //remove gridlines
+    // remove gridlines
      private _proccessRemoveGridlines(values) {
         const newValue = (values.removeGridlines) ? true : false;
 
@@ -706,6 +831,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             this.chartDefinition.plotOptions = Object.assign({}, plotOptions);
         }
     }
+
     private _setChartType() {
         if (this.chartDefinition && this.chartDefinition.chart.hasOwnProperty('type')) {
             if (this.chartType !== this.chartDefinition.chart.type) {
@@ -724,8 +850,6 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             const model = ChartModel.fromFormGroup(this.fg, this.chartDefinition);
             this._chartDetailsSubject.next(model);
         }*/
-
-
 
         if (!values.tooltipEnabled) {
             this.chartDefinition.tooltip = Object.assign({}, { enabled: false });

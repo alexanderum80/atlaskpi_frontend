@@ -43,7 +43,7 @@ import { TargetsModule } from './targets/targets.module';
     declarations: [
         AppComponent,
         UnauthorizedComponent,
-        LoadingProfileComponent
+        LoadingProfileComponent,
     ],
     imports: [
         BrowserModule,

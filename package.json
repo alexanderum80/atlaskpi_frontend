@@ -1,9 +1,9 @@
 {
   "name": "frontend",
-  "version": "0.0.26",
+  "version": "0.0.32",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --watch --disable-host-check",
+    "start": "ng serve --watch --disable-host-check --host 0.0.0.0",
     "build": "ng build --prod --aot",
     "test": "ng test",
     "lint": "ng lint",

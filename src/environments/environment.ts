@@ -8,10 +8,13 @@ export const environment = {
     BEARER_KEY: 'myapp_bearer_key',
     restServer: 'http://localhost:9091',
     graphQlServer: 'http://localhost:9091/graphql',
+    // restServer: 'http://172.16.1.40:9091',
+    // graphQlServer: 'http://172.16.1.40:9091/graphql',
     subdomain: 'dev.atlaskpi.com',
     googleMapApi: 'AIzaSyAhA6DuRTMwb8RrYNnD39C96xoTxqWiMSk',
 
     // integrationUrl: 'https://af31c66b.ngrok.io/integration',
     integrationUrl: 'http://localhost:9091/integration',
-    twitterIntegrationUrl: 'http://localhost:9091/integration/twitter/request-token/?company_name={hostname}'
+    twitterIntegrationUrl: 'http://localhost:9091/integration/twitter/request-token/?company_name={hostname}',
+    remoteSupportModuleUrl: 'https://get.teamviewer.com/atlasremotesupport'
 };

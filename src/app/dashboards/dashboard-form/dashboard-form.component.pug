@@ -48,7 +48,11 @@
 
         //- right panel
         .right-panel.h-100(flex)
-            bw-tab-set.w-100
+             bw-tab-set.w-100
+                .tab-content
+                    .m-l-10.m-r-10.text-right(flex-initial)
+                        .search-bar([formGroup]="fgs")
+                            input.search-bar(formControlName="search", placeholder="Type to filter...", type="text")
                     bwTab.m-10.section-header(heading="Widgets", icon="widgets", (select)="switchTab('widgets')")  
                         div(*ngIf="widgetsLoading", layout="row", layout-align="center center")
                             bw-preloader.text-center(color="gray")
@@ -59,12 +63,13 @@
                                 h2.p-b-40.c-gray.text-center Looks that there are no widgets defined yet
                                 
                         .widgets.h-100.overflow-auto(*ngIf="!widgetsLoading")
+                            
                             div(layout="column", layout-gt-sm="row", layout-wrap)
-                                div(*ngFor="let widget of visibleBigWidgets", flex="100", flex-gt-sm="50", flex-gt-lg="25")
+                                div(*ngFor="let widget of filteredItemsWidgetsBig", flex="100", flex-gt-sm="50", flex-gt-lg="25")
                                     kpi-selectable-item-frame([item]="widget", (click)="toggleWidgetSelection(widget)")
                                         kpi-auto-renderable-widget([item]="widget", [autoRender]="false", [widgetPreview]="true")
                                 
-                                div(*ngFor="let widget of visibleSmallWidgets", flex-xs="50", flex-gt-xs="50", flex-gt-sm="25", flex-gt-lg="12-5")
+                                div(*ngFor="let widget of filteredItemsWidgetsSmall", flex-xs="50", flex-gt-xs="50", flex-gt-sm="25", flex-gt-lg="12-5")
                                     kpi-selectable-item-frame([item]="widget", (click)="toggleWidgetSelection(widget)")
                                         kpi-auto-renderable-widget([item]="widget", [autoRender]="false", , [widgetPreview]="true")
 
@@ -81,7 +86,7 @@
                         
                         .charts.h-100.overflow-auto(*ngIf="!chartsLoading")
                             div(layout="column", layout-gt-sm="row", layout-wrap)
-                                .box(flex-xs="100", flex-gt-xs="100", flex-gt-sm="50", flex-gt-lg="33", *ngFor="let chart of visibleCharts")
+                                .box(flex-xs="100", flex-gt-xs="100", flex-gt-sm="50", flex-gt-lg="33", *ngFor="let chart of filteredItemsCharts")
                                     kpi-selectable-item-frame([item]="chart", (click)="toggleChartSelection(chart)")
                                         kpi-auto-rendereable-chart.pointer-cursor(
                                                                                 [hidden]="!displayChart",
@@ -112,14 +117,15 @@
                                 i.zmdi.zmdi-map
                             .message(flex)
                                 h2.p-b-40.c-gray.text-center Looks that there are no maps defined yet    
-                        .maps(*ngIf="!mapsLoading", flex-none, [attr.layout-padding]="!isMobile")
+                        .maps.h-100.overflow-auto(*ngIf="!mapsLoading", flex-none, [attr.layout-padding]="!isMobile")
                             div(layout="row", layout-wrap, layout-padding, layout-align="center center")
-                                div(*ngFor="let map of visibleMaps", flex-xs="100", flex-sm="50", flex-md="50", flex-gt-md="50")
+                                div(*ngFor="let map of filteredItemsMaps", flex-xs="100", flex-sm="50", flex-md="50", flex-gt-md="50")
                                     kpi-selectable-item-frame([item]="map", (click)="toggleMapSelection(map)")
-                                        .overflow-auto(layout-align="center center")
-                                            img.map-icon(src='/assets/img/datasources/mapa.logo.png', alt="map logo image")
-                                // bw-button.btn-addMap(flex-none, color="blue", icon="plus", [circular]="true", (clicked)="openAddMap()")            
-
+                                        .map-container(flex, layout="column")
+                                            .map-title {{map.title}}
+                                            img(src="../../assets/img/datasources/mapa.logo.png", alt="mapa")
+                                            .map-description {{map.subtitle}}
+                                bw-button.btn-addMap(flex-none, color="blue", icon="plus", [circular]="true", (clicked)="openAddMap()")
 //- mobile device button at the end
 .hide-gt-xs(*ngIf="!isAddChart && !isAddWidget && !isAddSocialWidget && !isAddMap && !loading && !isPreviewDashboard")
         bw-button.floating-btn-1(color="green", icon="eye", [disabled]="selectedItems.length === 0",
@@ -147,7 +153,11 @@ div.hv-100(*ngIf="isPreviewDashboard && !loading")
 
 //- create new chart
 .hv-100(*ngIf="isAddChart")
-    kpi-new-chart.animated.fadeIn([isFromDashboard]="'true'", (result)="onChartFormEvent($event)")
+    kpi-new-chart.animated.fadeIn([isFromDashboard]="'true'", [chartType]="'chart'",  (result)="onChartFormEvent($event)")
+
+//- create new map
+.hv-100(*ngIf="isAddMap")
+    kpi-new-chart.animated.fadeIn([isFromDashboard]="'true'", [chartType]="'map'", (result)="onMapFormEvent($event)")
 
 //- Modal windows
 bw-modal((onClose)="closedModal()", (onDismiss)="dismissedModal()",

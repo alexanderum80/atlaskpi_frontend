@@ -13,4 +13,5 @@ export interface IListItem {
     visible?: boolean;
     selected?: boolean;
     orderFields?: IOrderField[];
+    type?: string;
 }

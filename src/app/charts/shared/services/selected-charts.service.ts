@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { IUser } from '../../../users/shared/models';
 import { IChart } from '../models';
+import { IMap } from '../../../maps/shared/models/map.models';
 
 @Injectable()
 export class SelectedChartsService {
@@ -15,6 +16,7 @@ export class SelectedChartsService {
   private _selectUsersSubject = new BehaviorSubject<IUser>(null);
 
   private selectedArray: string[] = [];
+
   private usersArray: string[] = [];
 
   private _existDuplicatedName: boolean;

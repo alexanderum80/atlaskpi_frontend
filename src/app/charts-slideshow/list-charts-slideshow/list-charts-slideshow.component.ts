@@ -14,8 +14,11 @@ import { IChartSlideshow } from '../shared/model/chartslideshow.model';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
+
+
 const ListChartSlideShowQuery = require('graphql-tag/loader!../shared/graphql/list-charts-slideshow.query.gql');
 const RemoveSlideshow = require('graphql-tag/loader!../shared/graphql/del-slideshow.mutation.gql');
+
 
 
 @Activity(ViewSlideShowActivity)
@@ -32,6 +35,7 @@ export class ListChartsSlideshowComponent implements OnInit, OnDestroy {
   private _subscription: Subscription[] = [];
 
   slideshowModel: IChartSlideshow;
+  slideshowItems: IChartSlideshow[];
 
   actionItems: MenuItem[] = [
     {

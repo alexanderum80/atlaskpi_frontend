@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { IAuthCredentials } from '../models';
+import { ICompanyInfo } from './local-storage.service';
 
 @Injectable()
 export class NativeChannelService {
@@ -20,9 +22,21 @@ export class NativeChannelService {
         this._postMessage('logoff');
     }
 
+    sendCredentials(credentials: IAuthCredentials) {
+        if (!credentials) {
+            return;
+        }
+
+        this._postMessage(`sendCredentials:${JSON.stringify(credentials)}`);
+    }
+
+    loginRequired(companyInfo: ICompanyInfo) {
+        this._postMessage(`loginRequired:${JSON.stringify(companyInfo)}`);
+    }
+
     private _postMessage(message: string) {
         try {
-            let w = (<any>window);
+            const w = (<any>window);
 
             // ios
             if (w.webkit) {

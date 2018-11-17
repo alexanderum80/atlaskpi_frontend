@@ -1,7 +1,7 @@
 import { FormGroup } from '@angular/forms';
-import { Component, Input, OnInit, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ChartGalleryService } from '../../services';
-import { IChartGalleryItem } from '../../models';
+import SweetAlert from 'sweetalert2';
 
 @Component({
   selector: 'kpi-chart-type',
@@ -11,6 +11,8 @@ import { IChartGalleryItem } from '../../models';
 export class ChartTypeComponent implements OnInit {
     @Input() fg: FormGroup;
     @Input() chartType: string;
+    @Input() isnewChartOrMap = true;
+    @Input() isFromDashboard: boolean;
 
     showing = false;
 
@@ -25,6 +27,22 @@ export class ChartTypeComponent implements OnInit {
     }
 
     toggle() {
+      if (!this.isnewChartOrMap && this.chartType === 'map') {
+        SweetAlert({
+          type: 'info',
+          title: 'Edit map',
+          text: 'Its not allow to change the type chart of map.'
+        });
+        return this._hide();
+      } else if (!this.isnewChartOrMap && this.chartType !== 'map') {
+        this._chartGalleryService.showMap = false;
+      } else if (this.isFromDashboard && this.chartType === 'map') {
+        this._chartGalleryService.showMap = true;
+        this._chartGalleryService.showChart = false;
+      } else if (this.isFromDashboard && this.chartType === 'chart') {
+        this._chartGalleryService.showMap = false;
+        this._chartGalleryService.showChart = true;
+      }
       if (!this.showing) {
         return this._show();
       }
@@ -33,7 +51,7 @@ export class ChartTypeComponent implements OnInit {
 
     get chartTypeButtonTitle(): string {
         if (!this.chartType) { return 'Chart Type'; }
-        return this.chartType;
+        return this.chartType = String(this.chartType) === 'others' ? 'map' : String(this.chartType);
     }
 
     private _show() {
