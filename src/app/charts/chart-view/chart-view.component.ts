@@ -126,7 +126,7 @@ export interface IRunRate {
     ],
     // changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
+export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentInit */ {
     @Input() chartData: ChartData;
     @Input() dateRanges: IDateRangeItem[] = [];
     @Input() isFromDashboard = false;
@@ -135,8 +135,10 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     @Input() dashBoardId: string;
     @Output() chartSelectedDashId = new EventEmitter();
     @Output() editChartId = new EventEmitter();
-    
+
     private _subscription: Subscription[] = [];
+
+    showChart = false;
 
     chart: any; // Chart;
     title: string;
@@ -296,7 +298,15 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
 
     }
 
-    ngAfterContentInit() {
+    onInViewportChange(inViewport: boolean) {
+        if (inViewport && !this.showChart) {
+            this.showChart = true;
+            this.prepareChart();
+        }
+    }
+
+    // ngAfterContentInit() {
+    prepareChart() {
         if (!this.chartData) {
             return;
         }
@@ -453,7 +463,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
 
     getDateRangeInPresent(): boolean {
         try {
-            if (!this.chartData.dateRange) { return false }
+            if (!this.chartData.dateRange) { return false; }
             if (this.chartData.dateRange[0].custom && this.chartData.dateRange[0].custom.from && this.chartData.dateRange[0].custom.to) {
                 const dateRange = parsePredefinedDate('this year');
                 const from: Date = this.chartData.dateRange[0].custom.from;
@@ -1523,7 +1533,7 @@ export class ChartViewComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     private _resetOverlayStyle() {
-        if (this.overlay.backgroundColor !== '#05050c' && this.overlay.opacity !== 0.8) {
+        if (this.overlay && this.overlay.backgroundColor !== '#05050c' && this.overlay.opacity !== 0.8) {
             this.overlay.backgroundColor = '#05050c';
             this.overlay.opacity = 0.8;
         }

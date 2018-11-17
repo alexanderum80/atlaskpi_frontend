@@ -80,6 +80,8 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
     @Input() dashboardPayLoad: IDashboard[];
     @ViewChild('widgetAlert') widgetAlert: WidgetAlertComponent;
 
+    mapInViewport = false;
+
     bigWidgets: any[] = [];
     smallWidgets: any[] = [];
     charts: any[] = null;
@@ -123,6 +125,12 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
         });
 
         this.isMobile = _browserSerivce.isMobile();
+    }
+
+    onMapInViewportChange(inViewport: boolean) {
+        if (inViewport && !this.mapInViewport) {
+            this.mapInViewport = true;
+        }
     }
 
     ngOnInit() {
