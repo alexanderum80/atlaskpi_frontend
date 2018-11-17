@@ -12,6 +12,11 @@ export class IsInViewportDirective {
     constructor(private el: ElementRef) {
         const that = this;
         window.addEventListener('scroll', function() { that.checkVisibilityChange(el.nativeElement); }, true); // third parameter
+
+        setTimeout(() => {
+            // check when the directive renders
+            that.checkVisibilityChange(el.nativeElement);
+        }, 100);
     }
 
     @HostListener('window:resize', ['$event'])
