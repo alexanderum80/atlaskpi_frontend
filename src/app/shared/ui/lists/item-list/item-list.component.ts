@@ -169,7 +169,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
     orderAscBy(value: any) {
         this._items.sort(function (a , b) {
             for (let i = 0; i < a.orderFields.length; i++) {
-                if (a.orderFields[i].fieldName === value && a.orderFields[i].fieldValue && b.orderFields[i].fieldValue) {
+                if (a.orderFields[i].fieldName === value && b.orderFields[i].fieldName === value &&
+                    a.orderFields[i].fieldValue && b.orderFields[i].fieldValue) {
                     return a.orderFields[i].fieldValue - b.orderFields[i].fieldValue;
                 }
             }
@@ -179,7 +180,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
     orderDescBy(value: any) {
         this._items.sort(function (a , b) {
             for (let i = 0; i < a.orderFields.length; i++) {
-                if (a.orderFields[i].fieldName === value && a.orderFields[i].fieldValue && b.orderFields[i].fieldValue) {
+                if (a.orderFields[i].fieldName === value && b.orderFields[i].fieldName === value &&
+                    a.orderFields[i].fieldValue && b.orderFields[i].fieldValue) {
                     return b.orderFields[i].fieldValue - a.orderFields[i].fieldValue;
                 }
             }
