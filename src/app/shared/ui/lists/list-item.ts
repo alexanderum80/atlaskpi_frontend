@@ -1,3 +1,8 @@
+export interface IOrderField {
+    fieldName: string;
+    fieldValue: any;
+    descripcion: string;
+}
 export interface IListItem {
     id: any;
     imagePath?: string;
@@ -7,4 +12,5 @@ export interface IListItem {
     extras?: any;
     visible?: boolean;
     selected?: boolean;
+    orderFields?: IOrderField[];
 }

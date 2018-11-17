@@ -4,7 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { find } from 'lodash';
 import { MenuItem } from '../../../../dashboards/shared/models';
 import { IActionItemClickedArgs } from '../item-clicked-args';
-import { IListItem } from '../list-item';
+import { IListItem, IOrderField } from '../list-item';
 import { IItemListActivityName } from '../../../interfaces/item-list-activity-names.interface';
 import { getEnumString } from '../../../extentions';
 import { flatten, isEmpty } from 'lodash';
@@ -74,6 +74,15 @@ export class ItemListComponent implements OnInit, OnDestroy {
             }
         ]
     }];
+    orderList: IOrderField[] = [{
+        fieldName: '1',
+        fieldValue: 1,
+        descripcion: 'valor'},
+        {
+            fieldName: '2',
+            fieldValue: 2,
+            descripcion: 'fiesta'
+    }];
 
     readonly blackListClassName = ['zmdi zmdi-more-vert', 'dropdown-backdrop'];
     readonly blackListNodeName = ['kpi-list-item-standard', 'kpi-list-item-tabular'];
@@ -98,6 +107,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
     private _items: IListItem[];
     private _filteredItems: IListItem[];
     private _subscription: Subscription[] = [];
+    itemListVisible = false;
 
     ngOnInit() {
         this.fg = new FormGroup({
@@ -131,6 +141,56 @@ export class ItemListComponent implements OnInit, OnDestroy {
     get showTabularItems(): boolean {
         return this.itemType === 'table';
     }
+
+    //add-createdby
+    get orderListGet(): IOrderField[] {
+        const listOrder: IOrderField[] = [];
+        this._items.forEach(function(a) {
+            const temp = a.orderFields;
+            temp.forEach(function(b) {
+                let cant = 0;
+                if (b.fieldName) {
+                    for (let i = 0; i < listOrder.length; i++) {
+                        if (b.fieldName === listOrder[i].fieldName ) {
+                            cant++;
+                        }
+                    }
+                    if (cant === 0) {
+                        listOrder.push(b);
+                    }
+                }
+
+            });
+
+        });
+        return listOrder;
+    }
+
+    orderAscBy(value: any) {
+        this._items.sort(function (a , b) {
+            for (let i = 0; i < a.orderFields.length; i++) {
+                if (a.orderFields[i].fieldName === value && a.orderFields[i].fieldValue && b.orderFields[i].fieldValue) {
+                    return a.orderFields[i].fieldValue - b.orderFields[i].fieldValue;
+                }
+            }
+        });
+        this.itemListVisible = false;
+    }
+    orderDescBy(value: any) {
+        this._items.sort(function (a , b) {
+            for (let i = 0; i < a.orderFields.length; i++) {
+                if (a.orderFields[i].fieldName === value && a.orderFields[i].fieldValue && b.orderFields[i].fieldValue) {
+                    return b.orderFields[i].fieldValue - a.orderFields[i].fieldValue;
+                }
+            }
+        });
+        this.itemListVisible = false;
+    }
+    public showOrderButtons() {
+        return this.itemListVisible = true;
+    }
+
+    ////fin
 
     addClicked() {
         this.onAddActionClicked.emit();

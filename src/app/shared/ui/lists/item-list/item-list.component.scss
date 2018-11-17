@@ -41,3 +41,19 @@
         height: 0;
     }
 }
+.dropdown-menu-box {
+    position: fixed;
+    right: 85px !important;
+    top: 130px !important;
+    width: 200px !important;
+    animation-delay: 3s !important;
+    animation-duration: 3s !important;
+    animation-iteration-count: infinite;
+    transition: all 0.3s ease-in-out;
+    //background-image: url("/assets/img/backgrounds/box.png");
+    z-index: 10;
+    background-repeat: no-repeat;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: lightgrey 1px 1px 30px 2px;
+}

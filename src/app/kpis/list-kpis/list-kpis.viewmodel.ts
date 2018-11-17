@@ -8,6 +8,7 @@ import { IKPI, KPITypeEnum } from '../../shared/domain/kpis/kpi';
 import { IListItem } from '../../shared/ui/lists/list-item';
 import { ISearchArgs } from '../../shared/ui/lists/item-list/item-list.component';
 import { MenuItem } from '../../dashboards/shared/models';
+import * as moment from 'moment-timezone';
 
 // App Code
 interface IFilter {
@@ -69,7 +70,11 @@ export class ListKpisViewModel extends ViewModel<IFilter> {
                 subtitle: d.description,
                 extras: {
                     tags: d.tags ? d.tags.join(', ') : null
-                }
+                },
+                orderFields: [{fieldName: d.createdBy ?  Object.getOwnPropertyNames(d)[6] : null,
+                               fieldValue: d.createdBy ?  d.createdBy : null, descripcion: 'Created By'},
+                              {fieldName: d.createdDate ? Object.getOwnPropertyNames(d)[7] : null,
+                               fieldValue: d.createdDate ? d.createdDate : null, descripcion: 'Created Date'}]
             };
         });
     }
