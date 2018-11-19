@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { CloneWidgetActivity } from 'src/app/shared/authorization/activities/widgets/clone-widget.activity';
 
 const Highcharts = require('highcharts/js/highcharts');
-const alertByWidgetIdGql = require('graphql-tag/loader!./alert-by-widget-id.query.gql');
+const scheduleJobByWidgetIdGql = require('graphql-tag/loader!./scheduleJob-by-widget-id.query.gql');
 
 @Component({
     selector: 'kpi-widget-view',
@@ -62,7 +62,7 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
                 id: 'clone',
                 icon: 'copy',
                 title: 'Clone'
-            },            
+            },
             {
                 id: 'edit',
                 icon: 'edit',
@@ -114,8 +114,8 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnInit() {
-        this.vm.addActivities([this.updateWidgetActivity, 
-                                this.deleteWidgetActivity, 
+        this.vm.addActivities([this.updateWidgetActivity,
+                                this.deleteWidgetActivity,
                                 this.cloneWidgetActivity]);
         this._disabledActionItem();
         this._widgetHasAlerts();
@@ -167,7 +167,7 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
 
             this._subscription.push(
                 this._apollo.watchQuery({
-                    query: alertByWidgetIdGql,
+                    query: scheduleJobByWidgetIdGql,
                     variables: {
                         id: this.widget._id
                     },
@@ -175,11 +175,11 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
                 })
                 .valueChanges
                 .subscribe(({ data }: any) => {
-                    if (!data || !data.alertByWidgetId) {
+                    if (!data || !data.scheduleJobByWidgetId) {
                         return;
                     }
 
-                    const alerts = data.alertByWidgetId;
+                    const alerts = data.scheduleJobByWidgetId;
                     if (alerts && alerts.length) {
                         that.hasAlerts = true;
                     } else {

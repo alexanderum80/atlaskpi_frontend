@@ -1,5 +1,5 @@
-mutation UpdateAlertActive($id: String!, $active: Boolean!) {
-    updateAlertActive(id: $id, active: $active) {
+mutation UpdateScheduleJobActive($id: String!, $active: Boolean!) {
+    updateScheduleJobActive(id: $id, active: $active) {
         success
         errors {
             field

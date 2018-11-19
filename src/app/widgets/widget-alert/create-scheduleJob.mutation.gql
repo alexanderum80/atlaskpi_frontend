@@ -1,5 +1,5 @@
-mutation CreateAlert($input: AlertInput) {
-    createAlert(input: $input) {
+mutation CreateScheduleJob($input: ScheduleJobInput) {
+    createScheduleJob(input: $input) {
         entity {
             notifyUsers
             frequency

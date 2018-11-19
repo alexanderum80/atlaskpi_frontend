@@ -1,5 +1,11 @@
-mutation UpdateAlert($id: String!, $input: AlertInput) {
-    updateAlert(id: $id, input: $input) {
+mutation RemoveScheduleJob($id: String!) {
+    removeScheduleJob(id: $id) {
+        success
+        errors {
+            field
+            errors
+        }
+
         entity {
             notifyUsers
             frequency
@@ -10,11 +16,6 @@ mutation UpdateAlert($id: String!, $input: AlertInput) {
                 name
                 id
             }
-        }
-        success
-        errors {
-            field
-            errors
         }
     }
 }
