@@ -60,7 +60,7 @@ export function highchartsModules() {
         MilestonesModule,
         ScrollEventModule,
         TargetsModule,
-        MapsModule
+        MapsModule,
     ],
     declarations: [
         ChartViewComponent,
