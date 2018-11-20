@@ -1,4 +1,4 @@
-mutation ($id: String!, $input: WidgetInput!) {
+mutation UpdateWidget($id: String!, $input: WidgetInput!) {
   updateWidget(id: $id, input: $input) {
     entity {
       _id

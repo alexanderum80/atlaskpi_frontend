@@ -1,4 +1,4 @@
-query ($id: String!) {
+query GetWidgetById($id: String!) {
   widget(id: $id) {
     _id
     order
@@ -35,5 +35,6 @@ query ($id: String!) {
         chart
     }
     dashboards
+    hasAlerts
   } 
 }

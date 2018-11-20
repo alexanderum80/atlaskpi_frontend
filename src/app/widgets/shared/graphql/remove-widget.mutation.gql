@@ -1,4 +1,4 @@
-mutation($id: String!) {
+mutation RemoveWidget($id: String!) {
   removeWidget(id: $id) {
     entity {
       _id

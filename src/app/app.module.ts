@@ -39,6 +39,11 @@ import { Widgets2Module } from './widgets2/widgets2.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { TargetsModule } from './targets/targets.module';
 
+import {
+    HttpBatchLinkModule,
+    HttpBatchLink,
+  } from 'apollo-angular-link-http-batch';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -57,7 +62,7 @@ import { TargetsModule } from './targets/targets.module';
         HttpClientModule, // provides HttpClient for HttpLink
         ApolloModule,
         HttpLinkModule,
-        // HttpBatchLinkModule,
+        HttpBatchLinkModule,
 
         // App Modules
         NavigationModule,
@@ -97,8 +102,8 @@ export class AppModule {
 
     constructor(
         apollo: Apollo,
-        httpLink: HttpLink,
-        // batchLink: HttpBatchLink
+        // httpLink: HttpLink,
+        httpLink: HttpBatchLink
     ) {
 
         const cache = new InMemoryCache({
@@ -111,7 +116,9 @@ export class AppModule {
         });
 
         const appLink = httpLink.create({
-            uri: environment.graphQlServer
+            uri: environment.graphQlServer,
+            batchInterval: 100,
+            batchMax: 12
         });
 
         // const appLink = batchLink.create({
