@@ -1,0 +1,15 @@
+.chart-comparisons {
+
+    .close-button {
+        position: absolute;
+        top: 30px;
+        right: 30px;
+        font-size: 24px;
+        cursor: pointer;
+    }
+    
+    &--option {
+        margin: 5px;
+        width: 200px;
+    }
+}

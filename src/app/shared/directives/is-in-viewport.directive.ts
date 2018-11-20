@@ -26,8 +26,6 @@ export class IsInViewportDirective {
     }
 
     checkVisibilityChange(el) {
-        console.log('checking visibility for: ' + el);
-
         const visible = isElementInViewport(el);
         if (visible !== this.isVisible) {
             this.isVisible = visible;

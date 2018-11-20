@@ -1,4 +1,5 @@
-import { AfterContentInit, Component, Input, OnDestroy, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { Chart } from 'angular-highcharts';
 import { Apollo, QueryRef } from 'apollo-angular';
 import gql from 'graphql-tag';
@@ -6,20 +7,30 @@ import { Options } from 'highcharts';
 import { get as _get, isEmpty, isNumber, isString, pick } from 'lodash';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs/Subscription';
+import { ModifyChartActivity } from 'src/app/shared/authorization/activities/charts/modify-chart.activity';
+import { ModifyDashboardActivity } from 'src/app/shared/authorization/activities/dashboards/modify-dashboard.activity';
 import SweetAlert from 'sweetalert2';
+
 import { FormatterFactory, yAxisFormatterProcess } from '../../dashboards/shared/extentions/chart-formatter.extention';
 import { MilestoneService } from '../../milestones/shared/services/milestone.service';
 import { MenuItem } from '../../ng-material-components';
-import { ChangeSettingsOnFlyActivity } from '../../shared/authorization/activities/charts/change-settings-on-fly-chart.activity';
+import {
+    ChangeSettingsOnFlyActivity,
+} from '../../shared/authorization/activities/charts/change-settings-on-fly-chart.activity';
 import { CompareOnFlyActivity } from '../../shared/authorization/activities/charts/compare-on-fly-chart.activity';
 import { DownloadChartActivity } from '../../shared/authorization/activities/charts/download-chart.activity';
 import { SeeInfoActivity } from '../../shared/authorization/activities/charts/see-info-chart.activity';
 import { AddTargetActivity } from '../../shared/authorization/activities/targets/add-target.activity';
 import { ViewTargetActivity } from '../../shared/authorization/activities/targets/view-target.activity';
 import { parseComparisonDateRange, parsePredefinedDate } from '../../shared/models';
-import { IDateRangeItem, PredefinedDateRanges, IStringChartDateRange, convertDateRangeToStringDateRange } from '../../shared/models/date-range';
+import { IChartDateRange } from '../../shared/models';
+import {
+    convertDateRangeToStringDateRange,
+    IDateRangeItem,
+    IStringChartDateRange,
+    PredefinedDateRanges,
+} from '../../shared/models/date-range';
 import { DialogResult } from '../../shared/models/dialog-result';
-import { IChartDateRange } from '../../shared/models/index';
 import { IChartTop } from '../../shared/models/top-n-records';
 import { ApolloService } from '../../shared/services/apollo.service';
 import { BrowserService } from '../../shared/services/browser.service';
@@ -29,9 +40,7 @@ import { DrillDownService } from '../shared/services/drilldown.service';
 import { predefinedColors } from './../shared/ui/chart-format-info/material-colors';
 import { ChartViewViewModel } from './chart-view.viewmodel';
 import { TableModeService } from './table-mode/table-mode.service';
-import { Router} from '@angular/router';
-import { ModifyChartActivity } from 'src/app/shared/authorization/activities/charts/modify-chart.activity';
-import { ModifyDashboardActivity } from 'src/app/shared/authorization/activities/dashboards/modify-dashboard.activity';
+import { IComparisonInfo } from './chart-comparison/chart-comparison.component';
 
 const Highcharts = require('highcharts/js/highcharts');
 
@@ -41,7 +50,6 @@ const ChartQuery = gql`
      }
 `;
 
-const kpiOldestDateQuery = require('graphql-tag/loader!../shared/ui/chart-basic-info/kpi-get-oldestDate.gql');
 export enum frequencyEnum {
     Daily = 'daily',
     Weekly = 'weekly',
@@ -168,6 +176,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
     rootNode: IChartTreeNode;
     currentNode: IChartTreeNode;
 
+    showingComparisons = false;
     comparisonDateRange: any[] = [];
     comparisonValue: string[] = [];
     loadedComparisonData = false;
@@ -194,7 +203,6 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
     compareActions: MenuItem[] = [{
         id: 'comparison',
         icon: 'swap',
-        children: []
     },
     {
         id: 'maximize',
@@ -330,9 +338,9 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
             this.dataSource = expression.substr(0, expression.indexOf('.'));
         }
 
-        if (this.chartData.availableComparison && this.chartData.availableComparison.length > 0) {
-            this._updateComparisonOptions();
-        }
+        // if (this.chartData.availableComparison && this.chartData.availableComparison.length > 0) {
+        //     this._updateComparisonOptions();
+        // }
 
         if (this.chartData.comparison && this.chartData.comparison.length > 0) {
             this.getComparisonValue();
@@ -340,9 +348,9 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
         }
 
         if (this.chartData.top) {
-            
+
             if (this.chartData.top.predefined ) {
-                
+
                 if (this.chartData.top.predefined === 'other') {
                     this.N_Result = this.chartData.top.custom;
                 } else {
@@ -457,7 +465,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
         if (this.currentNode.definition.chart.type === 'pie') {
             this.loadedComparisonData = true;
         } else {
-            this._updateComparisonOptions();
+            // this._updateComparisonOptions();
         }
     }
 
@@ -825,7 +833,11 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
         );
         switch (item.id) {
             case 'comparison':
-                return this._handleComparisonAction(item);
+                this._resetOverlayStyle();
+                this.overlay.backgroundColor = 'white';
+                this.overlay.toggle();
+                return this.showingComparisons = true;
+                // return this._handleComparisonAction(item);
             case 'toggle-description':
                 this._resetOverlayStyle();
                 if (this.showDescription) {
@@ -1133,6 +1145,15 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
         this._refreshTarget(result);
     }
 
+    comparisonSelected(comparison: IComparisonInfo) {
+        this.overlay.hide();
+        this.showingComparisons = false;
+
+        if (comparison) {
+            this._handleComparisonAction(comparison);
+        }
+    }
+
     targetOverlay(options: any) {
         this.actionItemsTarget = undefined;
         setTimeout(() => {
@@ -1171,7 +1192,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
                 that.drillUpAnimation = 'fadeInLeft';
             }, 500);
         }
-        this._updateComparisonOptions();
+        // this._updateComparisonOptions();
         this.getComparisonDateRange();
     }
 
@@ -1636,52 +1657,6 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
         });
     }
 
-    private _updateComparisonOptions(options?: {
-        disabled?: boolean,
-    }) {
-        /**
-         * this is being called inside a setTimeout
-         * when navigating dashboards, this.chartData would be a null value
-         */
-        if (this.chartData) {
-            const dateRangeString = this.chartData.dateRange[0].predefined || 'custom';
-            const dateRange = this.dateRanges.find(d => d.dateRange.predefined === dateRangeString);
-            const compareAction = this.compareActions.find(action => action.id === 'comparison');
-            const emptyChildrens = undefined;
-
-            if (!dateRange ||
-                (options && options.disabled) ||
-                (this.chartDefinitionChartTypeExist && this.chartData.chartDefinition.chart.type === 'pie')) {
-                if (compareAction) {
-                    compareAction.children = emptyChildrens;
-                }
-                return;
-            }
-            const kpi_id = this.chartData.kpis[0]._id;
-            this._apolloService.networkQuery < string > (kpiOldestDateQuery, {id: kpi_id })
-            .then(kpis => {
-                compareAction.children = this.updateComparisonData(dateRange , kpis.getKpiOldestDate);
-                this.loadedComparisonData = true;
-            });
-        }
-    }
-    private updateComparisonData(dateRange: any, yearOldestDate: string): any[] {
-        const itemsComparison = [dateRange, ''];
-        const childrens = [];
-        dateRange.comparisonItems.map(item => {
-            itemsComparison[1] = item.key;
-            const yearofDateFrom = parseComparisonDateRange(<any>itemsComparison, itemsComparison[0]).from.getFullYear();
-            if (yearofDateFrom >= parseInt(yearOldestDate, 0)) {
-                childrens.push({
-                    id: 'comparison',
-                    title: item.value,
-                    payload: item.key
-                });
-            }
-        });
-        return childrens.length > 0 ? childrens : undefined;
-    }
-
     private _handleComparisonAction(item: any) {
         if (!item || !item.payload) {
             return;
@@ -1718,10 +1693,6 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
                 that._updateChartInfoFromDefinition();
                 that.getComparisonValue();
                 that.enableDrillDown();
-
-                that._updateComparisonOptions({
-                    disabled: true
-                });
 
                 that.chart.options.exporting = {
                     enabled: false,

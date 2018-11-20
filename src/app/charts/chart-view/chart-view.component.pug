@@ -5,9 +5,10 @@
             kpi-change-settings-on-fly.change-settings([chartData]="chartData", *ngIf="changeSettingsOnFly", (done)="closeOverlay($event)")
             kpi-download-chart-view([chartData]="chartData", *ngIf="downLoadChart", [childChart]="chart", [title]="title", (done)="closeOverlay($event)")
             kpi-table-mode(*ngIf="tableMode", (done)="closeOverlay($event)")
+            kpi-chart-comparison(*ngIf="showingComparisons", [chartData]="chartData", [dateRanges]="dateRanges", (comparisonSelected)="comparisonSelected($event)")
         bw-card-header([padded]="true", color="white")
             .m-b-10.chart-title([attr.title]="title") {{title}}
-            bw-actions.m-r-30(*ngIf="loadedComparisonData", [actionItems]="compareActions", (actionClicked)="actionClicked($event)")    
+            bw-actions.m-r-30([actionItems]="compareActions", (actionClicked)="actionClicked($event)")    
             bw-actions([actionItems]="actionItems", (actionClicked)="actionClicked($event)")
             .runRate-container
                 .runRate-box(flex,*ngIf="enableRunRate", layout="column")
