@@ -13,7 +13,7 @@ import {
 } from '../../ng-material-components/modules/forms/date-picker/day-calendar/day-calendar-config.model';
 import { IDay } from '../../ng-material-components/modules/forms/date-picker/day-calendar/day.model';
 import { SelectPickerComponent } from '../../ng-material-components/modules/forms/select-picker/select-picker.component';
-import { cleanAppointemntsProviderId } from '../../shared/helpers/appointments.helper';
+import { cleanAppointmentsProviderId } from '../../shared/helpers/appointments.helper';
 import { AKPIDateFormatEnum } from '../../shared/models/date-range';
 import { IUserInfo } from '../../shared/models/user';
 import { StoreHelper } from '../../shared/services';
@@ -99,7 +99,7 @@ export class SidebarCalendarComponent implements OnInit, AfterViewInit, OnDestro
             that.providerList = that.providerList.map(p =>
                 new SelectionItem(  p.id,
                                     p.title,
-                                    selectedProviders && cleanAppointemntsProviderId(selectedProviders).includes(String(p.id)))
+                                    selectedProviders && cleanAppointmentsProviderId(selectedProviders).includes(String(p.id)))
             );
             that.selectedProvider = selectedProviders;
             that._setProviderValue(that.selectedProvider);
@@ -136,13 +136,17 @@ export class SidebarCalendarComponent implements OnInit, AfterViewInit, OnDestro
         this.showCalendar = !this.showCalendar;
     }
 
+    get atLeastOneAppt(): boolean {
+        return this.appointments && this.appointments[0] !== undefined;
+    }
+
     fetchProviders() {
         const that = this;
         this._apolloService.networkQuery(AppointmentProvidersListQuery)
         .then(result => {
           that.providerList = result.appointmentProvidersList.map(p =>
             new SelectionItem(p.externalId, p.name,
-                              that.selectedProvider && cleanAppointemntsProviderId(that.selectedProvider).includes(String(p.externalId))));
+                              that.selectedProvider && cleanAppointmentsProviderId(that.selectedProvider).includes(String(p.externalId))));
         });
     }
 
@@ -210,7 +214,7 @@ export class SidebarCalendarComponent implements OnInit, AfterViewInit, OnDestro
         this._apolloService.networkQuery(SearchAppointmentsQuery, {
                 criteria: {
                     date: date.format(AKPIDateFormatEnum.US_DATE),
-                    provider: cleanAppointemntsProviderId(this.selectedProvider),
+                    provider: cleanAppointmentsProviderId(this.selectedProvider),
                     cancelled: cancelled
                 }
             })

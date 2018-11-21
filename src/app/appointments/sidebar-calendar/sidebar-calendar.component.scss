@@ -35,57 +35,27 @@ $back-color: #fdfdfd;
         height: calc(100vh - 110px);
     }
     
-    // .calendar-container {
-    //     position: absolute;
-    //     width: 100%;
-    //     height: 100%;
-    //     z-index: 20;
-
-    //     &--collapsed {
-    //         // transform: scale(0);
-    //         opacity: 0;
-    //     }
-
-    //     &--expanded {
-    //         // transform: scale(1);
-    //         opacity: 1;
-    //     }
-    // }
-
-    // .options-button {
-    //     position: fixed;
-    //     z-index: 10;
-    //     transition: all 0.5s;
-    //     padding: 15px;
-    //     color: white;
-    //     text-transform: uppercase;
-    //     text-align: center;
-    //     width: 45px;
-    //     height: 45px;
-    //     box-shadow: 0 0 10px 1px rgba(0,0,0,0.3);
-    //     border-radius: 50%;
-    //     top: 75px;
-    //     right:15px;
-        
-    //     &--collapsed {
-    //         transform: scale(1);
-    //         background-color: $m-orange;
-    //     }
-
-    //     &--expanded {
-    //         transform: scale(40);
-    //         background-color: white;
-    //         position: absolute;
-    //         top: 15px;
-    //         box-shadow: none;
-    //     }
-
-    // }
-
     .appointment-list {
         margin-top: 70px;
     }
 
+}
+
+.no-appointments {
+    padding: 40px;
+    
+    &--icon {
+        i.zmdi {
+            font-size: 75px;
+            color: rgba(0,0,0,0.3);
+        }
+    }
+    
+    &--text {
+        margin-top: 20px;
+        font-size: 24px;
+        color: rgba(0,0,0,0.2);
+    }
 }
 
 .appointments {

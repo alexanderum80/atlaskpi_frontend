@@ -15,10 +15,8 @@
 
     
     //- appointment list
-    .appointments--list
+    .appointments--list(*ngIf="!loadingAppointments && atLeastOneAppt")
         .appt-content
-            //- .appointment-list.p-b-40(*ngIf="!loadingAppointments")
-
             div(*ngFor="let a of appointments")
                 .appt-item
                     .appt-item--color([style.background-color]="a.event?.color")
@@ -28,6 +26,16 @@
                         .appt-item--info__description {{ a.reason }}
                     
                 .separator
+
+    .appointments-loader.text-center(*ngIf="loadingAppointments")
+        bw-preloader(color="gray")
+    
+    .no-appointments.text-center.c-gray(*ngIf="!atLeastOneAppt")
+        .no-appointments--icon
+            i.zmdi.zmdi-calendar
+        .no-appointments--text 
+            div No appointments
+            div found
 
 .appt-options(layout="column", [class.visible]="showCalendar").z-depth-1.bgm-white
     //- .calendar-container.z-depth-1.bgm-white(flex-initial)
@@ -48,15 +56,4 @@
     .m-t-20.text-center
         bw-button(title="Close", [rounded]="true", color="orange", (clicked)="toggleOptions()")
         
-    //- .options-button.text-center(
-    //-     [class.options-button--collapsed]="!optionsExpanded",
-    //-     [class.options-button--expanded]="optionsExpanded",
-    //-     (click)="toggleOptions()"
-    //- )
-    //-     i.zmdi.zmdi-menu(*ngIf="!optionsExpanded")
-
-    
-
-    
-
     

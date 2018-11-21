@@ -19,7 +19,7 @@ import { ViewAppointmentActivity } from '../../shared/authorization/activities/a
 import { Activity } from '../../shared/authorization/decorators/component-activity.decorator';
 import { StoreHelper } from '../../shared/services';
 import { IAppointment } from '../shared/models/appointment.model';
-import { cleanAppointemntsProviderId } from '../../shared/helpers/appointments.helper';
+import { cleanAppointmentsProviderId } from '../../shared/helpers/appointments.helper';
 import { Store } from '../../shared/services/store.service';
 import { CustomDateFormatter } from './custom-date-formatter.provider';
 import { generateTimeZoneOptions } from '../../shared/helpers/timezone.helper';
@@ -178,7 +178,7 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
                                 p.id,
                                 p.title,
                                 selectedProviders &&
-                                    cleanAppointemntsProviderId(selectedProviders).includes(String(p.id)),
+                                    cleanAppointmentsProviderId(selectedProviders).includes(String(p.id)),
                             ),
                     );
                     that.providerList = updatedProviderList;
@@ -249,7 +249,7 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
                     variables: {
                         criteria: {
                             ...that.getAppointmentsDateRange(),
-                            provider: cleanAppointemntsProviderId(that.selectedProvider),
+                            provider: cleanAppointmentsProviderId(that.selectedProvider),
                             cancelled: this.apptCancelledPreference,
                         },
                     },
@@ -317,7 +317,7 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
                                 p.externalId,
                                 p.name,
                                 that.selectedProvider &&
-                                    cleanAppointemntsProviderId(that.selectedProvider).includes(String(p.externalId)),
+                                    cleanAppointmentsProviderId(that.selectedProvider).includes(String(p.externalId)),
                             ),
                     );
                 }),
