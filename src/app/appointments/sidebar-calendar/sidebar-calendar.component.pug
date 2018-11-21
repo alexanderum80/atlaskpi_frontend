@@ -1,37 +1,62 @@
-.sidebar-calendar.hv-100(layout="column")
-    .calendar-container.z-depth-1.bgm-white(flex-initial)
-        .m-r-20.m-t-20.m-l-20
-            bw-select-picker.m-r-20(flex="80", [fg]="fg", 
-                field="provider",
-                [multiple]="true",
-                [items]="providerList",
-                [liveSearch]="true",
-                noneSelectedText="All Providers",
-                #providerpicker,
-                #sideBarSelectProvider=""
-                )  
-        .m-20.m-b-40
-            dp-day-calendar(theme="dp-material", [config]="calendarConfig", (onSelect)="onDaySelected($event)")
+.appointments
+    
+    //- header
+    .appointments--header
+        .appt-header
+            .appt-header--nav__left((click)="back()")
+                //- bw-button([simple]="true", icon="chevron-left", color="black")
+                i.zmdi.zmdi-chevron-left
+            .appt-header--selected((click)="toggleOptions()")
+                .appt-header--selected__day {{ selectedDay$ | async | momentFormat: 'D' }}
+                .appt-header--selected__month {{ selectedDay$ | async | momentFormat: 'MMMM' }}
+            .appt-header--nav__right((click)="next()")
+                //- bw-button([simple]="true", icon="chevron-right", color="black")
+                i.zmdi.zmdi-chevron-right
+
+    
+    //- appointment list
+    .appointments--list
+        .appt-content
+            //- .appointment-list.p-b-40(*ngIf="!loadingAppointments")
+
+            div(*ngFor="let a of appointments")
+                .appt-item
+                    .appt-item--color([style.background-color]="a.event?.color")
+                    .appt-item--info
+                        .appt-item--info__time {{ a.from | momentFormat: 'h:mm' }} {{ a.from | momentFormat: 'A' }}
+                        .appt-item--info__name {{ a.customer.fullname }}
+                        .appt-item--info__description {{ a.reason }}
+                    
+                .separator
+
+.appt-options(layout="column", [class.visible]="showCalendar").z-depth-1.bgm-white
+    //- .calendar-container.z-depth-1.bgm-white(flex-initial)
+
+    .m-r-20.m-t-10.m-l-20
+        bw-select-picker.m-r-20(flex="80", [fg]="fg", 
+            field="provider",
+            [multiple]="true",
+            [items]="providerList",
+            [liveSearch]="true",
+            noneSelectedText="All Providers",
+            #providerpicker,
+            #sideBarSelectProvider=""
+            )  
+    .m-t-5.m-b-40.text-center
+        dp-day-calendar(theme="dp-material", [config]="calendarConfig", (onSelect)="onDaySelected($event)")
+
+    .m-t-20.text-center
+        bw-button(title="Close", [rounded]="true", color="orange", (clicked)="toggleOptions()")
+        
+    //- .options-button.text-center(
+    //-     [class.options-button--collapsed]="!optionsExpanded",
+    //-     [class.options-button--expanded]="optionsExpanded",
+    //-     (click)="toggleOptions()"
+    //- )
+    //-     i.zmdi.zmdi-menu(*ngIf="!optionsExpanded")
 
     
 
-    .appointment-list(flex)
-        .selected-day(flex-initial)
-            .day {{ selectedDay | momentFormat: 'D' }}
-            .month {{ selectedDay | momentFormat: 'MMMM' }}
+    
 
-        .p-b-40(*ngIf="!loadingAppointments")
-            .appointment(*ngFor="let a of appointments")
-                .appointment-details(layout="row", layout-align="center start")
-                    .appointment-time(flex-inital, 
-                                    [ngStyle]="a.event?.color && {'border-color': a.event?.color}") 
-                        .time.p-t-5 {{ a.from | momentFormat: 'h:mm' }}
-                        .am-pm {{ a.from | momentFormat: 'A' }}
-                    .appointment-details(flex)
-                        .details {{ a.reason }}
-                        .name {{ a.customer.fullname }}
-                    .appointment-actions(flex-inital)
-                        bw-actions([actionItems]="actionItems", (actionClicked)="actionClicked($event, slideshow)")
-       
-
-
+    

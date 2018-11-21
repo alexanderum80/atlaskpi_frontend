@@ -1,27 +1,26 @@
-import { AKPIDateFormatEnum } from '../../shared/models/date-range';
-import { SelectPickerComponent } from '../../ng-material-components/modules/forms/select-picker/select-picker.component';
-import { objectWithoutProperties } from '../../shared/helpers/object.helpers';
-import { UserService } from '../../shared/services/user.service';
-import { IUserInfo, IUserPreference } from '../../shared/models/user';
-
-import { AfterViewInit, Component, OnDestroy, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Apollo } from 'apollo-angular';
+import { isEmpty } from 'lodash';
 import { Moment } from 'moment';
 import * as moment from 'moment-timezone';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 
-import { isString, isEmpty } from 'lodash';
-import { Apollo } from 'apollo-angular';
 import { MenuItem, SelectionItem } from '../../ng-material-components';
 import {
     IDayCalendarConfig,
 } from '../../ng-material-components/modules/forms/date-picker/day-calendar/day-calendar-config.model';
 import { IDay } from '../../ng-material-components/modules/forms/date-picker/day-calendar/day.model';
+import { SelectPickerComponent } from '../../ng-material-components/modules/forms/select-picker/select-picker.component';
+import { cleanAppointemntsProviderId } from '../../shared/helpers/appointments.helper';
+import { AKPIDateFormatEnum } from '../../shared/models/date-range';
+import { IUserInfo } from '../../shared/models/user';
 import { StoreHelper } from '../../shared/services';
 import { ApolloService } from '../../shared/services/apollo.service';
-import { IAppointment } from '../shared/models/appointment.model';
-import { cleanAppointemntsProviderId } from '../../shared/helpers/appointments.helper';
 import { Store } from '../../shared/services/store.service';
+import { UserService } from '../../shared/services/user.service';
+import { IAppointment } from '../shared/models/appointment.model';
 
 const appointmentsByDate = require('graphql-tag/loader!./appointments-by-date.gql');
 const AppointmentProvidersListQuery = require('graphql-tag/loader!./appointment-providers-list.query.gql');
@@ -35,27 +34,12 @@ const updateUserPreferenceMutation = require('graphql-tag/loader!./update-user-p
 })
 export class SidebarCalendarComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('providerpicker') providerpicker: SelectPickerComponent;
-    selectedDay: Moment;
     selectedProvider: string;
     fg: FormGroup = new FormGroup({});
 
     providerList: SelectionItem[] = [];
-
-    actionItems: MenuItem[] = [{
-        id: 'more',
-        icon: 'more-vert',
-        children: [{
-                id: 'edit',
-                icon: 'edit',
-                title: 'Edit'
-            },
-            {
-                id: 'delete',
-                icon: 'delete',
-                title: 'Delete'
-            }
-        ]
-    }];
+    optionsExpanded = false;
+    showCalendar = false;
 
     appointments: IAppointment[];
 
@@ -71,12 +55,18 @@ export class SidebarCalendarComponent implements OnInit, AfterViewInit, OnDestro
     localTimeZone: string;
     timezoneOffset: number;
 
+    selectedDay$: Observable<Moment>;
+    private daySubject = new BehaviorSubject<Moment>(null);
+    private _lastDayApplied: Date;
+
     constructor(private _apolloService: ApolloService,
                 private _apollo: Apollo,
                 private _cdr: ChangeDetectorRef,
                 private _store: Store,
                 private _storeHelper: StoreHelper,
                 private _userSvc: UserService) {
+
+        this.selectedDay$ = this.daySubject.asObservable();
 
         this.localTimeZone = moment.tz.guess();
         this.subscriptions.push(
@@ -95,7 +85,10 @@ export class SidebarCalendarComponent implements OnInit, AfterViewInit, OnDestro
     ngOnInit() {
         const that = this;
 
-        that.selectedDay = moment();
+        this.subscriptions.push(this.selectedDay$.subscribe(d => this._loadAppointmentsFor(d)));
+
+        // that.selectedDay = moment();
+        this.daySubject.next(moment());
 
         this.selectedProvider = this._store.getState().selectedAppointmentsProvider;
         this.subscriptions.push(
@@ -111,7 +104,6 @@ export class SidebarCalendarComponent implements OnInit, AfterViewInit, OnDestro
             that.selectedProvider = selectedProviders;
             that._setProviderValue(that.selectedProvider);
             that._cdr.detectChanges();
-            that._loadAppointmentsFor(that.selectedDay);
         }));
         this.fetchProviders();
     }
@@ -130,6 +122,20 @@ export class SidebarCalendarComponent implements OnInit, AfterViewInit, OnDestro
         this.subscriptions.forEach(s => s.unsubscribe());
     }
 
+    next() {
+        const d = this.daySubject.value.clone();
+        this.daySubject.next(d.add(1, 'day'));
+    }
+
+    back() {
+        const d = this.daySubject.value.clone();
+        this.daySubject.next(d.subtract(1, 'day'));
+    }
+
+    toggleOptions() {
+        this.showCalendar = !this.showCalendar;
+    }
+
     fetchProviders() {
         const that = this;
         this._apolloService.networkQuery(AppointmentProvidersListQuery)
@@ -141,7 +147,7 @@ export class SidebarCalendarComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     onDaySelected(day: IDay): void {
-        this._loadAppointmentsFor(day.date);
+        this.daySubject.next(day.date);
     }
 
     updateProviderPreference(provider: string): void {
@@ -191,8 +197,12 @@ export class SidebarCalendarComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     private _loadAppointmentsFor(date: Moment): void {
+        if (!date || this._lastDayApplied === date.toDate()) {
+            return;
+        }
+
+        this._lastDayApplied = date.toDate();
         const that = this;
-        this.selectedDay = date;
         this.loadingAppointments = true;
 
         const cancelled = this._store.getState().showAppointmentCancelled;
