@@ -794,6 +794,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             this.chartDefinition.chart.inverted = newValue;
             // const model = ChartModel.fromFormGroup(this.fg, this.chartDefinition);
 
+            // ** Raul Commented this to prevent an issue with the preview chart not showing
             // if (this._previewQuery && this._previewValid(model)) {
             //     this._previewQuery.refetch({ input: model }).then(res => this._processChartPreview(res.data));
             // }
@@ -803,6 +804,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
      private _proccessRemoveGridlines(values) {
         const newValue = (values.removeGridlines) ? true : false;
 
+        // ** Raul Commented this to prevent an issue with the preview chart not showing
         // const model = ChartModel.fromFormGroup(this.fg, this.chartDefinition);
         // if (this._previewQuery && this._previewValid(model)) {
         //     this._previewQuery.refetch({ input: model }).then(res => this._processChartPreview(res.data));
