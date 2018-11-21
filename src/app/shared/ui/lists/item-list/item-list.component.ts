@@ -82,15 +82,6 @@ export class ItemListComponent implements OnInit, OnDestroy {
             }
         ]
     }];
-    orderList: IOrderField[] = [{
-        fieldName: '1',
-        fieldValue: 1,
-        descripcion: 'valor'},
-        {
-            fieldName: '2',
-            fieldValue: 2,
-            descripcion: 'fiesta'
-    }];
 
     readonly blackListClassName = ['zmdi zmdi-more-vert', 'dropdown-backdrop'];
     readonly blackListNodeName = ['kpi-list-item-standard', 'kpi-list-item-tabular'];
@@ -154,6 +145,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
     //add-createdby
     get orderListGet(): IOrderField[] {
         const listOrder: IOrderField[] = [];
+        debugger;
         this._items.forEach(function(a) {
             const temp = a.orderFields;
             temp.forEach(function(b) {
@@ -180,7 +172,12 @@ export class ItemListComponent implements OnInit, OnDestroy {
             for (let i = 0; i < a.orderFields.length; i++) {
                 if (a.orderFields[i].fieldName === value && b.orderFields[i].fieldName === value &&
                     a.orderFields[i].fieldValue && b.orderFields[i].fieldValue) {
-                    return a.orderFields[i].fieldValue - b.orderFields[i].fieldValue;
+                        if ( a.orderFields[i].fieldValue > b.orderFields[i].fieldValue ) {
+                            return 1;
+                        } else if (a.orderFields[i].fieldValue < b.orderFields[i].fieldValue) {
+                            return -1;
+                        }
+                     return 0;
                 }
             }
         });
@@ -190,15 +187,21 @@ export class ItemListComponent implements OnInit, OnDestroy {
         this._items.sort(function (a , b) {
             for (let i = 0; i < a.orderFields.length; i++) {
                 if (a.orderFields[i].fieldName === value && b.orderFields[i].fieldName === value &&
-                    a.orderFields[i].fieldValue && b.orderFields[i].fieldValue) {
-                    return b.orderFields[i].fieldValue - a.orderFields[i].fieldValue;
+                    a.orderFields[i].fieldValue && b.orderFields[i].fieldValue ) {
+                        if ( b.orderFields[i].fieldValue > a.orderFields[i].fieldValue ) {
+                            return 1;
+                        } else if (b.orderFields[i].fieldValue < a.orderFields[i].fieldValue) {
+                            return -1;
+                        }
+                     return 0;
                 }
             }
         });
         this.itemListVisible = false;
     }
     public showOrderButtons() {
-        return this.itemListVisible = true;
+        this.itemListVisible = this.itemListVisible ? false : true;
+        return this.itemListVisible;
     }
 
     ////fin

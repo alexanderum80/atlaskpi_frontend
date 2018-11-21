@@ -62,7 +62,6 @@ export class ListKpisViewModel extends ViewModel<IFilter> {
 
         this._kpis = list;
         this._kpiItemList = this._kpis.map(d => {
-
             return {
                 id: d._id,
                 imagePath: ImageMap[d.type] || '',
@@ -71,10 +70,12 @@ export class ListKpisViewModel extends ViewModel<IFilter> {
                 extras: {
                     tags: d.tags ? d.tags.join(', ') : null
                 },
+                createdBy: d.createdBy,
+                createdDate: moment(d.createdDate).format('DD-MM-YYYY'),
                 orderFields: [{fieldName: d.createdBy ?  Object.getOwnPropertyNames(d)[6] : null,
                                fieldValue: d.createdBy ?  d.createdBy : null, descripcion: 'Created By'},
                               {fieldName: d.createdDate ? Object.getOwnPropertyNames(d)[7] : null,
-                               fieldValue: d.createdDate ? d.createdDate : null, descripcion: 'Created Date'}]
+                               fieldValue: d.createdDate ? moment(d.createdDate).format('YYYY-MM-DD') : null, descripcion: 'Created Date'}]
             };
         });
     }

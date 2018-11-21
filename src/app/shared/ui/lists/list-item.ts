@@ -12,6 +12,8 @@ export interface IListItem {
     extras?: any;
     visible?: boolean;
     selected?: boolean;
+    createdBy?: string;
+    createdDate?: Date;
     orderFields?: IOrderField[];
     type?: string;
 }

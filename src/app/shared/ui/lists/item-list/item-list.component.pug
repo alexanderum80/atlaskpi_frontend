@@ -12,7 +12,7 @@
                         .search-box([formGroup]="fg")
                             input.search-box(formControlName="search", placeholder="Type to filter...", type="text")
                     .m-t-15.m-r-10.text-center(flex-initial, layout="row")
-                        .zmdi.zmdi-sort-amount-asc.ico-down(flex-initial, (click)="showOrderButtons()")
+                        .ico-down.zmdi.zmdi-sort-amount-asc.tm-icon(flex-initial, (click)="showOrderButtons()")
                         //- bw-button-group([options]="viewOptions", type="default", (optionSelected)="onOptionSelected($event)")
                         bw-actions(*ngIf="viewItems", [showBig]="true", [actionItems]="viewItems", (actionClicked)="onViewItem($event)")
             .title-mobile.text-center(flex, flex-gt-sm="0", layout-padding)

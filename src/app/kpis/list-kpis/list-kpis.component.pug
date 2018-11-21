@@ -21,6 +21,10 @@ ng-template(#tableItem, let-item="item")
         .m-t-10.m-l-10 
             h2.title {{ item.title }}
             small {{ item.subtitle }}
+    div(flex)
+        .m-t-10.m-l-5 
+            h2.title {{ item.createdDate }}
+            small Created By {{ item.createdBy }}
     //- extras
     div(flex)
         .m-t-10.m-l-10
