@@ -235,7 +235,6 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     }
 
     get payload(): IKPIPayload {
-        debugger;
         const value = this.fg.value;
         const payload: IKPI = {
             name: (value.name) ? value.name.trim() : null,

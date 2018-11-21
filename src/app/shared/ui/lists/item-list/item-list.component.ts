@@ -145,7 +145,6 @@ export class ItemListComponent implements OnInit, OnDestroy {
     //add-createdby
     get orderListGet(): IOrderField[] {
         const listOrder: IOrderField[] = [];
-        debugger;
         this._items.forEach(function(a) {
             const temp = a.orderFields;
             temp.forEach(function(b) {
