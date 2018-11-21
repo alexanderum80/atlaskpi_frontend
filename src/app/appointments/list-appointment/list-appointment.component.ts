@@ -27,8 +27,6 @@ import { BrowserService } from 'src/app/shared/services/browser.service';
 
 // import { AddEditAppointmentComponent } from '../add-edit-appointment/add-edit-appointment.component';
 
-const Appointments = require('graphql-tag/loader!./appointments.gql');
-const DeleteAppointment = require('graphql-tag/loader!./delete-appointment.gql');
 const AppointmentProvidersListQuery = require('graphql-tag/loader!./appointment-providers-list.query.gql');
 const SearchAppointmentsQuery = require('graphql-tag/loader!./search-appointments.query.gql');
 const updateUserPreference = require('graphql-tag/loader!./update-user-preference.mutation.gql');
