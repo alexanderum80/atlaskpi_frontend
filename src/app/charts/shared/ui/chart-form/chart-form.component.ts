@@ -702,6 +702,11 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
 
         if (this._previewValid(model) && !loadingGroupings && !loadingComparison)  {
+
+            // Apollo doesnt send the property when using Link Batch, if the data type is not the same as in the schema
+            // so we are forcing the daterange to be an array of DateRanges.
+            (<any>model).dateRange = [model.dateRange];
+
             this._previewQuery.refetch({ input: model }).then(res => this._processChartPreview(res.data));
         }
     }
@@ -787,21 +792,21 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
         if (this.chartDefinition.chart.inverted !== newValue) {
             this.chartDefinition.chart.inverted = newValue;
-            const model = ChartModel.fromFormGroup(this.fg, this.chartDefinition);
+            // const model = ChartModel.fromFormGroup(this.fg, this.chartDefinition);
 
-            if (this._previewQuery && this._previewValid(model)) {
-                this._previewQuery.refetch({ input: model }).then(res => this._processChartPreview(res.data));
-            }
+            // if (this._previewQuery && this._previewValid(model)) {
+            //     this._previewQuery.refetch({ input: model }).then(res => this._processChartPreview(res.data));
+            // }
         }
     }
     // remove gridlines
      private _proccessRemoveGridlines(values) {
         const newValue = (values.removeGridlines) ? true : false;
 
-        const model = ChartModel.fromFormGroup(this.fg, this.chartDefinition);
-        if (this._previewQuery && this._previewValid(model)) {
-            this._previewQuery.refetch({ input: model }).then(res => this._processChartPreview(res.data));
-        }
+        // const model = ChartModel.fromFormGroup(this.fg, this.chartDefinition);
+        // if (this._previewQuery && this._previewValid(model)) {
+        //     this._previewQuery.refetch({ input: model }).then(res => this._processChartPreview(res.data));
+        // }
     }
 
     private _processSerieChanges(values) {

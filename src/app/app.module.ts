@@ -115,17 +115,20 @@ export class AppModule {
             },
         });
 
+        // const appLink = httpLink.create({ uri: environment.graphQlServer });
+
         const appLink = httpLink.create({
             uri: environment.graphQlServer,
             batchInterval: 100,
             batchMax: 12
         });
 
-        // const appLink = batchLink.create({
-        //     uri: environment.graphQlServer,
-        //     batchMax: 6,
-        //     batchInterval: 20
-        // });
+        // Old
+        // // const appLink = batchLink.create({
+        // //     uri: environment.graphQlServer,
+        // //     batchMax: 6,
+        // //     batchInterval: 20
+        // // });
 
         const authMiddleware = this._getAuthMiddleWare();
 
