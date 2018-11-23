@@ -46,7 +46,7 @@ export class ListKpisViewModel extends ViewModel<IFilter> {
                 icon: 'delete'
             }]
         }];
-        
+
     constructor(userService: UserService) {
         super(userService);
     }
