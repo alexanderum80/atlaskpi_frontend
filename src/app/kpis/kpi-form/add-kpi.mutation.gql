@@ -22,6 +22,8 @@ mutation($input: KPIAttributesInput) {
       emptyValueReplacement
       expression
       type
+      createdBy
+      createdDate
     }
     errors {
       field

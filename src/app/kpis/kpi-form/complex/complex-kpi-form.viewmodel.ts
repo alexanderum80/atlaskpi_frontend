@@ -7,7 +7,9 @@ import { UserService } from '../../../shared/services/user.service';
 import { IKPIPayload } from '../shared/simple-kpi-payload';
 import { IWidgetFormGroupValues } from '../../../widgets/shared/models';
 import { IChartFormValues } from '../../../charts/shared/models/chart.models';
-
+import { Subscription } from 'rxjs';
+import { IUserInfo } from '../../../shared/models';
+import * as moment from 'moment';
 
 const REGULAR_EXPRESSION_FOR_SAVING = /@{([\w\d\s\(\)%$!&#-=]+><)}/g;
 
@@ -18,6 +20,7 @@ export class ComplexKpiFormViewModel extends ViewModel<IKPI> {
     private _dataSources: IDataSource[];
     private _originalExpression: string;
     private existDuplicatedName: boolean;
+    private _subscription: Subscription[] = [];
 
     valuesPreviewWidget: IWidgetFormGroupValues = {
         name: '',
@@ -47,8 +50,13 @@ export class ComplexKpiFormViewModel extends ViewModel<IKPI> {
         invertAxisEnabled: false,
         seriesDataLabels: false
       };
+      currentUser: IUserInfo;
     constructor(userService: UserService) {
         super(userService);
+        const that = this;
+        this._subscription.push(userService.user$.subscribe((user) => {
+            that.currentUser = user;
+        }));
     }
 
     @Field({ type: String, required: true })
@@ -59,6 +67,12 @@ export class ComplexKpiFormViewModel extends ViewModel<IKPI> {
 
     @Field({ type: String, required: true })
     expression: string;
+
+    @Field({ type: String })
+    createdBy: string;
+
+    @Field({ type: Date })
+    createdDate: Date;
 
     initialize(model: any): void {
         if (model) {
@@ -73,7 +87,6 @@ export class ComplexKpiFormViewModel extends ViewModel<IKPI> {
 
     get payload(): IKPIPayload {
         const value = this.fg.value;
-
         const payload: IKPI = {
             name: (value.name) ? value.name.trim() : null,
             group: value.group,
@@ -81,7 +94,9 @@ export class ComplexKpiFormViewModel extends ViewModel<IKPI> {
             type: 'complex',
             expression: this._getExpressionForSaving(value.expression),
             tags: value.tags,
-            source: value.source
+            source: value.source,
+            createdBy: value.createdBy ? value.createdBy : this.currentUser._id,
+            createdDate: value.createdDate ? value.createdDate : moment().toDate()
         };
 
         const result: IKPIPayload = { input: payload };

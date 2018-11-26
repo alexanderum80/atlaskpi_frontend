@@ -20,6 +20,10 @@ import { IKPIPayload } from '../shared/simple-kpi-payload';
 import { IWidgetFormGroupValues } from '../../../widgets/shared/models';
 import { IChartFormValues } from '../../../charts/shared/models/chart.models';
 import { getAggregateFunctions } from '../../../shared/domain/kpis/functions';
+import { UserService } from '../../../shared/services';
+import { IUser } from '../../../users/shared';
+import { Subscription } from 'rxjs';
+import { IUserInfo } from '../../../shared/models';
 
 export const KPINAMEREGULAREXPRESSION = /^([a-zA-Z0-9\*\-\(\)\$\&\:#%] *){5,}$/;
 const expressionNumericFieldQuery = require('graphql-tag/loader!./get-expression-fields.query.gql');
@@ -33,6 +37,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     private existDuplicatedName: boolean;
 
     public expressionFieldSubject: Subject<string> = new Subject<string>();
+    private _subscription: Subscription[] = [];
 
     aggregateFunctions: SelectionItem[] = getAggregateFunctions();
     dataSources: SelectionItem[];
@@ -59,7 +64,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         comparisonArrowDirection: 'up'
       };
       
-      valuesPreviewChart : IChartFormValues = {
+      valuesPreviewChart: IChartFormValues = {
         name: '',
         description: '',
         dashboards: '',
@@ -74,10 +79,14 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         invertAxisEnabled: false,
         seriesDataLabels: false
       };
-
-    constructor(private _apollo: Apollo, private _cdr: ChangeDetectorRef ) {
+      currentUser: IUserInfo;
+    constructor(private _apollo: Apollo, private _cdr: ChangeDetectorRef, private _userService: UserService) {
         super(null);
+        const that = this;
         this.expressionFieldSubject = new Subject<string>();
+        this._subscription.push(this._userService.user$.subscribe((user) => {
+            that.currentUser = user;
+        }));
     }
 
     @Field({ type: String, validators: [
@@ -110,12 +119,17 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
     @Field({ type: String })
     source: string;
 
+    @Field({ type: String })
+    createdBy: string;
+
+    @Field({ type: Date })
+    createdDate: Date;
+
     initialize(model: any): void {
         const that = this;
         if (model) {
             let dataSourceValue;
             let sourceCollectionValue;
-
             // deserialize expression and filters
             const cleanModel = this.objectWithoutProperties(model, ['__typename']) as IKPI;
             cleanModel.expression = JSON.parse(cleanModel.expression);
@@ -230,7 +244,9 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             expression: JSON.stringify(value.expression as any),
             filter: JSON.stringify(this._getFilterValues()),
             tags: value.tags ? value.tags.map(t => t.value) : null,
-            source: value.source
+            source: value.source,
+            createdBy: value.createdBy ? value.createdBy : this.currentUser._id,
+            createdDate: value.createdDate ? value.createdDate : moment().toDate()
         };
         const result: IKPIPayload = { input: payload };
 
