@@ -9,7 +9,7 @@
 .overlay {
     @include cover-parent();
     background-color: transparent;
-    z-index: 10;
+    z-index: 100;
     .background {
         @include cover-parent();
     }

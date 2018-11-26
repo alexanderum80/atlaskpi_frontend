@@ -35,6 +35,7 @@
     "angular-highcharts": "^6.2.6",
     "apollo-angular": "^1.1.2",
     "apollo-angular-link-http": "^1.1.1",
+    "apollo-angular-link-http-batch": "^1.4.0",
     "apollo-cache-inmemory": "^1.2.5",
     "apollo-client": "^2.3.5",
     "bootstrap-sass": "^3.3.7",

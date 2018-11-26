@@ -11,8 +11,8 @@
                     .m-10.text-center(flex-initial)
                         .search-box([formGroup]="fg")
                             input.search-box(formControlName="search", placeholder="Type to filter...", type="text")
-                    .m-t-15.m-r-10.text-center(flex-initial)
-                        //- bw-button-group([options]="viewOptions", type="default", (optionSelected)="onOptionSelected($event)")
+                    .m-t-15.m-r-10.text-center(flex-initial, layout="row")
+                        bw-actions(*ngIf="sortItemsLength", [showBig]="true", [actionItems]="sortItems", (actionClicked)="onOrderList($event)")
                         bw-actions(*ngIf="viewItems", [showBig]="true", [actionItems]="viewItems", (actionClicked)="onViewItem($event)")
             .title-mobile.text-center(flex, flex-gt-sm="0", layout-padding)
                 .list-title(*ngIf="title") {{ title }}
@@ -40,7 +40,7 @@
                     [tableRowTemplate]="tableRowTemplate",
                     (click)="itemClicked($event, item)",
                     (actionClicked)="itemActionClicked($event)")
-    
+
         //- future implementation
         //- div(*ngIf="showSmallItems", layout="row", layout-wrap, layout-padding)
         //-     kpi-list-item-small(*ngFor="let item of items", [item]="item")

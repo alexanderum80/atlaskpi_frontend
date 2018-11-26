@@ -1,4 +1,6 @@
-.appointments-container.z-depth-1.bgm-white(layout="column", layout-padding)
+kpi-sidebar-calendar(*ngIf="isMobile")
+    
+.appointments-container.z-depth-1.bgm-white(*ngIf="!isMobile", layout="column", layout-padding)
     .controls(flex)
         .p-10(layout-xs="column", layout-gt-sm="row", layout-align-center-center, layout-padding)
             bw-checkbox.m-t-25(flex, flex-xs="100", flex-gt-sm="33",

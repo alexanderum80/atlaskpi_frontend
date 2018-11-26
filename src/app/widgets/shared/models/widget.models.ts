@@ -94,6 +94,7 @@ export interface IWidget {
     chartWidgetAttributes?: IChartWidgetAttributes;
     numericWidgetAttributes?: INumericWidgetAttributes;
     dashboards?: string[];
+    hasAlerts?: boolean;
 
      // virtual properties ( result of calcs, chart definitions, trending)
     materialized?: IWidgetMaterializedFields;
