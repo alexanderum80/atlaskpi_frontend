@@ -35,6 +35,7 @@ import { IKPIPayload } from '../shared/simple-kpi-payload';
 import {CommonService} from '../../../shared/services/common.service';
 import { Apollo, QueryRef  } from 'apollo-angular';
 import { timeout } from 'rxjs/operators';
+import { UserService } from '../../../shared/services';
 
 const dataSources = require('graphql-tag/loader!../data-sources.gql');
 const tags = require('graphql-tag/loader!./tags.gql');
@@ -89,7 +90,8 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
         private _apolloService: ApolloService,
         private _apollo: Apollo,
         private _router: Router,
-        private _cdr: ChangeDetectorRef
+        private _cdr: ChangeDetectorRef,
+        private _userService: UserService
 
     ) {}
 
@@ -328,7 +330,7 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
                  * edit-kpi to add-kpi and vice-versa for name and description
                  */
                 that.isLoading = false;
-                that.vm = new SimpleKpiFormViewModel(that._apollo, this._cdr);
+                that.vm = new SimpleKpiFormViewModel(that._apollo, this._cdr, this._userService);
 
                 that._getTags();
 

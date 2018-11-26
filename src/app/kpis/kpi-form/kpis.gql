@@ -4,5 +4,7 @@ query Kpis {
         name
         description
         frequency
+        createdBy
+        createdDate
     }
 }
