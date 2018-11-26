@@ -20,20 +20,3 @@
         width: 277px;
     }
 }
-.dropdown-box {
-    position: absolute;
-    right: 180px;
-    top: 65px;
-    right: 25px;
-    width: 320px;
-    animation-delay: 3s;
-    animation-duration: 3s;
-    animation-iteration-count: infinite;
-    transition: all 0.3s ease-in-out;
-    //background-image: url("/assets/img/backgrounds/box.png");
-    z-index: 10;
-    background-repeat: no-repeat;
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: lightgrey 1px 1px 30px 2px;
-}
