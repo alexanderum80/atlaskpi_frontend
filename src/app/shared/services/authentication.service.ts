@@ -82,6 +82,7 @@ export class AuthenticationService {
                 if (jsonToken && jsonToken.access_token) {
                     this._localStorageSvc.userToken = jsonToken;
                     this._localStorageSvc.updateCompanyInfo(jsonToken);
+                    this._nativeChannelSvc.sendCredentials(credentials);
                     this._authenticated = true;
                     return true;
                 }

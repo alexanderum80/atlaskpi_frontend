@@ -3,14 +3,19 @@ import { IUserInfo } from '../../shared/models/user';
 import {ModalComponent, MenuItem} from '../../ng-material-components';
 import {CommonService} from '../../shared/services';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { FormArray } from '@angular/forms';
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
+import { ApolloQueryResult } from 'apollo-client/core/types';
+import { Observable } from 'rxjs/Observable';
 import { IWidget } from '../shared/models/widget.models';
+import { clone, isEmpty } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 import SweetAlert from 'sweetalert2';
 import {WidgetAlertFormComponent} from '../widget-alert-form/widget-alert-form.component';
 import {IAlert} from '../widget-alert-form/widget-alert-form.viewmodel';
+import {widgetsGraphqlActions} from '../shared/graphql/widgets.graphql-actions';
 
 const createScheduleJobMutationGql = require('graphql-tag/loader!./create-scheduleJob.mutation.gql');
 const updateScheduleJobMutationGql = require('graphql-tag/loader!./update-scheduleJob.mutation.gql');
@@ -207,6 +212,8 @@ export class WidgetAlertComponent implements OnInit, OnDestroy {
     this._updateAlertActiveField(alert);
   }
 
+
+
   open(widget: IWidget): void {
     this.widget = widget;
     this._processWidget(widget);
@@ -298,6 +305,7 @@ export class WidgetAlertComponent implements OnInit, OnDestroy {
       if (!(that.modal as any).visible) {
         that.modal.open();
       }
+
       if (!data || !data.scheduleJobByWidgetId) {
         return;
       }
@@ -319,10 +327,11 @@ export class WidgetAlertComponent implements OnInit, OnDestroy {
       },
       refetchQueries: ['ScheduleJobByWidgetId']
     }).subscribe(({ data }: any) => {
-        const result = data.createScheduleJob;
-        if (result.success) {
-          that.modal.close();
-        }
+      const result = data.createScheduleJob;
+
+      if (result.success) {
+        that.modal.close();
+      }
     }));
   }
 

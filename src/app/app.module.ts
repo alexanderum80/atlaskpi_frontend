@@ -38,12 +38,20 @@ import { WidgetsModule } from './widgets/widgets.module';
 import { Widgets2Module } from './widgets2/widgets2.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { TargetsModule } from './targets/targets.module';
+import { AlertsComponent } from './alerts/alerts.component';
+import { NotificationUsersComponent } from './alerts/notification-users/notification-users.component';
+import { AlertsSummaryComponent } from './alerts/alerts-summary/alerts-summary.component';
+import { AlertsDetailsComponent } from './alerts/alerts-details/alerts-details.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         UnauthorizedComponent,
-        LoadingProfileComponent
+        LoadingProfileComponent,
+        AlertsComponent,
+        NotificationUsersComponent,
+        AlertsSummaryComponent,
+        AlertsDetailsComponent,
     ],
     imports: [
         BrowserModule,

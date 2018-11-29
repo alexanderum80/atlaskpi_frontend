@@ -1,0 +1,34 @@
+div(layout="column", layout-padding)
+    .title.p-b-10 Notification users
+    div(flex, *ngFor="let notification of notifications.controls; let i=index")
+        div(layout="row")
+            div(flex)
+                div(flex="100", layout="row")
+                    div(flex="60", layout="column", layout-padding)
+                        div(layout="row")
+                            .schema-header Select User:
+                        div(flex="100", layout="row") 
+                            bw-select-picker.w-100(
+                                        [fg]="notification",
+                                        field="user",
+                                        [required]="true",
+                                        [items]="alertsFormService.usersList",
+                                        [liveSearch]="true",
+                                        liveSearchPlaceholder="...search...",
+                                        noneSelectedText="NOTHING SELECTED",
+                                        leftIcon="accounts-alt")
+
+                    div.m-l-20(flex="15", layout="column", layout-padding)
+                        .m-t-25(flex="100", layout="row") 
+                          bw-checkbox([fg]="notification", field="byEmail")
+                          i.zmdi.zmdi-email
+
+                    div(flex="15", layout="column", layout-padding)
+                        .m-t-25(flex="100", layout="row") 
+                          bw-checkbox([fg]="notification", field="byPhone")
+                          i.zmdi.zmdi-tablet-android
+                    .zmdi.zmdi-close.p-t-30.f-20.c-red([class.hidden]="i === 0", (click)="removeNotification(notification)")
+                
+
+div(layout="row", layout-align="start")
+    bw-button(icon="plus", title="USER", color="blue", (clicked)="addNotification()")

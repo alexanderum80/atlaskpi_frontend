@@ -1,0 +1,9 @@
+mutation RemoveAlert($id: String!) {
+    removeAlert(id: $id) {
+        success
+        errors {
+            field
+            errors
+        }
+    }
+}

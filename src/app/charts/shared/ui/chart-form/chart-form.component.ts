@@ -511,8 +511,19 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                 }, 800);
                 setTimeout(() => {
                     that.fg.controls['xAxisSource'].setValue(values.xAxisSource);
-                    if (that.fg.controls['grouping']) {
-                        that.fg.controls['grouping'].setValue(values.grouping.length === 2 ? values.grouping[1] : '');
+                    if (that.fg.controls['grouping'] && values.grouping) {
+                
+                        let groupingValue;
+                        //groupings is an array for maps an string for charts
+                        if(Array.isArray(values.grouping) && values.grouping.length === 2 ){
+                            groupingValue = values.grouping[1];
+                        }else if(Array.isArray(values.grouping)){
+                            groupingValue = ''
+                        }else{
+                            groupingValue= values.grouping;
+                        }
+                        that.fg.controls['grouping'].setValue(groupingValue); 
+
                     }
                     // depends on the daterange selection
                     that.fg.controls['comparison'].setValue(values.comparison);

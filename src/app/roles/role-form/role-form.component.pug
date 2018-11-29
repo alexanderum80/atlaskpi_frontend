@@ -2,6 +2,11 @@ bw-text-box([fg]="fg", field="name", label="Role Name", [required]="true")
 .duplicatedNameMsg.p-b-20(*ngIf="fg.get('name').errors && fg.get('name').errors.forbiddenName && (fg.get('name').dirty || fg.get('name').touched)") Duplicated name
 div(*ngIf="groupPermissions", layout="column")
   .flex
+    kpi-collapsable([(collapsed)]="Alert", headerText="Alerts")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let alert of groupPermissions.Alerts", [fg]="fg", field="{{alert._id}}", label="{{alert.action}}")
+    
     kpi-collapsable([(collapsed)]="Chart", headerText="Charts")
       div(layout="row")
         div(flex)

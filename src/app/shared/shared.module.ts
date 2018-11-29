@@ -58,6 +58,7 @@ import { FileUploadClientService } from './services/upload.service';
 import { FileInputComponent } from './ui/file-input/file-input.component';
 import { RemoveConfirmationComponent } from './ui/remove-confirmation/remove-confirmation.component';
 import { ErrorComponent } from './ui/error/error.component';
+import { IsInViewportDirective } from './directives/is-in-viewport.directive';
 
 @NgModule({
     imports: [
@@ -95,7 +96,9 @@ import { ErrorComponent } from './ui/error/error.component';
         ListItemTabularComponent,
         FileInputComponent,
         RemoveConfirmationComponent,
-        ErrorComponent
+        ErrorComponent,
+        // directives
+        IsInViewportDirective
     ],
     exports: [
         BackgroundComponent,
@@ -121,7 +124,9 @@ import { ErrorComponent } from './ui/error/error.component';
         MomentFormatPipe,
         ListItemTabularComponent,
         ErrorComponent,
-        RemoveConfirmationComponent
+        RemoveConfirmationComponent,
+        // directives
+        IsInViewportDirective
     ],
     providers: [
         ApiService,

@@ -1,0 +1,18 @@
+mutation UpdateAlert($id: String!, $input: AlertInput) {
+    updateAlert(id: $id, input: $input) {
+        entity {
+            _id
+            name
+            kpi
+            frequency
+            condition
+            value
+            active
+        }
+        success
+        errors {
+            field
+            errors
+        }
+    }
+}

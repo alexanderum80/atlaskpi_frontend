@@ -1,0 +1,16 @@
+query Alerts {
+    alerts {
+        _id
+        name
+        kpi
+        frequency
+        condition
+        value
+        notificationUsers {
+            user
+            byEmail
+            byPhone
+        }
+        active
+    }
+}

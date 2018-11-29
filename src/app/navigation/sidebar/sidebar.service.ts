@@ -15,6 +15,7 @@ import { StoreHelper } from '../../shared/services';
 import { UserService } from '../../shared/services/user.service';
 import { SideBarViewModel } from './sidebar.viewmodel';
 import { sortBy } from 'lodash';
+import { environment } from '../../../environments/environment';
 
 export interface ISidebarItemSearchResult {
     parent?: MenuItem;
@@ -63,6 +64,11 @@ const MENU_ITEMS: MenuItem[] = [{
             title: 'Data Sources',
             icon: 'grid',
             route: '/datasource'
+        }, {
+            id: 'alerts',
+            title: 'Alerts',
+            icon: 'notifications-active',
+            route: '/alerts'
         }
     ]
 }, {
@@ -119,7 +125,15 @@ const MENU_ITEMS: MenuItem[] = [{
             icon: 'refresh'
         }
     ]
-}];
+},
+{
+    id: 'support',
+    title: 'Remote Support',
+    icon: 'headset-mic',
+    externalUrl: environment.remoteSupportModuleUrl
+}
+
+];
 
 
 const DashboardsQuery = gql `
@@ -192,6 +206,11 @@ export class SidebarService {
             window.location.reload();
         }
 
+        if (menuItem.externalUrl) {
+            window.open(menuItem.externalUrl);
+            return;
+        }
+
         // if there is an item selected with children I should be able to deselect it
         if (menuItem.children) {
             this._selectedSubject.next({ parent: menuItem, item: null });
@@ -200,9 +219,10 @@ export class SidebarService {
             this._selectedSubject.next({ parent: menuItem.parent, item: menuItem });
         }
 
-        // if the item has route then go there
         if (menuItem.route) {
             this._router.navigate([menuItem.route]);
+        } else if (menuItem.url) {
+            this._router.navigateByUrl(menuItem.url);
         }
     }
 
