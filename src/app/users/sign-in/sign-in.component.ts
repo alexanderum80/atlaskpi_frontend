@@ -8,6 +8,7 @@ import { AuthenticationService, NativeChannelService, WindowService } from '../.
 import { BrowserService } from '../../shared/services/browser.service';
 import { CommonService } from '../../shared/services/common.service';
 import { ICompanyInfo, LocalStorageService } from '../../shared/services/local-storage.service';
+import { browser } from 'protractor';
 
 const findByUserNameQuery = require('graphql-tag/loader!./find-by-username.query.gql');
 
@@ -37,19 +38,20 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
     authErrorMessage = 'Invalid credentials';
 
     fg = new FormGroup({});
-    mobile: boolean;
+    isMobile: boolean;
     companyInfo: ICompanyInfo;
     password: string;
 
     private _subscription: Subscription[] = [];
 
-    constructor(browser: BrowserService,
+    constructor(
+        private _browserSvc: BrowserService,
         private _authSvc: AuthenticationService,
         private _router: Router,
         private _localStorageSvc: LocalStorageService,
         private _nativeChannelSvc: NativeChannelService,
         private _windowService: WindowService) {
-        this.mobile = browser.isMobile();
+        this.isMobile = _browserSvc.isMobile();
     }
 
     ngOnInit() {
@@ -97,7 +99,11 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
         const credentials = this.fg.value;
 
         this._subscription.push(this._authSvc.login(credentials).subscribe(() => {
-            this._router.navigate(['/dashboards']);
+            if (this._browserSvc.isMobile()) {
+                this._router.navigate(['/mobile-menu']);
+            } else {
+                this._router.navigate(['/dashboards']);
+            }
         }, (err) => {
             that.authError = true;
         }));

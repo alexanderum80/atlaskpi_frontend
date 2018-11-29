@@ -27,6 +27,7 @@ import { ListWidgetsComponent } from './widgets/list-widgets/list-widgets.compon
 import { WidgetsComponent } from './widgets/widgets.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { FormTargetsComponent } from './targets/form-targets/form-targets.component';
+import { MobileWelcomeComponent } from './mobile-welcome/mobile-welcome.component';
 
 const routes: Routes = [
   { path: 'unauthorized', component: UnauthorizedComponent },
@@ -52,7 +53,8 @@ const routes: Routes = [
   { path: 'widgets', component: ListWidgetsComponent, canActivate: [AuthGuard] },
   { path: 'playground', component: PlaygroundComponent },
   { path: 'widgets2', component: WidgetsComponent },
-  { path: 'targets', component: FormTargetsComponent}
+  { path: 'targets', component: FormTargetsComponent},
+  { path: 'mobile-menu', component: MobileWelcomeComponent },
 ];
 
 @NgModule({

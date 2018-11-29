@@ -43,12 +43,14 @@ import {
     HttpBatchLinkModule,
     HttpBatchLink,
   } from 'apollo-angular-link-http-batch';
+import { MobileWelcomeComponent } from './mobile-welcome/mobile-welcome.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         UnauthorizedComponent,
         LoadingProfileComponent,
+        MobileWelcomeComponent,
     ],
     imports: [
         BrowserModule,
