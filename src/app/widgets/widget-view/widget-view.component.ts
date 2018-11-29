@@ -34,7 +34,6 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
     chart: Chart;
     showDescription = false;
     descriptionAnimation: string;
-    hasAlerts = false;
 
     private _chartInstance: Highcharts.Chart;
     private _subscription: Subscription[] = [];
@@ -118,7 +117,6 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
                                 this.deleteWidgetActivity,
                                 this.cloneWidgetActivity]);
         this._disabledActionItem();
-        this._widgetHasAlerts();
     }
 
     ngOnDestroy() {
@@ -160,41 +158,6 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
             this.actionItems[0].children = children;
         }
     }
-
-    private _widgetHasAlerts(): void {
-        if (this.widget && this.widget._id) {
-            const that = this;
-
-            this._subscription.push(
-                this._apollo.watchQuery({
-                    query: scheduleJobByWidgetIdGql,
-                    variables: {
-                        id: this.widget._id
-                    },
-                    fetchPolicy: 'network-only'
-                })
-                .valueChanges
-                .subscribe(({ data }: any) => {
-                    if (!data || !data.scheduleJobByWidgetId) {
-                        return;
-                    }
-
-                    const alerts = data.scheduleJobByWidgetId;
-                    if (alerts && alerts.length) {
-                        that.hasAlerts = true;
-                    } else {
-                        that.hasAlerts = false;
-                    }
-                })
-            );
-        }
-    }
-
-    // private _resizeChart() {
-    //     const chart = < IChart > JSON.parse(this.widget.materialized.chart);
-    //     chart.chartDefinition = this._minifyChart(chart.chartDefinition);
-    //     this.chart = new Chart(chart.chartDefinition);
-    // }
 
   // find the object in the array of actionItems
   // set disabled to boolean value
@@ -298,7 +261,7 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     get showNotificationBell(): boolean {
-        return this.hasAlerts && !this.widgetPreview;
+        return this.widget.hasAlerts && !this.widgetPreview;
     }
 
     get widgetBackgroundColor() {

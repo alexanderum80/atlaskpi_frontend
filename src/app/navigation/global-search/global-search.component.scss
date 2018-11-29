@@ -12,3 +12,9 @@
     
     width: 100%;
 }
+
+form.search-box-container {
+    @include for-size(phone-only) {
+        margin-top: 15px;
+    }
+}

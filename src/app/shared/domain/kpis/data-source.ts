@@ -28,6 +28,8 @@ export interface IDataSource {
     filterOperators: IDataTypeFilters;
     externalSource?: boolean;
     sources?: string[];
+    createdBy?: string;
+    createdDate?: Date;
 }
 
 export interface IDataSourceFilterFields {

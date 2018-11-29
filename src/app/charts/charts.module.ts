@@ -39,6 +39,7 @@ import { ChartPreviewComponent } from './shared/ui/chart-preview/chart-preview.c
 import { ChartTypeComponent } from './shared/ui/chart-type/chart-type.component';
 import { MapsModule } from '../maps/maps.module';
 import highchartEvents from 'highcharts-custom-events';
+import { ChartComparisonComponent } from './chart-view/chart-comparison/chart-comparison.component';
 
 // import { MyDatePickerModule } from 'mydatepicker';
 
@@ -86,6 +87,7 @@ export function highchartsModules() {
         ChangeSettingsOnFlyComponent,
         AutoRendereableChartComponent,
         ChartDetailFilterComponent,
+        ChartComparisonComponent,
     ],
     exports: [
         ChartViewComponent,

@@ -17,6 +17,10 @@ header#app-header {
 
 .header-logo {
     height: 40px;
+
+    @include for-size(phone-only) {
+        height: 30px;
+    }
 }
 
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
@@ -37,9 +41,10 @@ header#app-header {
     right: 0;
     top: 0;
     bottom: 0;
-    width: 290px;
+    width: 350px;
     background: white;
     z-index: 2000;
+    padding-top: 40px;
 
     .close-btn {
         position: absolute;

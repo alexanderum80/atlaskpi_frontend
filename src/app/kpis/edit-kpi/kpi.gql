@@ -21,5 +21,7 @@ query Kpi($id: String!) {
       expression
       type
       tags
+      createdBy
+      createdDate
     }
 }

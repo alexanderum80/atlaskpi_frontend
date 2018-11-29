@@ -68,6 +68,10 @@ export interface IKPI extends ITaggable {
     expression?: string;
     type?: string;
     source: string;
+     //add-created
+    createdBy?: string;
+    createdDate?: Date;
+
 }
 
 export class KPI implements IKPI {
@@ -87,6 +91,9 @@ export class KPI implements IKPI {
     type?: string;
     tags: string[];
     source: string;
+     //add-created
+     createdBy?: string;
+     createdDate?: Date;
 }
 
 export class IKPIAttributes {

@@ -1,0 +1,13 @@
+.p-40.h-95.overflow-auto
+
+    .chart-comparisons(layout="column", layout-align="center center", layout-padding)
+
+        .close-button
+            i.zmdi.zmdi-close((click)="close()")
+          
+        div(flex-initial, *ngFor="let c of comparisons")
+            .chart-comparisons--option
+                bw-button([title]="c.title", color="blue", [block]="true", (clicked)="comparisonClicked(c)")
+        
+            
+        

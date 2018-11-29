@@ -172,6 +172,10 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
             this.chartFormComponent.processFormatChanges(this.fg.value);
             const model = ChartModel.fromFormGroup(this.fg, this.chartFormComponent.getChartDefinition(), true);
 
+            // Apollo doesnt send the property when using Link Batch, if the data type is not the same as in the schema
+            // so we are forcing the daterange to be an array of DateRanges.
+            (<any>model).dateRange = [model.dateRange];
+
             this._apollo.mutate<IUpdateChartResponse>({
                 mutation: UpdateChartMutation,
                 variables: { id: that.id, input: model }

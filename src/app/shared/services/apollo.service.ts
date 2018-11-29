@@ -26,7 +26,6 @@ export class ApolloService {
     constructor(private _apollo: Apollo) {}
 
     networkQuery <T> (query: any, variables?: any): Promise <T> {
-        const that = this;
         const queryDetails: any = {
             query: query,
             fetchPolicy: 'network-only'

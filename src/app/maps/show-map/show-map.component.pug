@@ -46,7 +46,7 @@
     .legend-button(*ngIf="showLegendBtn")
         bw-button(color="white", title="Legend", (clicked)="showLegend()")
 
-    .legend.z-depth-1.bgm-white(*ngIf="showingLegend", class="{{legendEffect}}")
+    .legend.bgm-white(*ngIf="showingLegend", class="{{legendEffect}}")
         span.close-button((click)="closeLegend()")
             i.zmdi.zmdi-close
         h2 Legend

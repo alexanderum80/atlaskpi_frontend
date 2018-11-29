@@ -4,7 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { find } from 'lodash';
 import { MenuItem } from '../../../../dashboards/shared/models';
 import { IActionItemClickedArgs } from '../item-clicked-args';
-import { IListItem } from '../list-item';
+import { IListItem, IOrderField } from '../list-item';
 import { IItemListActivityName } from '../../../interfaces/item-list-activity-names.interface';
 import { getEnumString } from '../../../extentions';
 import { flatten, isEmpty } from 'lodash';
@@ -12,13 +12,14 @@ import { Subscription } from 'rxjs/Subscription';
 import SweetAlert from 'sweetalert2';
 import { lowerCaseFirst } from 'change-case';
 import { ApolloService } from '../../../../shared/services/apollo.service';
-import { stringify } from 'querystring';
+import { IMenuItem } from '../../../models';
 
 const updateUserPreference = require('graphql-tag/loader!./update-user-preference.mutation.gql');
 
 export interface ISearchArgs {
     search: string;
 }
+
 
 enum ItemActionEnum {
     Edit = 1,
@@ -49,6 +50,25 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
         const searchArgs = this.fg ? this.fg.value : null;
         this._filterItems(searchArgs);
+        const orders = this.orderListGet;
+        if (orders && orders.length > 0) {
+            const childrensort: MenuItem[] = [];
+            for (let i = 0; i < orders.length; i++) {
+                const childAsc = {
+                    id: orders[i].fieldName + 'ASC',
+                    icon: 'long-arrow-up',
+                    title: orders[i].descripcion.toUpperCase() + ' ASC'
+                };
+                const childDesc = {
+                    id: orders[i].fieldName + 'DESC',
+                    icon: 'long-arrow-down',
+                    title: orders[i].descripcion.toUpperCase() + ' DESC'
+                };
+                childrensort.push(childAsc);
+                childrensort.push(childDesc);
+            }
+            this.sortItems[0].children = childrensort;
+        }
     }
     @Input() itemType: 'standard' | 'small' | 'big' | 'table' = 'standard';
     @Input() actionItems: MenuItem[] = [{
@@ -82,6 +102,10 @@ export class ItemListComponent implements OnInit, OnDestroy {
             }
         ]
     }];
+    sortItems: MenuItem[] = [{
+        id: 'order-options',
+        icon: 'sort-amount-asc',
+    }];
 
     readonly blackListClassName = ['zmdi zmdi-more-vert', 'dropdown-backdrop'];
     readonly blackListNodeName = ['kpi-list-item-standard', 'kpi-list-item-tabular'];
@@ -106,6 +130,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
     private _items: IListItem[];
     private _filteredItems: IListItem[];
     private _subscription: Subscription[] = [];
+    private _sortChildrens: IMenuItem[] = [];
 
     ngOnInit() {
 
@@ -140,6 +165,90 @@ export class ItemListComponent implements OnInit, OnDestroy {
     get showTabularItems(): boolean {
         return this.itemType === 'table';
     }
+
+    // add-createdby
+    get orderListGet(): IOrderField[] {
+        const listOrder: IOrderField[] = [];
+        const items = this._items;
+
+        if(!items) return ;
+        
+        for ( let i = 0; i < items.length; i ++) {
+            if (items[i].orderFields && items[i].orderFields.length > 0) {
+                const temp = items[i].orderFields;
+                for (let j = 0; j < temp.length; j++) {
+                    let flag = false;
+                    for (let k = 0; k < listOrder.length; k++) {
+                        if (temp[j].fieldName === listOrder[k].fieldName) {
+                            flag = true;
+                        }
+                    }
+                    if (!flag) {
+                        listOrder.push(temp[j]);
+                    }
+                }
+            }
+
+        }
+
+        return listOrder;
+    }
+
+    get sortChildrenList(): IMenuItem[] {
+        return this._sortChildrens;
+    }
+    get sortItemsLength(): boolean {
+        const val = this.sortItems[0].children ? this.sortItems[0].children.length : 0;
+        return  val > 0 ? true : false;
+    }
+    orderAscBy(value: any) {
+        this._items.sort(function (a , b) {
+            for (let i = 0; i < a.orderFields.length; i++) {
+                if (a.orderFields[i].fieldName === value && b.orderFields[i].fieldName === value &&
+                    a.orderFields[i].fieldValue && b.orderFields[i].fieldValue) {
+                        if ( a.orderFields[i].fieldValue > b.orderFields[i].fieldValue ) {
+                            return 1;
+                        } else if (a.orderFields[i].fieldValue < b.orderFields[i].fieldValue) {
+                            return -1;
+                        }
+                     return 0;
+                }
+            }
+        });
+    }
+    orderDescBy(value: any) {
+        this._items.sort(function (a , b) {
+            for (let i = 0; i < a.orderFields.length; i++) {
+                if (a.orderFields[i].fieldName === value && b.orderFields[i].fieldName === value &&
+                    a.orderFields[i].fieldValue && b.orderFields[i].fieldValue ) {
+                        if ( b.orderFields[i].fieldValue > a.orderFields[i].fieldValue ) {
+                            return 1;
+                        } else if (b.orderFields[i].fieldValue < a.orderFields[i].fieldValue) {
+                            return -1;
+                        }
+                     return 0;
+                }
+            }
+        });
+    }
+    onOrderList(item: MenuItem) {
+        const items = this.sortItems[0].children;
+        for (let i = 0; i < items.length; i++) {
+            if (item.id === items[i].id) {
+                const leng = item.id.length;
+                if (item.id.includes('ASC')) {
+                    const asc = item.id.substr(0, leng - 3);
+                    this.orderAscBy(asc);
+                }
+                if (item.id.includes('DESC')) {
+                    const asc = item.id.substr(0, leng - 4);
+                    this.orderDescBy(asc);
+                }
+            }
+        }
+    }
+
+    //// fin
 
     addClicked() {
         this.onAddActionClicked.emit();
@@ -182,8 +291,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
         }
     }
 
-    private updatePreferences(itemTypeValue: string){
-        if (!itemTypeValue) { return };
+    private updatePreferences(itemTypeValue: string) {
+        if (!itemTypeValue) { return; }
 
         const that = this;
         const currentItemType = (itemTypeValue === 'standard') ? 'standardView' : 'tableView';

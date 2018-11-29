@@ -1,4 +1,4 @@
-mutation ($input: WidgetInput!) {
+mutation CreateWidget($input: WidgetInput!) {
   createWidget(input: $input) {
     entity {
       _id

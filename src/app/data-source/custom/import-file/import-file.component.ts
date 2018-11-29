@@ -209,11 +209,12 @@ export class ImportFileComponent {
           const workbook = XLSX.read(bstr, {type: 'binary'});
           const first_sheet_name = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[first_sheet_name];
+          const alphExtended = this.vm.getAlphabetExtended();
 
           let j = 1;
-          for (let i = 1; i <= 1000; i++) {
+          for (let i = 1; i <= 2000; i++) {
             const dataArray = [];
-            this.vm.Alphabet.map(alph => {
+            alphExtended.map(alph => {
               const cell = alph + i;
               let cellValue = '';
               if (worksheet[cell]) {
