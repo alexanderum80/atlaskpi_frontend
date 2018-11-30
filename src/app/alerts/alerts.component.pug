@@ -37,7 +37,7 @@
 
       figure.back
         .right-panel.overflow-auto(flex="60", flex-xs="100", layout="column")
-          kpi-alerts-details(*ngIf="!isLoading", [fg]="fgDetails", [alert]="selectedAlert", [isMobile]="isMobile", (goBackToList)="backToListClicked()", (dataUpdated)="NotificationUsersUpdated($event)")
+          kpi-alerts-details(*ngIf="!isLoading", [fg]="fgDetails", [alert]="selectedAlert", [isMobile]="isMobile", (goBackToList)="backToListClicked()")
           .p-t-20.p-r-30(*ngIf="!isLoading", layout="row", layout-align="end")
             bw-button.m-l-5(icon="floppy", title="SAVE", color="blue", (clicked)="save()", [disabled]="!isFormValid() || !actionActivityNames.update")
             bw-button.m-l-5(icon="close", title="CANCEL", color="black", [simple]="true", (clicked)="cancel()")
