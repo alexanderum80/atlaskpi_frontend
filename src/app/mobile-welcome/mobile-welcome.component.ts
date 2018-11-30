@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-mobile-welcome',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MobileWelcomeComponent implements OnInit {
 
-  constructor() { }
+  constructor(private _router: Router) { }
 
   ngOnInit() {
+  }
+
+  navigateTo(address: string) {
+    this._router.navigate([address]);
   }
 
 }
