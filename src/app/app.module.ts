@@ -47,6 +47,7 @@ import {
     HttpBatchLinkModule,
     HttpBatchLink,
   } from 'apollo-angular-link-http-batch';
+import { MobileWelcomeComponent } from './mobile-welcome/mobile-welcome.component';
 
 @NgModule({
     declarations: [
@@ -57,6 +58,7 @@ import {
         NotificationUsersComponent,
         AlertsSummaryComponent,
         AlertsDetailsComponent,
+        MobileWelcomeComponent,
     ],
     imports: [
         BrowserModule,

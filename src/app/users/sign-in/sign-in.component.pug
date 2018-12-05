@@ -1,7 +1,7 @@
 form#login-form(flex, [formGroup]="fg", (ngSubmit)="signIn($event)")
     .sign-in-container.h-100(
         layout="column", layout-align="center",
-        [class.mobile]="mobile")
+        [class.mobile]="isMobile")
         //-logo
         .m-b-20(flex)
             img.logo(src='/assets/img/logos/logo.png')

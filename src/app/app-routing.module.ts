@@ -28,6 +28,7 @@ import { WidgetsComponent } from './widgets/widgets.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { FormTargetsComponent } from './targets/form-targets/form-targets.component';
 import { AlertsComponent } from './alerts/alerts.component';
+import { MobileWelcomeComponent } from './mobile-welcome/mobile-welcome.component';
 
 const routes: Routes = [
   { path: 'unauthorized', component: UnauthorizedComponent },
@@ -54,7 +55,8 @@ const routes: Routes = [
   { path: 'playground', component: PlaygroundComponent },
   { path: 'widgets2', component: WidgetsComponent },
   { path: 'targets', component: FormTargetsComponent},
-  { path: 'alerts', component: AlertsComponent}
+  { path: 'alerts', component: AlertsComponent},
+  { path: 'mobile-menu', component: MobileWelcomeComponent },
 ];
 
 @NgModule({
