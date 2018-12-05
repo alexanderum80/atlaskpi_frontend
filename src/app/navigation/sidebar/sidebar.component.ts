@@ -1,3 +1,6 @@
+import { title } from 'change-case';
+import { UserService } from './../../shared/services/user.service';
+import { ViewAlertActivity } from './../../shared/authorization/activities/alerts/view-alert.activity';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -6,6 +9,8 @@ import { IMenuItem, IUserInfo } from '../../shared/models';
 import { StoreHelper, Store } from '../../shared/services';
 import { CommonService } from '../../shared/services/common.service';
 import { SidebarService } from './sidebar.service';
+import { AlertsFormService } from '../../alerts/alerts.service';
+import { id } from '@swimlane/ngx-datatable/release/utils';
 
 const menuItems: MenuItem[] = [{
     id: 'dashboard',
@@ -64,7 +69,8 @@ const menuItems: MenuItem[] = [{
 @Component({
     selector: 'kpi-sidebar',
     templateUrl: './sidebar.component.pug',
-    styleUrls: ['./sidebar.component.scss']
+    styleUrls: ['./sidebar.component.scss'],
+    providers: [AlertsFormService, ViewAlertActivity]
 })
 export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() width = 220;
@@ -77,15 +83,31 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
     constructor(
         private _storeHelper: StoreHelper,
         private _sidebarService: SidebarService,
+        public _alertService: AlertsFormService,
+        private _userService: UserService,
+        private _viewAlertActivity: ViewAlertActivity,
         private _store: Store) {
-            this._subscription.push( 
+            this._subscription.push(
                 this._store.changes$.subscribe(
                 (state) => this.changeLogo(state)
             ));
         }
 
     ngOnInit() {
-        this._sidebarService.items$.subscribe(items => this.items = items);
+        this._sidebarService.items$.subscribe(items => {
+            this.items = items;
+            if (this.viewAlerts()) {
+                const index = this.items.findIndex(i => i.id === 'data-lab');
+                if (this.items[index].children.findIndex(c => c.id === 'alerts') === -1) {
+                    this.items[index].children.push({
+                        id: 'alerts',
+                        icon: 'notifications-active',
+                        route: '/alerts',
+                        title: 'Alerts'
+                    });
+                }
+            }
+        });
     }
 
     ngAfterViewInit() { }
@@ -97,6 +119,10 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         this._subscription.forEach(s => s.unsubscribe());
+    }
+
+    viewAlerts() {
+        return this._userService.hasPermission('View', 'Alert');
     }
 
     hideSidebar(e: Event) {
@@ -114,7 +140,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-    changeLogo(state){
+    changeLogo(state) {
         if (state.theme === 'dark') {
             this.logoPath = 'white-logo.png';
         } else {

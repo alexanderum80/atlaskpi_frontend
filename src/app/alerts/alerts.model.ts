@@ -11,7 +11,7 @@ export interface IAlerts {
 }
 
 export interface INotificationUsers {
-    user: string;
+    user: string[];
     byEmail: boolean;
     byPhone: boolean;
 }

@@ -1,10 +1,13 @@
+import { IUserInfo } from './../shared/models/user';
 import { IAlerts } from './alerts.model';
 import { Injectable } from '@angular/core';
 import { SelectionItem } from '../ng-material-components';
 import { IItemListActivityName } from '../shared/interfaces/item-list-activity-names.interface';
 import { CreateAlertActivity } from '../shared/authorization/activities/alerts/create-alert.activity';
+import { ViewAlertActivity } from '../shared/authorization/activities/alerts/view-alert.activity';
 import { UpdateAlertActivity } from '../shared/authorization/activities/alerts/update-alert.activity';
 import { DeleteAlertActivity } from '../shared/authorization/activities/alerts/delete-alert.activity';
+import { UserService } from '../shared/services';
 
 @Injectable()
 export class AlertsFormService {
@@ -27,19 +30,21 @@ export class AlertsFormService {
 
     private _actionActivityNames: IItemListActivityName = {};
 
-    constructor() {
+    private _currentUser: IUserInfo;
+
+    constructor(private _userSvc: UserService) {
 
         this._systemAlert = {
             _id: '1',
             name: 'First Sale of day',
             kpi: ' ',
-            frequency: 'monthly',
+            frequency: 'daily',
             condition: '',
             value: 0,
             notificationUsers: [{
-                user: '',
+                user: [''],
                 byEmail: false,
-                byPhone: false
+                byPhone: true
             }],
             active: false
         };
@@ -66,7 +71,7 @@ export class AlertsFormService {
             condition: null,
             value: undefined,
             notificationUsers: [{
-                user: '',
+                user: [''],
                 byEmail: false,
                 byPhone: false
             }],
@@ -74,10 +79,27 @@ export class AlertsFormService {
         };
 
         this._actionActivityNames = {
+            view: ViewAlertActivity.name,
             add: CreateAlertActivity.name,
             update: UpdateAlertActivity.name,
             delete: DeleteAlertActivity.name
           };
+    }
+
+    viewAlertPermission() {
+        return this._userSvc.hasPermission('View', 'Alert');
+    }
+
+    createAlertPermission() {
+        return this._userSvc.hasPermission('Create', 'Alert');
+    }
+
+    updateAlertPermission() {
+        return this._userSvc.hasPermission('Update', 'Alert');
+    }
+
+    deleteAlertPermission() {
+        return this._userSvc.hasPermission('Delete', 'Alert');
     }
 
     get systemAlert() {
@@ -98,6 +120,14 @@ export class AlertsFormService {
 
     get defaultAlertModel() {
         return this._defaultAlertModel;
+    }
+
+    get currentUser(): IUserInfo {
+        return this._currentUser;
+    }
+
+    set currentUser(item: IUserInfo) {
+        this._currentUser = item;
     }
 
     updateKpiList(kpis) {

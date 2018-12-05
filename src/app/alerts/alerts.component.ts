@@ -1,3 +1,6 @@
+import { split } from 'lodash';
+import { map } from 'rxjs/operators';
+import { IUser } from './../users/shared/models/user';
 import { BrowserService } from './../shared/services/browser.service';
 import { IItemListActivityName } from './../shared/interfaces/item-list-activity-names.interface';
 import SweetAlert from 'sweetalert2';
@@ -8,6 +11,7 @@ import { ApolloService } from '../shared/services/apollo.service';
 import { Activity } from '../shared/authorization/decorators/component-activity.decorator';
 import { ViewAlertActivity } from '../shared/authorization/activities/alerts/view-alert.activity';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
+import { UserService } from '../shared/services/user.service';
 
 const alertsQuery = require('graphql-tag/loader!./alerts.query.gql');
 const addAlertMutation = require('graphql-tag/loader!./create-alert.mutation.gql');
@@ -49,21 +53,31 @@ export class AlertsComponent implements OnInit, AfterViewInit {
   constructor(
     public vm: AlertsFormService,
     private _apolloService: ApolloService,
-    private _browser: BrowserService
+    private _browser: BrowserService,
+    private _userSvc: UserService
   ) {
     this.actionActivityNames = this.vm.actionActivityNames;
     this.isMobile = _browser.isMobile();
   }
 
   async ngOnInit() {
+    this.getCurrentUser();
     await this._getAlerts();
-    this.updateSelectedAlertIndex(0);
     this._subscribeToFormChange();
     this.isLoading = false;
     this.flipped = false;
   }
 
   ngAfterViewInit() {
+  }
+
+  getCurrentUser() {
+    this._userSvc.user$.subscribe(user => {
+      if (user) {
+        this.vm.currentUser = user;
+        this.vm.systemAlert.notificationUsers[0].user[0] = this.vm.currentUser._id;
+      }
+    });
   }
 
   get selectedAlert() {
@@ -90,28 +104,39 @@ export class AlertsComponent implements OnInit, AfterViewInit {
       const existSpecialAlert = data.alerts.find(a => a.name === 'First Sale of day');
       if (!existSpecialAlert) {
         this.save(this.vm.systemAlert);
-        this._getAlerts();
-      }
-      data.alerts.forEach(element => {
-        this.vm.alerts.push({
-          _id: element._id,
-          name: element.name,
-          kpi: element.kpi,
-          frequency: element.frequency,
-          condition: element.condition,
-          value: element.value,
-          notificationUsers: element.notificationUsers,
-          active: element.active
+      } else {
+        data.alerts.forEach(element => {
+          this.vm.alerts.push({
+            _id: element._id,
+            name: element.name,
+            kpi: element.kpi,
+            frequency: element.frequency,
+            condition: element.condition,
+            value: element.value,
+            notificationUsers: element.notificationUsers,
+            active: element.active
+          });
         });
-      });
+        this.updateSelectedAlertIndex(0);
+      }
     });
   }
 
   isFormValid() {
-    return this.fgDetails.valid;
+    let valid = false;
+    if (this.fgDetails.value._id) {
+      // update
+      valid = this.vm.updateAlertPermission();
+    } else {
+      // create
+      valid = this.vm.createAlertPermission();
+    }
+    return this.fgDetails.valid && valid;
   }
 
   onAddAlert() {
+    this.vm.defaultAlertModel.notificationUsers[0].user[0] = this.vm.currentUser._id;
+    this.vm.defaultAlertModel.notificationUsers[0].byPhone = true;
     this.vm.alerts.push(this.vm.defaultAlertModel);
     const lastAlertIndex = this.vm.alerts.length - 1;
     this.updateSelectedAlertIndex(lastAlertIndex);
@@ -177,12 +202,22 @@ export class AlertsComponent implements OnInit, AfterViewInit {
       payload = systemAlert;
       payload['_id'] = undefined;
     } else {
-      payload = this.fgDetails.value;
-      payload.notificationUsers.map(n => {
-        n.byEmail = n.byEmail !== true ? false : true;
-        n.byPhone = n.byPhone !== true ? false : true;
-      });
-      payload['active'] = this.vm.alerts[this.vm.selectedAlertIndex].active;
+      payload = {
+        _id: this.fgDetails.value._id,
+        name: this.fgDetails.value.name,
+        kpi: this.fgDetails.value.kpi,
+        frequency: this.fgDetails.value.frequency,
+        condition: this.fgDetails.value.condition,
+        value: parseFloat(this.fgDetails.value.value),
+        active: this.vm.alerts[this.vm.selectedAlertIndex].active,
+        notificationUsers: this.fgDetails.value.notificationUsers.map(n => {
+          return {
+            user: n.user.split('|'),
+            byEmail: n.byEmail !== true ? false : true,
+            byPhone: n.byPhone !== true ? false : true
+          };
+        })
+      };
     }
     const mutation = payload._id ? updateAlertMutation : addAlertMutation;
     const inputVar = {
@@ -191,7 +226,7 @@ export class AlertsComponent implements OnInit, AfterViewInit {
         kpi: payload.kpi,
         frequency: payload.frequency,
         condition: payload.condition,
-        value: parseFloat(payload.value),
+        value: payload.value,
         notificationUsers: payload.notificationUsers,
         active: payload.active
       }
@@ -215,9 +250,8 @@ export class AlertsComponent implements OnInit, AfterViewInit {
             title: 'All changes have been saved successfully',
             showConfirmButton: true,
             confirmButtonText: 'OK'});
-
-          this._getAlerts();
         }
+        this._getAlerts();
       });
   }
 

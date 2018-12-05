@@ -5,6 +5,7 @@ import { FormArray, FormGroup, FormControl } from '@angular/forms';
 import { SelectionItem } from 'src/app/ng-material-components';
 import { INotificationUsers } from '../alerts.model';
 import { ApolloService } from 'src/app/shared/services/apollo.service';
+import { UserService } from '../../shared/services';
 
 const usersQuery = require('graphql-tag/loader!../../users/shared/graphql/get-all-users.gql');
 
@@ -20,10 +21,12 @@ export class NotificationUsersComponent implements OnInit, OnChanges {
 
   userList: SelectionItem[];
   notifications: FormArray;
+  _currentUser = '';
 
   constructor(
     public alertsFormService: AlertsFormService,
-    private _apolloService: ApolloService
+    private _apolloService: ApolloService,
+    private _userSvc: UserService
   ) { }
 
   ngOnInit() {
@@ -71,6 +74,14 @@ export class NotificationUsersComponent implements OnInit, OnChanges {
     }
   }
 
+  currentUser(): any {
+    this._userSvc.user$.subscribe(user => {
+      if (user) {
+        this._currentUser = user._id;
+      }
+    });
+  }
+
   private async _getUsersList() {
     await this._apolloService.networkQuery < IManageUsers[] > (usersQuery).then(data => {
       const usersCollection = data.allUsers.map(user => {
@@ -85,7 +96,14 @@ export class NotificationUsersComponent implements OnInit, OnChanges {
   }
 
   addNotification() {
-    this.notifications.push(new FormGroup({}) as any);
+    this.currentUser();
+    this.notifications.push(new FormGroup(
+      {
+        user: new FormControl(this._currentUser),
+        byEmail: new FormControl(false),
+        byPhone: new FormControl(true)
+      }
+      ));
   }
 
   removeNotification(notification: FormGroup) {

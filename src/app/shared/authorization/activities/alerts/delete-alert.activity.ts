@@ -10,7 +10,7 @@ import { Injectable } from '@angular/core';
 export class DeleteAlertActivity extends BaseActivity implements IActivity {
     name = 'DeleteAlertActivity';
 
-    private _permissions = getPermissions(SubjectEnum.alerts, [ActionsMap.Create]);
+    private _permissions = getPermissions(SubjectEnum.alert, [ActionsMap.Create]);
 
     check(user: IUserInfo): boolean {
         return this.hasAllPermissions(user, this._permissions);

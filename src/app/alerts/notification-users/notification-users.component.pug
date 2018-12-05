@@ -3,8 +3,8 @@ div(layout="column", layout-padding)
     div(flex, *ngFor="let notification of notifications.controls; let i=index")
         div(layout="row")
             div(flex)
-                div(flex="100", layout="row")
-                    div(flex="60", layout="column", layout-padding)
+                div(flex, layout="row", layout-xs="column")
+                    div(flex="50", flex-xs="100", layout="column", layout-padding)
                         div(layout="row")
                             .schema-header Select User:
                         div(flex="100", layout="row") 
@@ -13,22 +13,21 @@ div(layout="column", layout-padding)
                                         field="user",
                                         [required]="true",
                                         [items]="alertsFormService.usersList",
+                                        [multiple]="true",
                                         [liveSearch]="true",
                                         liveSearchPlaceholder="...search...",
                                         noneSelectedText="NOTHING SELECTED",
                                         leftIcon="accounts-alt")
-
-                    div.m-l-20(flex="15", layout="column", layout-padding)
-                        .m-t-25(flex="100", layout="row") 
-                          bw-checkbox([fg]="notification", field="byEmail")
-                          i.zmdi.zmdi-email
-
-                    div(flex="15", layout="column", layout-padding)
-                        .m-t-25(flex="100", layout="row") 
-                          bw-checkbox([fg]="notification", field="byPhone")
-                          i.zmdi.zmdi-tablet-android
-                    .zmdi.zmdi-close.p-t-30.f-20.c-red([class.hidden]="i === 0", (click)="removeNotification(notification)")
-                
-
+                    .notify(flex="30", flex-xs="100")
+                        .m-t-25(flex="100", layout="row", layout-align="space-between")
+                          div(flex-none, flex-xs="90") 
+                          bw-checkbox(flex="20", flex-xs="10", [fg]="notification", field="byEmail")
+                          div(flex="20", flex-xs="10")
+                            i.zmdi.zmdi-email
+                          bw-checkbox(flex="20", flex-xs="10", [fg]="notification", field="byPhone")
+                          div(flex="20", flex-xs="10")  
+                            i.zmdi.zmdi-tablet-android
+                          div(flex="20", flex-xs="10")  
+                            .zmdi.zmdi-close.f-20.c-red([class.hidden]="i === 0", (click)="removeNotification(notification)")
 div(layout="row", layout-align="start")
     bw-button(icon="plus", title="USER", color="blue", (clicked)="addNotification()")
