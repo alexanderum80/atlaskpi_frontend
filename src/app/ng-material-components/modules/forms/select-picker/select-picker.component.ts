@@ -157,7 +157,7 @@ export class SelectPickerComponent extends InputBase implements OnChanges, OnDes
             && ( target.classList.value.indexOf('filter-option') !== -1 || target.classList.value.indexOf('select-picker-filter-text') !== -1)) {
             return;
         }
-        debugger;
+
         if (this.open) {
             this.toggleOpen(e);
         }
