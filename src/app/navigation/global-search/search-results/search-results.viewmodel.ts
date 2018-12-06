@@ -65,6 +65,14 @@ const _dataTypeCollection = [
         order: 160,
         enabled: true,
         uriFormat: ''
+    },
+    {
+        name: 'Maps',
+        color: 'deeporange',
+        icon: 'google-maps',
+        order: 180,
+        enabled: true,
+        uriFormat: ''
     }
 ];
 
