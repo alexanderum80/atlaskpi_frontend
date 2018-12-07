@@ -14,7 +14,8 @@ export class SideBarViewModel extends ViewModel<any> {
         title: 'List Dashboard',
         icon: 'collection-text',
         route: `/dashboards/list`,
-        visible: true
+        visible: true,
+        active: false
     } ;
     constructor(userService: UserService) {
         super(userService);

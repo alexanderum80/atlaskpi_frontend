@@ -152,6 +152,8 @@ export class SidebarService {
     private _itemsNotVisibles = 0;
     private _itemsNotVisiblesSubject = new BehaviorSubject < number > (0);
     private _userCanAddDashSubject = new BehaviorSubject < boolean > (false);
+    
+    userCanAddDashboard: boolean;
 
     constructor(
         private _router: Router,
@@ -168,10 +170,15 @@ export class SidebarService {
         this._userService.user$.subscribe(u => 
             {
                 if(u){
-                that._getDashboards(u);
-                that.checkPemits(u);  
+                    that.checkPemits(u);
+                    that._getDashboards(u);  
                 }       
             });
+
+        this._subscription.push(this._userCanAddDash$.subscribe( permit =>
+            this.userCanAddDashboard = permit
+        ));
+
         this._router.events.subscribe(e => {
             if (e instanceof NavigationEnd) {
                 that._currentRoute = that._router.url;
@@ -263,11 +270,17 @@ export class SidebarService {
             && this._userService.user.preferences.dashboardIdNoVisible !== null) {
             listdashboardIdNoVisible = this._userService.user.preferences.dashboardIdNoVisible.split('|');
         }
-  
+
         if (!dashboards || !dashboards.length) {
+            if(this.userCanAddDashboard){
+                items[0].active = true;
+                this.vm.listDashboard.active = true;
+                this._router.navigate([this.vm.listDashboard.route]);
+            }
             return;
         }
 
+        this.vm.listDashboard.active = false;
         this._itemsNotVisibles = 0;
         items[0].children = dashboards.map(d => {
             // check if the current root is relarted to the dashboards
