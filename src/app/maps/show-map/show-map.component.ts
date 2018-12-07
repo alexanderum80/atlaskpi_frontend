@@ -43,6 +43,8 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     @Input() showLegendBtn = true;
     @Input() kpi: string;
     @Input() grouping: string[];
+    @Input() mapsTitle: string;
+    @Input() mapSize: string;
     @ViewChild('showMapForm') private _form: ShowMapFormComponent;
 
     lat: number;
@@ -54,6 +56,7 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     showingMapSettings = false;
     isMapMarkerGrouping = false;
     subscription: Subscription;
+    fullscreen = false;
 
     private _subscription: Subscription[] = [];
 
@@ -66,6 +69,7 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
 
     ngOnInit() {
         this.showingLegend = !this.legendClosed;
+        this.showingLegend = this.mapSize === 'big' ? true : false;
     }
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
@@ -85,7 +89,11 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     }
 
     showLegend() {
-        this.showingLegend = true;
+        this.showingMapSettings = false;
+        this.showingLegend = this.showingLegend ? false : true;
+    }
+    showFullscreen() {
+        this.fullscreen = this.fullscreen ? false : true;
     }
 
     closeLegend() {
@@ -98,7 +106,8 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     }
 
     showMapSettings(): void {
-        this.showingMapSettings = true;
+        this.showingLegend = false;
+        this.showingMapSettings = this.showingMapSettings ? false : true;
     }
 
     closeMapSettings(): void {

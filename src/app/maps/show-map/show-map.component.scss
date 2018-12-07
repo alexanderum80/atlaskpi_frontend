@@ -1,54 +1,53 @@
-.close-button {
-    position: absolute;
-    right: 15px;
-    top: 10px;
-}
-
 .show-map-container {
     position: relative;
     margin: 4px;
     padding: 2px;
+    
     agm-map {
         .gm-style-pbt {
             color: white;
             font-size: 28px;
         }
     }
-    .legend-button {
+    .container-legend {
         position: absolute;
         top: 8px;
-        right: 30px;
-        width: 50px;
+        right: 8px;
+        width: 280px;
     }
-    .legend-settings-btn {
-        position: absolute;
-        width: 36px;
-        z-index: 50;
-        top: 10px;
-        left: 10px;
-        text-align: center;
-        transform: scale(1.2);
+    .legend-settings-container {
+        
+        
+        .title-container {
+            width: 60%;
+            margin-right: 10%;
+            font-weight: bold;
+            font-size: 12px;
+            
+        }
+        .icon-container {
+            margin-right: 15px;
+            right: 20px;
+        }
+        .icon-container:hover {
+            color: rgba(189, 184, 184, 0.932);
+        }
     }
-    .legend {
-        position: absolute;
-        top: 4px;
+    .opacity {
+        opacity: 0.6;
+    }
+    
+    
+    .legend-settings {
+        
         bottom: 0px;
-        right: 0px;
-        width: 250px;
-        padding: 15px;
-        @extend .close-button;
+        right: 8px;
+        width: 280px;
         .money-range {
             font-size: 11px;
         }
+        transition: ease-in-out;
     }
-    .legend-settings {
-        position: absolute;
-        top: 0px;
-        bottom: 0px;
-        left: 0px;
-        width: 250px;
-        padding: 15px;
-        z-index: 50;
-        @extend .close-button;
-    }
+
+   
 }

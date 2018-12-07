@@ -1,8 +1,7 @@
 bw-card.m-b-5.p-relative(flex, [depth]="1")
     bw-card-body.box(flex, [padded]="padded", (click)="setActive()")
         div(layout="column", style="min-height: 100px;")
-            .text-center.mini-chart-title.m-t-10(flex) {{ item.title }}
-            kpi-show-map([markers]="item.markers" , [kpi]="item.kpi", [grouping]="item.groupings", [showSettingsBtn]="'true'", [legendColors]="legendColors")
+            kpi-show-map([markers]="item.markers" , [kpi]="item.kpi", [grouping]="item.groupings", [mapsTitle]="item.title",[mapSize]="item.size", [showSettingsBtn]="'true'", [legendColors]="legendColors")
     div(*ngIf="allowSelected && (selected$ | async); let itemSelected")
         .marker.animated.fadeIn(*ngIf="(inspectorOpen$ | async)  && itemSelected === item")
             i.zmdi.zmdi-check-circle.text-right.c-green.checked
