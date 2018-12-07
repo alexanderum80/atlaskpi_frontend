@@ -10,6 +10,10 @@ import { ModalComponent } from '../../ng-material-components';
 import { Apollo } from 'apollo-angular';
 import { RolesService } from '../../roles/shared/services/roles.service';
 import { Subscription } from 'rxjs/Subscription';
+import { UserService } from './../../shared/services/user.service';
+import { ApolloService } from '../../shared/services/apollo.service';
+import { usersApi } from '../shared/graphqlActions/userActions';
+import { returnStatement } from 'babel-types';
 
 export interface IUserProfile {
   firstName: string;
@@ -53,6 +57,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
 
 
   constructor(private _apollo: Apollo,
+              private _apolloService: ApolloService,
               private _usersService: UsersService) { }
 
   ngOnInit() {
@@ -97,10 +102,30 @@ export class EditUserComponent implements OnInit, OnDestroy {
           that.errorModal.open();
           return;
         }
+
+        this.addNewUserinDashBoards(that.fg.value.dashboards, this.fg.value.firstName, this.fg.value.lastName);
         that.editUserModal.close();
       }));
     }
   }
+
+  addNewUserinDashBoards(dashboards: string, firstname: string, lastname: string) {
+        const that = this;
+
+        if(!dashboards){
+          return;
+        }
+
+        that._apolloService.mutation(usersApi.assignDash, {
+          id: dashboards ? dashboards : '',
+          input: firstname + '|' + lastname
+        })
+        .then(result => { })
+        .catch(err => {
+          debugger;
+          console.log(err);
+        });
+      }
 
   getSelectedUser(user: any) {
     this.user = user;

@@ -1,0 +1,3 @@
+mutation AddUserDashboard($id: String!, $input: String!){
+   adduserDashboard (id: $id, input: $input) 
+}
