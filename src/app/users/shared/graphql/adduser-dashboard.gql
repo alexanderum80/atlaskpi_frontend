@@ -1,3 +1,3 @@
-mutation AddUserDashboard($id: String!, $input: String!){
-   adduserDashboard (id: $id, input: $input) 
+mutation AddUserDashboard($id: String!, $userId: String, $username: String!){
+   adduserDashboard (id: $id, userId: $userId, username: $username) 
 }

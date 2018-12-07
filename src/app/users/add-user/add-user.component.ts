@@ -82,24 +82,25 @@ export class AddUserComponent implements OnInit, OnDestroy {
           return;
         }
 
-        this.addNewUserinDashBoards(that.fg.value.dashboards, this.fg.value.firstName, this.fg.value.lastName);
+        this.addNewUserinDashBoards(that.fg.value.dashboards, that.fg.value.email);
         that.addUserModal.close();
         that.resetData();
       }));
     }
   }
 
-  addNewUserinDashBoards(dashboards: string, firstname: string, lastname: string) {
+  addNewUserinDashBoards(dashboards: string, username: string) {
       const that = this;
 
       if(!dashboards){
         return;
       }
-
+      debugger;
       that._apolloService.mutation(
         usersApi.assignDash, {
-        id: dashboards ? dashboards : '',
-        input: firstname + '|' + lastname
+          id: dashboards ? dashboards : '',
+          userId: undefined,
+          username: username
       })
       .then(result => {})
       .catch(err => {
