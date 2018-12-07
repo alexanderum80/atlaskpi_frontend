@@ -25,7 +25,7 @@ export interface ISidebarItemSearchResult {
 const MENU_ITEMS: MenuItem[] = [{
     id: 'dashboard',
     title: 'Dashboards',
-    icon: 'widgets'
+    icon: 'widgets',
 },
 {
     id: 'appointments',
@@ -151,6 +151,7 @@ export class SidebarService {
     private _dashboardQuery: QueryRef<{}>;
     private _itemsNotVisibles = 0;
     private _itemsNotVisiblesSubject = new BehaviorSubject < number > (0);
+    private _userCanAddDashSubject = new BehaviorSubject < boolean > (false);
 
     constructor(
         private _router: Router,
@@ -164,7 +165,13 @@ export class SidebarService {
         this.vm.addActivities([this.addDashboardActivity]);
 
         const that = this;
-        this._userService.user$.subscribe(u => that._getDashboards(u));
+        this._userService.user$.subscribe(u => 
+            {
+                if(u){
+                that._getDashboards(u);
+                that.checkPemits(u);  
+                }       
+            });
         this._router.events.subscribe(e => {
             if (e instanceof NavigationEnd) {
                 that._currentRoute = that._router.url;
@@ -186,6 +193,10 @@ export class SidebarService {
 
     get subscription(): Subscription[] {
         return this._subscription;
+    }
+
+    get _userCanAddDash$(): Observable<boolean> {
+        return this._userCanAddDashSubject.asObservable();
     }
 
     refreshDashboards() {
@@ -252,7 +263,7 @@ export class SidebarService {
             && this._userService.user.preferences.dashboardIdNoVisible !== null) {
             listdashboardIdNoVisible = this._userService.user.preferences.dashboardIdNoVisible.split('|');
         }
-
+  
         if (!dashboards || !dashboards.length) {
             return;
         }
@@ -298,5 +309,9 @@ export class SidebarService {
         this._itemsSubject.next(items);
         this._itemsNotVisiblesSubject.next(this._itemsNotVisibles);
     }
+
+    checkPemits(user): void{
+           this._userCanAddDashSubject.next(this.addDashboardActivity.check(user));
+        }
 
 }
