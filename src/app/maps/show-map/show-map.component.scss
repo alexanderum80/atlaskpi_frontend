@@ -3,6 +3,7 @@
     margin: 4px;
     padding: 2px;
     
+    
     agm-map {
         .gm-style-pbt {
             color: white;
@@ -10,15 +11,16 @@
         }
     }
     .container-legend {
+        z-index: 50;
         position: absolute;
         top: 8px;
         right: 8px;
         width: 280px;
     }
     .legend-settings-container {
-        
-        
+        z-index: 50;
         .title-container {
+            z-index: 50;
             width: 60%;
             margin-right: 10%;
             font-weight: bold;
@@ -26,6 +28,7 @@
             
         }
         .icon-container {
+            z-index: 50;
             margin-right: 15px;
             right: 20px;
         }
@@ -43,10 +46,15 @@
         bottom: 0px;
         right: 8px;
         width: 280px;
+        z-index: 50;
         .money-range {
             font-size: 11px;
         }
         transition: ease-in-out;
+    }
+    .container-map {
+        z-index: 4;
+        position: absolute;
     }
 
    

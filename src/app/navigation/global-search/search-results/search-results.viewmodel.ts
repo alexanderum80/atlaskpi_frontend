@@ -72,7 +72,7 @@ const _dataTypeCollection = [
         icon: 'google-maps',
         order: 180,
         enabled: true,
-        uriFormat: ''
+        uriFormat: 'charts/edit'
     }
 ];
 
