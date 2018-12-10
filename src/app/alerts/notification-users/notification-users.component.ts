@@ -1,3 +1,4 @@
+import { DeliveryMethodEnum } from './../../targets/shared/models/target';
 import { IManageUsers } from './../../users/shared/models/user';
 import { AlertsFormService } from './../alerts.service';
 import { Component, OnInit, Input, OnChanges, Output, EventEmitter } from '@angular/core';
@@ -35,31 +36,18 @@ export class NotificationUsersComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    this.notifications = this.fg.get('notificationUsers') as FormArray;
+    this.notifications = this.fg.get('users') as FormArray;
     this.notifications.controls = [];
-
     if (this.notificationUsers.length > 0) {
-      this.notificationUsers.map(notification => {
-        const fgValues = {
-          user: notification.user,
-          byEmail: notification.byEmail,
-          byPhone: notification.byPhone
-        };
-        if (!this.notifications) {
-          this.notifications = new FormArray([
-            new FormGroup({
-              user: new FormControl(fgValues.user),
-              byEmail: new FormControl(fgValues.byEmail),
-              byPhone: new FormControl(fgValues.byPhone)
-            })
-          ]);
-        } else {
-          this.notifications.push(new FormGroup({
-            user: new FormControl(fgValues.user),
-            byEmail: new FormControl(fgValues.byEmail),
-            byPhone: new FormControl(fgValues.byPhone)
-          }));
-        }
+      const pushNotify = this.notificationUsers.filter(pn => pn.deliveryMethods.length === 1 && pn.deliveryMethods[0] === 'push');
+      const emailNotify = this.notificationUsers.filter(pn => pn.deliveryMethods.length === 1 && pn.deliveryMethods[0] === 'email');
+      const bothNotify = this.notificationUsers.filter(pn => pn.deliveryMethods.length === 2);
+      const notifyArray = [];
+      notifyArray.push(pushNotify);
+      notifyArray.push(emailNotify);
+      notifyArray.push(bothNotify);
+      notifyArray.forEach(na => {
+        if (na.length > 0) { this.buildFormArray(na); }
       });
     } else {
       if (!this.notifications) {
@@ -71,6 +59,29 @@ export class NotificationUsersComponent implements OnInit, OnChanges {
           })
         ]);
       }
+    }
+  }
+
+  buildFormArray(itemArray: any[]) {
+    const fgValues = {
+      user: itemArray.map(i => i.identifier).join('|'),
+      byEmail: itemArray[0].deliveryMethods.find(d => d === 'email') !== undefined,
+      byPhone: itemArray[0].deliveryMethods.find(d => d === 'push') !== undefined
+    };
+    if (!this.notifications) {
+      this.notifications = new FormArray([
+        new FormGroup({
+          user: new FormControl(fgValues.user),
+          byEmail: new FormControl(fgValues.byEmail),
+          byPhone: new FormControl(fgValues.byPhone)
+        })
+      ]);
+    } else {
+      this.notifications.push(new FormGroup({
+        user: new FormControl(fgValues.user),
+        byEmail: new FormControl(fgValues.byEmail),
+        byPhone: new FormControl(fgValues.byPhone)
+      }));
     }
   }
 

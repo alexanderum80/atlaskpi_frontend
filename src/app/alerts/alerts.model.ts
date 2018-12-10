@@ -6,14 +6,20 @@ export interface IAlerts {
     frequency: string;
     condition: string;
     value: number;
-    notificationUsers: INotificationUsers[];
     active: boolean;
+    users: INotificationUsers[];
+    createdBy: string;
+    createdAt: Date;
 }
 
+export enum DeliveryMethodEnum {
+    push = 'push',
+    email = 'email'
+  }
+
 export interface INotificationUsers {
-    user: string[];
-    byEmail: boolean;
-    byPhone: boolean;
+    identifier: string;
+    deliveryMethods: string[];
 }
 
 export interface IAlertsCollection {

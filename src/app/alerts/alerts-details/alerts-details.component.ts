@@ -46,7 +46,7 @@ export class AlertsDetailsComponent implements OnInit {
 
   isUserAlert() {
     if (!this.alert) { return true; }
-    const userAlert = this.alert.name !== 'First Sale of day';
+    const userAlert = this.alert.name !== this.alertsService.systemAlert.name;
     if (userAlert) {
       this.alertTitle = 'Create your own custom alerts';
     } else {

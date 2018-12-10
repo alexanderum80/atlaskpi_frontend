@@ -6,11 +6,10 @@ query Alerts {
         frequency
         condition
         value
-        notificationUsers {
-            user
-            byEmail
-            byPhone
-        }
         active
+        users {
+            identifier
+            deliveryMethods
+        }
     }
 }

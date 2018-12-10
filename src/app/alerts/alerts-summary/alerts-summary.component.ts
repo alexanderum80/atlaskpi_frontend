@@ -4,6 +4,7 @@ import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@
 import { FormGroup } from '@angular/forms';
 import { AlertsFormService } from '../alerts.service';
 import { ApolloService } from 'src/app/shared/services/apollo.service';
+import { Router } from '@angular/router';
 
 const deleteAlertMutation = require('graphql-tag/loader!../remove-alert.mutation.gql');
 
@@ -20,10 +21,13 @@ export class AlertsSummaryComponent implements OnInit, AfterViewInit {
 
   constructor(
     public vm: AlertsFormService,
-    private _apolloService: ApolloService
+    private _apolloService: ApolloService,
+    private _router: Router
   ) { }
 
   fg: FormGroup = new FormGroup({});
+
+  selectedAlertSaved = true;
 
   ngOnInit() {
     this._subscribeToFormChange();
@@ -40,27 +44,38 @@ export class AlertsSummaryComponent implements OnInit, AfterViewInit {
     this.selectedAlertIndex.emit(alertIndex);
   }
 
+  get canRemove() {
+    return this.alert.name !== this.vm.systemAlert.name && this.alert._id;
+  }
+
+  get isSystemAlert() {
+    return this.alert.name === this.vm.systemAlert.name;
+  }
+
   removeAlert(alertId) {
-    if (this.alert.active) { return; }
-    SweetAlert({
-      type: 'warning',
-      title: 'Are you sure?',
-      text: 'Once deleted, you will not be able to recover this alert',
-      showConfirmButton: true,
-      showCancelButton: true,
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'Cancel',
-    }).then(result => {
-      if (result.value === true) {
-        this._apolloService.mutation<any> (deleteAlertMutation, { id: alertId }, ['Alerts'])
-          .then(res => {
-            if (res.data.removeAlert.success) {
-              this.selectedAlertIndex.emit(0);
-              this.vm.removeAlert(alertId);
-            }
-          });
-      }
-    });
+    if (!this.vm.deleteAlertPermission()) {
+      this._router.navigateByUrl('/unauthorized');
+    } else {
+      SweetAlert({
+        type: 'warning',
+        title: 'Are you sure?',
+        text: 'Once deleted, you will not be able to recover this alert',
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'Cancel',
+      }).then(result => {
+        if (result.value === true) {
+          this._apolloService.mutation<any> (deleteAlertMutation, { id: alertId }, ['Alerts'])
+            .then(res => {
+              if (res.data.removeAlert.success) {
+                this.selectedAlertIndex.emit(0);
+                this.vm.removeAlert(alertId);
+              }
+            });
+        }
+      });
+    }
   }
 
   get userAlertDescription() {

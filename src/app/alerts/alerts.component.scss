@@ -1,6 +1,5 @@
 .alerts-container {
     height: 95%;
-    // width: 95%;
     margin: 20px;
 
     .addButton {
@@ -42,13 +41,34 @@
             }
         }
     }
-
+    .left-panelM {
+        position: relative;
+        overflow: auto;
+        height: 100%;
+        background: #EEEEEE;
+        .custom-alert-headerM {
+            min-height: 70px;            
+            i {
+                padding: 10px 0 0 10px;
+                font-size: 25px;
+            }
+        
+            .titleM {
+                padding: 15px 0 10px 5px;
+            }
+        }
+        .custom-alert-bodyM {
+            .alerts {
+                min-height: 100px;
+                padding: 20px 10px;
+            }
+        }
+    }
     .left-panel {
         background: #EEEEEE;
-
+        height: 85%;
         .custom-alert-header {
-            // color: gray;
-        
+            min-height: 70px;            
             i {
                 padding: 10px 0 0 10px;
                 font-size: 25px;
@@ -61,6 +81,7 @@
 
         .custom-alert-body {
             .alerts {
+                min-height: 110px;
                 padding: 20px 10px;
 
                 .remove-button {
@@ -74,14 +95,15 @@
                     }
                 }
             }
-
-            .selected-alert {
-                background-color: white;
-            }
         }
+    }
+    
+    .selected-alert {
+        background-color: white;
     }
 
     .right-panel {
         background: white;
+        overflow: auto;
     }
 }

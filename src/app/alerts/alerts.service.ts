@@ -8,6 +8,7 @@ import { ViewAlertActivity } from '../shared/authorization/activities/alerts/vie
 import { UpdateAlertActivity } from '../shared/authorization/activities/alerts/update-alert.activity';
 import { DeleteAlertActivity } from '../shared/authorization/activities/alerts/delete-alert.activity';
 import { UserService } from '../shared/services';
+import * as moment from 'moment';
 
 @Injectable()
 export class AlertsFormService {
@@ -26,27 +27,27 @@ export class AlertsFormService {
 
     private _selectedAlertIndex: number;
 
-    private _defaultAlertModel: IAlerts;
-
     private _actionActivityNames: IItemListActivityName = {};
 
     private _currentUser: IUserInfo;
 
-    constructor(private _userSvc: UserService) {
+    constructor(private _userSvc: UserService
+        ) {
 
         this._systemAlert = {
             _id: '1',
             name: 'First Sale of day',
             kpi: ' ',
             frequency: 'daily',
-            condition: '',
+            condition: 'above',
             value: 0,
-            notificationUsers: [{
-                user: [''],
-                byEmail: false,
-                byPhone: true
+            active: false,
+            users: [{
+                identifier: '',
+                deliveryMethods: []
             }],
-            active: false
+            createdBy: '',
+            createdAt: moment().toDate()
         };
 
         this._frequencyList = [
@@ -63,20 +64,6 @@ export class AlertsFormService {
             {id: 'below', title: 'Is below', selected: false},
             {id: 'equal', title: 'Is equal', selected: false},
         ];
-
-        this._defaultAlertModel = {
-            name: '',
-            kpi: ' ',
-            frequency: null,
-            condition: null,
-            value: undefined,
-            notificationUsers: [{
-                user: [''],
-                byEmail: false,
-                byPhone: false
-            }],
-            active: true
-        };
 
         this._actionActivityNames = {
             view: ViewAlertActivity.name,
@@ -116,10 +103,6 @@ export class AlertsFormService {
 
     get conditionList() {
         return this._conditionList;
-    }
-
-    get defaultAlertModel() {
-        return this._defaultAlertModel;
     }
 
     get currentUser(): IUserInfo {

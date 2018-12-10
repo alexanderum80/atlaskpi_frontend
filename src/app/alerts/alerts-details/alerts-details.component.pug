@@ -33,4 +33,4 @@
             .invalidValueMsg(*ngIf="fg && fg.get('value').errors && fg.get('value').errors.invalidValue && (fg.get('value').dirty || fg.get('value').touched)") Invalid number, please enter a numeric value
 
     .m-t-20.p-relative(flex, layout="row")
-        kpi-notification-users(*ngIf="alert", flex, [fg]="fg", [notificationUsers]="alert.notificationUsers")
+        kpi-notification-users(*ngIf="alert", flex, [fg]="fg", [notificationUsers]="alert.users")

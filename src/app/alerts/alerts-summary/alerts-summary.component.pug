@@ -2,8 +2,7 @@
   bw-toggle(size="xs", [fg]="fg", field="active", color="green", [value]="alert.active")
   .flex-70.title(layout-column)
     .alert-name {{alert.name}}
-    .systemAlert(*ngIf="index === 0") System alert
-    .userAlert(*ngIf="index !== 0") {{ userAlertDescription }}
-  div(*ngIf="index !== 0", [class.disabled]="alert.active === true || !vm.deleteAlertPermission()")
-    i.zmdi.zmdi-delete.remove-button([ngClass]="{'can-remove': alert.active === false}", 
-                                  (click)="removeAlert(alert._id)")
+    .systemAlert(*ngIf="isSystemAlert") System alert
+    .userAlert(*ngIf="!isSystemAlert") {{ userAlertDescription }}
+  div(*ngIf="!isSystemAlert")
+    i.zmdi.zmdi-delete.remove-button([ngClass]="{'can-remove': canRemove}", (click)="removeAlert(alert._id)")

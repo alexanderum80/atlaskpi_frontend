@@ -5,7 +5,7 @@ div(*ngIf="groupPermissions", layout="column")
     kpi-collapsable([(collapsed)]="Alert", headerText="Alerts")
       div(layout="row")
         div(flex)
-          bw-checkbox(*ngFor="let alert of groupPermissions.Alerts", [fg]="fg", field="{{alert._id}}", label="{{alert.action}}")
+          bw-checkbox(*ngFor="let alert of groupPermissions.Alert", [fg]="fg", field="{{alert._id}}", label="{{alert.action}}")
     
     kpi-collapsable([(collapsed)]="Chart", headerText="Charts")
       div(layout="row")

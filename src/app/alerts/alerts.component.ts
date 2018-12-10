@@ -1,17 +1,13 @@
-import { split } from 'lodash';
-import { map } from 'rxjs/operators';
-import { IUser } from './../users/shared/models/user';
 import { BrowserService } from './../shared/services/browser.service';
-import { IItemListActivityName } from './../shared/interfaces/item-list-activity-names.interface';
 import SweetAlert from 'sweetalert2';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { IAlerts } from './alerts.model';
+import { IAlerts, DeliveryMethodEnum } from './alerts.model';
 import { AlertsFormService } from './alerts.service';
 import { ApolloService } from '../shared/services/apollo.service';
-import { Activity } from '../shared/authorization/decorators/component-activity.decorator';
-import { ViewAlertActivity } from '../shared/authorization/activities/alerts/view-alert.activity';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { UserService } from '../shared/services/user.service';
+import { Router } from '@angular/router';
+import * as moment from 'moment';
 
 const alertsQuery = require('graphql-tag/loader!./alerts.query.gql');
 const addAlertMutation = require('graphql-tag/loader!./create-alert.mutation.gql');
@@ -23,7 +19,6 @@ const ViewsMap = {
   Details: 'details'
 };
 
-@Activity(ViewAlertActivity)
 @Component({
   selector: 'app-alerts',
   templateUrl: './alerts.component.pug',
@@ -31,8 +26,6 @@ const ViewsMap = {
   providers: [AlertsFormService]
 })
 export class AlertsComponent implements OnInit, AfterViewInit {
-
-  actionActivityNames: IItemListActivityName;
 
   isLoading = true;
   isMobile: boolean;
@@ -44,23 +37,26 @@ export class AlertsComponent implements OnInit, AfterViewInit {
     '_id': new FormControl(''),
     'name': new FormControl('', Validators.required),
     'kpi': new FormControl('', Validators.required),
-    'frequency': new FormControl(''),
-    'condition': new FormControl(''),
-    'value': new FormControl(''),
-    'notificationUsers': new FormArray([])
+    'frequency': new FormControl('', Validators.required),
+    'condition': new FormControl('', Validators.required),
+    'value': new FormControl('', Validators.required),
+    'users': new FormArray([], Validators.required)
   });
 
   constructor(
     public vm: AlertsFormService,
     private _apolloService: ApolloService,
     private _browser: BrowserService,
-    private _userSvc: UserService
+    private _userSvc: UserService,
+    private _router: Router,
   ) {
-    this.actionActivityNames = this.vm.actionActivityNames;
-    this.isMobile = _browser.isMobile();
+    this.isMobile = this._browser.isMobile();
   }
 
   async ngOnInit() {
+    if (!this.vm.viewAlertPermission()) {
+      this._router.navigateByUrl('/unauthorized');
+    }
     this.getCurrentUser();
     await this._getAlerts();
     this._subscribeToFormChange();
@@ -75,13 +71,20 @@ export class AlertsComponent implements OnInit, AfterViewInit {
     this._userSvc.user$.subscribe(user => {
       if (user) {
         this.vm.currentUser = user;
-        this.vm.systemAlert.notificationUsers[0].user[0] = this.vm.currentUser._id;
+        this.vm.systemAlert.users[0].identifier = this.vm.currentUser._id;
+        this.vm.systemAlert.users[0].deliveryMethods.push('push');
       }
     });
   }
 
   get selectedAlert() {
     return this.vm.alerts[this.vm.selectedAlertIndex];
+  }
+
+  get canAddAlert() {
+    return this.vm.alerts && this.vm.alerts[0]
+    && this.vm.alerts[0]._id !== this.vm.systemAlert._id
+    && this.vm.alerts[this.vm.alerts.length - 1]._id;
   }
 
   private _subscribeToFormChange() {
@@ -101,11 +104,11 @@ export class AlertsComponent implements OnInit, AfterViewInit {
   private async _getAlerts() {
     this.vm.alerts = [];
     await this._apolloService.networkQuery < any[] > (alertsQuery).then(data => {
-      const existSpecialAlert = data.alerts.find(a => a.name === 'First Sale of day');
-      if (!existSpecialAlert) {
-        this.save(this.vm.systemAlert);
-      } else {
-        data.alerts.forEach(element => {
+      const specialAlert = data.alerts.find(a => a.name === 'First Sale of day');
+      if (!specialAlert) {
+        this.vm.alerts.push(this.vm.systemAlert);
+      }
+      data.alerts.forEach(element => {
           this.vm.alerts.push({
             _id: element._id,
             name: element.name,
@@ -113,41 +116,60 @@ export class AlertsComponent implements OnInit, AfterViewInit {
             frequency: element.frequency,
             condition: element.condition,
             value: element.value,
-            notificationUsers: element.notificationUsers,
-            active: element.active
+            active: element.active,
+            users: element.users,
+            createdBy: element.createdBy,
+            createdAt: element.createdAt
           });
-        });
-        this.updateSelectedAlertIndex(0);
-      }
+      });
+      this.updateSelectedAlertIndex(0);
     });
   }
 
   isFormValid() {
-    let valid = false;
-    if (this.fgDetails.value._id) {
-      // update
-      valid = this.vm.updateAlertPermission();
-    } else {
-      // create
-      valid = this.vm.createAlertPermission();
+    if (!this.vm.alerts[this.vm.selectedAlertIndex]) {
+      return false;
     }
-    return this.fgDetails.valid && valid;
+    if (this.vm.alerts[this.vm.selectedAlertIndex].name === this.vm.systemAlert.name) {
+      return this.fgDetails.controls['kpi'].valid;
+    } else {
+      return this.fgDetails.valid;
+    }
   }
 
   onAddAlert() {
-    this.vm.defaultAlertModel.notificationUsers[0].user[0] = this.vm.currentUser._id;
-    this.vm.defaultAlertModel.notificationUsers[0].byPhone = true;
-    this.vm.alerts.push(this.vm.defaultAlertModel);
-    const lastAlertIndex = this.vm.alerts.length - 1;
-    this.updateSelectedAlertIndex(lastAlertIndex);
+    if (!this.vm.createAlertPermission()) {
+      this._router.navigateByUrl('/unauthorized');
+   } else {
+      this.vm.alerts.push({
+        name: '',
+        kpi: ' ',
+        frequency: null,
+        condition: null,
+        value: undefined,
+        active: true,
+        users: [{
+            identifier: this.vm.currentUser._id,
+            deliveryMethods: [DeliveryMethodEnum.push],
+        }],
+        createdBy: '',
+        createdAt: moment().toDate()
+      });
+      const lastAlertIndex = this.vm.alerts.length - 1;
+      this.updateSelectedAlertIndex(lastAlertIndex);
+   }
   }
 
   switchActive(event: boolean, index: number) {
-    this.vm.alerts[index].active = event;
-    if (this.vm.alerts[index]._id) {
-      this._apolloService.mutation<IAlerts> (updateAlertActiveMutation, { id: this.vm.alerts[index]._id, active: event }, ['Alerts'])
-        .then(() => {
-        });
+    if (!this.vm.updateAlertPermission()) {
+      this._router.navigateByUrl('/unauthorized');
+   } else {
+      this.vm.alerts[index].active = event;
+      if (this.vm.alerts[index]._id) {
+        this._apolloService.mutation<IAlerts> (updateAlertActiveMutation, { id: this.vm.alerts[index]._id, active: event }, ['Alerts'])
+          .then(() => {
+          });
+      }
     }
   }
 
@@ -197,62 +219,76 @@ export class AlertsComponent implements OnInit, AfterViewInit {
   }
 
   save(systemAlert?: any) {
-    let payload;
-    if (systemAlert) {
-      payload = systemAlert;
-      payload['_id'] = undefined;
+    if (!this.vm.updateAlertPermission()) {
+      this._router.navigateByUrl('/unauthorized');
     } else {
-      payload = {
-        _id: this.fgDetails.value._id,
-        name: this.fgDetails.value.name,
-        kpi: this.fgDetails.value.kpi,
-        frequency: this.fgDetails.value.frequency,
-        condition: this.fgDetails.value.condition,
-        value: parseFloat(this.fgDetails.value.value),
-        active: this.vm.alerts[this.vm.selectedAlertIndex].active,
-        notificationUsers: this.fgDetails.value.notificationUsers.map(n => {
-          return {
-            user: n.user.split('|'),
-            byEmail: n.byEmail !== true ? false : true,
-            byPhone: n.byPhone !== true ? false : true
-          };
-        })
-      };
-    }
-    const mutation = payload._id ? updateAlertMutation : addAlertMutation;
-    const inputVar = {
-      input: {
-        name: payload.name,
-        kpi: payload.kpi,
-        frequency: payload.frequency,
-        condition: payload.condition,
-        value: payload.value,
-        notificationUsers: payload.notificationUsers,
-        active: payload.active
+      let payload;
+      if (systemAlert) {
+        payload = systemAlert;
+        payload['_id'] = undefined;
+      } else {
+        const userNotification = [];
+        this.fgDetails.value.users.map(userItem => {
+          const arrayUsers = userItem.user.split('|');
+          arrayUsers.map( au => {
+            userNotification.push({
+              identifier: au,
+              deliveryMethods: (!userItem.byEmail && !userItem.byPhone) ? []
+              : (userItem.byEmail && !userItem.byPhone) ? ['email']
+              : (!userItem.byEmail && userItem.byPhone) ? ['push'] : ['email', 'push']
+            });
+          });
+        });
+        payload = {
+          _id: this.fgDetails.value._id,
+          name: this.fgDetails.value.name,
+          kpi: this.fgDetails.value.kpi,
+          frequency: this.fgDetails.value.frequency,
+          condition: this.fgDetails.value.condition,
+          value: parseFloat(this.fgDetails.value.value),
+          active: this.vm.alerts[this.vm.selectedAlertIndex].active,
+          users: userNotification,
+          createdBy: this.vm.currentUser._id,
+          createdAt: moment().toDate()
+        };
       }
-    };
-    const isAdding = payload._id ? false : true;
-    if (!isAdding) {
-      inputVar['id'] = payload._id;
-    }
+      const mutation = (payload._id && payload._id !== '1')  ? updateAlertMutation : addAlertMutation;
+      const inputVar = {
+        input: {
+          name: payload.name,
+          kpi: payload.kpi,
+          frequency: payload.frequency,
+          condition: payload.condition,
+          value: payload.value,
+          active: payload.active,
+          users: payload.users,
+          createdBy: payload.createdBy,
+          createdAt: payload.createdAt
+        }
+      };
+      const isAdding = payload._id && payload._id !== '1'  ? false : true;
+      if (!isAdding) {
+        inputVar['id'] = payload._id;
+      }
 
-    this._apolloService.mutation<IAlerts> (mutation, inputVar, ['Alerts'])
-      .then(res => {
-        let resultSuccess = false;
-        if (isAdding) {
-          resultSuccess = res.data.createAlert.success;
-        } else {
-          resultSuccess = res.data.updateAlert.success;
-        }
-        if (resultSuccess && !systemAlert) {
-          SweetAlert({
-            type: 'info',
-            title: 'All changes have been saved successfully',
-            showConfirmButton: true,
-            confirmButtonText: 'OK'});
-        }
-        this._getAlerts();
-      });
+      this._apolloService.mutation<IAlerts> (mutation, inputVar, ['Alerts'])
+        .then(res => {
+          let resultSuccess = false;
+          if (isAdding) {
+            resultSuccess = res.data.createAlert.success;
+          } else {
+            resultSuccess = res.data.updateAlert.success;
+          }
+          if (resultSuccess && !systemAlert) {
+            SweetAlert({
+              type: 'info',
+              title: 'All changes have been saved successfully',
+              showConfirmButton: true,
+              confirmButtonText: 'OK'});
+          }
+          this._getAlerts();
+        });
+    }
   }
 
   async cancel() {

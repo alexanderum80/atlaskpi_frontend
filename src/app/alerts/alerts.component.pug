@@ -2,8 +2,8 @@
     
     //- desktop
     .h-100.p-relative(*ngIf="!isLoading && !isMobile", flex, layout="row", layout-xs="column")
-      .left-panel(flex="35", flex-xs="100", layout="column")
-        bw-button.addButton(color="blue", icon="plus", [rounded]="true", size="lg", (clicked)="onAddAlert()", [class.disabled]="!vm.createAlertPermission()")
+      .left-panel.overflow-auto(flex="35", flex-xs="100", layout="column")
+        bw-button.addButton(*ngIf="canAddAlert",color="blue", icon="plus", [rounded]="true", size="lg", (clicked)="onAddAlert()")
         .custom-alert-header.p-10(layout="row", layout-padding)
           div(flex-initial)
             i.zmdi.zmdi-timer
@@ -23,21 +23,21 @@
     //- mobile
     #card.h-100.p-relative(*ngIf="!isLoading && isMobile", flex, layout="row", layout-xs="column", [class.flipped]="flipped && isMobile")
       figure.front
-        .left-panel.h-100(flex="40", flex-xs="100", layout="column")
-          bw-button.addButton(*ngIf="!flipped", color="blue", icon="plus", [rounded]="true", size="lg", (clicked)="onAddAlert()", [class.disabled]="!vm.createAlertPermission()")
-          .custom-alert-header.p-10(layout="row", layout-padding)
+        bw-button.addButton(*ngIf="!flipped && canAddAlert", color="blue", icon="plus", [rounded]="true", size="lg", (clicked)="onAddAlert()")
+        .left-panelM(flex="100", layout="column")  
+          .custom-alert-headerM.p-10(layout="row", layout-padding)
             div(flex-initial)
               i.zmdi.zmdi-timer
             div(flex-initial)
-              .title ALERTS MANAGER
-          .custom-alert-body(layout="column")
+              .titleM ALERTS MANAGER
+          .custom-alert-bodyM(layout="column")
             .alerts(flex, *ngFor="let alert of vm.alerts, let i = index", layout="column", 
                 [ngClass]="{'selected-alert': vm.selectedAlertIndex === i}")
               kpi-alerts-summary(flex, [alert]="alert", [index]="i", (selectedAlertIndex)="updateSelectedAlertIndex($event)", (switchedActive)="switchActive($event, i)")
 
       figure.back
-        .right-panel.overflow-auto(flex="60", flex-xs="100", layout="column")
+        .right-panel.h-100.overflow-auto(flex="100", layout="column")
           kpi-alerts-details(*ngIf="!isLoading", [fg]="fgDetails", [alert]="selectedAlert", [isMobile]="isMobile", (goBackToList)="backToListClicked()")
           .p-t-20.p-r-30(*ngIf="!isLoading", layout="row", layout-align="end")
-            bw-button.m-l-5(icon="floppy", title="SAVE", color="blue", (clicked)="save()", [disabled]="!isFormValid()")
-            bw-button.m-l-5(icon="close", title="CANCEL", color="black", [simple]="true", (clicked)="cancel()")
+            bw-button.m-l-5.m-b-20(icon="floppy", title="SAVE", color="blue", (clicked)="save()", [disabled]="!isFormValid()")
+            bw-button.m-l-5.m-b-20(icon="close", title="CANCEL", color="black", [simple]="true", (clicked)="cancel()")
