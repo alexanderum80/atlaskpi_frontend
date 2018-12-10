@@ -1,3 +1,9 @@
 mutation AddUserDashboard($id: String!, $userId: String, $username: String!){
-   adduserDashboard (id: $id, userId: $userId, username: $username) 
+   adduserDashboard (id: $id, userId: $userId, username: $username){
+      success
+      errors {
+            field
+            errors
+        }
+   }
 }
