@@ -1,5 +1,5 @@
-.alert-header(layout="row", layout-padding, [class.hidden]="!isMobile", (click)="backToList()")
-    i.zmdi.zmdi-arrow-left
+.alert-header(layout="row", layout-padding, [class.hidden]="!isMobile")
+    i.zmdi.zmdi-arrow-left((click)="backToList()")
     .title BACK TO LIST
 .p-30
     .title {{ alertTitle }}

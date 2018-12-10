@@ -2,14 +2,14 @@
     
     //- desktop
     .h-100.p-relative(*ngIf="!isLoading && !isMobile", flex, layout="row", layout-xs="column")
-      .left-panel.overflow-auto(flex="35", flex-xs="100", layout="column")
-        bw-button.addButton(*ngIf="canAddAlert",color="blue", icon="plus", [rounded]="true", size="lg", (clicked)="onAddAlert()")
+      .left-panel(flex="35", flex-xs="100", layout="column")
+        bw-button.addButton([disabled]="!canAddAlert",color="blue", icon="plus", [rounded]="true", size="lg", (clicked)="onAddAlert()")
         .custom-alert-header.p-10(layout="row", layout-padding)
           div(flex-initial)
             i.zmdi.zmdi-timer
           div(flex-initial)
             .title ALERTS MANAGER
-        .custom-alert-body(layout="column")
+        .custom-alert-body.overflow-auto(layout="column")
           .alerts(flex, *ngFor="let alert of vm.alerts, let i = index", layout="column", 
               [ngClass]="{'selected-alert': vm.selectedAlertIndex === i}")
             kpi-alerts-summary(flex, [alert]="alert", [index]="i", (selectedAlertIndex)="updateSelectedAlertIndex($event)", (switchedActive)="switchActive($event, i)")
@@ -23,14 +23,14 @@
     //- mobile
     #card.h-100.p-relative(*ngIf="!isLoading && isMobile", flex, layout="row", layout-xs="column", [class.flipped]="flipped && isMobile")
       figure.front
-        bw-button.addButton(*ngIf="!flipped && canAddAlert", color="blue", icon="plus", [rounded]="true", size="lg", (clicked)="onAddAlert()")
-        .left-panelM(flex="100", layout="column")  
-          .custom-alert-headerM.p-10(layout="row", layout-padding)
+        bw-button.addButton(*ngIf="!flipped",  [disabled]="!canAddAlert", color="blue", icon="plus", [rounded]="true", size="lg", (clicked)="onAddAlert()")
+        .left-panel(flex="100", layout="column")  
+          .custom-alert-header.p-10(layout="row", layout-padding)
             div(flex-initial)
               i.zmdi.zmdi-timer
             div(flex-initial)
-              .titleM ALERTS MANAGER
-          .custom-alert-bodyM(layout="column")
+              .title ALERTS MANAGER
+          .custom-alert-body.overflow-auto(layout="column")
             .alerts(flex, *ngFor="let alert of vm.alerts, let i = index", layout="column", 
                 [ngClass]="{'selected-alert': vm.selectedAlertIndex === i}")
               kpi-alerts-summary(flex, [alert]="alert", [index]="i", (selectedAlertIndex)="updateSelectedAlertIndex($event)", (switchedActive)="switchActive($event, i)")

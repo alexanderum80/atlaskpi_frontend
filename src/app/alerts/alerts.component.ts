@@ -54,9 +54,6 @@ export class AlertsComponent implements OnInit, AfterViewInit {
   }
 
   async ngOnInit() {
-    if (!this.vm.viewAlertPermission()) {
-      this._router.navigateByUrl('/unauthorized');
-    }
     this.getCurrentUser();
     await this._getAlerts();
     this._subscribeToFormChange();
@@ -73,6 +70,9 @@ export class AlertsComponent implements OnInit, AfterViewInit {
         this.vm.currentUser = user;
         this.vm.systemAlert.users[0].identifier = this.vm.currentUser._id;
         this.vm.systemAlert.users[0].deliveryMethods.push('push');
+        if (!this.vm.viewAlertPermission()) {
+          this._router.navigateByUrl('/unauthorized');
+        }
       }
     });
   }
@@ -82,7 +82,8 @@ export class AlertsComponent implements OnInit, AfterViewInit {
   }
 
   get canAddAlert() {
-    return this.vm.alerts && this.vm.alerts[0]
+    return this.vm.createAlertPermission()
+    && this.vm.alerts && this.vm.alerts[0]
     && this.vm.alerts[0]._id !== this.vm.systemAlert._id
     && this.vm.alerts[this.vm.alerts.length - 1]._id;
   }
@@ -101,7 +102,7 @@ export class AlertsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private async _getAlerts() {
+  private async _getAlerts(cancel?: boolean) {
     this.vm.alerts = [];
     await this._apolloService.networkQuery < any[] > (alertsQuery).then(data => {
       const specialAlert = data.alerts.find(a => a.name === 'First Sale of day');
@@ -122,7 +123,7 @@ export class AlertsComponent implements OnInit, AfterViewInit {
             createdAt: element.createdAt
           });
       });
-      this.updateSelectedAlertIndex(0);
+      this.updateSelectedAlertIndex(0, cancel);
     });
   }
 
@@ -173,7 +174,7 @@ export class AlertsComponent implements OnInit, AfterViewInit {
     }
   }
 
-  updateSelectedAlertIndex(alertIndex) {
+  updateSelectedAlertIndex(alertIndex, cancel?: boolean) {
     this.vm.updateSelectedAlertIndex(alertIndex);
     const fgValue = {
       _id: this.selectedAlert._id || null,
@@ -184,7 +185,7 @@ export class AlertsComponent implements OnInit, AfterViewInit {
       value: this.selectedAlert.value,
     };
     this.fgDetails.patchValue(fgValue);
-    this.flipped = true;
+    if (!cancel) { this.flipped = true; }
   }
 
   backToListClicked() {
@@ -291,11 +292,10 @@ export class AlertsComponent implements OnInit, AfterViewInit {
     }
   }
 
-  async cancel() {
-    this.isLoading = true;
-    await this._getAlerts();
-    this.updateSelectedAlertIndex(0);
-    this.isLoading = false;
+  cancel() {
     this.flipped = false;
+    this.isLoading = true;
+    this._getAlerts(true);
+    this.isLoading = false;
   }
 }
