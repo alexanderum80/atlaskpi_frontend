@@ -58,14 +58,14 @@
         }
         .custom-alert-bodyM {
             .alerts {
-                min-height: 100px;
-                padding: 20px 10px;
+                min-height: 70px;
+                padding: 5px 10px;
             }
         }
     }
     .left-panel {
         background: #EEEEEE;
-        height: 85%;
+        height: 100%;
         .custom-alert-header {
             min-height: 70px;            
             i {
@@ -79,9 +79,10 @@
         }
 
         .custom-alert-body {
+            height: 76%;
             .alerts {
-                min-height: 110px;
-                padding: 20px 10px;
+                min-height: 80px;
+                padding: 5px 10px;
 
                 .remove-button {
                     font-size: 20px;
