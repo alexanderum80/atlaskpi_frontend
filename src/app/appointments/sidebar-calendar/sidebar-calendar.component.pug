@@ -41,14 +41,22 @@
     //- .calendar-container.z-depth-1.bgm-white(flex-initial)
 
     .m-r-20.m-t-10.m-l-20
+        //- bw-select-picker.m-r-20(flex="80", [fg]="fg", 
+        //-     field="provider",
+        //-     [multiple]="true",
+        //-     [items]="providerList",
+        //-     [liveSearch]="true",
+        //-     noneSelectedText="All Providers",
+        //-     #providerpicker,
+        //-     #sideBarSelectProvider=""
+        //-     )  
         bw-select-picker.m-r-20(flex="80", [fg]="fg", 
-            field="provider",
+            field="resource",
             [multiple]="true",
-            [items]="providerList",
+            [items]="resourceList",
             [liveSearch]="true",
-            noneSelectedText="All Providers",
-            #providerpicker,
-            #sideBarSelectProvider=""
+            noneSelectedText="All Resources",
+            #sideBarResourcePicker
             )  
     .m-t-5.m-b-40.text-center
         dp-day-calendar(theme="dp-material", [config]="calendarConfig", (onSelect)="onDaySelected($event)")

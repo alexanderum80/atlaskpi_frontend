@@ -38,6 +38,7 @@ query User {
             helpCenter
             showAppointmentCancelled
             providers
+            resources
             calendarTimeZone
             dashboardIdNoVisible
             dashboards {
