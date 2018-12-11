@@ -3,7 +3,7 @@ bw-card.full-height.p-relative([class.maximized]="fullscreen")
         .show-map-container(layout="column")
             .container-legend(*ngIf="showSettingsBtn")
                 .legend-settings-container.bgm-white(flex, flex-initial, layout="row")
-                    .title-container.text-ellipsis {{mapsTitle}}
+                    .title-container(title="{{mapsTitle}}") {{mapsTitle}}
                     .icon-container((click)="showLegend()", [class.opacity]="showingLegend")
                         .zmdi.zmdi-pin-drop
                     .icon-container((click)="showMapSettings()", [class.opacity]="showingMapSettings")
