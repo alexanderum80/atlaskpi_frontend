@@ -175,15 +175,15 @@
   dependencies:
     tslib "^1.9.0"
 
-"@angular/compiler-cli@^6.1.10":
-  version "6.1.10"
-  resolved "https://registry.yarnpkg.com/@angular/compiler-cli/-/compiler-cli-6.1.10.tgz#df7c645017a73ee577f812d801ef1313b2097829"
-  integrity sha512-GCWdyeNQSnF4RfzO4A0+WHsNEgxKpl5arg4ldLSWMNkj/DrhMD4TnmxhR+IVY+7ieMkUBwpcuWRnjdOdnbmV+w==
+"@angular/compiler-cli@^6.0.3":
+  version "6.0.7"
+  resolved "http://npm.atlaskpi.com:9000/@angular%2fcompiler-cli/-/compiler-cli-6.0.7.tgz#0f6ff586e7f7c5d37aa91d53521250bc02620a4f"
+  integrity sha512-nDIo4TtE3oXgZiQ5vJEcr5fi3FuXRDJQSOeOQinpCrtEt3s4pU5WAX5DLFGPSD2C/EXRDvHZgF9OTJeu5U4ErQ==
   dependencies:
     chokidar "^1.4.2"
     minimist "^1.2.0"
     reflect-metadata "^0.1.2"
-    tsickle "^0.32.1"
+    tsickle "^0.29.0"
 
 "@angular/compiler@^6.0.3":
   version "6.0.7"
@@ -758,7 +758,7 @@ anymatch@^2.0.0:
 
 apollo-angular-link-http-batch@^1.4.0:
   version "1.4.0"
-  resolved "https://registry.yarnpkg.com/apollo-angular-link-http-batch/-/apollo-angular-link-http-batch-1.4.0.tgz#5387811bce8af25a5bcfe5cf04fffd86e0fdb1ed"
+  resolved "http://npm.atlaskpi.com:9000/apollo-angular-link-http-batch/-/apollo-angular-link-http-batch-1.4.0.tgz#5387811bce8af25a5bcfe5cf04fffd86e0fdb1ed"
   integrity sha512-45w82aXPbd737tpc9lyiCziS0qsBH4QF0Cz2TJ3HF4jmp6mNUyUfNbpTT6O27LAy/BlurqMnubHikDOPiljB7Q==
   dependencies:
     apollo-angular-link-http-common "~1.4.0"
@@ -4315,13 +4315,6 @@ jasmine-core@~2.99.0, jasmine-core@~2.99.1:
   resolved "http://npm.atlaskpi.com:9000/jasmine-core/-/jasmine-core-2.99.1.tgz#e6400df1e6b56e130b61c4bcd093daa7f6e8ca15"
   integrity sha1-5kAN8ea1bhMLYcS80JPap/boyhU=
 
-jasmine-diff@^0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/jasmine-diff/-/jasmine-diff-0.1.3.tgz#93ccc2dcc41028c5ddd4606558074839f2deeaa8"
-  integrity sha1-k8zC3MQQKMXd1GBlWAdIOfLe6qg=
-  dependencies:
-    diff "^3.2.0"
-
 jasmine-spec-reporter@~4.2.1:
   version "4.2.1"
   resolved "http://npm.atlaskpi.com:9000/jasmine-spec-reporter/-/jasmine-spec-reporter-4.2.1.tgz#1d632aec0341670ad324f92ba84b4b32b35e9e22"
@@ -7636,12 +7629,11 @@ ts-xlsx@0.0.11:
   dependencies:
     "@types/xlsx" "0.0.34"
 
-tsickle@^0.32.1:
-  version "0.32.1"
-  resolved "https://registry.yarnpkg.com/tsickle/-/tsickle-0.32.1.tgz#f16e94ba80b32fc9ebe320dc94fbc2ca7f3521a5"
-  integrity sha512-JW9j+W0SaMSZGejIFZBk0AiPfnhljK3oLx5SaqxrJhjlvzFyPml5zqG1/PuScUj6yTe1muEqwk5CnDK0cOZmKw==
+tsickle@^0.29.0:
+  version "0.29.0"
+  resolved "http://npm.atlaskpi.com:9000/tsickle/-/tsickle-0.29.0.tgz#812806554bb46c1aa16eb0fe2a051da95ca8f5a4"
+  integrity sha512-JpID0Lv8/irRtPmqJJxb5fCwfZhjZeKmav9Zna7UjqVuJoSbI49Wue/c2PPybX1SbRrjl7bbI/JsCl0dSUJygA==
   dependencies:
-    jasmine-diff "^0.1.3"
     minimist "^1.2.0"
     mkdirp "^0.5.1"
     source-map "^0.6.0"
@@ -7714,15 +7706,15 @@ typedarray@^0.0.6:
   resolved "http://npm.atlaskpi.com:9000/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-"typescript@>=2.6.2 <2.10", typescript@^2.5.2, typescript@^2.9.2, typescript@~2.9.1:
-  version "2.9.2"
-  resolved "http://npm.atlaskpi.com:9000/typescript/-/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
-  integrity sha512-Gr4p6nFNaoufRIY4NMdpQRNmgxVIGMs4Fcu/ujdYk3nAZqk7supzBE9idmvfZIlH/Cuj//dvi+019qEue9lV0w==
-
-"typescript@>=2.6.2 <2.8":
+typescript@2.7.2, "typescript@>=2.6.2 <2.8":
   version "2.7.2"
   resolved "http://npm.atlaskpi.com:9000/typescript/-/typescript-2.7.2.tgz#2d615a1ef4aee4f574425cdff7026edf81919836"
   integrity sha512-p5TCYZDAO0m4G344hD+wx/LATebLWZNkkh2asWUFqSsD2OrDNhbAHuSjobrmsUmdzjJjEeZVU9g1h3O6vpstnw==
+
+"typescript@>=2.6.2 <2.10", typescript@^2.5.2, typescript@~2.9.1:
+  version "2.9.2"
+  resolved "http://npm.atlaskpi.com:9000/typescript/-/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
+  integrity sha512-Gr4p6nFNaoufRIY4NMdpQRNmgxVIGMs4Fcu/ujdYk3nAZqk7supzBE9idmvfZIlH/Cuj//dvi+019qEue9lV0w==
 
 typescript@~2.6.2:
   version "2.6.2"
