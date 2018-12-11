@@ -37,7 +37,7 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     @Input() markers: any[];
     @Input() legendColors: ILegendColorConfig[];
     @Input() legendClosed = false;
-    @Input() Height = '400px';
+    @Input() Height = '98%';
     // hiding this until fully functional
     @Input() showSettingsBtn = false;
     @Input() showLegendBtn = true;
