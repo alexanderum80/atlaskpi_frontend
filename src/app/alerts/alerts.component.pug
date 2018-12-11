@@ -10,7 +10,7 @@
           div(flex-initial)
             .title ALERTS MANAGER
         .custom-alert-body.overflow-auto(layout="column")
-          .alerts(flex, *ngFor="let alert of vm.alerts, let i = index", layout="column", 
+          .alerts(flex-initial, *ngFor="let alert of vm.alerts, let i = index", layout="column", 
               [ngClass]="{'selected-alert': vm.selectedAlertIndex === i}")
             kpi-alerts-summary(flex, [alert]="alert", [index]="i", (selectedAlertIndex)="updateSelectedAlertIndex($event)", (switchedActive)="switchActive($event, i)")
 
@@ -31,7 +31,7 @@
             div(flex-initial)
               .titleM ALERTS MANAGER
           .custom-alert-bodyM.overflow-auto(layout="column")
-            .alerts(flex, *ngFor="let alert of vm.alerts, let i = index", layout="column", 
+            .alerts(flex-initial, *ngFor="let alert of vm.alerts, let i = index", layout="column", 
                 [ngClass]="{'selected-alert': vm.selectedAlertIndex === i}")
               kpi-alerts-summary(flex, [alert]="alert", [index]="i", (selectedAlertIndex)="updateSelectedAlertIndex($event)", (switchedActive)="switchActive($event, i)")
 

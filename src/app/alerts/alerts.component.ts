@@ -220,6 +220,8 @@ export class AlertsComponent implements OnInit, AfterViewInit {
   }
 
   save(systemAlert?: any) {
+    const that = this;
+
     if (!this.vm.updateAlertPermission()) {
       this._router.navigateByUrl('/unauthorized');
     } else {
