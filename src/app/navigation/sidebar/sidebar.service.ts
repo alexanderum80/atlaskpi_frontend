@@ -64,6 +64,11 @@ const MENU_ITEMS: MenuItem[] = [{
             title: 'Data Sources',
             icon: 'grid',
             route: '/datasource'
+        }, {
+            id: 'alerts',
+            icon: 'notifications-active',
+            route: '/alerts',
+            title: 'Alerts'
         }
     ]
 }, {

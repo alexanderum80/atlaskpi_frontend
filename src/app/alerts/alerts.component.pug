@@ -1,0 +1,43 @@
+.alerts-container.p-relative
+    
+    //- desktop
+    .h-100.p-relative(*ngIf="!isLoading && !isMobile", flex, layout="row", layout-xs="column")
+      .left-panel(flex="35", flex-xs="100", layout="column")
+        bw-button.addButton([disabled]="!canAddAlert",color="blue", icon="plus", [rounded]="true", size="lg", (clicked)="onAddAlert()")
+        .custom-alert-header.p-10(layout="row", layout-padding)
+          div(flex-initial)
+            i.zmdi.zmdi-timer
+          div(flex-initial)
+            .title ALERTS MANAGER
+        .custom-alert-body.overflow-auto(layout="column")
+          .alerts(flex-initial, *ngFor="let alert of vm.alerts, let i = index", layout="column", 
+              [ngClass]="{'selected-alert': vm.selectedAlertIndex === i}")
+            kpi-alerts-summary(flex, [alert]="alert", [index]="i", (selectedAlertIndex)="updateSelectedAlertIndex($event)", (switchedActive)="switchActive($event, i)")
+
+      .right-panel.overflow-auto(flex="65", flex-xs="100", layout="column")
+        kpi-alerts-details(*ngIf="!isLoading", [fg]="fgDetails", [alert]="selectedAlert", [isMobile]="isMobile")
+        .p-t-20.p-r-30(*ngIf="!isLoading", layout="row", layout-align="end")
+          bw-button.m-l-5(icon="floppy", title="SAVE", color="blue", (clicked)="save()", [disabled]="!isFormValid()")
+          bw-button.m-l-5(icon="close", title="CANCEL", color="black", [simple]="true", (clicked)="cancel()")
+
+    //- mobile
+    #card.h-100.p-relative(*ngIf="!isLoading && isMobile", flex, layout="row", layout-xs="column", [class.flipped]="flipped && isMobile")
+      figure.front
+        bw-button.addButton(*ngIf="!flipped",  [disabled]="!canAddAlert", color="blue", icon="plus", [rounded]="true", size="lg", (clicked)="onAddAlert()")
+        .left-panelM(*ngIf="!flipped", flex="100", layout="column")  
+          .custom-alert-headerM.p-10(layout="row", layout-padding)
+            div(flex-initial)
+              i.zmdi.zmdi-timer
+            div(flex-initial)
+              .titleM ALERTS MANAGER
+          .custom-alert-bodyM.overflow-auto(layout="column")
+            .alerts(flex-initial, *ngFor="let alert of vm.alerts, let i = index", layout="column", 
+                [ngClass]="{'selected-alert': vm.selectedAlertIndex === i}")
+              kpi-alerts-summary(flex, [alert]="alert", [index]="i", (selectedAlertIndex)="updateSelectedAlertIndex($event)", (switchedActive)="switchActive($event, i)")
+
+      figure.back
+        .right-panel.h-100.overflow-auto(*ngIf="flipped && isMobile", flex="100", layout="column")
+          kpi-alerts-details(*ngIf="!isLoading", [fg]="fgDetails", [alert]="selectedAlert", [isMobile]="isMobile", (goBackToList)="backToListClicked()")
+          .p-t-20.p-r-30(*ngIf="!isLoading", layout="row", layout-align="end")
+            bw-button.m-l-5.m-b-20(icon="floppy", title="SAVE", color="blue", (clicked)="save()", [disabled]="!isFormValid()")
+            bw-button.m-l-5.m-b-20(icon="close", title="CANCEL", color="black", [simple]="true", (clicked)="cancel()")

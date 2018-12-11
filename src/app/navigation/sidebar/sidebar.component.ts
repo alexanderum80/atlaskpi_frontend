@@ -78,7 +78,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
         private _storeHelper: StoreHelper,
         private _sidebarService: SidebarService,
         private _store: Store) {
-            this._subscription.push( 
+            this._subscription.push(
                 this._store.changes$.subscribe(
                 (state) => this.changeLogo(state)
             ));
@@ -114,7 +114,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-    changeLogo(state){
+    changeLogo(state) {
         if (state.theme === 'dark') {
             this.logoPath = 'white-logo.png';
         } else {
