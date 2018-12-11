@@ -1,7 +1,7 @@
 import { ActionsMap as A, CrudActions, CommentActions } from './actions.map';
 import { IPermission } from '../../../permissions/shared/models';
 
-export const AlertsSubject = 'alerts';
+export const AlertsSubject = 'alert';
 
 const actions = [
     ...CrudActions

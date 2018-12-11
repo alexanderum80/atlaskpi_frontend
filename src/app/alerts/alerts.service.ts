@@ -5,7 +5,7 @@ import { SelectionItem } from '../ng-material-components';
 import { IItemListActivityName } from '../shared/interfaces/item-list-activity-names.interface';
 import { CreateAlertActivity } from '../shared/authorization/activities/alerts/create-alert.activity';
 import { ViewAlertActivity } from '../shared/authorization/activities/alerts/view-alert.activity';
-import { UpdateAlertActivity } from '../shared/authorization/activities/alerts/update-alert.activity';
+import { ModifyAlertActivity } from '../shared/authorization/activities/alerts/update-alert.activity';
 import { DeleteAlertActivity } from '../shared/authorization/activities/alerts/delete-alert.activity';
 import { UserService } from '../shared/services';
 import * as moment from 'moment';
@@ -68,7 +68,7 @@ export class AlertsFormService {
         this._actionActivityNames = {
             view: ViewAlertActivity.name,
             add: CreateAlertActivity.name,
-            update: UpdateAlertActivity.name,
+            update: ModifyAlertActivity.name,
             delete: DeleteAlertActivity.name
           };
     }
@@ -82,7 +82,7 @@ export class AlertsFormService {
     }
 
     updateAlertPermission() {
-        return this._userSvc.hasPermission('Update', 'Alert');
+        return this._userSvc.hasPermission('Modify', 'Alert');
     }
 
     deleteAlertPermission() {

@@ -7,10 +7,10 @@ import { BaseActivity } from '../base.activity';
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class UpdateAlertActivity extends BaseActivity implements IActivity {
-    name = 'UpdateAlertActivity';
+export class ModifyAlertActivity extends BaseActivity implements IActivity {
+    name = 'ModifyAlertActivity';
 
-    private _permissions = getPermissions(SubjectEnum.alert, [ActionsMap.Create]);
+    private _permissions = getPermissions(SubjectEnum.alert, [ActionsMap.Modify]);
 
     check(user: IUserInfo): boolean {
         return this.hasAllPermissions(user, this._permissions);

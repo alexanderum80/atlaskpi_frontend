@@ -10,7 +10,7 @@ import { Injectable } from '@angular/core';
 export class ViewAlertActivity extends BaseActivity implements IActivity {
     name = 'ViewAlertActivity';
 
-    private _permissions = getPermissions(SubjectEnum.alert, [ActionsMap.Create]);
+    private _permissions = getPermissions(SubjectEnum.alert, [ActionsMap.View]);
 
     check(user: IUserInfo): boolean {
         return this.hasAllPermissions(user, this._permissions);

@@ -45,7 +45,7 @@ export class AlertsSummaryComponent implements OnInit, AfterViewInit {
   }
 
   get canRemove() {
-    return this.alert.name !== this.vm.systemAlert.name && this.alert._id;
+    return (this.vm.deleteAlertPermission() && this.alert._id);
   }
 
   get isSystemAlert() {
@@ -53,7 +53,7 @@ export class AlertsSummaryComponent implements OnInit, AfterViewInit {
   }
 
   removeAlert(alertId) {
-    
+
     if(!alertId) return;
 
     if (!this.vm.deleteAlertPermission()) {

@@ -37,7 +37,7 @@
             transform: rotateY( 180deg);
             
             figure.front, figure.back > div {
-                transition: all 1.2s ease-in-out 1s;
+                transition: all 1.2s ease-in-out 0s;
             }
         }
     }
