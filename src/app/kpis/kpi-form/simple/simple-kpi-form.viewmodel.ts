@@ -57,6 +57,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         size: 'big',
         order: '4',
         color: '',
+        fontColor: '',
         kpi: '',
         predefinedDateRange: 'this year',
         format: 'dollar',

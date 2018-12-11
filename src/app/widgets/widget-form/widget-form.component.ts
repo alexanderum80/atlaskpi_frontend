@@ -1,3 +1,6 @@
+import { filter } from 'rxjs/operators';
+import { find } from 'lodash';
+import { Colors } from './../../charts/shared/ui/chart-format-info/material-colors';
 import { SelectPickerComponent } from '../../ng-material-components/modules/forms/select-picker/select-picker.component';
 import { CommonService } from '../../shared/services/common.service';
 import {
@@ -12,7 +15,7 @@ import {
     OnInit,
     Output,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs/Subscription';
@@ -27,6 +30,8 @@ import { ApolloService } from '../../shared/services/apollo.service';
 
 import { IDateRangeItem } from './../../shared/models/date-range';
 import { chartsGraphqlActions } from '../../charts/shared/graphql/charts.graphql-actions';
+import { ChooseColorsComponent } from '../../charts/shared/ui/choose-colors/choose-colors.component';
+import { predefinedColors } from '../../charts/shared/ui/chart-format-info/material-colors';
 
 const widgetSizeList: SelectionItem[] = [
     {
@@ -131,22 +136,23 @@ const widgetByTitleQuery = require('graphql-tag/loader!../shared/graphql/get-wid
     styleUrls: ['./widget-form.component.scss'],
 })
 export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
-    @Input()
-    fg: FormGroup;
-    @Input()
-    editMode = false;
-    @Input()
-    widgetId: string;
-    @Input()
-    widgetDataFromKPI: any;
-    @Output()
-    formResult = new EventEmitter<DialogResult>();
+    @Input() fg: FormGroup;
+    @Input() editMode = false;
+    @Input() widgetId: string;
+    @Input() widgetDataFromKPI: any;
+    @Output() formResult = new EventEmitter<DialogResult>();
+
+    @ViewChild(ChooseColorsComponent) chooseColors: ChooseColorsComponent;
+
+    selectColorCaller = '';
 
     subs: Subscription[] = [];
     datePickerConfig: IDatePickerConfig;
     widgetModelValid = false;
     widgetSize: string;
     smSize: string;
+    choosedBackColor = '';
+    choosedFontColor = '';
 
     sizeSelectionList: SelectionItem[] = widgetSizeList;
     typeSelectionList: SelectionItem[] = widgetTypeList;
@@ -182,7 +188,21 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
     ngAfterViewInit() {
         const that = this;
         this.widgetModel = this._widgetFormService.widgetModel;
+        debugger;
         this.widgetModel.preview = true;
+        if (!this.fg.controls['color']) {
+            const color = new FormControl(false);
+            this.fg.addControl('color', color);
+        }
+        if (!this.fg.controls['fontColor']) {
+            const fontColor = new FormControl(false);
+            this.fg.addControl('fontColor', fontColor);
+        }
+        if (!this.widgetModel.fontColor) {
+            this.widgetModel.fontColor = this.choosedBackColor === 'white' ? 'black' : 'white';
+        }
+        this.choosedBackColor = this.widgetModel.color;
+        this.choosedFontColor = this.widgetModel.fontColor;
         this._subscribeToFormFields();
 
         const widgetData = this._widgetFormService.getWidgetFormValues();
@@ -223,6 +243,27 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnDestroy() {
         CommonService.unsubscribe([...this.subs, ...this._widgetFormService.subscriptions]);
+    }
+
+    openSelectColor(colorCaller: string) {
+        this.selectColorCaller = colorCaller;
+        this.chooseColors.open();
+    }
+
+    onSelectColor(inputColor: string) {
+        let selectedColor;
+        Colors.forEach(p => {
+            const tmp = p.colors.filter(c => c.color === inputColor);
+            if (tmp.length > 0) {
+                selectedColor = tmp[0].id;
+            }
+        });
+        if (this.selectColorCaller === 'color') {
+            this.choosedBackColor = selectedColor;
+            this.widgetModel.color = selectedColor;
+        } else if (this.selectColorCaller === 'font') {
+            this.choosedFontColor = selectedColor;
+        }
     }
 
     get widgetModel(): IWidget {
@@ -281,7 +322,6 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
                 .distinctUntilChanged()
                 .subscribe(values => {
                     const fieldNames = Object.keys(values);
-
                     this._widgetFormService.processFormChanges(values).then(widget => (this.widgetModel = widget));
                 }),
         );

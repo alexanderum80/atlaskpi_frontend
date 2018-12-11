@@ -91,6 +91,7 @@ export interface IWidget {
     type: string;
     size: string;
     color: string;
+    fontColor: string;
     chartWidgetAttributes?: IChartWidgetAttributes;
     numericWidgetAttributes?: INumericWidgetAttributes;
     dashboards?: string[];
@@ -111,6 +112,7 @@ export interface IWidgetInput {
     type: string;
     size: string;
     color: string;
+    fontColor: string;
     numericWidgetAttributes?: INumericWidgetAttributes;
     chartWidgetAttributes?: IChartWidgetAttributes;
     dashboards?: string[];
@@ -123,6 +125,7 @@ export interface IWidgetFormGroupValues {
     type: string;
     size: string;
     color: string;
+    fontColor: string;
     format?: string;
 
     // numeric attributes
@@ -150,6 +153,7 @@ export class WidgetModel extends BaseModel<IWidget> implements IWidget {
     type: string;
     size: string;
     color: string;
+    fontColor: string;
     numericWidgetAttributes?: INumericWidgetAttributes;
     chartWidgetAttributes?: IChartWidgetAttributes;
     tags: string[];

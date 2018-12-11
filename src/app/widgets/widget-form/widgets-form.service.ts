@@ -32,6 +32,7 @@ const newWidgetModel = {
   type: 'numeric',
   size: 'small',
   color: 'white',
+  fontColor: 'black',
   preview: true
 };
 
@@ -97,13 +98,13 @@ export class WidgetsFormService {
     });
 
     this._subscription.push(this.kpisQuery.valueChanges.subscribe(res => this._handleKpisQueryResponse(res)));
-  
+
     this.dashboardsQuery = this._apollo.watchQuery<{dashboards: IDashboard[]}>
         ({
           query: widgetsGraphqlActions.listWidgetDashboards,
           fetchPolicy: 'network-only'
         });
-    
+
         this._subscription.push(this.dashboardsQuery.valueChanges.subscribe(res => this._handleDashboardsQueryResponse(res)));
   }
 
@@ -130,6 +131,7 @@ export class WidgetsFormService {
     this._widgetModel['type'] = values.type;
     this._widgetModel['order'] = Number(values.order);
     this._widgetModel['color'] = values.color;
+    this._widgetModel['fontColor'] = values.fontColor;
 
     // numeric properties
     if (values.type === 'numeric') {
@@ -394,6 +396,7 @@ export class WidgetsFormService {
               type: widget.type,
               size: widget.size,
               color: 'white', // all chart widgets are white
+              fontColor: 'black',
               chartWidgetAttributes: {
                 chart: widget.chartWidgetAttributes.chart
               },
@@ -415,6 +418,7 @@ export class WidgetsFormService {
             type: widget.type,
             size: widget.size,
             color: widget.color,
+            fontColor: widget.fontColor,
             numericWidgetAttributes: {
               kpi: widget.numericWidgetAttributes.kpi,
               format: widget.numericWidgetAttributes.format,
@@ -471,6 +475,7 @@ export class WidgetsFormService {
               type: this._widgetModel.type,
               size: this._widgetModel.size,
               color: 'white', // all chart widgets are white
+              fontColor: 'black',
               chart: this._widgetModel.chartWidgetAttributes.chart,
               dashboards: this._widgetModel.dashboards ? this._widgetModel.dashboards.join('|') : ''
             };
@@ -483,6 +488,7 @@ export class WidgetsFormService {
             type: this._widgetModel.type,
             size: this._widgetModel.size,
             color: this._widgetModel.color, // all chart widgets are white
+            fontColor: this._widgetModel.fontColor,
             kpi: this._widgetModel.numericWidgetAttributes
                   ? this._widgetModel.numericWidgetAttributes.kpi
                   : '',
