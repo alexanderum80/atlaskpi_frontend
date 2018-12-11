@@ -53,6 +53,9 @@ export class AlertsSummaryComponent implements OnInit, AfterViewInit {
   }
 
   removeAlert(alertId) {
+    
+    if(!alertId) return;
+
     if (!this.vm.deleteAlertPermission()) {
       this._router.navigateByUrl('/unauthorized');
     } else {

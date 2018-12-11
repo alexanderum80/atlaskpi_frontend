@@ -37,29 +37,30 @@
             transform: rotateY( 180deg);
             
             figure.front, figure.back > div {
-                transition: all 1.2s ease-in-out 0s;
+                transition: all 1.2s ease-in-out 1s;
             }
         }
     }
     .left-panelM {
         position: relative;
-        height: 85%;
+        height: 100%;
         background: #EEEEEE;
         .custom-alert-headerM {
             min-height: 70px;            
             i {
-                padding: 10px 0 0 10px;
-                font-size: 25px;
+                padding: 8px 0 0 10px;
+                font-size: 20px;
             }
         
             .titleM {
-                padding: 15px 0 10px 5px;
+                padding: 10px 0 10px 10px;
             }
         }
         .custom-alert-bodyM {
+            height: 73%;
             .alerts {
-                min-height: 70px;
-                padding: 5px 10px;
+                min-height: 80px;
+                padding: 10px 10px;
             }
         }
     }
