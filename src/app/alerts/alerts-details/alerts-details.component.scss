@@ -1,0 +1,25 @@
+.title {
+    font-weight: bold;
+    padding-bottom: 10px;
+}
+
+.invalidValueMsg {
+    color: rgb(218, 73, 73);
+    margin-left: 40px;
+    margin-top: -10px;
+    padding-bottom: 25px;
+    font-size: 12px;
+}
+
+.alert-header {
+    background-color: #EEEEEE;
+
+    i {
+        padding: 10px 0 0 20px;
+        font-size: 25px;
+    }
+
+    .title {
+        padding: 15px 0 10px 5px;
+    }
+}

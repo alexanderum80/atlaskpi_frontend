@@ -25,7 +25,7 @@ export interface ISidebarItemSearchResult {
 const MENU_ITEMS: MenuItem[] = [{
     id: 'dashboard',
     title: 'Dashboards',
-    icon: 'widgets'
+    icon: 'widgets',
 },
 {
     id: 'appointments',
@@ -64,6 +64,11 @@ const MENU_ITEMS: MenuItem[] = [{
             title: 'Data Sources',
             icon: 'grid',
             route: '/datasource'
+        }, {
+            id: 'alerts',
+            icon: 'notifications-active',
+            route: '/alerts',
+            title: 'Alerts'
         }
     ]
 }, {
@@ -151,6 +156,9 @@ export class SidebarService {
     private _dashboardQuery: QueryRef<{}>;
     private _itemsNotVisibles = 0;
     private _itemsNotVisiblesSubject = new BehaviorSubject < number > (0);
+    private _userCanAddDashSubject = new BehaviorSubject < boolean > (false);
+    
+    userCanAddDashboard: boolean;
 
     constructor(
         private _router: Router,
@@ -164,7 +172,18 @@ export class SidebarService {
         this.vm.addActivities([this.addDashboardActivity]);
 
         const that = this;
-        this._userService.user$.subscribe(u => that._getDashboards(u));
+        this._userService.user$.subscribe(u => 
+            {
+                if(u){
+                    that.checkPemits(u);
+                    that._getDashboards(u);  
+                }       
+            });
+
+        this._subscription.push(this._userCanAddDash$.subscribe( permit =>
+            this.userCanAddDashboard = permit
+        ));
+
         this._router.events.subscribe(e => {
             if (e instanceof NavigationEnd) {
                 that._currentRoute = that._router.url;
@@ -186,6 +205,10 @@ export class SidebarService {
 
     get subscription(): Subscription[] {
         return this._subscription;
+    }
+
+    get _userCanAddDash$(): Observable<boolean> {
+        return this._userCanAddDashSubject.asObservable();
     }
 
     refreshDashboards() {
@@ -254,9 +277,15 @@ export class SidebarService {
         }
 
         if (!dashboards || !dashboards.length) {
+            if(this.userCanAddDashboard){
+                items[0].active = true;
+                this.vm.listDashboard.active = true;
+                this._router.navigate([this.vm.listDashboard.route]);
+            }
             return;
         }
 
+        this.vm.listDashboard.active = false;
         this._itemsNotVisibles = 0;
         items[0].children = dashboards.map(d => {
             // check if the current root is relarted to the dashboards
@@ -298,5 +327,9 @@ export class SidebarService {
         this._itemsSubject.next(items);
         this._itemsNotVisiblesSubject.next(this._itemsNotVisibles);
     }
+
+    checkPemits(user): void{
+           this._userCanAddDashSubject.next(this.addDashboardActivity.check(user));
+        }
 
 }

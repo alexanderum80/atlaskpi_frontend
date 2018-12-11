@@ -1,15 +1,13 @@
 mutation UpdateAlert($id: String!, $input: AlertInput) {
     updateAlert(id: $id, input: $input) {
         entity {
-            notifyUsers
+            _id
+            name
+            kpi
             frequency
+            condition
+            value
             active
-            pushNotification
-            emailNotified
-            modelAlert {
-                name
-                id
-            }
         }
         success
         errors {

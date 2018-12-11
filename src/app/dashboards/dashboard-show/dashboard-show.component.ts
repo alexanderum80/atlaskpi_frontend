@@ -528,7 +528,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
 
             if (dataDashboard.dashboard.charts) {
                 dataDashboard.dashboard.charts.forEach(item => {
-                    charts.push(JSON.parse(item)._id)});
+                    charts.push(JSON.parse(item)._id); });
                 return charts;
             }
             return;

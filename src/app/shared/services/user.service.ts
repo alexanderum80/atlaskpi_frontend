@@ -111,7 +111,7 @@ export class UserService {
     }
 
     private _setUser(data: { User: User}): void {
-        if (!data || ! data.User) { return; }
+        if (!data || !data.User) { return; }
         this._user = new User(data.User);
         this._userSubject.next(this._user);
     }
