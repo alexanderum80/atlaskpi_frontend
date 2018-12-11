@@ -125,6 +125,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
     isCollapsedSorting = true;
     frequencyList: SelectionItem[] = [];
     groupingList: SelectionItem[] = [];
+    zipCodeSourceList: SelectionItem[] = [];
     mapsizeList: SelectionItem[] = [
         {
             id: 'small',
@@ -272,7 +273,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         });
     }
 
-    private _getGroupingInfo(item: any): void {
+    private _getGroupingInfo(item: any): void { /* get groupingInfo and get zipCodeSource List */
         const that = this;
 
         // basic payload check
@@ -293,11 +294,20 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         this._apolloService.networkQuery(kpiGroupingsQuery, { input })
             .then(data => {
                 let groupingList = [];
+                let zipCodeSourceList = [];
                 that.groupingList = [];
+                that.zipCodeSourceList = [];
                 if (data || !isEmpty(data.kpiGroupings)) {
                     groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
+                    zipCodeSourceList = data.kpiGroupings
+                    .filter(d => d.name.toLowerCase().includes('zip' || 'postal'))
+                    .map(d => new SelectionItem(d.value, d.name))
                 }
                 that.groupingList = groupingList;
+                that.zipCodeSourceList = zipCodeSourceList;
+                if (that.fg.controls['zipCodeSource'].value === '' && that.zipCodeSourceList.find(d => d.id === 'customer.zip')) {
+                    that.fg.controls['zipCodeSource'].patchValue('customer.zip');
+                }
                 const currentGroupingValue = this.fg.get('grouping').value || '';
                 let nextGropingValue;
                 if (!groupingList.map(g => g.id).includes(currentGroupingValue)) {

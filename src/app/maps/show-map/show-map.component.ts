@@ -43,6 +43,7 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     @Input() showLegendBtn = true;
     @Input() kpi: string;
     @Input() grouping: string[];
+    @Input() zipCodeSource: string;
     @ViewChild('showMapForm') private _form: ShowMapFormComponent;
 
     lat: number;
@@ -115,8 +116,10 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
             variables: {
                 input: {
                     kpi: this.kpi,
-                    grouping: this._form.vm.payload.grouping ? ['customer.zip', this._form.vm.payload.grouping] : ['customer.zip'],
-                    dateRange: JSON.stringify({predefined: this._form.vm.payload.dateRange, custom: {from: null, to: null}})
+                    grouping: this._form.vm.payload.grouping 
+                        ? [this._form.vm.payload.zipCodeSource, this._form.vm.payload.grouping] 
+                        : [this._form.vm.payload.zipCodeSource], 
+                            dateRange: JSON.stringify({predefined: this._form.vm.payload.dateRange, custom: {from: null, to: null}})
                 }
             }
         })

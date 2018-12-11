@@ -16,6 +16,7 @@ export interface MapData {
   groupings: string;
   size: string;
   kpi: string;
+  zipCodeSource: string;
 }
 
 export interface IMapInput {
@@ -28,6 +29,7 @@ export interface IMapInput {
   dashboards?: string[];
   size: string;
   kpi: string;
+  zipCodeSource: string;
 }
 
 export interface IMap {
@@ -40,6 +42,7 @@ export interface IMap {
     groupings: string;
     dashboards?: string[];
     size: string;
+    zipCodeSource: string;
 }
 
 export interface IMapGalleryItem {
@@ -80,7 +83,7 @@ export interface IMapFormValues {
   grouping?: string[];
   dashboards?: string;
   mapsize: string;
-
+  zipCodeSource: string;
 }
 
 export interface IUpdateMapResponse {
@@ -119,6 +122,7 @@ export class MapModel {
     groupings: string[];
     size: string;
     dashboards: string[];
+    zipCodeSource: string;
 
     static fromJson(json: string): MapModel {
       try {
@@ -142,6 +146,7 @@ export class MapModel {
       proxyMapModel.groupings = fg.value.grouping ? ['customer.zip', fg.value.grouping] : ['customer.zip'];
       proxyMapModel.dashboards = fg.value.dashboards ? fg.value.dashboards.split('|').map(d => d.trim()) : [];
       proxyMapModel.size = fg.value.mapsize;
+      proxyMapModel.zipCodeSource = fg.value.zipCodeSource;
 
       return proxyMapModel;
     }
@@ -159,7 +164,8 @@ export class MapModel {
         grouping: this.groupings ? this.groupings || [] : [],
         kpi: this.kpi ? this.kpi || undefined : undefined,
         dashboards: this.dashboards ? this.dashboards.map(d => d).join('|') : undefined,
-        mapsize: this.size
+        mapsize: this.size,
+        zipCodeSource: this.zipCodeSource ? this.zipCodeSource || undefined : undefined,
       };
     }
 

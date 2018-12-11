@@ -33,8 +33,15 @@
                 bw-date-picker.p-b-5(flex, [fg]="fg", field="customFrom", label="MM/DD/YYYY", [required]="true", [config]="datePickerConfig")
                 bw-date-picker(flex, [fg]="fg", field="customTo", label="MM/DD/YYYY", [required]="true", [config]="datePickerConfig")
 
-        //- empty div to accomodate view
-        div(*ngIf="ischartTypeMap", flex)
+        //- Zip code source 
+        #select-zip-code-source(flex, *ngIf="ischartTypeMap")
+            bw-select-picker.p-l-35(flex, [fg]="fg",
+                label="Zip code source",
+                leftIcon="pin-drop",
+                field="zipCodeSource",
+                [items]="zipCodeSourceList",
+                [liveSearch]="true",
+                noneSelectedText="NOTHING SELECTED")    
 
         //- frequency
         #select-frequency(*ngIf="!ischartTypeMap", flex, [ngClass]="{'is-disabled': isPieChart || ischartTypeMap }")
