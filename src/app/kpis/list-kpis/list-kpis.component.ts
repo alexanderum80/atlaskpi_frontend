@@ -161,8 +161,10 @@ export class ListKpisComponent implements OnInit, OnDestroy {
                                     const chartErrorListNames = response.entity.chart.map(chartResp => 'Chart: ' + chartResp.title);
                                     const widgetErrorListNames = response.entity.widget.map(widgetResp => 'Widget: ' + widgetResp.name);
                                     const complexKpiListNames = response.entity.complexKPI.map(kpiResp => 'Complex Kpi: ' + kpiResp.name);
+                                    const mapsListName = response.entity.maps.map(mapResp => 'Maps: ' + mapResp.title);
 
-                                    const listNames = [].concat(chartErrorListNames, widgetErrorListNames, complexKpiListNames);
+                                    const listNames = [].concat(chartErrorListNames, widgetErrorListNames,
+                                                                complexKpiListNames, mapsListName);
 
                                     that.lastError = {
                                         title: 'Error removing KPI',
