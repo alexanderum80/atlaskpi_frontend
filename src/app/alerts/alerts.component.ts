@@ -90,8 +90,8 @@ export class AlertsComponent implements OnInit, AfterViewInit {
 
   private _subscribeToFormChange() {
     this.fgDetails.valueChanges.subscribe(fg => {
-      this.vm.alerts[this.vm.selectedAlertIndex].name = fg.name || null;
-      this.vm.alerts[this.vm.selectedAlertIndex].frequency = fg.frequency || null;
+      this.vm.alerts[this.vm.selectedAlertIndex].name = fg.name || '';
+      this.vm.alerts[this.vm.selectedAlertIndex].frequency = fg.frequency || '';
       if (fg.value) {
         if (isNaN(fg.value)) {
           this.fgDetails.controls['value'].setErrors({ invalidValue: true });
