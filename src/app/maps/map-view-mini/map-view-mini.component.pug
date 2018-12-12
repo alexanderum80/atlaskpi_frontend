@@ -8,7 +8,6 @@ bw-card.m-b-5.p-relative(flex, [depth]="1")
                 [showSettingsBtn]="showSettingsBtn",
                 [kpi]="item.kpi", [grouping]="item.groupings",
                 [showLegendBtn] ="showLegendBtn",
-                [Height]="Height",
                 [mapSize]="item.size",
                 [mapsTitle]="item.title")
     div(*ngIf="allowSelected && (selected$ | async); let itemSelected")
