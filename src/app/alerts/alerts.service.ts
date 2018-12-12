@@ -35,7 +35,6 @@ export class AlertsFormService {
         ) {
 
         this._systemAlert = {
-            _id: '1',
             name: 'First Sale of day',
             kpi: ' ',
             frequency: 'daily',
