@@ -95,7 +95,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
       if(!dashboards){
         return;
       }
-      debugger;
+
       that._apolloService.mutation(
         usersApi.assignDash, {
           id: dashboards ? dashboards : '',
@@ -104,7 +104,6 @@ export class AddUserComponent implements OnInit, OnDestroy {
       })
       .then(result => {})
       .catch(err => {
-        debugger;
         console.log(err);
       });
     }

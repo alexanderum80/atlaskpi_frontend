@@ -35,6 +35,7 @@ export class UserFormComponent implements OnDestroy, OnInit {
   allDashboards: any;
   roles: any;
   timeZoneList: SelectionItem[] = generateTimeZoneOptions();
+  isOwner: boolean = false;
 
   private _subscription: Subscription[] = [];
 
@@ -66,6 +67,13 @@ export class UserFormComponent implements OnDestroy, OnInit {
           }
         }, 100);
       }));
+
+      const currentUser = this._userService.user;
+      if(currentUser){
+        currentUser.roles.forEach(r => {
+        if(r.name ==='owner')  this.isOwner = true;
+        })
+      }
   }
 
   ngOnInit() {
@@ -90,6 +98,8 @@ export class UserFormComponent implements OnDestroy, OnInit {
       }
 
     }
+
+
   }
 
 getSelectedDashboards(userid: string): string {
@@ -102,6 +112,8 @@ getSelectedDashboards(userid: string): string {
 }
 
 getDashboards(userid?: string) {
+  if(!this.isOwner) return;
+
   this._apolloService.networkQuery < any > (DashboardsQuery, { group: 'allDashboards' })
   .then(d => {
     this.allDashboards = d.dashboards;

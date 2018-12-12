@@ -71,7 +71,6 @@ export class EditUserComponent implements OnInit, OnDestroy {
   set() {
     const fgEditUser = this.fg.value;
     const that = this;
-
     const editUserInputVariables = {
       _id: this.user._id,
       firstName: fgEditUser.firstName,
@@ -115,7 +114,6 @@ export class EditUserComponent implements OnInit, OnDestroy {
         if(!dashboards){
           return;
         }
-        debugger;
         that._apolloService.mutation(usersApi.assignDash, {
           id: dashboards ? dashboards : '',
           userId: this.user._id,
@@ -123,7 +121,6 @@ export class EditUserComponent implements OnInit, OnDestroy {
         })
         .then(result => { })
         .catch(err => {
-          debugger;
           console.log(err);
         });
       }
@@ -131,6 +128,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
   getSelectedUser(user: any) {
     this.user = user;
     this.userForm.updateUserFormValues(user);
+    this.userForm.getDashboards(user._id)
   }
 
   isFormValid() {

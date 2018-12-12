@@ -24,7 +24,7 @@ div(flex)
           [required]="true"
         )
     //- dashboard
-    #select-dashboards(flex)
+    #select-dashboards(*ngIf="isOwner", flex)
         bw-select-picker.p-l-15(flex, 
             [fg]="fg",
             label="Assign Dashboard/s",
