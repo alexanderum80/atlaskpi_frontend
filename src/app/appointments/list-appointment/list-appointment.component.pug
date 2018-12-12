@@ -8,17 +8,28 @@ kpi-sidebar-calendar(*ngIf="isMobile")
                                     field="cancelled",
                                     label="Show cancellations"
             )
+            //- bw-select-picker.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
+            //-                         [fg]="fg", 
+            //-                         field="provider",
+            //-                         label="Providers:",
+            //-                         [multiple]="true",
+            //-                         [items]="providerList",
+            //-                         [liveSearch]="true",
+            //-                         noneSelectedText="All Providers",
+            //-                         #providerpicker,
+            //-                         #sideBarSelectProvider=""
+            //-                         )  
+
             bw-select-picker.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
                                     [fg]="fg", 
-                                    field="provider",
-                                    label="Providers:",
+                                    field="resource",
+                                    label="Resources:",
                                     [multiple]="true",
-                                    [items]="providerList",
+                                    [items]="resourcesList",
                                     [liveSearch]="true",
-                                    noneSelectedText="All Providers",
-                                    #providerpicker,
-                                    #sideBarSelectProvider=""
-                                    )  
+                                    noneSelectedText="All Resources",
+                                    #resourcesPicker,
+                                   )  
 
             
             .separator(flex)
