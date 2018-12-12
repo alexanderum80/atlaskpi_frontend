@@ -1,3 +1,4 @@
+import { AlertsPermissions } from './alerts.permissions';
 import { AppointmentPermissions } from './appointment.permissions';
 import { ChartPermissions } from './chart.permissions';
 import { KpiPermissions } from './kpi.permissions';
@@ -38,7 +39,8 @@ export const AllPermissions = [
     ...RolePermissions,
     ...UserPermissions,
     ...TargetPermissions,
-    ...MilestonePermissions
+    ...MilestonePermissions,
+    ...AlertsPermissions
 ];
 
 export function getPermissions(subject: SubjectEnum, actions: string[]) {

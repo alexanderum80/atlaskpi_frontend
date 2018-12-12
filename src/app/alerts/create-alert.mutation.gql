@@ -1,0 +1,18 @@
+mutation CreateAlert($input: AlertInput) {
+    createAlert(input: $input) {
+        entity {
+            _id
+            name
+            kpi
+            frequency
+            condition
+            value
+            active
+        }
+        success
+        errors {
+            field
+            errors
+        }
+    }
+}

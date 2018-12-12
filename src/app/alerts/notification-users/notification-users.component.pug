@@ -1,0 +1,33 @@
+div(layout="column", layout-padding)
+    .title.p-b-10 Notification users
+    div(flex, *ngFor="let notification of notifications.controls; let i=index")
+        div(layout="row")
+            div(flex)
+                div(flex, layout="row", layout-xs="column")
+                    div(flex="50", flex-xs="100", layout="column", layout-padding)
+                        div(layout="row")
+                            .schema-header Select User:
+                        div(flex="100", layout="row") 
+                            bw-select-picker.w-100(
+                                        [fg]="notification",
+                                        field="user",
+                                        [required]="true",
+                                        [items]="alertsFormService.usersList",
+                                        [multiple]="true",
+                                        [liveSearch]="true",
+                                        liveSearchPlaceholder="...search...",
+                                        noneSelectedText="NOTHING SELECTED",
+                                        leftIcon="accounts-alt")
+                    .notify(flex="30", flex-xs="100")
+                        .m-t-25(flex="100", layout="row", layout-align="space-between")
+                          div(flex-none, flex-xs="90") 
+                          bw-checkbox(flex="20", flex-xs="10", [fg]="notification", field="byEmail")
+                          div(flex="20", flex-xs="10")
+                            i.zmdi.zmdi-email
+                          bw-checkbox(flex="20", flex-xs="10", [fg]="notification", field="byPhone")
+                          div(flex="20", flex-xs="10")  
+                            i.zmdi.zmdi-tablet-android
+                          div(flex="20", flex-xs="10")  
+                            .zmdi.zmdi-close.f-20.c-red([class.hidden]="i === 0", (click)="removeNotification(notification)")
+div(layout="row", layout-align="start")
+    bw-button(icon="plus", title="USER", color="blue", (clicked)="addNotification()")

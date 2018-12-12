@@ -26,8 +26,11 @@ export class SidebarItemComponent implements OnInit, OnDestroy {
 
     private _selectedSsub: Subscription;
     private _routeEventsSub: Subscription;
+    private _createDashSub: Subscription;
     private _lastItem: false;
     isCollapsedNotVisible = true;
+    canAddDashboard: boolean;
+
 
     constructor(
         private sidebarService: SidebarService,
@@ -45,7 +48,10 @@ export class SidebarItemComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this._processListDashboardAuthorization();
+       this._createDashSub= this.sidebarService._userCanAddDash$.subscribe( value => 
+           {  
+            this.canAddDashboard = value;
+           });
 
         this._syncSidebarOnRouteChanges();
         this.menuItem.parent = this.parent;
@@ -64,14 +70,7 @@ export class SidebarItemComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this._selectedSsub.unsubscribe();
         this._routeEventsSub.unsubscribe();
-    }
-
-    get showListDashboardItem(): boolean {
-        if (!this.vm || isEmpty(this.vm.list_item)) {
-            return true;
-        }
-
-        return this.menuItem && this.menuItem.id === 'dashboard';
+        this._createDashSub.unsubscribe();
     }
 
     selectItem(e) {
@@ -88,20 +87,23 @@ export class SidebarItemComponent implements OnInit, OnDestroy {
     isVisible(menuItem: any): boolean {
         return !menuItem.parent
         || menuItem.parent.title.toLowerCase() !== 'dashboards'
-        || (menuItem.parent.title.toLowerCase() === 'dashboards' && menuItem.visible === this.childrenVisible);
+        || (menuItem.parent.title.toLowerCase() === 'dashboards' && 
+        menuItem.visible === this.childrenVisible);
     }
 
     isDashboardChildren(menuItem: any): boolean {
-        return menuItem.parent &&
-            menuItem.parent.title.toLowerCase() === 'dashboards';
+        return menuItem.parent && menuItem.parent.title &&
+            menuItem.parent.title.toLowerCase() === 'dashboards'
+            && menuItem.id !== 'list-dashboard';
     }
 
     private _updateActiveStatus(selection: ISidebarItemSearchResult) {
         const item = this.menuItem;
-
+        
         if (selection.parent && item.children) {
             this.menuItem.active = item.id === selection.parent.id;
-        } else if (selection.item && !item.children) {
+          }
+         else if (selection.item && !item.children) {
             this.menuItem.active = item.id === selection.item.id;
         }
     }
@@ -131,21 +133,4 @@ export class SidebarItemComponent implements OnInit, OnDestroy {
     private _manageActivationForItem(route: string) {
         this.menuItem.active = this.menuItem.route === route;
     }
-
-    private _processListDashboardAuthorization(): void {
-        if (this.vm.authorizedTo('AddDashboardActivity')) {
-            this.vm.list_item = {
-                id: 'list-dashboard',
-                title: 'List Dashboard',
-                icon: 'collection-text',
-                route: `/dashboards/list`,
-                visible: true
-                };
-        } else {
-            if (this.vm && !isEmpty(this.vm.list_item)) {
-                this.vm.list_item = {};
-            }
-        }
-    }
-
 }

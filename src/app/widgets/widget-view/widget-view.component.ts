@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { CloneWidgetActivity } from 'src/app/shared/authorization/activities/widgets/clone-widget.activity';
 
 const Highcharts = require('highcharts/js/highcharts');
-// const alertByWidgetIdGql = require('graphql-tag/loader!./alert-by-widget-id.query.gql');
+const scheduleJobByWidgetIdGql = require('graphql-tag/loader!./scheduleJob-by-widget-id.query.gql');
 
 @Component({
     selector: 'kpi-widget-view',

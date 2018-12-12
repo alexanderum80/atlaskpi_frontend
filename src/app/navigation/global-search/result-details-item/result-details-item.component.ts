@@ -57,6 +57,12 @@ export class ResultDetailsItemComponent implements OnInit {
             });
           });
           break;
+        case 'Maps':
+          this._router.navigate([group.uriFormat, item.id , 'map']);
+          break;
+        case 'Charts':
+          this._router.navigate([group.uriFormat, item.id, 'chart']);
+          break;
 
         default:
           this._router.navigate([group.uriFormat, item.id]);
