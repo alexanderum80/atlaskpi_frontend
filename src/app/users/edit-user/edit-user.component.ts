@@ -111,9 +111,6 @@ export class EditUserComponent implements OnInit, OnDestroy {
   addNewUserinDashBoards(dashboards: string, username: string) {
         const that = this;
 
-        if(!dashboards){
-          return;
-        }
         that._apolloService.mutation(usersApi.assignDash, {
           id: dashboards ? dashboards : '',
           userId: this.user._id,

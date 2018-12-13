@@ -68,6 +68,7 @@ export class UserFormComponent implements OnDestroy, OnInit {
         }, 100);
       }));
 
+
       const currentUser = this._userService.user;
       if(currentUser){
         currentUser.roles.forEach(r => {
