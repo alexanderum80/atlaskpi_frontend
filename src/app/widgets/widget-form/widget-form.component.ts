@@ -1,7 +1,3 @@
-import { filter } from 'rxjs/operators';
-import { find } from 'lodash';
-import { Colors } from './../../charts/shared/ui/chart-format-info/material-colors';
-import { SelectPickerComponent } from '../../ng-material-components/modules/forms/select-picker/select-picker.component';
 import { CommonService } from '../../shared/services/common.service';
 import {
     AfterViewInit,
@@ -31,7 +27,6 @@ import { ApolloService } from '../../shared/services/apollo.service';
 import { IDateRangeItem } from './../../shared/models/date-range';
 import { chartsGraphqlActions } from '../../charts/shared/graphql/charts.graphql-actions';
 import { ChooseColorsComponent } from '../../charts/shared/ui/choose-colors/choose-colors.component';
-import { predefinedColors } from '../../charts/shared/ui/chart-format-info/material-colors';
 
 const widgetSizeList: SelectionItem[] = [
     {
@@ -151,8 +146,6 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
     widgetModelValid = false;
     widgetSize: string;
     smSize: string;
-    choosedBackColor = '';
-    choosedFontColor = '';
 
     sizeSelectionList: SelectionItem[] = widgetSizeList;
     typeSelectionList: SelectionItem[] = widgetTypeList;
@@ -169,6 +162,7 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private _widgetReadySub: Subscription;
     private _widgetModel: IWidget;
+    loading = true;
 
     constructor(
         private _widgetFormService: WidgetsFormService,
@@ -188,7 +182,6 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
     ngAfterViewInit() {
         const that = this;
         this.widgetModel = this._widgetFormService.widgetModel;
-        debugger;
         this.widgetModel.preview = true;
         if (!this.fg.controls['color']) {
             const color = new FormControl(false);
@@ -198,11 +191,6 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
             const fontColor = new FormControl(false);
             this.fg.addControl('fontColor', fontColor);
         }
-        if (!this.widgetModel.fontColor) {
-            this.widgetModel.fontColor = this.choosedBackColor === 'white' ? 'black' : 'white';
-        }
-        this.choosedBackColor = this.widgetModel.color;
-        this.choosedFontColor = this.widgetModel.fontColor;
         this._subscribeToFormFields();
 
         const widgetData = this._widgetFormService.getWidgetFormValues();
@@ -212,6 +200,7 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
             widgetData.size = this.widgetDataFromKPI.size;
             widgetData.kpi = this.widgetDataFromKPI.kpi;
             widgetData.color = this.widgetDataFromKPI.color;
+            widgetData.fontColor = this.widgetDataFromKPI.fontColor;
             widgetData.predefinedDateRange = this.widgetDataFromKPI.predefinedDateRange;
             widgetData.format = this.widgetDataFromKPI.format;
             widgetData.comparison = this.widgetDataFromKPI.comparison;
@@ -239,6 +228,7 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this._widgetFormService.updateExistDuplicatedName(false);
         this._subscribeToNameChanges();
+        this.loading = false;
     }
 
     ngOnDestroy() {
@@ -251,18 +241,10 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     onSelectColor(inputColor: string) {
-        let selectedColor;
-        Colors.forEach(p => {
-            const tmp = p.colors.filter(c => c.color === inputColor);
-            if (tmp.length > 0) {
-                selectedColor = tmp[0].id;
-            }
-        });
         if (this.selectColorCaller === 'color') {
-            this.choosedBackColor = selectedColor;
-            this.widgetModel.color = selectedColor;
+            this.widgetModel.color = inputColor;
         } else if (this.selectColorCaller === 'font') {
-            this.choosedFontColor = selectedColor;
+            this.widgetModel.fontColor = inputColor;
         }
     }
 

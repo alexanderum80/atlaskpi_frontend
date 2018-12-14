@@ -1,7 +1,7 @@
 import { FormGroup } from '@angular/forms';
 import { Colors } from './../chart-format-info/material-colors';
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { SelectionItem, ModalComponent } from '../../../../ng-material-components';
+import { ModalComponent } from '../../../../ng-material-components';
 
 @Component({
   selector: 'kpi-choose-colors',
@@ -15,36 +15,18 @@ export class ChooseColorsComponent implements OnInit {
   @ViewChild('selectIntensityModal') selectModal: ModalComponent;
 
   colorsItems = Colors;
-  intensityDefaultValue = 'default';
-  intensityList: SelectionItem[] = [];
   themeColors: any[];
+  currentPage = 1;
 
 
   constructor() { }
 
   ngOnInit() {
-    this._getIntensityList();
-    this._subscribeToIntesityValueChange();
+    this.filterColorsPage(this.currentPage);
   }
 
-  private _getIntensityList() {
-    this.colorsItems.map(color => {
-      this.intensityList.push({
-        id: color.intensity,
-        title: color.intensity,
-        selected: false,
-        disabled: false
-      });
-    });
-  }
-
-  private _subscribeToIntesityValueChange() {
-    const that = this;
-    this.fg.valueChanges.subscribe(value => {
-      if (value.intensity) {
-        that.themeColors = that.colorsItems.filter(c => c.intensity === value.intensity);
-      }
-    });
+  filterColorsPage(page: number) {
+    this.themeColors = this.colorsItems.filter(c => c.page === page);
   }
 
   onSelectColor(color) {
@@ -54,5 +36,19 @@ export class ChooseColorsComponent implements OnInit {
 
   open() {
     this.selectModal.open();
+  }
+
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage = this.currentPage - 1;
+      this.filterColorsPage(this.currentPage);
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage >= 1) {
+      this.currentPage = this.currentPage + 1;
+      this.filterColorsPage(this.currentPage);
+    }
   }
 }

@@ -339,7 +339,7 @@ export class WidgetsFormService {
     this.dateRangeList = list;
     this._dateRangeListSubject.next(list);
   }
-  
+
   private _handleChartsQueryResponse(res: any) {
     this.charts = res.data.listCharts.data;
     this.chartList = ToSelectionItemList(this.charts, '_id', 'title');
@@ -360,7 +360,7 @@ export class WidgetsFormService {
           }
         }));
   }
-  
+
   public getComparisonListForDateRange(dateRangeString: string) {
     const that = this;
 
@@ -557,7 +557,7 @@ export class WidgetsFormService {
   get dashboardList$() {
     return this._dashboardListSubject.asObservable();
   }
-   
+
   get updatedDashboardsList$() {
     return this._updateDashboardListSubject.asObservable().distinctUntilChanged();
   }

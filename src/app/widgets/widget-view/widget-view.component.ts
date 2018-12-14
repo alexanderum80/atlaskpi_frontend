@@ -123,6 +123,13 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         CommonService.unsubscribe(this._subscription);
     }
 
+    setStyle() {
+        return {
+            'background-color': this.widgetBackgroundColor,
+            'color': this.widgetFontColor,
+        };
+    }
+
     private _renderChart() {
         const chart = < IChart > JSON.parse(this.widget.materialized.chart);
         const chartDefinition = this._minifyChart(chart);
@@ -134,13 +141,14 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         // setTimeout(() => {
         //     this.chart.ref.reflow();
         // }, 0);
-
-        // Highcarts 6 offers and Observable of the ChartObject
-        this.chart.ref$.subscribe(ref => {
-            setTimeout(() => {
-                ref.reflow();
-            }, 0);
-        });
+        if (this.chart) {
+            // Highcarts 6 offers and Observable of the ChartObject
+            this.chart.ref$.subscribe(ref => {
+                setTimeout(() => {
+                    if (ref) { ref.reflow(); }
+                }, 0);
+            });
+        }
     }
 
     private _removeInfoItem(): void {
@@ -269,6 +277,10 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
             return;
         }
         return this.widget.materialized && this.widget.materialized.chart ? 'white' : this.widget.color;
+    }
+
+    get widgetFontColor() {
+        return !this.widget ? '' : this.widget.fontColor;
     }
 
     get noWidgetType() {

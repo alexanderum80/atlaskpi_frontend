@@ -30,14 +30,14 @@
                                             field="order",
                                             [items]="orderSelectionList",
                                             noneSelectedText="Select Order")
-                div(flex="40", *ngIf="choosedBackColor !== ''")            
+                div(flex="40", *ngIf="widgetModel")            
                     .label-box.z-depth-1.p-relative(layout="row") Color
                         .label-slash
-                        .label-color-box(class="w-{{choosedBackColor}}", (click)="openSelectColor('color')")
-                div(flex="40", , *ngIf="choosedFontColor !== ''")
+                        .label-color-box([ngStyle]="{'background-color': widgetModel.color}", (click)="openSelectColor('color')")
+                div(flex="40", *ngIf="widgetModel")
                     .label-box.z-depth-1.p-relative(layout="row") Font
                         .label-slash
-                        .label-color-box(class="w-{{choosedFontColor}}", (click)="openSelectColor('font')")            
+                        .label-color-box([ngStyle]="{'background-color': widgetModel.fontColor}", (click)="openSelectColor('font')")            
 
         //- numeric details
         .m-t-10(flex, [hidden]="showNumericWidgetSettings")

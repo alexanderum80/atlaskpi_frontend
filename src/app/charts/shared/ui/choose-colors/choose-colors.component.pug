@@ -1,15 +1,10 @@
 bw-modal(#selectIntensityModal='', animation="true", keyboard="true", backdrop="true", size="md")
-    bw-modal-header
-        div(layout="row")
-            .p-t-10 INTENSITY
-            bw-select-picker.p-l-20(flex="30", flex-xs="50", 
-                [fg]="fg",
-                field="intensity",
-                [value]="intensityDefaultValue",
-                [items]="intensityList",
-                leftIcon="",
-                noneSelectedText="Colors")                
     bw-modal-body
-        .p-20(layout="row", layout-wrap)
-            .theme-color-box(*ngFor="let color of themeColors[0].colors", 
-                    [ngStyle]="{ 'background-color': color.color }", (click)="onSelectColor(color.color)")
+        div(flex, layout="row", layout-align="space-around none")
+            .column-color-box(flex, *ngFor="let theme of themeColors")
+                .block(layout="column")
+                    .theme-color-box(flex, *ngFor="let color of theme.colors", 
+                            [ngStyle]="{ 'background-color': color.color, 'border': color.color === '#fff' ? 'solid 1px black' : 'none' }", (click)="onSelectColor(color.color)")
+    bw-modal-footer
+        bw-button([simple]="true", [size]='xs', icon="chevron-left", [disabled]="currentPage === 1", (clicked)="previousPage()")
+        bw-button([simple]="true", icon="chevron-right", [disabled]="currentPage === 3", (clicked)="nextPage()")
