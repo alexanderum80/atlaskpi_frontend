@@ -24,8 +24,20 @@ import { Store } from '../../shared/services/store.service';
 import { CustomDateFormatter } from './custom-date-formatter.provider';
 import { generateTimeZoneOptions } from '../../shared/helpers/timezone.helper';
 import { BrowserService } from 'src/app/shared/services/browser.service';
+import { get } from 'lodash';
 
 // import { AddEditAppointmentComponent } from '../add-edit-appointment/add-edit-appointment.component';
+
+enum MobileCalendarEnum {
+    classic = 'classic',
+    modern = 'modern'
+}
+
+export interface IAppointmentPreferences {
+    showAppointmentCancelled?: boolean;
+    mobileCalendar?: MobileCalendarEnum;
+    resources?: string[];
+}
 
 const AppointmentProvidersListQuery = require('graphql-tag/loader!./appointment-providers-list.query.gql');
 const AppointmentResourcesListQuery = require('graphql-tag/loader!./appointment-resources-list.query.gql');
@@ -83,8 +95,11 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
     // @ViewChild('addAppointmentModal') addAppointmentModal: ModalComponent;
 
     // providerList: SelectionItem[] = [];
-    resourcesList: SelectionItem[] = [];
 
+    mobileCalendar = MobileCalendarEnum.modern;
+    classicCalendarInitialized = false;
+
+    resourcesList: SelectionItem[] = [];
 
     fg = new FormGroup({});
 
@@ -163,40 +178,44 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     ngOnInit() {
+        this.mobileCalendar = get(this._userService.user, 'preferences.mobileCalendar') || MobileCalendarEnum.modern;
+
         // if we are in mobile we do not need to continue here
         // we are only showing the sidebar calendar instead
-        if (this.isMobile) {
+        if (this.shouldDisplayModernCalendar) {
             return;
         }
 
+        this.initializeClassicCalendarOnInit();
+    }
+
+    ngAfterViewInit() {
+        // if we are in mobile we do not need to continue here
+        // we are only showing the sidebar calendar instead
+        if (this.shouldDisplayModernCalendar) {
+            return;
+        }
+
+        this.initializeClassicCalendarAfterViewInit();
+    }
+
+    ngOnDestroy() {
+        this.subscriptions.forEach(s => s.unsubscribe());
+    }
+
+    get isMobile(): boolean {
+        return this._browser.isMobile();
+    }
+
+    initializeClassicCalendarOnInit() {
         const that = this;
 
         this.localTimeZone = moment.tz.guess();
         this.timeZonesList = generateTimeZoneOptions();
 
-        // this.selectedProvider = this._store.getState().selectedAppointmentsProvider;
-
         this.selectedResource = this._store.getState().selectedAppointmentsResource;
 
-
         this.subscriptions.push(
-            // this._store.changes$
-            //     .map(c => c.selectedAppointmentsProvider)
-            //     .debounceTime(250)
-            //     .subscribe(selectedProviders => {
-            //         const updatedProviderList = that.providerList.map(
-            //             p =>
-            //                 new SelectionItem(
-            //                     p.id,
-            //                     p.title,
-            //                     selectedProviders &&
-            //                         cleanAppointmentsProviderId(selectedProviders).includes(String(p.id)),
-            //                 ),
-            //         );
-            //         that.providerList = updatedProviderList;
-            //         that.selectedProvider = selectedProviders;
-            //         that._setProviderValue(that.selectedProvider);
-
             this._store.changes$
                 .map(c => c.selectedAppointmentsResource)
                 .debounceTime(250)
@@ -220,17 +239,10 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
         );
 
         this.fetchEvents();
-        // this.fetchProviders();
         this.fetchResources();
     }
 
-    ngAfterViewInit() {
-        // if we are in mobile we do not need to continue here
-        // we are only showing the sidebar calendar instead
-        if (this.isMobile) {
-            return;
-        }
-
+    initializeClassicCalendarAfterViewInit() {
         const that = this;
 
         this.fg.controls['cancelled'].setValue(this.apptCancelledPreference);
@@ -243,7 +255,7 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
                 }
                 // update store
                 that._storeHelper.update('showAppointmentCancelled', cancelled);
-                that.updateApptPreference(cancelled);
+                that.updateUserPreferences({ showAppointmentCancelled: cancelled });
                 that.apptCancelledPreference = cancelled;
             }),
         );
@@ -257,19 +269,13 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
                     // that._storeHelper.update('selectedAppointmentsProvider', v);
                     that._storeHelper.update('selectedAppointmentsResource', v);
                     // that.updateProviderPreference(v);
-                    that.updateResourcePreference(v);
+                    const resources = (v || '').split('|');
+                    that.updateUserPreferences({ resources });
                 }),
         );
 
         this._cdr.detectChanges();
-    }
-
-    ngOnDestroy() {
-        this.subscriptions.forEach(s => s.unsubscribe());
-    }
-
-    get isMobile(): boolean {
-        return this._browser.isMobile();
+        this.classicCalendarInitialized = true;
     }
 
     fetchEvents() {
@@ -384,18 +390,29 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
         );
     }
 
-    updateApptPreference(cancelled: boolean): void {
-        const payload = {
-            showAppointmentCancelled: cancelled,
-        };
+    // updateApptPreference(preferences: IAppointmentPreferences): void {
+    //     this.subscriptions.push(
+    //         this._apollo
+    //             .mutate({
+    //                 mutation: updateUserPreference,
+    //                 variables: {
+    //                     id: this.user._id,
+    //                     input: preferences,
+    //                 },
+    //                 refetchQueries: ['User'],
+    //             })
+    //             .subscribe(({ data }) => {}),
+    //     );
+    // }
 
+    updateUserPreferences(preferences: IAppointmentPreferences): void {
         this.subscriptions.push(
             this._apollo
                 .mutate({
                     mutation: updateUserPreference,
                     variables: {
                         id: this.user._id,
-                        input: payload,
+                        input: preferences,
                     },
                     refetchQueries: ['User'],
                 })
@@ -431,31 +448,31 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
     //     );
     // }
 
-    updateResourcePreference(resource: string): void {
-        if (!this.user || !this.user._id) {
-            return;
-        }
+    // updateResourcePreference(resource: string): void {
+    //     if (!this.user || !this.user._id) {
+    //         return;
+    //     }
 
-        const that = this;
-        let resources = [];
+    //     const that = this;
+    //     let resources = [];
 
-        if (resource) {
-            resources = resource.split('|');
-        }
+    //     if (resource) {
+    //         resources = resource.split('|');
+    //     }
 
-        this.subscriptions.push(
-            this._apollo
-                .mutate({
-                    mutation: updateUserPreference,
-                    variables: {
-                        id: this.user._id,
-                        input: { resources },
-                    },
-                    refetchQueries: ['User'],
-                })
-                .subscribe(({ data }) => {}),
-        );
-    }
+    //     this.subscriptions.push(
+    //         this._apollo
+    //             .mutate({
+    //                 mutation: updateUserPreference,
+    //                 variables: {
+    //                     id: this.user._id,
+    //                     input: { resources },
+    //                 },
+    //                 refetchQueries: ['User'],
+    //             })
+    //             .subscribe(({ data }) => {}),
+    //     );
+    // }
 
     get viewValue(): string {
         return this.view.toUpperCase();
@@ -518,6 +535,30 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
 
     get events$() {
         return this.eventsSubject.asObservable();
+    }
+
+    get nextCalendarVersion(): MobileCalendarEnum {
+        return this.mobileCalendar === MobileCalendarEnum.classic
+            ? MobileCalendarEnum.modern
+            : MobileCalendarEnum.classic;
+    }
+
+    toggleCalendarVersion() {
+        this.mobileCalendar = this.nextCalendarVersion;
+
+        this.updateUserPreferences({ mobileCalendar: this.mobileCalendar });
+
+        if (this.mobileCalendar === MobileCalendarEnum.classic
+            && !this.classicCalendarInitialized) {
+                setTimeout(() => {
+                    this.initializeClassicCalendarOnInit();
+                    this.initializeClassicCalendarAfterViewInit();
+                }, 100);
+        }
+    }
+
+    get shouldDisplayModernCalendar() {
+        return this.isMobile && this.mobileCalendar === MobileCalendarEnum.modern;
     }
 
     // addEvent(): void {

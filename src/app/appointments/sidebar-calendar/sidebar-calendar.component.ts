@@ -21,6 +21,7 @@ import { ApolloService } from '../../shared/services/apollo.service';
 import { Store } from '../../shared/services/store.service';
 import { UserService } from '../../shared/services/user.service';
 import { IAppointment } from '../shared/models/appointment.model';
+import { get } from 'lodash';
 
 const appointmentsByDate = require('graphql-tag/loader!./appointments-by-date.gql');
 // const AppointmentProvidersListQuery = require('graphql-tag/loader!./appointment-providers-list.query.gql');
@@ -94,6 +95,8 @@ export class SidebarCalendarComponent implements OnInit, AfterViewInit, OnDestro
 
     ngOnInit() {
         const that = this;
+
+        this.selectedResource = get(this._userSvc.user, 'preferences.resources');
 
         this.subscriptions.push(this.selectedDay$.subscribe(d => this._loadAppointmentsFor(d)));
 
@@ -296,17 +299,25 @@ export class SidebarCalendarComponent implements OnInit, AfterViewInit, OnDestro
             .then(res => {
                 this.loadingAppointments = false;
 
-                if (!this.timezoneOffset) {
-                    that.appointments = res.searchAppointments;
-                    return;
-                }
-
-                that.appointments = res.searchAppointments.map(a => {
+                let appointments = res.searchAppointments.map(a => {
                     return {
                         ...a,
-                        from: moment(a.from).add(this.timezoneOffset, 'minutes').toDate()
-                     };
+                        provider: (a.provider || []).map(p => p.name).join('; ')
+                    };
                 });
+
+                if (!this.timezoneOffset) {
+                    appointments = appointments;
+                } else {
+                    appointments = appointments.map(a => {
+                        return {
+                            ...a,
+                            from: moment(a.from).add(this.timezoneOffset, 'minutes').toDate()
+                         };
+                    });
+                }
+
+                that.appointments = appointments;
             });
     }
 

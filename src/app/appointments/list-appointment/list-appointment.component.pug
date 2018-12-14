@@ -1,6 +1,12 @@
-kpi-sidebar-calendar(*ngIf="isMobile")
+.text-center.m-5(*ngIf="isMobile")
+    a.switch-link((click)="toggleCalendarVersion()") Switch to {{this.nextCalendarVersion}} calendar version
+
+kpi-sidebar-calendar(*ngIf="shouldDisplayModernCalendar")
     
-.appointments-container.z-depth-1.bgm-white(*ngIf="!isMobile", layout="column", layout-padding)
+.appointments-container.z-depth-1.bgm-white(
+                                            *ngIf="!shouldDisplayModernCalendar",
+                                            layout="column",
+                                            layout-padding)
     .controls(flex)
         .p-10(layout-xs="column", layout-gt-sm="row", layout-align-center-center, layout-padding)
             bw-checkbox.m-t-25(flex, flex-xs="100", flex-gt-sm="33",
