@@ -63,6 +63,8 @@ export class IUserPreference {
     helpCenter?: boolean;
     showAppointmentCancelled?: boolean;
     providers?: string;
+    resources?: string;
+    mobileCalendar?: string;
     calendarTimeZone?: string;
     dashboardIdNoVisible?: string;
     dashboards?: {
@@ -136,7 +138,7 @@ export class User implements IUserInfo {
             this.permissions = AllPermissions;
             return;
         }
-
+ 
         const flattenPermissions = flatten(this.roles.map(r => r.permissions));
         const serverPermissions: IPermission[] = uniqBy(flattenPermissions, (p) => `${p.subject}-${p.action}`);
 

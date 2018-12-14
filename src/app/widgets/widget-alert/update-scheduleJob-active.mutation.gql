@@ -1,12 +1,12 @@
-mutation RemoveAlert($id: String!) {
-    removeAlert(id: $id) {
+mutation UpdateScheduleJobActive($id: String!, $active: Boolean!) {
+    updateScheduleJobActive(id: $id, active: $active) {
         success
         errors {
             field
             errors
         }
-
         entity {
+            _id
             notifyUsers
             frequency
             active

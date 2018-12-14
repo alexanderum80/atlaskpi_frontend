@@ -1,0 +1,31 @@
+.alerts {
+    padding: 10px 10px;
+
+    .title:hover {
+        cursor: pointer;
+    }
+
+    .alert-name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-bottom: 5px;
+        font-weight: bold;
+    }
+
+    bw-toggle {
+        margin-top: 10px;
+        margin-right: 20px;
+    }
+
+    .remove-button {
+        font-size: 20px;
+        padding-left: 10px;
+
+        &.can-remove:hover {
+            color: red;
+            font-size: 30px;
+            cursor: pointer;
+        }
+    }
+}

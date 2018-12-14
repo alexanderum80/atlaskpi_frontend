@@ -202,7 +202,6 @@ export class GlobalSearchComponent implements OnInit, OnDestroy, AfterViewInit {
             if (!dataTypeValue) {
                 return;
             }
-
             data.color = dataTypeValue.color;
             data.icon = dataTypeValue.icon;
             data.order = dataTypeValue.order;

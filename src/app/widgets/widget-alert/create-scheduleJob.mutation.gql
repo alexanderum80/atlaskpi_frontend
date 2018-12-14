@@ -1,12 +1,6 @@
-mutation UpdateAlertActive($id: String!, $active: Boolean!) {
-    updateAlertActive(id: $id, active: $active) {
-        success
-        errors {
-            field
-            errors
-        }
+mutation CreateScheduleJob($input: ScheduleJobInput) {
+    createScheduleJob(input: $input) {
         entity {
-            _id
             notifyUsers
             frequency
             active
@@ -16,6 +10,11 @@ mutation UpdateAlertActive($id: String!, $active: Boolean!) {
                 name
                 id
             }
+        }
+        success
+        errors {
+            field
+            errors
         }
     }
 }
