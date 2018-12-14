@@ -9,6 +9,8 @@ import { FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { ModalComponent } from '../../ng-material-components';
 import { Subscription } from 'rxjs/Subscription';
+import { ApolloService } from '../../shared/services/apollo.service';
+import { usersApi } from '../shared/graphqlActions/userActions';
 
 @Component({
   selector: 'kpi-add-user',
@@ -38,6 +40,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
   private _subscription: Subscription[] = [];
 
   constructor(private _apollo: Apollo,
+              private _apolloService: ApolloService,
               private _usersService: UsersService) { }
 
   ngOnInit() {
@@ -79,11 +82,31 @@ export class AddUserComponent implements OnInit, OnDestroy {
           return;
         }
 
+        this.addNewUserinDashBoards(that.fg.value.dashboards, that.fg.value.email);
         that.addUserModal.close();
         that.resetData();
       }));
     }
   }
+
+  addNewUserinDashBoards(dashboards: string, username: string) {
+      const that = this;
+
+      if(!dashboards){
+        return;
+      }
+
+      that._apolloService.mutation(
+        usersApi.assignDash, {
+          id: dashboards ? dashboards : '',
+          userId: undefined,
+          username: username
+      })
+      .then(result => {})
+      .catch(err => {
+        console.log(err);
+      });
+    }
 
   resetData(): void {
     const userFg = this.fg.value;
