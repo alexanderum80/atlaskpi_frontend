@@ -9,6 +9,7 @@ mutation UpdateUserPreference($id: String!, $input: UserPreferencesInput) {
             preferences {
                 providers
                 resources
+                mobileCalendar
                 calendarTimeZone
             }
         }

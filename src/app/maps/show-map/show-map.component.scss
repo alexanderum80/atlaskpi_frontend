@@ -21,23 +21,22 @@
         }
     }
     .container-legend {
-        z-index: 50;
+        z-index: 7;
         position: absolute;
         top: 0px;
         right: 0px;
         padding: 0;
         padding-top: 1px;
-        padding-bottom: 3px;
         margin: 0;
         width: 290px;
-        height: 100% !important;
+        //height: 100% !important;
         .legend-settings-container {
-            z-index: 50;
+           // z-index: 50;
             padding: 10px 0px;
             .title-container {
                 padding-top: 5px;
                 padding-left: 10px;
-                z-index: 50;
+              //  z-index: 50;
                 width: 60%;
                 margin-right: 10%;
                 font-weight: bold;
@@ -49,7 +48,7 @@
             }
             .icon-container {
                // padding-top: 5px;
-                z-index: 50;
+               // z-index: 50;
                 margin-right: 15px;
                 right: 20px;
             }
@@ -58,23 +57,23 @@
             }
         }
         .settings {
-            height: 91%;
+            height: 406px;
             padding-left: 5px;
             padding-top: 10px;
             bottom: 0px;
             right: 1px;
             width: 100%;
-            z-index: 50;
+           // z-index: 50;
             
         }
         .legend {
-            height: 91%;
+            height: 406px;
             padding-left: 10px;
             padding-top: 20px;
             bottom: 0px;
             right: 1px;
             width: 100%;
-            z-index: 50;
+           // z-index: 50;
             .money-range {
                 font-size: 11px;
             }
@@ -84,12 +83,15 @@
     
     .opacity {
         opacity: 0.6;
-    }
-    
-    
-    
-    
-    
-
-   
+    } 
 }
+
+// .maximized
+// .container-legend{
+//     .settings{
+//         height: 91vh !important;
+//     }
+//     .legend{
+//         height: 91vh !important;
+//     }
+// }
