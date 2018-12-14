@@ -83,7 +83,8 @@ export class AlertsComponent implements OnInit, AfterViewInit {
 
   get canAddAlert() {
     return this.vm.createAlertPermission() &&
-     (this.vm.alerts.length === 1 || this.vm.alerts[this.vm.alerts.length - 1]._id );
+     (this.vm.alerts.length === 1 || (this.vm.alerts[this.vm.alerts.length - 1]
+      && this.vm.alerts[this.vm.alerts.length - 1]._id ));
   }
 
   private _subscribeToFormChange() {
