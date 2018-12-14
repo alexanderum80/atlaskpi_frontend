@@ -27,10 +27,9 @@
         right: 0px;
         padding: 0;
         padding-top: 1px;
-        padding-bottom: 3px;
         margin: 0;
         width: 290px;
-        height: 100% !important;
+        //height: 100% !important;
         .legend-settings-container {
            // z-index: 50;
             padding: 10px 0px;
@@ -58,7 +57,7 @@
             }
         }
         .settings {
-            height: 91%;
+            height: 406px;
             padding-left: 5px;
             padding-top: 10px;
             bottom: 0px;
@@ -68,7 +67,7 @@
             
         }
         .legend {
-            height: 91%;
+            height: 406px;
             padding-left: 10px;
             padding-top: 20px;
             bottom: 0px;
@@ -84,12 +83,15 @@
     
     .opacity {
         opacity: 0.6;
-    }
-    
-    
-    
-    
-    
-
-   
+    } 
 }
+
+// .maximized
+// .container-legend{
+//     .settings{
+//         height: 91vh !important;
+//     }
+//     .legend{
+//         height: 91vh !important;
+//     }
+// }
