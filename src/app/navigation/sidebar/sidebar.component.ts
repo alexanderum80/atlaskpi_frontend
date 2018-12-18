@@ -97,6 +97,10 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         this._subscription.forEach(s => s.unsubscribe());
+
+        this._sidebarService.resetMenuItems();
+        this._sidebarService.resetUserCanAdd();
+        this._sidebarService.resetItemsNotVisible();
     }
 
     hideSidebar(e: Event) {

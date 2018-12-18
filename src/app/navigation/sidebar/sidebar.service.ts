@@ -346,6 +346,10 @@ export class SidebarService {
         this._userCanAddDashSubject.next(false);
     }
 
+    resetItemsNotVisible(){
+        this._itemsNotVisiblesSubject.next(0);
+    }
+
 
     checkPemits(user): void{
            this._userCanAddDashSubject.next(this.addDashboardActivity.check(user));
