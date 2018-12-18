@@ -243,7 +243,9 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
     onSelectColor(inputColor: string) {
         if (this.selectColorCaller === 'color') {
             this.widgetModel.color = inputColor;
+            this.fg.controls['color'].patchValue(inputColor);
         } else if (this.selectColorCaller === 'font') {
+            this.fg.controls['fontColor'].patchValue(inputColor);
             this.widgetModel.fontColor = inputColor;
         }
     }

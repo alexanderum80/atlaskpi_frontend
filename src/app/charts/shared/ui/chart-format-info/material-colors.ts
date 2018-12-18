@@ -1,3 +1,4 @@
+import { find } from 'lodash';
 export const predefinedColors = [
     {
       id: 'purple',
@@ -484,4 +485,37 @@ export const Colors = [
     ]
   }
 ];
+
+function isHexadecimalColor(stringValue: string) {
+  if (!stringValue) { return false; }
+  return /^[0-9A-F]+$/gi.test(stringValue.substring(1));
+}
+
+export function getHexadecimalColor(colorName: string): string {
+  // if (!isHexadecimalColor(stringInput)) {
+    let hexColor;
+    const foundedColorObj = find(Colors, { colors: [ { id: colorName } ]});
+    if (foundedColorObj) {
+       const foundedColor = foundedColorObj.colors.find(f => f.id === colorName);
+       hexColor = foundedColor.color;
+    }
+    return hexColor;
+  // } else {
+    // return stringInput;
+  // }
+}
+
+export function getNameColor(colorHex: string): string {
+  if (isHexadecimalColor(colorHex)) {
+    let nameColor;
+    const foundedColorObj = find(Colors, { colors: [ { color: colorHex } ]});
+    if (foundedColorObj) {
+       const foundedColor = foundedColorObj.colors.find(f => f.color === colorHex);
+       nameColor = foundedColor.id;
+    }
+    return nameColor;
+  } else {
+    return colorHex;
+  }
+}
 

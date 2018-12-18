@@ -15,6 +15,7 @@ import {WidgetViewViewModel} from './widget-view.viewmodel';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs/Subscription';
 import { CloneWidgetActivity } from 'src/app/shared/authorization/activities/widgets/clone-widget.activity';
+import { getNameColor } from '../../charts/shared/ui/chart-format-info/material-colors';
 
 const Highcharts = require('highcharts/js/highcharts');
 const scheduleJobByWidgetIdGql = require('graphql-tag/loader!./scheduleJob-by-widget-id.query.gql');
@@ -90,7 +91,6 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
                 this._renderChart();
             }
         }
-
         const widgetChange = changes['widget'];
         if (widgetChange.previousValue && widgetChange.previousValue.size !== widgetChange.currentValue.size &&
             widgetChange.currentValue.type === 'chart') {
@@ -366,6 +366,12 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
             return false;
         }
         return true;
+    }
+
+    get actionsColor() {
+        if (this.widget) {
+            return this.widget.fontColor;
+        }
     }
 
     get widgetArrowColor() {

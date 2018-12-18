@@ -199,7 +199,9 @@ export class WidgetsFormService {
     const kpiWithDaterange: boolean = !!(kpi && dateRange && dateRangeIsValid);
     const isComparisonValid: boolean = this._isComparisonValid();
 
-    if (!this._widgetModel.name || !this._widgetModel.type || (!kpiWithDaterange && !chart) || !isComparisonValid) {
+    if (!this._widgetModel.name || !this._widgetModel.type
+      || (!kpiWithDaterange && !chart) || !isComparisonValid
+      || !this._widgetModel.color || !this._widgetModel.fontColor) {
        that._widgetModelValidSubject.next(false);
        return Promise.resolve(this._widgetModel);
     }

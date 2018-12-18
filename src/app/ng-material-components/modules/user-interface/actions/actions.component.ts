@@ -6,11 +6,12 @@ import { ActionsService } from './actions.service';
   providers: [ ActionsService ],
   selector: 'bw-actions',
   template: `
-    <ul class="actions c-{{color}} {{class}}"
-        [ngClass]="{ 'actions-alt': alt, 'dropdown': dropdown }"
+    <ul class="actions {{class}}"
+        [ngClass]="{ 'actions-alt': alt, 'dropdown': dropdown}"
         [class.actions]="!showBig"
         [class.top-menu]="showBig">
-            <li *ngFor="let item of actionItems" [bwActionItem]="item" [ngClass]="{'disabled': item.disabled}"></li>
+            <li *ngFor="let item of actionItems" [color]="color" [iconColor]="iconColor"
+            [bwActionItem]="item" [ngClass]="{'disabled': item.disabled}"></li>
     </ul>
   `,
 })
@@ -19,6 +20,7 @@ export class ActionsComponent implements OnInit {
     @Input() public alt = false;
     @Input() public showBig = false;
     @Input() public color = 'light-gray';
+    @Input() public iconColor;
     @Input() public class: string;
 
     @Output() private actionClicked = new EventEmitter<MenuItem>();

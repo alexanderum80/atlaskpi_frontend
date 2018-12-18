@@ -1,19 +1,40 @@
-import { Directive, ElementRef, Input, Renderer, AfterViewInit, HostListener } from '@angular/core';
+import { forEach } from 'lodash';
+import { Directive, ElementRef, Input, Renderer, AfterViewInit, HostListener, OnChanges } from '@angular/core';
 import { MenuItem } from '../../../models/menu-item';
 import { ActionsService } from './actions.service';
 
 @Directive({ selector: '[bwActionItem]' })
-export class ActionItemDirective implements AfterViewInit {
+export class ActionItemDirective implements AfterViewInit, OnChanges {
 
     @Input() public bwActionItem: MenuItem;
+    @Input() public color;
+    @Input() public iconColor;
 
     constructor(private el: ElementRef, private renderer: Renderer, private actionsService: ActionsService) { }
 
     public ngAfterViewInit() {
+        if (!this.iconColor) {
+            this.renderer.setElementStyle(this.el.nativeElement.parentElement, 'color', this.color);
+        }
         // add anchor
         this._createAnchor(this.el.nativeElement, this.bwActionItem);
     }
 
+    public ngOnChanges() {
+        if (!this.iconColor) {
+            this.renderer.setElementStyle(this.el.nativeElement.parentElement, 'color', this.color);
+        } else {
+            this.changeElementcolor(this.el.nativeElement);
+        }
+    }
+    changeElementcolor(el: any) {
+        this.renderer.setElementStyle(el, 'color', this.iconColor);
+        if (el.children.length > 0) {
+            for ( let cc = 0; cc < el.children.length; cc++) {
+                this.changeElementcolor(el.children[cc]);
+            }
+        }
+    }
     @HostListener('click', ['$event'])
     public onActionClicked($event: MouseEvent, menuItem?: MenuItem): void {
         $event.preventDefault();
@@ -35,7 +56,9 @@ export class ActionItemDirective implements AfterViewInit {
     private _createAnchor(ele: any, menuItem: MenuItem, submenu: boolean = false) {
         const anchor = this.renderer.createElement(ele, 'a');
         this.renderer.setElementAttribute(anchor, 'href', '');
-
+        if (this.iconColor && !submenu) {
+            this.renderer.setElementStyle(anchor, 'color', this.iconColor);
+        }
         if (this._isObject(menuItem) && menuItem.hasOwnProperty('disabled') && menuItem.disabled) {
             this.renderer.setElementClass(anchor, 'pointer-events-none', true);
         }
@@ -54,7 +77,9 @@ export class ActionItemDirective implements AfterViewInit {
 
             this.renderer.setElementClass(i, 'zmdi', true);
             this.renderer.setElementClass(i, `zmdi-${icon}`, true);
-
+            if (this.iconColor && !submenu) {
+                 this.renderer.setElementStyle(i, 'color', this.iconColor);
+            }
             if (this.actionsService.showBig) {
                 this.renderer.setElementClass(i, 'tm-icon', true);
             }

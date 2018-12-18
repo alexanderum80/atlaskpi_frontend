@@ -1,5 +1,5 @@
 .widget.p-relative.z-depth-1(*ngIf="widget", [ngStyle]="setStyle()", class="{{widget.size}}")
-    bw-actions.description-button(*ngIf="description", [color]="widgetFontColor" , [actionItems]="actionItems", (actionClicked)="onActionClicked($event)")
+    bw-actions.description-button(*ngIf="description", [iconColor]="actionsColor" , [actionItems]="actionItems", (actionClicked)="onActionClicked($event)")
 
     .p-10(layout="column")
             div(layout="row", layout-align="start start", flex-none)

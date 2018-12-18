@@ -35,7 +35,7 @@ export class ExternalSourceKpiFormViewModel extends ViewModel<IKPI> {
     operators: SelectionItem[] = getArithmeticOperatorItems();
 
     numericFieldSelector: SelectPickerComponent;
-    valuesPreviewWidget : IWidgetFormGroupValues = {
+    valuesPreviewWidget: IWidgetFormGroupValues = {
         name: '',
         description: '',
         type: 'numeric',
@@ -49,7 +49,7 @@ export class ExternalSourceKpiFormViewModel extends ViewModel<IKPI> {
         comparison: 'previousPeriod',
         comparisonArrowDirection: 'up'
       };
-      
+
       valuesPreviewChart : IChartFormValues = {
         name: '',
         description: '',
@@ -206,28 +206,28 @@ export class ExternalSourceKpiFormViewModel extends ViewModel<IKPI> {
     }
 
     selectColorWidget() {
-        
-        switch (Math.round(Math.random()*10)) {
+
+        switch (Math.round(Math.random() * 10)) {
             case 0:
-                return 'white';
+                return '#fff'; // white
             case 1:
-                return 'orange';
+                return '#ffa34a'; // orange
             case 2:
-                return 'blue';
+                return '#2fb6fc'; // blue
             case 3:
-                return 'green';
+                return '#22b4ad'; // green
             case 4:
-                return 'light-green';
+                return '#75cd92'; // light-green
             case 5:
-                return 'sei-green';
+                return '#8BC34A'; // sei-green
             case 6:
-                return 'purple';
+                return '#b186e6'; // purple
             case 7:
-                return 'light-purple';
-            case 8: 
-                return "pink";
+                return '#6280ff'; // light-purple
+            case 8:
+                return '#F7BFBE'; // pink
             default:
-                return 'white';
+                return '#fff'; // white
         }
     }
 
