@@ -467,7 +467,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             case 7:
                 return '#6280ff'; // light-purple
             case 8:
-                return '#F7BFBE'; // pink
+                return '#F45B5B'; // pink
             default:
                 return '#fff'; // white
         }

@@ -132,7 +132,7 @@ export const Colors = [
       { id: 'sei-green', color: '#8BC34A' },
       { id: 'purple', color: '#b186e6' },
       { id: 'light-purple', color: '#6280ff' },
-      { id: 'pink', color: '#F7BFBE'},
+      { id: 'pink', color: '#F45B5B'},
     ]
   },
   {
