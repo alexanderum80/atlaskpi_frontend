@@ -9,5 +9,6 @@ export const usersApi = {
     read: require('graphql-tag/loader!../graphql/get-user.gql'),
     delete: require('graphql-tag/loader!../graphql/remove-user.gql'),
     update: require('graphql-tag/loader!../graphql/update-user.gql'),
-    all: require('graphql-tag/loader!../graphql/get-all-users.gql')
+    all: require('graphql-tag/loader!../graphql/get-all-users.gql'),
+    assignDash: require('graphql-tag/loader!../graphql/adduser-dashboard.gql')
 };

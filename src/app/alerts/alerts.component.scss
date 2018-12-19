@@ -1,0 +1,110 @@
+.alerts-container {
+    height: 95%;
+    margin: 20px;
+
+    .addButton {
+        position: absolute;
+        left: 20px !important;
+        bottom: 30px;
+        z-index: 1;
+    }
+
+    #card {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        transform-style: preserve-3d;
+        transition: transform 1s;
+
+        figure {
+            margin: 0;
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+    
+            &.front, &.back > div {
+                transition: all 1.2s ease-in-out 0s;
+            }
+  
+            &.back {                
+                transform: rotateY( 180deg);
+            }
+        }
+
+        &.flipped {
+            transform: rotateY( 180deg);
+            
+            figure.front, figure.back > div {
+                transition: all 1.2s ease-in-out 0s;
+            }
+        }
+    }
+    .left-panelM {
+        position: relative;
+        height: 100%;
+        background: #EEEEEE;
+        .custom-alert-headerM {
+            min-height: 70px;            
+            i {
+                padding: 8px 0 0 10px;
+                font-size: 20px;
+            }
+        
+            .titleM {
+                padding: 10px 0 10px 10px;
+            }
+        }
+        .custom-alert-bodyM {
+            height: 73%;
+            .alerts {
+                min-height: 80px;
+                padding: 10px 10px;
+            }
+        }
+    }
+    .left-panel {
+        background: #EEEEEE;
+        height: 100%;
+        .custom-alert-header {
+            min-height: 70px;            
+            i {
+                padding: 10px 0 0 10px;
+                font-size: 25px;
+            }
+        
+            .title {
+                padding: 15px 0 10px 5px;
+            }
+        }
+
+        .custom-alert-body {
+            height: 76%;
+            .alerts {
+                min-height: 80px;
+                padding: 10px 10px;
+
+                .remove-button {
+                    font-size: 20px;
+                    padding-left: 10px;
+
+                    &.can-remove:hover {
+                        color: red;
+                        font-size: 30px;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+    
+    .selected-alert {
+        background-color: white;
+    }
+
+    .right-panel {
+        background: white;
+        overflow: auto;
+    }
+}

@@ -21,9 +21,16 @@
                 .appt-item
                     .appt-item--color([style.background-color]="a.event?.color")
                     .appt-item--info
-                        .appt-item--info__time {{ a.from | momentFormat: 'h:mm' }} {{ a.from | momentFormat: 'A' }}
-                        .appt-item--info__name {{ a.customer.fullname }}
-                        .appt-item--info__description {{ a.reason }}
+                        .appt-item--info__time {{ a.from | momentFormat: 'h:mm' }} {{ a.from | momentFormat: 'A' }} - {{ a.to | momentFormat: 'h:mm' }} {{ a.to | momentFormat: 'A' }}
+                        .appt-item--info--line
+                            .appt-item--info--line__header Provider: 
+                            .appt-item--info--line__provider {{ a.provider }}
+                        .appt-item--info--line
+                            .appt-item--info--line__header Patient: 
+                            .appt-item--info--line__patient {{ a.customer.fullname }}
+                        .appt-item--info--line
+                            .appt-item--info--line__header Reason: 
+                            .appt-item--info--line__reason {{ a.reason }}
                     
                 .separator
 
@@ -41,14 +48,22 @@
     //- .calendar-container.z-depth-1.bgm-white(flex-initial)
 
     .m-r-20.m-t-10.m-l-20
+        //- bw-select-picker.m-r-20(flex="80", [fg]="fg", 
+        //-     field="provider",
+        //-     [multiple]="true",
+        //-     [items]="providerList",
+        //-     [liveSearch]="true",
+        //-     noneSelectedText="All Providers",
+        //-     #providerpicker,
+        //-     #sideBarSelectProvider=""
+        //-     )  
         bw-select-picker.m-r-20(flex="80", [fg]="fg", 
-            field="provider",
+            field="resource",
             [multiple]="true",
-            [items]="providerList",
+            [items]="resourceList",
             [liveSearch]="true",
-            noneSelectedText="All Providers",
-            #providerpicker,
-            #sideBarSelectProvider=""
+            noneSelectedText="All Resources",
+            #sideBarResourcePicker
             )  
     .m-t-5.m-b-40.text-center
         dp-day-calendar(theme="dp-material", [config]="calendarConfig", (onSelect)="onDaySelected($event)")

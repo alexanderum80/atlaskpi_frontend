@@ -29,7 +29,8 @@ export class RoleFormComponent implements OnInit, AfterViewInit {
   permissionKeys: any;
 
   // permissions
-  Chart = false;
+  Alert = false;
+  Chart = true;
   Widget = true;
   Targets = true;
   Data = true;

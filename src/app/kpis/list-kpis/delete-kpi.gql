@@ -10,6 +10,10 @@ mutation RemoveKPI($id: String!) {
             complexKPI {
                 name
             }
+            maps {
+                title
+            }
+           
         }
         errors {
             field

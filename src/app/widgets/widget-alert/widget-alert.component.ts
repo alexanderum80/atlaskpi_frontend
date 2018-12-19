@@ -17,12 +17,12 @@ import {WidgetAlertFormComponent} from '../widget-alert-form/widget-alert-form.c
 import {IAlert} from '../widget-alert-form/widget-alert-form.viewmodel';
 import {widgetsGraphqlActions} from '../shared/graphql/widgets.graphql-actions';
 
-const createAlertMutationGql = require('graphql-tag/loader!./create-alert.mutation.gql');
-const updateAlertMutationGql = require('graphql-tag/loader!./update-alert.mutation.gql');
-const alertByWidgetIdQueryGql = require('graphql-tag/loader!./alert-by-widget-id.query.gql');
+const createScheduleJobMutationGql = require('graphql-tag/loader!./create-scheduleJob.mutation.gql');
+const updateScheduleJobMutationGql = require('graphql-tag/loader!./update-scheduleJob.mutation.gql');
+const scheduleJobByWidgetIdQueryGql = require('graphql-tag/loader!./scheduleJob-by-widget-id.query.gql');
 const allUsersQueryGql = require('graphql-tag/loader!./all-users.query.gql');
-const updateAlertActiveGql = require('graphql-tag/loader!./update-alert-active.mutation.gql');
-const removeAlertGql = require('graphql-tag/loader!./remove-alert.mutation.gql');
+const updateScheduleJobActiveGql = require('graphql-tag/loader!./update-scheduleJob-active.mutation.gql');
+const removeScheduleJobGql = require('graphql-tag/loader!./remove-scheduleJob.mutation.gql');
 
 @Component({
   selector: 'kpi-widget-alert',
@@ -188,11 +188,11 @@ export class WidgetAlertComponent implements OnInit, OnDestroy {
       if (item.value === true) {
         that._subscription.push(
             that._apollo.mutate({
-            mutation: removeAlertGql,
+            mutation: removeScheduleJobGql,
             variables: {
               id: alert._id
             },
-            refetchQueries: ['AlertByWidgetId']
+            refetchQueries: ['ScheduleJobByWidgetId']
           }).subscribe(({ data }) => {})
         );
       }
@@ -278,7 +278,7 @@ export class WidgetAlertComponent implements OnInit, OnDestroy {
 
   private _updateAlertActiveField(alert: IAlert): void {
     this._apollo.mutate({
-      mutation: updateAlertActiveGql,
+      mutation: updateScheduleJobActiveGql,
       variables: {
         id: alert._id,
         active: alert.active
@@ -292,7 +292,7 @@ export class WidgetAlertComponent implements OnInit, OnDestroy {
     const that = this;
 
     this._subscription.push(this._apollo.watchQuery({
-      query: alertByWidgetIdQueryGql,
+      query: scheduleJobByWidgetIdQueryGql,
       fetchPolicy: 'network-only',
       variables: {
         id: id
@@ -306,11 +306,11 @@ export class WidgetAlertComponent implements OnInit, OnDestroy {
         that.modal.open();
       }
 
-      if (!data || !data.alertByWidgetId) {
+      if (!data || !data.scheduleJobByWidgetId) {
         return;
       }
 
-      that.alerts = data.alertByWidgetId;
+      that.alerts = data.scheduleJobByWidgetId;
 
       that.showAlertList = (that.alerts && that.alerts.length) ? true : false;
       that.showNoAlert = !that.showAlertList;
@@ -321,13 +321,13 @@ export class WidgetAlertComponent implements OnInit, OnDestroy {
     const that = this;
 
     this._subscription.push(this._apollo.mutate({
-      mutation: createAlertMutationGql,
+      mutation: createScheduleJobMutationGql,
       variables: {
         input: this.payload
       },
-      refetchQueries: ['AlertByWidgetId']
+      refetchQueries: ['ScheduleJobByWidgetId']
     }).subscribe(({ data }: any) => {
-      const result = data.createAlert;
+      const result = data.createScheduleJob;
 
       if (result.success) {
         that.modal.close();
@@ -339,15 +339,15 @@ export class WidgetAlertComponent implements OnInit, OnDestroy {
     const that = this;
 
     this._subscription.push(this._apollo.mutate({
-      mutation: updateAlertMutationGql,
+      mutation: updateScheduleJobMutationGql,
       variables: {
         id: that.alertForm.editId,
         input: this.payload
       },
-      refetchQueries: ['AlertByWidgetId']
+      refetchQueries: ['ScheduleJobByWidgetId']
     })
     .subscribe(({ data }: any) => {
-      const result = data.updateAlert;
+      const result = data.updateScheduleJob;
 
       if (result.success) {
         that.modal.close();

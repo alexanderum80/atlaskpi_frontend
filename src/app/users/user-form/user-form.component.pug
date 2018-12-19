@@ -23,6 +23,17 @@ div(flex)
           liveSearchPlaceholder="...search...",
           [required]="true"
         )
+    //- dashboard
+    #select-dashboards(*ngIf="isOwner", flex)
+        bw-select-picker.p-l-15(flex, 
+            [fg]="fg",
+            label="Assign Dashboard/s",
+            leftIcon="widgets",
+            field="dashboards",
+            [multiple]="true",
+            [items]="dashboardList",
+            [rememberLastValue]="false",
+            noneSelectedText="NOTHING SELECTED")
 
 div(layout="row", layout-wrap)
   bw-checkbox.col-sm-4([fg]="fg",

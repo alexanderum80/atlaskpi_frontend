@@ -1,5 +1,5 @@
-query AlertByWidgetId($id: String!) {
-    alertByWidgetId(id: $id) {
+query ScheduleJobByWidgetId($id: String!) {
+    scheduleJobByWidgetId(id: $id) {
         _id
         notifyUsers
         frequency
