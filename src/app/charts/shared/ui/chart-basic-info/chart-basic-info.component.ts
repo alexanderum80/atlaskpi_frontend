@@ -11,6 +11,9 @@ import { clone, find, isEmpty, isEqual, toArray } from 'lodash';
 import * as moment from 'moment';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import {
+    Promise
+} from 'bluebird';
 
 import { SelectionItem } from '../../../../ng-material-components';
 import {
@@ -33,6 +36,7 @@ import { IDateRangeItem, parseComparisonDateRange, IChartDateRange } from './../
 import { ApolloService } from './../../../../shared/services/apollo.service';
 import { chartsGraphqlActions } from './../../graphql/charts.graphql-actions';
 import { ChartBasicInfoViewModel } from './chart-basic-info.viewmodel';
+import { id } from '@swimlane/ngx-datatable/release/utils';
 
 
 const kpiOldestDateQuery = require('graphql-tag/loader!./kpi-get-oldestDate.gql');
@@ -238,31 +242,53 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
     private _subscribeToKpiAndDateRange(): void {
         const that = this;
         this.fg .valueChanges
-                .distinctUntilChanged()
-                .debounceTime(400)
-                .subscribe((value) => {
-                    const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
-                    const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
-                    if (value.kpi && value.predefinedDateRange && !loadingGroupings && !loadingComparison) {
-                        const payload = that._getGroupingInfoInput(value);
-                        if (isEqual(that.lastKpiDateRangePayload, payload)) { return; }
-                        that._getGroupingInfo(value);
-                        that._getOldestDate(value.kpi);
-                        that.lastKpiDateRangePayload = payload;
-                    }
-                    const kpi_id = this.fg.value.kpi;
-                    if (kpi_id !== '') {
-                        this._apolloService.networkQuery < string > (kpiDataSourcesQuery, {id: kpi_id })
-                        .then(sources => {
-                            // Enable-Disable the map type chart
-                            this._chartGalleryService.showMap = sources.getKpiDataSources[0];
-                            if (!this._chartGalleryService.showMap && this.chartType === this.previousChartType) {
-                                this.chartType = 'pie';
-                            }
-                            this.previousChartType = this.chartType;
-                        });
-                    }
+        .distinctUntilChanged()
+        .debounceTime(400)
+        .subscribe((value) => {
+            const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
+            const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
+            if (value.kpi && value.predefinedDateRange && !loadingGroupings && !loadingComparison) {
+                const payload = that._getGroupingInfoInput(value);
+                if (isEqual(that.lastKpiDateRangePayload, payload)) { return; }
+                that._getGroupingInfo(value);
+                that._getOldestDate(value.kpi);
+                that.lastKpiDateRangePayload = payload;
+            }
+            const kpi_id = this.fg.value.kpi;
+            // Enable-Disable the map type chart
+            if (kpi_id !== '') {
+                let resSources;
+                this._getZipCodesSource(value)
+                    .then(result => { 
+                        if (this.zipCodeSourceList.length === 0 ) {
+                            this._showMapTypeShart() 
+                            return;
+                        } 
+                        for (let i of this.zipCodeSourceList) {
+                            this._apolloService.networkQuery < string > (kpiDataSourcesQuery, {id: kpi_id, zipField: i.id})
+                            .then(sources => {
+                                resSources = sources.getKpiDataSources[0];
+                                if (resSources === true) {
+                                    that._chartGalleryService.showMap = resSources;
+                                    this.previousChartType = this.chartType;
+                                } else {
+                                    this._showMapTypeShart() 
+                                };
+                            });
+                        }
+                    }); 
+                      
+                }   
+               
         });
+    }
+
+    private _showMapTypeShart() {
+        this._chartGalleryService.showMap = false;
+        if (!this._chartGalleryService.showMap && this.chartType === this.previousChartType) {
+            this.chartType = 'pie';
+        }
+        this.previousChartType = this.chartType;
     }
 
     private _getOldestDate(kpi: string): void {
@@ -273,7 +299,36 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         });
     }
 
-    private _getGroupingInfo(item: any): void { /* get groupingInfo and get zipCodeSource List */
+    private _getZipCodesSource(item: any): Promise<any> {
+        const that = this;
+        if (!item.kpi) { return };
+
+        const input = {
+            id: item.kpi,
+            dateRange: { predefined: PredefinedDateRanges.today, custom: null }
+        }
+        return new Promise <any> ((resolve, reject) => {
+            
+            this._apolloService.networkQuery(kpiGroupingsQuery, { input })
+            .then(data => {
+                let zipCodeSourceList = [];
+                that.zipCodeSourceList = [];
+                zipCodeSourceList = data.kpiGroupings
+                    .filter(d => d.name.toLowerCase().includes('zip' || 'postal'))
+                    .map(d => new SelectionItem(d.value, d.name))
+                    that.zipCodeSourceList = zipCodeSourceList;
+                    if (data && this.ischartTypeMap === true) {
+                        if (that.fg.controls['zipCodeSource'].value === '' && that.zipCodeSourceList
+                        .find(d => d.id === 'customer.zip')) {
+                            that.fg.controls['zipCodeSource'].patchValue('customer.zip');
+                        }
+                    }
+                return resolve(this.zipCodeSourceList);  
+            });  
+         })
+        }
+
+    private _getGroupingInfo(item: any) { /* get groupingInfo */
         const that = this;
 
         // basic payload check
@@ -288,26 +343,13 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         }
 
         const input = this._getGroupingInfoInput(item);
-
         this.fg.controls['loadingGroupings'].patchValue(true, { emitEvent: false });
 
         this._apolloService.networkQuery(kpiGroupingsQuery, { input })
             .then(data => {
                 let groupingList = [];
-                let zipCodeSourceList = [];
                 that.groupingList = [];
-                that.zipCodeSourceList = [];
-                if (data || !isEmpty(data.kpiGroupings)) {
-                    groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
-                    zipCodeSourceList = data.kpiGroupings
-                    .filter(d => d.name.toLowerCase().includes('zip' || 'postal'))
-                    .map(d => new SelectionItem(d.value, d.name))
-                }
                 that.groupingList = groupingList;
-                that.zipCodeSourceList = zipCodeSourceList;
-                if (that.fg.controls['zipCodeSource'].value === '' && that.zipCodeSourceList.find(d => d.id === 'customer.zip')) {
-                    that.fg.controls['zipCodeSource'].patchValue('customer.zip');
-                }
                 const currentGroupingValue = this.fg.get('grouping').value || '';
                 let nextGropingValue;
                 if (!groupingList.map(g => g.id).includes(currentGroupingValue)) {
