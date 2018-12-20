@@ -245,6 +245,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         .distinctUntilChanged()
         .debounceTime(400)
         .subscribe((value) => {
+            debugger;
             const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
             const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
             if (value.kpi && value.predefinedDateRange && !loadingGroupings && !loadingComparison) {
@@ -349,8 +350,14 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
 
         this._apolloService.networkQuery(kpiGroupingsQuery, { input })
             .then(data => {
+                debugger;
                 let groupingList = [];
                 that.groupingList = [];
+
+                if (data || !isEmpty(data.kpiGroupings)) {
+                    groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
+                }
+                
                 that.groupingList = groupingList;
                 const currentGroupingValue = this.fg.get('grouping').value || '';
                 let nextGropingValue;
