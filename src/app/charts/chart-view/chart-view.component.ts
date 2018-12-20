@@ -121,6 +121,12 @@ export interface IRunRate {
     data: number;
 }
 
+export interface IChartDetailComparison{
+    comparisonValue: string;
+    from: Date;
+    to: Date;
+}
+
 @Component({
     selector: 'kpi-chart-view',
     templateUrl: './chart-view.component.pug',
@@ -179,6 +185,12 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
     showingComparisons = false;
     comparisonDateRange: any[] = [];
     comparisonValue: string[] = [];
+
+    /* this array is a merge of comparisonDateRange and comparisonValue,
+        so it's easier to use in the view.
+    */
+    comparisonArrayChartDetails: IChartDetailComparison[] = [];
+
     loadedComparisonData = false;
     isDateRangeInPresent = false;
     isfrequencyToRunRate = false;
@@ -343,8 +355,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
         // }
 
         if (this.chartData.comparison && this.chartData.comparison.length > 0) {
-            this.getComparisonValue();
-            this.getComparisonDateRange();
+            this.getComparisonArrayChartDetails();
         }
 
         if (this.chartData.top) {
@@ -467,6 +478,13 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
         } else {
             // this._updateComparisonOptions();
         }
+    }
+    
+    getComparisonArrayChartDetails(): void {
+        this.getComparisonValue();
+        this.getComparisonDateRange();
+        this.comparisonArrayChartDetails = this.comparisonValue.map( 
+                                            (comparisonValue, index) => ({comparisonValue, ...this.comparisonDateRange[index] }));
     }
 
     getDateRangeInPresent(): boolean {
