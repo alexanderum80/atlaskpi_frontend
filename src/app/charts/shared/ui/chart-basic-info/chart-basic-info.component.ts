@@ -303,9 +303,11 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         const that = this;
         if (!item.kpi) { return };
 
+        const dateRangePred = (item.predefinedDateRange) ? item.predefinedDateRange : PredefinedDateRanges.allTimes
+        // TODO dateRange when is custom, that is hard coded at the moment
         const input = {
             id: item.kpi,
-            dateRange: { predefined: PredefinedDateRanges.today, custom: null }
+            dateRange: { predefined: dateRangePred , custom: null }
         }
         return new Promise <any> ((resolve, reject) => {
             
