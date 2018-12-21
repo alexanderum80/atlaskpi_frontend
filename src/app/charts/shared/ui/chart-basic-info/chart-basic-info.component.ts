@@ -36,7 +36,6 @@ import { IDateRangeItem, parseComparisonDateRange, IChartDateRange } from './../
 import { ApolloService } from './../../../../shared/services/apollo.service';
 import { chartsGraphqlActions } from './../../graphql/charts.graphql-actions';
 import { ChartBasicInfoViewModel } from './chart-basic-info.viewmodel';
-import { id } from '@swimlane/ngx-datatable/release/utils';
 
 
 const kpiOldestDateQuery = require('graphql-tag/loader!./kpi-get-oldestDate.gql');
@@ -245,7 +244,6 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         .distinctUntilChanged()
         .debounceTime(400)
         .subscribe((value) => {
-            debugger;
             const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
             const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
             if (value.kpi && value.predefinedDateRange && !loadingGroupings && !loadingComparison) {
@@ -302,13 +300,21 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
 
     private _getZipCodesSource(item: any): Promise<any> {
         const that = this;
-        if (!item.kpi) { return };
+        if (!item.kpi) { 
+             return new Promise ((resolve, reject) => resolve([]) ); 
+        };
 
-        const dateRangePred = (item.predefinedDateRange) ? item.predefinedDateRange : PredefinedDateRanges.allTimes
+        const customDateRange = (!!item.customFrom && !!item.customTo) ? {from: item.customFrom, to: item.customTo} : null;
+        const dateRangePred = (item.predefinedDateRange) ? item.predefinedDateRange : PredefinedDateRanges.allTimes;
+
+        if(dateRangePred === "custom" && !customDateRange){
+            return new Promise ((resolve, reject) => {
+                resolve(this.zipCodeSourceList || []) });
+        }
         // TODO dateRange when is custom, that is hard coded at the moment
         const input = {
             id: item.kpi,
-            dateRange: { predefined: dateRangePred , custom: null }
+            dateRange: { predefined: dateRangePred , custom: customDateRange }
         }
         return new Promise <any> ((resolve, reject) => {
             
@@ -350,7 +356,6 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
 
         this._apolloService.networkQuery(kpiGroupingsQuery, { input })
             .then(data => {
-                debugger;
                 let groupingList = [];
                 that.groupingList = [];
 

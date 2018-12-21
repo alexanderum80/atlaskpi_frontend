@@ -134,7 +134,6 @@ export class MapModel {
 
     static fromFormGroup(fg: FormGroup): MapModel {
       const proxyMapModel = new MapModel({});
-
       // basic info
       proxyMapModel.title = fg.value.name;
       proxyMapModel.subtitle = fg.value.description;
@@ -143,7 +142,7 @@ export class MapModel {
       proxyMapModel.dateRange = { predefined: fg.value.predefinedDateRange,
                                     custom: { from: fg.value.customFrom || null,
                                               to: fg.value.customTo || null  }};
-      proxyMapModel.groupings = fg.value.grouping ? ['customer.zip', fg.value.grouping] : ['customer.zip'];
+      proxyMapModel.groupings = fg.value.grouping ? [fg.value.zipCodeSource, fg.value.grouping] : [fg.value.zipCodeSource];
       proxyMapModel.dashboards = fg.value.dashboards ? fg.value.dashboards.split('|').map(d => d.trim()) : [];
       proxyMapModel.size = fg.value.mapsize;
       proxyMapModel.zipCodeSource = fg.value.zipCodeSource;
