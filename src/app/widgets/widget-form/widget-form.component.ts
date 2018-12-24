@@ -27,6 +27,7 @@ import { ApolloService } from '../../shared/services/apollo.service';
 
 import { IDateRangeItem } from './../../shared/models/date-range';
 import { chartsGraphqlActions } from '../../charts/shared/graphql/charts.graphql-actions';
+import { widgetsGraphqlActions } from '../shared/graphql/widgets.graphql-actions';
 
 const widgetSizeList: SelectionItem[] = [
     {
@@ -264,13 +265,16 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
     get isDateRangeCustom() {
         return this.fg.value.predefinedDateRange === 'custom';
     }
-
+    
     updateComparisonItems(dateRange) {
         if (!dateRange) {
             this.comparisonSelectionList = [];
             return;
         }
-        this.comparisonSelectionList = this._widgetFormService.getComparisonListForDateRange(dateRange);
+        this._apolloService.networkQuery < string > (widgetsGraphqlActions.kpiOldestDateQuery, { id: this.fg.value.kpi })
+        .then(kpis => {
+            this.comparisonSelectionList = this._widgetFormService.getComparisonListForDateRangesAndKpiOldesDate(dateRange, kpis.getKpiOldestDate);
+        });
     }
 
     private _subscribeToFormFields() {

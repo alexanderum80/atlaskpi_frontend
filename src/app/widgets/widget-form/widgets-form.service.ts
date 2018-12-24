@@ -11,8 +11,9 @@ import { chartsGraphqlActions } from '../../charts/shared/graphql/charts.graphql
 import { SelectionItem } from '../../ng-material-components';
 import { IsNullOrWhiteSpace, ToSelectionItemList } from '../../shared/extentions';
 import { IChart } from '../../charts/shared/models/chart.models';
-import { IDateRangeItem } from '../../shared/models/date-range';
+import { IDateRangeItem, parseComparisonDateRange, IDateRange } from '../../shared/models/date-range';
 import { widgetsGraphqlActions } from '../shared/graphql/widgets.graphql-actions';
+
 import {
     IWidget,
     IWidgetFormGroupValues,
@@ -358,20 +359,32 @@ export class WidgetsFormService {
           }
         }));
   }
-  
-  public getComparisonListForDateRange(dateRangeString: string) {
-    const that = this;
 
-    if (IsNullOrWhiteSpace(dateRangeString)) { return; }
+  public getComparisonListForDateRangesAndKpiOldesDate (dateRangeString: string, yearOldestDate: string) {
+    if (dateRangeString === '') { return; }
+    if (!yearOldestDate) { return; }
+
+    this.comparisonList = [];
     const dateRange = this.dateRanges.find(d => d.dateRange.predefined === dateRangeString);
-    if (!dateRange) {
-        this.comparisonList = [];
-        return [];
-    }
-
-    const list = dateRange.comparisonItems.map(i => ({ id: i.key, title: i.value }));
-    this.comparisonList = list;
-    return list;
+    const itemsComparison: any = [dateRangeString, ''];
+    let newItem: SelectionItem = {};
+    for (let i = 0; i < dateRange.comparisonItems.length ; i++) {
+      itemsComparison[1] = dateRange.comparisonItems[i].key;
+      const yearofDateFrom = parseComparisonDateRange(<any>itemsComparison, itemsComparison[0]).from.getFullYear();
+      if (yearofDateFrom >= parseInt(yearOldestDate, 0)) {
+          const thisTitle = dateRange.comparisonItems[i].value.includes('year')
+          ? dateRange.comparisonItems[i].value + ' (' + yearofDateFrom + ')'
+          : dateRange.comparisonItems[i].value;
+          newItem = {
+              id: dateRange.comparisonItems[i].key,
+              title: thisTitle,
+              selected: false,
+              disabled: false
+          };
+          this.comparisonList.push(newItem);
+        }
+      }
+      return this.comparisonList;
   }
 
   private _getCleanWidgetModel(widget: IWidget): IWidget {
