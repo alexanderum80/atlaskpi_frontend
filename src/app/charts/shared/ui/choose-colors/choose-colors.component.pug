@@ -6,5 +6,5 @@ bw-modal(#selectIntensityModal='', animation="true", keyboard="true", backdrop="
                     .theme-color-box(flex, *ngFor="let color of theme.colors", 
                             [ngStyle]="{ 'background-color': color.color, 'border': color.color === '#fff' ? 'solid 1px black' : 'none' }", (click)="onSelectColor(color.color)")
     bw-modal-footer
-        bw-button([simple]="true", [size]='xs', icon="chevron-left", [disabled]="currentPage === 1", (clicked)="previousPage()")
+        bw-button([simple]="true", size='xs', icon="chevron-left", [disabled]="currentPage === 1", (clicked)="previousPage()")
         bw-button([simple]="true", icon="chevron-right", [disabled]="currentPage === 3", (clicked)="nextPage()")
