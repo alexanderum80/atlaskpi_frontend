@@ -247,7 +247,8 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
             'frequency',
             'grouping',
             'xAxisSource',
-            'predefinedTop'
+            'predefinedTop',
+            'zipCodeSource'
         ]);
 
         return isEqual(this.removeTargetData, formValues);
@@ -320,7 +321,8 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
             frequency: chart.frequency,
             grouping: chart.groupings ? chart.groupings[0] : chart.groupings,
             xAxisSource: chart.xAxisSource,
-            predefinedTop: chart.top ? chart.top.predefined : null
+            predefinedTop: chart.top ? chart.top.predefined : null,
+            zipCodeSource: chart.zipCodeSource
         };
 
     }

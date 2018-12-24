@@ -32,6 +32,7 @@ const newWidgetModel = {
   type: 'numeric',
   size: 'small',
   color: 'white',
+  fontColor: 'black',
   preview: true
 };
 
@@ -97,13 +98,13 @@ export class WidgetsFormService {
     });
 
     this._subscription.push(this.kpisQuery.valueChanges.subscribe(res => this._handleKpisQueryResponse(res)));
-  
+
     this.dashboardsQuery = this._apollo.watchQuery<{dashboards: IDashboard[]}>
         ({
           query: widgetsGraphqlActions.listWidgetDashboards,
           fetchPolicy: 'network-only'
         });
-    
+
         this._subscription.push(this.dashboardsQuery.valueChanges.subscribe(res => this._handleDashboardsQueryResponse(res)));
   }
 
@@ -130,6 +131,7 @@ export class WidgetsFormService {
     this._widgetModel['type'] = values.type;
     this._widgetModel['order'] = Number(values.order);
     this._widgetModel['color'] = values.color;
+    this._widgetModel['fontColor'] = values.fontColor;
 
     // numeric properties
     if (values.type === 'numeric') {
@@ -197,7 +199,9 @@ export class WidgetsFormService {
     const kpiWithDaterange: boolean = !!(kpi && dateRange && dateRangeIsValid);
     const isComparisonValid: boolean = this._isComparisonValid();
 
-    if (!this._widgetModel.name || !this._widgetModel.type || (!kpiWithDaterange && !chart) || !isComparisonValid) {
+    if (!this._widgetModel.name || !this._widgetModel.type
+      || (!kpiWithDaterange && !chart) || !isComparisonValid
+      || !this._widgetModel.color || !this._widgetModel.fontColor) {
        that._widgetModelValidSubject.next(false);
        return Promise.resolve(this._widgetModel);
     }
@@ -227,16 +231,20 @@ export class WidgetsFormService {
     if (isEmpty(this._widgetModel)) {
       return true;
     }
-
     if (this._widgetModel.type !== 'numeric') {
       return true;
     }
-
     const attributes: INumericWidgetAttributes = this._widgetModel.numericWidgetAttributes;
     // i.e. ['previousPeriod']
     const hasComparison: boolean = Array.isArray(attributes.comparison) && !isEmpty(attributes.comparison);
     // i.e. { predefined: 'all times', custom: null }
     const hasDateRange: boolean = !isEmpty(attributes.dateRange) && !isEmpty(attributes.dateRange.predefined);
+
+    if(isEmpty(this.comparisonList) && attributes.comparison 
+    && Array.isArray(attributes.comparison) &&
+     attributes.comparison.length > 0){
+      return false;
+    }
 
     if (!hasComparison || !hasDateRange) {
       return true;
@@ -256,10 +264,18 @@ export class WidgetsFormService {
   }
 
   private _getComparisonValue(values: IWidgetFormGroupValues): string[] {
-    if (values.predefinedDateRange === PredefinedDateRanges.allTimes) {
+
+    const comparison = this._widgetModel.numericWidgetAttributes.comparison || undefined;
+
+    /* if date range is "all times", or if the comparison list is empty and 
+    comparison has some value */
+    if (values.predefinedDateRange === PredefinedDateRanges.allTimes
+      || (isEmpty(this.comparisonList) &&  comparison
+      && Array.isArray(comparison) && comparison.length > 0)) 
+      {
       return [];
     }
-
+    
     return [values.comparison];
   }
 
@@ -337,7 +353,7 @@ export class WidgetsFormService {
     this.dateRangeList = list;
     this._dateRangeListSubject.next(list);
   }
-  
+
   private _handleChartsQueryResponse(res: any) {
     this.charts = res.data.listCharts.data;
     this.chartList = ToSelectionItemList(this.charts, '_id', 'title');
@@ -358,7 +374,7 @@ export class WidgetsFormService {
           }
         }));
   }
-  
+
   public getComparisonListForDateRange(dateRangeString: string) {
     const that = this;
 
@@ -394,6 +410,7 @@ export class WidgetsFormService {
               type: widget.type,
               size: widget.size,
               color: 'white', // all chart widgets are white
+              fontColor: 'black',
               chartWidgetAttributes: {
                 chart: widget.chartWidgetAttributes.chart
               },
@@ -415,6 +432,7 @@ export class WidgetsFormService {
             type: widget.type,
             size: widget.size,
             color: widget.color,
+            fontColor: widget.fontColor,
             numericWidgetAttributes: {
               kpi: widget.numericWidgetAttributes.kpi,
               format: widget.numericWidgetAttributes.format,
@@ -471,6 +489,7 @@ export class WidgetsFormService {
               type: this._widgetModel.type,
               size: this._widgetModel.size,
               color: 'white', // all chart widgets are white
+              fontColor: 'black',
               chart: this._widgetModel.chartWidgetAttributes.chart,
               dashboards: this._widgetModel.dashboards ? this._widgetModel.dashboards.join('|') : ''
             };
@@ -483,6 +502,7 @@ export class WidgetsFormService {
             type: this._widgetModel.type,
             size: this._widgetModel.size,
             color: this._widgetModel.color, // all chart widgets are white
+            fontColor: this._widgetModel.fontColor,
             kpi: this._widgetModel.numericWidgetAttributes
                   ? this._widgetModel.numericWidgetAttributes.kpi
                   : '',
@@ -551,7 +571,7 @@ export class WidgetsFormService {
   get dashboardList$() {
     return this._dashboardListSubject.asObservable();
   }
-   
+
   get updatedDashboardsList$() {
     return this._updateDashboardListSubject.asObservable().distinctUntilChanged();
   }

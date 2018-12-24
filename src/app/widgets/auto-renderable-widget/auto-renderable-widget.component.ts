@@ -40,7 +40,23 @@ export class AutoRenderableWidgetComponent implements OnInit {
     .toPromise()
     .then(res => {
       that.loading = false;
-      that.widget = res.data.widget;
+      that.widget = {
+          _id: res.data.widget._id,
+          order: res.data.widget.order,
+          name: res.data.widget.name,
+          description: res.data.widget.description || '',
+          type: res.data.widget.type,
+          size: res.data.widget.size,
+          color: res.data.widget.color,
+          fontColor: res.data.widget.fontColor,
+          chartWidgetAttributes: res.data.widget.chartWidgetAttributes,
+          numericWidgetAttributes: res.data.widget.numericWidgetAttributes,
+          dashboards: res.data.widget.dashboards,
+          hasAlerts: res.data.widget.hasAlerts,
+          materialized: res.data.widget.materialized,
+          preview: res.data.widget.preview,
+          tags: res.data.widget.tags
+        };
     });
   }
 
@@ -49,11 +65,14 @@ export class AutoRenderableWidgetComponent implements OnInit {
   }
 
   get widgetBackgroundColor() {
-    if (!this.item || this.item.type === 'chart') {
-        return 'white';
-    }
-    return this.item.color;
-}
+    if (!this.item) { return '#fff'; }
+    return this.item.type === 'chart' ? '#fff' : this.item.color;
+  }
+
+  get widgetFontColor() {
+    if (!this.item) { return '#434348'; }
+    return this.item.fontColor;
+  }
 
   get placeholderVisible() {
     return !this.loading && !this.widget;
