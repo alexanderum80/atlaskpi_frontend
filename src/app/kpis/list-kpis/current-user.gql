@@ -39,6 +39,7 @@ query User {
             showAppointmentCancelled
             providers
             resources
+            mobileCalendar
             calendarTimeZone
             dashboardIdNoVisible
             dashboards {

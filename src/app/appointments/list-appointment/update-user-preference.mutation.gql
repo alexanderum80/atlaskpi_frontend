@@ -11,6 +11,7 @@ mutation UpdateUserPreference($id: String!, $input: UserPreferencesInput) {
                     showTour
                 }
                 showAppointmentCancelled
+                mobileCalendar
                 calendarTimeZone
             }
         }
