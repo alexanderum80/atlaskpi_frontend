@@ -60,7 +60,7 @@ export class EditWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy() {
     CommonService.unsubscribe(this._subscription);
   }
-  
+
    ngAfterViewInit() {
   }
 
@@ -78,11 +78,9 @@ export class EditWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
 
   updateWidget() {
     const that = this;
-
     const payload = this._widgetFormService.getWidgetPayload();
 
     this._widgetFormService.updateExistDuplicatedName(false);
-
     this._apolloService.networkQuery < IWidget > (getWidgetByTitle, { name: payload.name }).then(d => {
       if (d.widgetByName && d.widgetByName._id !== this.widgetId) {
           this._widgetFormService.updateExistDuplicatedName(true);

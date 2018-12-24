@@ -263,7 +263,6 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
 
     private _loadDashboardData(dashboard: any) {
         const that = this;
-
         if (!dashboard) {
             that.bigWidgets = [];
             that.smallWidgets = [];

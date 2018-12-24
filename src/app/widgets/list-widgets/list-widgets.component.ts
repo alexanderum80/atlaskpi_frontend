@@ -17,8 +17,6 @@ import { IModalError } from '../../shared/interfaces/modal-error.interface';
 import { FormGroup, FormControl } from '@angular/forms';
 import { filterSearch } from 'src/app/shared/models/search';
 
-
-
 @Activity(ViewWidgetActivity)
 @Component({
   selector: 'kpi-list-widgets',
@@ -42,7 +40,7 @@ export class ListWidgetsComponent implements OnInit, OnDestroy {
 
   lastError: IModalError;
 
-   //add-search-bar
+   // add-search-bar
    public fgs: FormGroup;
    private _subscription: Subscription[] = [];
    private _widgetItems: IWidget[];
@@ -62,7 +60,30 @@ export class ListWidgetsComponent implements OnInit, OnDestroy {
       fetchPolicy: 'network-only'
     })
     .valueChanges.subscribe(res => {
-      that.widgetsCollection = res.data.listWidgets || [];
+      if (res.data.listWidgets.length === 0) {
+        that.widgetsCollection = [];
+      } else {
+      // that.widgetsCollection = res.data.listWidgets || [];
+        that.widgetsCollection = res.data.listWidgets.map(w => {
+          return {
+            _id: w._id,
+            order: w.order,
+            name: w.name,
+            description: w.description || '',
+            type: w.type,
+            size: w.size,
+            color: w.color,
+            fontColor: w.fontColor ? w.fontColor : w.color === 'white' ? 'black' : 'white',
+            chartWidgetAttributes: w.chartWidgetAttributes,
+            numericWidgetAttributes: w.numericWidgetAttributes,
+            dashboards: w.dashboards,
+            hasAlerts: w.hasAlerts,
+            materialized: w.materialized,
+            preview: w.preview,
+            tags: w.tags
+          };
+        });
+      }
       that._widgetItems = that.widgetsCollection || [];
 
       if (that.widgetsCollection.length > 0) {
@@ -72,7 +93,7 @@ export class ListWidgetsComponent implements OnInit, OnDestroy {
 
       that.loading = false;
     }));
-    //add-search-bar
+    // add-search-bar
     this.fgs = new FormGroup({
       search: new FormControl(null)
     });
@@ -183,7 +204,7 @@ export class ListWidgetsComponent implements OnInit, OnDestroy {
   }
 
   // endregion
- //add-search-bar
+ // add-search-bar
 
   get filteredItemsBig(): IWidget[] {
     return this._widgetItems.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Big);

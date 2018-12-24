@@ -15,6 +15,7 @@ import {WidgetViewViewModel} from './widget-view.viewmodel';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs/Subscription';
 import { CloneWidgetActivity } from 'src/app/shared/authorization/activities/widgets/clone-widget.activity';
+import { getNameColor } from '../../charts/shared/ui/chart-format-info/material-colors';
 
 const Highcharts = require('highcharts/js/highcharts');
 const scheduleJobByWidgetIdGql = require('graphql-tag/loader!./scheduleJob-by-widget-id.query.gql');
@@ -90,7 +91,6 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
                 this._renderChart();
             }
         }
-
         const widgetChange = changes['widget'];
         if (widgetChange.previousValue && widgetChange.previousValue.size !== widgetChange.currentValue.size &&
             widgetChange.currentValue.type === 'chart') {
@@ -123,6 +123,13 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         CommonService.unsubscribe(this._subscription);
     }
 
+    setStyle() {
+        return {
+            'background-color': this.widgetBackgroundColor,
+            'color': this.widgetFontColor,
+        };
+    }
+
     private _renderChart() {
         const chart = < IChart > JSON.parse(this.widget.materialized.chart);
         const chartDefinition = this._minifyChart(chart);
@@ -134,13 +141,14 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         // setTimeout(() => {
         //     this.chart.ref.reflow();
         // }, 0);
-
-        // Highcarts 6 offers and Observable of the ChartObject
-        this.chart.ref$.subscribe(ref => {
-            setTimeout(() => {
-                ref.reflow();
-            }, 0);
-        });
+        if (this.chart) {
+            // Highcarts 6 offers and Observable of the ChartObject
+            this.chart.ref$.subscribe(ref => {
+                setTimeout(() => {
+                    if (ref) { ref.reflow(); }
+                }, 0);
+            });
+        }
     }
 
     private _removeInfoItem(): void {
@@ -271,6 +279,10 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         return this.widget.materialized && this.widget.materialized.chart ? 'white' : this.widget.color;
     }
 
+    get widgetFontColor() {
+        return !this.widget ? '' : this.widget.fontColor;
+    }
+
     get noWidgetType() {
         return !this.widget.type;
     }
@@ -354,6 +366,12 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
             return false;
         }
         return true;
+    }
+
+    get actionsColor() {
+        if (this.widget) {
+            return this.widget.fontColor;
+        }
     }
 
     get widgetArrowColor() {

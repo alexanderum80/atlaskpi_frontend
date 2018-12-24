@@ -167,22 +167,6 @@
                     bw-radio.m-l-20(flex="20", label="Horizontal", value="horizontal")
                     .flex-grow
         
-
-
-//- Modal for select color
-bw-modal(#selectIntensityModal='', animation="true", keyboard="true", backdrop="true", size="md")
-    bw-modal-header
-        div(layout="row")
-            .p-t-10 INTENSITY
-            bw-select-picker.p-l-20(flex="30", flex-xs="50", 
-                [fg]="fg",
-                field="intensity",
-                [value]="intensityDefaultValue",
-                [items]="intensityList",
-                leftIcon="",
-                noneSelectedText="Colors")                
-    bw-modal-body
-        .p-20(layout="row", layout-wrap)
-            .theme-color-box(*ngFor="let color of themeColors[0].colors", 
-                    [ngStyle]="{ 'background-color': color.color }", (click)="onSelectColor(color.color)")
+//- Choose Color Form
+kpi-choose-colors(flex, [fg]="fg", (colorChoosed)="onSelectColor($event)")
 
