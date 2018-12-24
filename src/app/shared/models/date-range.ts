@@ -384,7 +384,7 @@ export function parsePredefinedDate(textDate: string): IDateRange {
  * @param customDateRange
  * customDateRange passed when chart predefined is custom
  */
-export function parseComparisonDateRange(value: string, customDateRange?: IDateRange): IDateRange {
+export function parseComparisonDateRange(value: string[], customDateRange?: IDateRange): IDateRange {
     const comparisonTokens = value;
 
     if (!comparisonTokens || comparisonTokens.length < 2) {
