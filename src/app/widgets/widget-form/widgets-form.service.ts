@@ -231,16 +231,20 @@ export class WidgetsFormService {
     if (isEmpty(this._widgetModel)) {
       return true;
     }
-
     if (this._widgetModel.type !== 'numeric') {
       return true;
     }
-
     const attributes: INumericWidgetAttributes = this._widgetModel.numericWidgetAttributes;
     // i.e. ['previousPeriod']
     const hasComparison: boolean = Array.isArray(attributes.comparison) && !isEmpty(attributes.comparison);
     // i.e. { predefined: 'all times', custom: null }
     const hasDateRange: boolean = !isEmpty(attributes.dateRange) && !isEmpty(attributes.dateRange.predefined);
+
+    if(isEmpty(this.comparisonList) && attributes.comparison 
+    && Array.isArray(attributes.comparison) &&
+     attributes.comparison.length > 0){
+      return false;
+    }
 
     if (!hasComparison || !hasDateRange) {
       return true;
@@ -260,10 +264,18 @@ export class WidgetsFormService {
   }
 
   private _getComparisonValue(values: IWidgetFormGroupValues): string[] {
-    if (values.predefinedDateRange === PredefinedDateRanges.allTimes) {
+
+    const comparison = this._widgetModel.numericWidgetAttributes.comparison || undefined;
+
+    /* if date range is "all times", or if the comparison list is empty and 
+    comparison has some value */
+    if (values.predefinedDateRange === PredefinedDateRanges.allTimes
+      || (isEmpty(this.comparisonList) &&  comparison
+      && Array.isArray(comparison) && comparison.length > 0)) 
+      {
       return [];
     }
-
+    
     return [values.comparison];
   }
 
