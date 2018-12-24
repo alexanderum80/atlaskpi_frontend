@@ -1,0 +1,36 @@
+.alert-header(layout="row", layout-padding, [class.hidden]="!isMobile")
+    i.zmdi.zmdi-arrow-left((click)="backToList()")
+    .title BACK TO LIST
+.p-30
+    .title {{ alertTitle }}
+    div(layout="row")
+        bw-text-box(*ngIf="isUserAlert()", flex, [fg]="fg", field="name", label="Name", leftIcon="label", [required]="true")
+    div(layout="row", layout-xs="column")
+        bw-select-picker(flex="50", flex-xs="100", [fg]="fg",
+            label="Select a kpi",
+            field="kpi",
+            [items]="alertsService.kpiList",
+            [liveSearch]="true",
+            liveSearchPlaceholder="...search...",
+            noneSelectedText="NOTHING SELECTED",
+            leftIcon="device-hub",
+            required="true")
+        bw-select-picker(*ngIf="isUserAlert()", flex="50", flex-xs="100", [fg]="fg",
+            label="Reset alert",
+            field="frequency",
+            [items]="alertsService.frequencyList",
+            noneSelectedText="NOTHING SELECTED",
+            leftIcon="time-restore-setting")
+    div(*ngIf="isUserAlert()", layout="row", layout-xs="column")
+        bw-select-picker(flex="50", flex-xs="100", [fg]="fg",
+            label="Condition",
+            field="condition",
+            [items]="alertsService.conditionList",
+            noneSelectedText="NOTHING SELECTED",
+            leftIcon="playlist-plus")
+        div(*ngIf="isUserAlert()", flex="50", flex-xs="100", layout="column")
+            bw-text-box.p-t-25.p-l-10(flex-none, [fg]="fg", field="value", label="Value", leftIcon="edit")
+            .invalidValueMsg(*ngIf="fg && fg.get('value').errors && fg.get('value').errors.invalidValue && (fg.get('value').dirty || fg.get('value').touched)") Invalid number, please enter a numeric value
+
+    .m-t-20.p-relative(flex, layout="row")
+        kpi-notification-users(*ngIf="alert", flex, [fg]="fg", [notificationUsers]="alert.users")

@@ -15,10 +15,10 @@ label(*ngIf="label", style="margin-bottom: 10px;")
                 type='button',
                 role='button',
                 title='{{selection}}',
-                aria-expanded='true', (click)='toggleOpen()')
+                aria-expanded='true', (click)='toggleOpen($event)')
             span.filter-option.pull-left(#filterOption, [style.width.px]="selectionWidth") {{selection}}
             span.bs-caret
-                span.caret
+                span.caret((click)='toggleOpen($event)')
         .dropdown-menu(
                 role='combobox',
                 style='max-height: 300px; overflow: auto; min-height: 0px',

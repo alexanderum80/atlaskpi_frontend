@@ -13,7 +13,9 @@ export interface State {
   theme: string;
   inDemoMode?: boolean;
   previousRoute?: string;
-  selectedAppointmentsProvider?: string;
+  // selectedAppointmentsProvider?: string;
+  selectedAppointmentsResource?: string;
+
   showAppointmentCancelled?: boolean;
   showHelpCenter: boolean;
 }

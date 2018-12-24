@@ -1,0 +1,20 @@
+mutation UpdateScheduleJob($id: String!, $input: ScheduleJobInput) {
+    updateScheduleJob(id: $id, input: $input) {
+        entity {
+            notifyUsers
+            frequency
+            active
+            pushNotification
+            emailNotified
+            modelAlert {
+                name
+                id
+            }
+        }
+        success
+        errors {
+            field
+            errors
+        }
+    }
+}

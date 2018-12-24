@@ -7,6 +7,7 @@ query WidgetListNoData($materialize: Boolean) {
     type
     size
     color
+    fontColor
     chartWidgetAttributes {
       chart
     }

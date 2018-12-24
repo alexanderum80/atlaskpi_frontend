@@ -7254,3 +7254,4 @@ zen-observable@^0.8.0:
 zone.js@^0.8.26:
   version "0.8.26"
   resolved "http://npm.atlaskpi.com:9000/zone.js/-/zone.js-0.8.26.tgz#7bdd72f7668c5a7ad6b118148b4ea39c59d08d2d"
+  integrity sha512-W9Nj+UmBJG251wkCacIkETgra4QgBo/vgoEkb4a2uoLzpQG7qF9nzwoLXWU5xj3Fg2mxGvEDh47mg24vXccYjA==

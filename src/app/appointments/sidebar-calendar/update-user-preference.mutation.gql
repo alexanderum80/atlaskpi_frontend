@@ -1,4 +1,4 @@
-mutation UpdateUserPreference($id: String!, $input: ITourInput) {
+mutation UpdateUserPreference($id: String!, $input: UserPreferencesInput) {
     updateUserPreference(id: $id, input: $input) {
         success
         errors {
@@ -8,6 +8,8 @@ mutation UpdateUserPreference($id: String!, $input: ITourInput) {
         entity {
             preferences {
                 providers
+                resources
+                mobileCalendar
                 calendarTimeZone
             }
         }

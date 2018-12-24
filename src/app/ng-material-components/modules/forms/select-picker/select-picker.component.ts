@@ -147,16 +147,18 @@ export class SelectPickerComponent extends InputBase implements OnChanges, OnDes
         this._updateSelectionWidth();
     }
 
-    @HostListener('body:click', ['$event.target']) 
+    @HostListener('body:click', ['$event']) 
     bodyClicked(e) {
-            if (e 
-            && e.classList 
-            && ( e.classList.value.indexOf('filter-option') !== -1 || e.classList.value.indexOf('select-picker-filter-text') !== -1)) {
+        const target = e.target;
+
+            if (target 
+            && target.classList 
+            && ( target.classList.value.indexOf('filter-option') !== -1 || target.classList.value.indexOf('select-picker-filter-text') !== -1)) {
             return;
         }
 
         if (this.open) {
-            this.toggleOpen();
+            this.toggleOpen(e);
         }
     }
 
@@ -320,7 +322,9 @@ export class SelectPickerComponent extends InputBase implements OnChanges, OnDes
         this._markForReset = value;
     }
 
-    toggleOpen() {
+    toggleOpen(e) {
+        e.preventDefault();
+        e.stopPropagation();
         this.open = !this.open;
     }
 
@@ -337,7 +341,7 @@ export class SelectPickerComponent extends InputBase implements OnChanges, OnDes
         this._updateSelectedItems(item);
 
         if (!this.multiple) {
-            this.toggleOpen();
+            this.toggleOpen(e);
             this._clonedItems.forEach(i => {
                 if (item !== i) {
                     i.selected = false;

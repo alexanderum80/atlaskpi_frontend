@@ -1,0 +1,18 @@
+mutation UpdateAlertActive($id: String!, $active: Boolean!) {
+    updateAlertActive(id: $id, active: $active) {
+        entity {
+            _id
+            name
+            kpi
+            frequency
+            condition
+            value
+            active
+        }
+        success
+        errors {
+            field
+            errors
+        }
+    }
+}

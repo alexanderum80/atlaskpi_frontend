@@ -88,7 +88,6 @@ export class FilterFormComponent implements AfterViewInit, OnChanges, OnDestroy 
 
     ngAfterViewInit() {
         const that = this;
-
         this.vm.initialize(this.filter);
         this._loadingSources();
 

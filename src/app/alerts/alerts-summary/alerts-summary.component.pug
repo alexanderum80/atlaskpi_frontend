@@ -1,0 +1,8 @@
+.alerts(flex, layout="row", (click)="updateSelectedAlert(index)")
+  bw-toggle(flex="30", size="xs", [fg]="fg", field="active", color="green", [value]="alert.active")
+  .flex-70.title(layout-column)
+    .alert-name {{alert.name}}
+    .systemAlert(*ngIf="isSystemAlert") System alert
+    .userAlert(*ngIf="!isSystemAlert") {{ userAlertDescription }}
+  div(*ngIf="!isSystemAlert")
+    i.zmdi.zmdi-delete.remove-button([ngClass]="{'can-remove': canRemove}", [class.disabled]="!canRemove", (click)="removeAlert(alert._id)")

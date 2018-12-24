@@ -43,6 +43,7 @@ export class ChartPreviewComponent implements OnChanges, AfterViewInit {
     legendColors: ILegendColorConfig[];
     kpiforMap = '';
     groupingforMap = [];
+    zipCodeSource: string;
 
     constructor(private _chartGalleryService: ChartGalleryService,
                 private _legendService: LegendService) {
@@ -90,6 +91,9 @@ export class ChartPreviewComponent implements OnChanges, AfterViewInit {
             }
             if (this.fg.value.grouping) {
                 this.groupingforMap = this.fg.value.grouping;
+            }
+            if (this.fg.value.zipCodeSource) {
+                this.zipCodeSource = this.fg.value.zipCodeSource;
             }
         }
     }

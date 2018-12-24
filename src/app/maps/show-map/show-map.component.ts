@@ -37,12 +37,14 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     @Input() markers: any[];
     @Input() legendColors: ILegendColorConfig[];
     @Input() legendClosed = false;
-    @Input() Height = '400px';
-    // hiding this until fully functional
+    @Input() Height = '100%';
     @Input() showSettingsBtn = false;
     @Input() showLegendBtn = true;
     @Input() kpi: string;
     @Input() grouping: string[];
+    @Input() zipCodeSource: string;
+    @Input() mapsTitle: string;
+    @Input() mapSize: string;
     @ViewChild('showMapForm') private _form: ShowMapFormComponent;
 
     lat: number;
@@ -54,6 +56,7 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     showingMapSettings = false;
     isMapMarkerGrouping = false;
     subscription: Subscription;
+    fullscreen = false;
 
     private _subscription: Subscription[] = [];
 
@@ -66,6 +69,7 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
 
     ngOnInit() {
         this.showingLegend = !this.legendClosed;
+        this.showingLegend = this.mapSize === 'big' ? true : false;
     }
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
@@ -85,7 +89,11 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     }
 
     showLegend() {
-        this.showingLegend = true;
+        this.showingMapSettings = false;
+        this.showingLegend = this.showingLegend ? false : true;
+    }
+    showFullscreen() {
+        this.fullscreen = this.fullscreen ? false : true;
     }
 
     closeLegend() {
@@ -98,7 +106,8 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     }
 
     showMapSettings(): void {
-        this.showingMapSettings = true;
+        this.showingLegend = false;
+        this.showingMapSettings = this.showingMapSettings ? false : true;
     }
 
     closeMapSettings(): void {
@@ -108,6 +117,7 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     showMapGroupings(): void {
         if (!Object.keys(this._form.vm.payload).length) { return; }
         const that = this;
+
         this.isMapMarkerGrouping = this._form.vm.payload.grouping ? true : false;
         this._subscription.push(this._apollo.watchQuery<IMapMarkerResponse>({
             query: mapMarkerQuery,
@@ -115,7 +125,9 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
             variables: {
                 input: {
                     kpi: this.kpi,
-                    grouping: this._form.vm.payload.grouping ? ['customer.zip', this._form.vm.payload.grouping] : ['customer.zip'],
+                    grouping: this._form.vm.payload.grouping 
+                        ? [this.zipCodeSource, this._form.vm.payload.grouping] 
+                        : this.grouping, 
                     dateRange: JSON.stringify({predefined: this._form.vm.payload.dateRange, custom: {from: null, to: null}})
                 }
             }

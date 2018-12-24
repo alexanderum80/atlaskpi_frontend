@@ -1,0 +1,15 @@
+query Alerts {
+    alerts {
+        _id
+        name
+        kpi
+        frequency
+        condition
+        value
+        active
+        users {
+            identifier
+            deliveryMethods
+        }
+    }
+}
