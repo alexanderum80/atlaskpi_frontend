@@ -1,0 +1,33 @@
+
+.m-5.p-30.h-100.bgm-white(layout="column")
+  .import-file-header(layout="row")
+    i.zmdi.zmdi-storage
+    .title Import your file
+  .import-file-body(layout="row")
+    .left-panel.flex
+      .m-20(layout="row", layout-align="center center")
+        .import-scv(*ngIf="csvFileData.inputName || noFileImported", layout="column", [class.selected-file]="csvFileData.inputName")
+          i.zmdi.zmdi-close.close-icon(*ngIf="csvFileData.inputName", (click)="dropImportedFile('csv')")
+          img(src="{{ csvImagePath }}", alt="Enter data image")
+          .file-name(*ngIf="csvFileData.inputName", layout-align="center") {{ csvFileData.inputName }}
+          i.zmdi.zmdi-check-circle.check-icon(*ngIf="csvFileData.inputName")
+        .import-excel(*ngIf="excelFileData.inputName || noFileImported", layout="column", [class.selected-file]="excelFileData.inputName")
+          i.zmdi.zmdi-close.close-icon(*ngIf="excelFileData.inputName", (click)="dropImportedFile('excel')")
+          img(src="{{ excelImagePath }}", alt="Enter data image")
+          .file-name(*ngIf="excelFileData.inputName", , layout-align="center") {{ excelFileData.inputName }}
+          i.zmdi.zmdi-check-circle.check-icon(*ngIf="excelFileData.inputName")
+      .p-30(layout="row", layout-align="center center")
+        label.custom-file-upload
+          i.zmdi.zmdi-download.p-r-10
+          input(type="file", (change)="importFile($event)") 
+          | BROWSE
+    .p-l-40.flex(layout="column")
+      .p-b-10 Assign users with access to this file:
+      div(*ngFor="let user of usersList, index as i", layout="column")
+        kpi-user-selection(layout="row", [user]="user", (selectedStatus)="updateUserSelection($event, i)")
+  .button-panel(layout="row", layout-align="end end")
+      bw-button(icon="floppy", title="SAVE", color="blue", (clicked)="save()", [disabled]="!isFormValid()")
+      bw-button(icon="close", title="CANCEL", [simple]="true", color="black", (clicked)="cancel()")
+
+  //- Popup for select date field
+  kpi-date-field-popup((done)="closeModal()")

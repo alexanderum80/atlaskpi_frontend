@@ -1,0 +1,26 @@
+.p-l-20.p-r-25.flex(layout="row")
+    .p-10(flex, layout="column")
+        | List name:
+        bw-text-box([fg]="vm.fg", field="name", [required]="true")
+    .p-t-40.p-l-20.flex(*ngIf="customList && customList._id", layout="row")
+        | (Data type: 
+        .t-bold {{ customList.dataType }})
+    .p-10(*ngIf="!customList || !customList._id", flex, layout="column")
+        | Data type:
+        bw-select-picker.w-100(
+                    [fg]="vm.fg",
+                    field="dataType",
+                    [required]="true",
+                    [items]="dataTypeItems",
+                    noneSelectedText="NOTHING SELECTED")
+
+.p-l-10.p-r-10.flex(layout="column", *ngIf="vm.fg.get('name').value")
+    .custom-list-header.m-20(layout="row", layout-align="center center")
+        .c-white {{ vm.fg.controls.name.value }}
+    
+    div(*ngFor="let customList of vm.customListModel.controls, index as i", layout="column")
+        div(layout="row")
+            .p-10 {{i + 1}}.
+            bw-text-box.flex-90([fg]="customList", field="value")
+            i.zmdi.zmdi-close.close-btn([class.hidden]="i === 0 || i + 1 === vm.customListModel.controls.length",
+                                        (click)="removeListItem(customList)")

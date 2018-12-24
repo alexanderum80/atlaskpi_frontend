@@ -1,0 +1,10 @@
+mutation AddCustomList($input: CustomListInput!) {
+  addCustomList(input: $input) {
+    success
+    entity {
+      name
+      dataType
+      listValue
+    }
+  }
+}

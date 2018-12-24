@@ -1,0 +1,233 @@
+import { DataEntryFormViewModel, DataEntrySchemaViewModel } from '../new-data-entry/data-entry.viewmodel';
+import { QueryRef, Apollo } from 'apollo-angular';
+import SweetAlert from 'sweetalert2';
+import { DataEntryList } from '../shared/models/data-entry.models';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { CommonService } from 'src/app/shared/services';
+import { ApolloService } from 'src/app/shared/services/apollo.service';
+import { concat, sortBy } from 'lodash';
+import { MenuItem } from 'src/app/ng-material-components';
+import { Router } from '@angular/router';
+
+const dataEntriesQuery = require('graphql-tag/loader!../shared/graphql/data-entries.gql');
+const dataEntryIdQuery = require('graphql-tag/loader!../shared/graphql/data-entry-by-id.gql');
+const removeDataEntryMutation = require('graphql-tag/loader!../shared/graphql/remove-data-entry.gql');
+
+const EntryType = {
+  Table: 'table',
+  Excel: 'excel',
+  CSV: 'csv'
+};
+
+const ImageUrl = {
+  Table: '../../../assets/img/datasources/table.png',
+  Excel: '../../../assets/img/datasources/excel.png',
+  CSV: '../../../assets/img/datasources/csv.png',
+};
+
+@Component({
+  selector: 'kpi-show-all-data-entry',
+  templateUrl: './show-all-data-entry.component.pug',
+  styleUrls: ['./show-all-data-entry.component.scss']
+})
+export class ShowAllDataEntryComponent implements OnInit, OnDestroy {
+
+  dataEntries: DataEntryList[];
+  dataEntriesQueryRef: QueryRef<any>;
+  private _subscription: Subscription[] = [];
+
+  loading = true;
+
+  actionItemsTable: MenuItem[] = [{
+    id: '1',
+    icon: 'more-vert',
+    children: [
+        {
+            id: 'download',
+            icon: 'download',
+            title: 'Download'
+        },
+        {
+            id: 'delete',
+            icon: 'delete',
+            title: 'Delete'
+         }
+    ]
+  }];
+
+  actionItemsFile: MenuItem[] = [{
+    id: '1',
+    icon: 'more-vert',
+    children: [
+        {
+            id: 'upload-file',
+            icon: 'upload',
+            title: 'Upload file',
+        },
+        {
+            id: 'download',
+            icon: 'download',
+            title: 'Download'
+        },
+        {
+            id: 'delete',
+            icon: 'delete',
+            title: 'Delete'
+         }
+    ]
+  }];
+
+  constructor(
+    private _apolloService: ApolloService,
+    private _apollo: Apollo,
+    private vm: DataEntryFormViewModel,
+    private _router: Router
+  ) { }
+
+  ngOnInit() {
+    this._getDataEntries();
+  }
+
+  ngOnDestroy() {
+    CommonService.unsubscribe(this._subscription);
+  }
+
+  private _getDataEntries() {
+    this.dataEntriesQueryRef = this._apollo.watchQuery<any> ({
+      query: dataEntriesQuery,
+      fetchPolicy: 'network-only'
+    });
+
+    this._subscription.push(
+        this.dataEntriesQueryRef.valueChanges.subscribe(res => {
+          this.dataEntries = undefined;
+          if (res.data.dataEntries.length) {
+            this.dataEntries = sortBy(res.data.dataEntries.map(data => {
+              let description: string = data.description;
+              const fileExtensionIndex = description.lastIndexOf('.') !== -1 ?
+                                        description.lastIndexOf('.') :
+                                        description.length;
+              description = description.substr(0, fileExtensionIndex);
+
+              const imageUrl = this._getImageUrl(data.description);
+              const actionItems = this._getDataEntriesType(data.description) === EntryType.Table ?
+                                  this.actionItemsTable : this.actionItemsFile;
+              return {
+                _id: data._id,
+                name: data.name,
+                description: description,
+                virtualSource: data.dataSource,
+                image: imageUrl,
+                users: concat(data.users, ', '),
+                actionItems: actionItems
+              };
+            }), ['_id']);
+
+          }
+          this.loading = false;
+        })
+    );
+  }
+
+  private _getImageUrl(description) {
+    const extension = this._getFileExtension(description);
+    switch (extension) {
+      case '.xls':
+        return ImageUrl.Excel;
+      case '.xlsx':
+        return ImageUrl.Excel;
+      case '.csv':
+        return ImageUrl.CSV;
+      default:
+        return ImageUrl.Table;
+    }
+  }
+
+  private _getDataEntriesType(description: string) {
+    const extension = this._getFileExtension(description);
+    switch (extension) {
+      case '.xls':
+        return EntryType.Excel;
+      case '.xlsx':
+        return EntryType.Excel;
+      case '.csv':
+        return EntryType.CSV;
+      default:
+        return EntryType.Table;
+    }
+  }
+
+  private _getFileExtension(description) {
+    const lastIndex = description.lastIndexOf('.');
+    if (lastIndex === -1) {
+      return EntryType.Table;
+    }
+    const extension = description.substr(lastIndex, description.length - 1);
+    return extension;
+  }
+
+  actionClicked(item: MenuItem, dataEntry: DataEntryList) {
+    switch (item.id) {
+      case 'upload-file':
+
+        break;
+      case 'download':
+        this._downloadFile(dataEntry._id);
+        break;
+      case 'delete':
+        this._removeDataEntry(dataEntry.name);
+        break;
+    }
+  }
+
+  addDataEntry() {
+    this._router.navigateByUrl('/data-entry/new');
+  }
+
+  private _downloadFile(dataEntryId: string) {
+    this._apolloService.networkQuery<string>(dataEntryIdQuery, {id: dataEntryId}).then(res => {
+      const dataSourceCollection = JSON.parse(res.dataEntryByIdMapCollection);
+      const schemaCollection = dataSourceCollection.schema;
+      const dataCollection = dataSourceCollection.data;
+      const collectionName = dataSourceCollection.dataName;
+
+      const dataArray = [];
+      const fields = [];
+      for (const field in schemaCollection) {
+        if (field !== 'Source') {
+          fields.push(field);
+        }
+      }
+      // dataArray.push(fields);
+
+      dataCollection.map(d => {
+        const data = [];
+        fields.map(f => {
+          const fieldName = f.toLowerCase().replace(' ', '_');
+          data.push(d[fieldName]);
+        });
+        dataArray.push(data);
+      });
+
+      this.vm.downloadToCsvFile(collectionName, fields, dataArray);
+    });
+  }
+
+  private _removeDataEntry(name) {
+    return SweetAlert({
+      title: 'Are you sure you want to remove this file?',
+      type: 'warning',
+      width: '600px',
+      showConfirmButton: true,
+      showCancelButton: true
+    })
+    .then((res) => {
+        if (res.value === true) {
+          this._subscription.push(this._apolloService.mutation<any>(removeDataEntryMutation, {name: name}, ['DataEntries']).then(() => {
+          }));
+        }
+    });
+  }
+
+}

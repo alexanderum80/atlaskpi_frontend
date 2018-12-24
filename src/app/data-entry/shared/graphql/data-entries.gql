@@ -1,0 +1,28 @@
+query DataEntries {
+  dataEntries {
+    _id
+    name
+    description
+    dataSource
+    externalSource
+    fields {
+      name
+      path
+      type
+    }
+    filterOperators {
+      Number {
+        description
+        name
+        
+      }
+      String {
+        description
+        name
+      }
+    }
+    sources
+    dataEntry
+    users
+  }
+}

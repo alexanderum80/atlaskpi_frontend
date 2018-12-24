@@ -42,20 +42,20 @@ label(*ngIf="label", style="margin-bottom: 10px;")
                     style='overflow-y: auto; min-height: 0px')
                 //- selected items
                 li(*ngFor='let itm of selectedItems; let i = index', [attr.data-original-index]='i',
-                        [class.selected]='itm.selected', (click)='toggleItem($event, itm)')
+                        [class.selected]='itm.selected', [class.disabled]='itm.disabled', (click)='toggleItem($event, itm)')
                     a(tabindex='{{i}}', [attr.data-token]='null', role='option',
-                            [attr.aria-disabled]='itm.disabled', [attr.aria-selected]='itm.selected')
+                            [class.disabled]='itm.disabled', [attr.aria-selected]='itm.selected')
                         span.text {{itm.title}}
                         span.zmdi.check-mark(class='{{tickIcon}}')
                 //- filteritems/cloneitems
                 li(*ngFor='let item of filteredItems; let idx = index', [attr.data-original-index]='idx',
                         (click)='toggleItem($event, item)')
                     a(tabindex='{{idx}}', [attr.data-tokens]='null', role='option',
-                            [attr.aria-disabled]='item.disabled')
+                            [class.disabled]='item.disabled')
                         span.text {{item.title}}
                         span.zmdi.check-mark(class='{{tickIcon}}')
                 li.no-results(*ngIf='emptySearch') {{ noneResultsText }} "{{ query.valueChanges | async }}"
         select.my-selectpicker(style='display: none', tabindex='-98', [class.mobile-device]='isMobile', [attr.multiple]='multiple')
-            option(*ngFor='let item of filteredItems', value='{{item.id}}', [attr.selected]='item.selected ? true : null') {{item.title}}
+            option(*ngFor='let item of filteredItems', value='{{item.id}}', [attr.selected]='item.selected ? true : null', [attr.disabled]="item.disabled") {{item.title}}
     span.input-group-addon.last(*ngIf='rightIcon')
         i.zmdi(class='zmdi-{{rightIcon}}')

@@ -1,0 +1,9 @@
+mutation UpdateCustomList($input: CustomListInput!) {
+  updateCustomList(input: $input) {
+    success
+    entity {
+      _id
+      name
+    }
+  }
+}

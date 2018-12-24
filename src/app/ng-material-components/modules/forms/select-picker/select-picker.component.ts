@@ -1,4 +1,3 @@
-import { NgControl } from '@angular/forms';
 import {
     AfterViewInit,
     ChangeDetectorRef,
@@ -327,6 +326,10 @@ export class SelectPickerComponent extends InputBase implements OnChanges, OnDes
 
     toggleItem(e, item: SelectionItem) {
         e.stopPropagation();
+
+        if (item.disabled) {
+            return;
+        }
 
         this._valueChangedFromInside = true;
         item.selected = !item.selected;

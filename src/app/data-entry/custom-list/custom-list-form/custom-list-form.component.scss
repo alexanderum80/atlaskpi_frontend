@@ -1,0 +1,16 @@
+.custom-list-header {
+    height: 50px;
+    background-color: #2196F3;
+}
+
+.close-btn {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 20px;
+    color: red;
+    font-size: 20px !important;
+
+    &:hover {
+        cursor: pointer;
+    }
+}

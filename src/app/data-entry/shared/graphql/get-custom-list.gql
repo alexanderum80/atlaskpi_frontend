@@ -1,0 +1,8 @@
+query CustomList($id: String) {
+  customList(id: $id) {
+    _id
+    name
+    dataType
+    listValue
+  }
+}

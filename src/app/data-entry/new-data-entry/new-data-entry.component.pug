@@ -1,0 +1,23 @@
+.new-data-entry-container(layout="row", layout-xs="column", layout-padding)
+
+    div(flex, [ngSwitch]="vm.selectedInputType")
+    
+        .data-entry-selection-container
+            kpi-item-list(
+                *ngSwitchCase="0",
+                [items]="vm.dataEntryTypes",
+                [allowAdd]="false",
+                [actionItems]="null",
+                xsSize="100",
+                smSize="50",
+                xlSize="50",
+                itemType="standard",
+                (onItemClicked)="itemClicked($event)")
+
+        kpi-import-file(*ngSwitchCase="1")
+        
+        kpi-define-schema.overflow-auto(*ngSwitchCase="2")
+
+        kpi-predefined-template.overflow-auto(*ngSwitchCase="3")
+
+

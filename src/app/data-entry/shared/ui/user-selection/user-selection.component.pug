@@ -1,0 +1,5 @@
+bw-checkbox.p-3(flex-none, [fg]="fg", field="selected", [value]="user.selected")
+bw-cropped-image(*ngIf="user.pictureUrl", [width]="30", image="{{user.pictureUrl}}", [borderWidth]="1")
+.user-avatar(*ngIf="!user.pictureUrl")
+    i.zmdi.zmdi-account
+.p-t-5.p-l-10 {{ user.fullName }}
