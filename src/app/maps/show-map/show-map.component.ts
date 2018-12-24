@@ -42,6 +42,7 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     @Input() showLegendBtn = true;
     @Input() kpi: string;
     @Input() grouping: string[];
+    @Input() zipCodeSource: string;
     @Input() mapsTitle: string;
     @Input() mapSize: string;
     @ViewChild('showMapForm') private _form: ShowMapFormComponent;
@@ -116,6 +117,7 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
     showMapGroupings(): void {
         if (!Object.keys(this._form.vm.payload).length) { return; }
         const that = this;
+
         this.isMapMarkerGrouping = this._form.vm.payload.grouping ? true : false;
         this._subscription.push(this._apollo.watchQuery<IMapMarkerResponse>({
             query: mapMarkerQuery,
@@ -123,7 +125,9 @@ export class ShowMapComponent implements OnChanges, OnDestroy, OnInit {
             variables: {
                 input: {
                     kpi: this.kpi,
-                    grouping: this._form.vm.payload.grouping ? ['customer.zip', this._form.vm.payload.grouping] : ['customer.zip'],
+                    grouping: this._form.vm.payload.grouping 
+                        ? [this.zipCodeSource, this._form.vm.payload.grouping] 
+                        : this.grouping, 
                     dateRange: JSON.stringify({predefined: this._form.vm.payload.dateRange, custom: {from: null, to: null}})
                 }
             }

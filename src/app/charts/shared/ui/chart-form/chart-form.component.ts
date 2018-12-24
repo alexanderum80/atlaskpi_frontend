@@ -317,7 +317,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         this._subscription.push(
             this._apolloService.networkQuery <any> (mapMarkersQuery, { input:
                 { dateRange: JSON.stringify(tmpDateRange),
-                    grouping: this.fg.value.grouping ? ['customer.zip', this.fg.value.grouping] : ['customer.zip'],
+                    grouping: this.fg.value.grouping ? [this.fg.value.zipCodeSource, this.fg.value.grouping] : [this.fg.value.zipCodeSource],
                     kpi: this.fg.value.kpi
                 } })
                 .then(res => {
@@ -524,6 +524,10 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                         }
                         that.fg.controls['grouping'].setValue(groupingValue); 
 
+                    }
+                    // zipCodeSource
+                    if (that.fg.controls['zipCodeSource'] && values.zipCodeSource) {
+                        that.fg.controls['zipCodeSource'].setValue(values.zipCodeSource)
                     }
                     // depends on the daterange selection
                     that.fg.controls['comparison'].setValue(values.comparison);
