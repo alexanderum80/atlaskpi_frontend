@@ -13,7 +13,6 @@ import { LocalStorageService } from './local-storage.service';
 import { NativeChannelService } from './native-channel.service';
 import { UserService } from './user.service';
 import { StoreHelper } from './store-helper.service';
-import { SidebarService } from 'src/app/navigation/sidebar/sidebar.service';
 
 @Injectable()
 export class AuthenticationService {
@@ -28,7 +27,6 @@ export class AuthenticationService {
         private _localStorageSvc: LocalStorageService,
         private _nativeChannelSvc: NativeChannelService,
         private _storeHelper: StoreHelper,
-        private _sidebarService: SidebarService,
         private _apollo: Apollo) {
         this._updateAuthorizationOnStartup();
     }
@@ -107,9 +105,6 @@ export class AuthenticationService {
             this._storeHelper.update('selectedAppointmentsProvider', null);
         }
         this._userSvc.unsubscribe();
-
-        this._sidebarService.resetMenuItems();
-        this._sidebarService.resetUserCanAdd();
     }
 
     setInitialToken(res: any, redirect = true) {
