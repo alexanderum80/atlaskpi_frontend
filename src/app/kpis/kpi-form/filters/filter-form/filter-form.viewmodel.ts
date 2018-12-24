@@ -128,29 +128,36 @@ export class FilterFormViewModel {
 
     public updateSelectableCriteria(criterias: string[]) {
         this._criteriaItems = criterias.map(c => new SelectionItem(c, c));
-
+        
         const criteriaControl = this._filterFg.get('criteria');
-
+        
         if (criteriaControl) {
             const value = criteriaControl.value;
-            const criteriaExists = this._criteriaItems.find(item => item.id === value);
-
-            if (!criteriaExists && isString(value) && value) {
-
+            if (isString(value) && value) {
+                
                 // if the form was already touched we do nothing.
                 if (this._formTouched) { return; }
-
-                // case when the filter model is just loaded and the criterias doesnt contain the original definition
-                // edit kpi, may havee multi selection separated by |
+                
                 const hasMultiValues = value.indexOf('|');
                 if (hasMultiValues !== -1) {
+                    // case when the filter model is just loaded and the criterias doesnt contain the original definition
+                    // edit kpi, may havee multi selection separated by |
                     const selectedValues = value.split('|');
-
+                    
                     const selectedItems = selectedValues.map(s => new SelectionItem(s, s));
-                    this._criteriaItems = this._criteriaItems.concat(selectedItems);
-                } else {
-                    this._criteriaItems = this._criteriaItems.concat(new SelectionItem(value, value));
-                }
+               
+                    const criteriaNotInList = selectedItems.filter(v => !this._criteriaItems.find(cI => cI.id === v.id ));
+
+                    //we need to concat only the items that are not already there
+                    this._criteriaItems = this._criteriaItems.concat(criteriaNotInList);
+                } 
+                else {
+                    const singleSelectionValueSelected = new SelectionItem(value, value)
+                    const isSingleCriteriaNotInList = this._criteriaItems.find(cI => cI.id === singleSelectionValueSelected.id );
+
+                    if(!isSingleCriteriaNotInList)
+                    this._criteriaItems = this._criteriaItems.concat(singleSelectionValueSelected);
+                }  
             }
         }
     }
