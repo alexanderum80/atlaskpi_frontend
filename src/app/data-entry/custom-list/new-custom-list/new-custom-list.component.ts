@@ -24,7 +24,6 @@ export class NewCustomListComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.vm.initialize(this.vm.defaultCustomListModel);
   }
 
   open() {
@@ -35,8 +34,6 @@ export class NewCustomListComponent implements OnInit {
     this.vm.customListModel.push(new FormGroup({
       value: new FormControl('')
     }));
-    // if (!(this.vm.fg.controls.listValue as FormArray).controls.length) {
-    // }
   }
 
   save() {
@@ -73,15 +70,7 @@ export class NewCustomListComponent implements OnInit {
   }
 
   private _closeModal() {
-    // this._initializeModel();
     this.newCustomListModal.close();
-  }
-
-  private _initializeModel() {
-    this.vm.initialize(this.vm.defaultCustomListModel);
-    this.vm.customListModel.controls.push(new FormGroup({
-      value: new FormControl('')
-    }));
   }
 
 }
