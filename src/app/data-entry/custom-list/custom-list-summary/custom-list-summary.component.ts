@@ -48,7 +48,7 @@ export class CustomListSummaryComponent implements OnInit {
             if (res.data.removeCustomList.errors[0].errors[0] === 'list in use') {
               return SweetAlert({
                 title: 'List in use!',
-                text: `This list cannot be deleted because is in use.`,
+                text: `This list cannot be deleted because it's in use.`,
                 type: 'error',
                 showConfirmButton: true,
                 confirmButtonText: 'Ok'
