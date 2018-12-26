@@ -57,3 +57,20 @@
     }
 }
 
+@media screen and (max-width: 736px)  {
+
+    .define-schema-container {
+        padding: 2px;
+    }
+
+    .schema-form-container {
+        margin: 0 20px !important;
+    }
+
+    .zmdi.zmdi-close {
+        right: 0px !important;
+    }
+
+}
+
+

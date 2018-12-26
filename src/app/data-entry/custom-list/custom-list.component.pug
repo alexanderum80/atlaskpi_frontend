@@ -1,4 +1,5 @@
 .custom-list-container.p-relative
+    //- desktop
     .h-100.p-relative(*ngIf="!isLoading && !isMobile", flex, layout="row", layout-xs="column")
       .left-panel(flex="40", flex-xs="100", layout="column")
         bw-button.addButton(color="blue", icon="plus", [rounded]="true", size="lg", (clicked)="onAddCustomList()")
@@ -17,3 +18,25 @@
         .p-t-20.p-r-30(*ngIf="!isLoading", layout="row", layout-align="end")
           bw-button.m-l-5(icon="floppy", title="SAVE", color="blue", (clicked)="save()", [disabled]="!isFormValid()")
           bw-button.m-l-5(icon="close", title="CANCEL", color="black", [simple]="true", (clicked)="cancel()")
+
+    //- mobile
+    #card.h-100.p-relative(*ngIf="!isLoading && isMobile", flex, layout="row", layout-xs="column", [class.flipped]="flipped && isMobile")
+      figure.front
+        .left-panel(flex="40", flex-xs="100", layout="column")
+          bw-button.addButton(color="blue", icon="plus", [rounded]="true", size="lg", (clicked)="onAddCustomList()")
+          .custom-list-header.p-10(layout="row", layout-padding)
+            div(flex-initial)
+              i.zmdi.zmdi-view-headline
+            div(flex-initial)
+              .title Custom Lists
+          .custom-list-body(layout="column")
+            .lists(flex, *ngFor="let customList of vm.customList, let i = index", layout="column", 
+                [ngClass]="{'selected-custom-list': vm.selectedCustomListIndex === i}")
+              kpi-custom-list-summary(flex, [customList]="customList", [index]="i", (selectedCustomListIndex)="updateSelectedCustomListIndex($event)")
+
+      figure.back
+        .right-panel.overflow-auto.p-20(flex="60", flex-xs="100", layout="column")
+          kpi-custom-list-form(*ngIf="!isLoading", [customList]="selectedCustomList")
+          .p-t-20.p-r-30(*ngIf="!isLoading", layout="row", layout-align="end")
+            bw-button.m-l-5(icon="floppy", title="SAVE", color="blue", (clicked)="save()", [disabled]="!isFormValid()")
+            bw-button.m-l-5(icon="close", title="CANCEL", color="black", [simple]="true", (clicked)="cancel()")

@@ -5,6 +5,7 @@ import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@
 import { FormGroup } from '@angular/forms';
 import { ApolloService } from 'src/app/shared/services/apollo.service';
 
+const dataEntriesQuery = require('graphql-tag/loader!../../shared/graphql/data-entries.gql');
 const deleteCustomListMutation = require('graphql-tag/loader!../../shared/graphql/remove-custom-list.gql');
 
 @Component({
@@ -12,7 +13,7 @@ const deleteCustomListMutation = require('graphql-tag/loader!../../shared/graphq
   templateUrl: './custom-list-summary.component.pug',
   styleUrls: ['./custom-list-summary.component.scss']
 })
-export class CustomListSummaryComponent implements OnInit, AfterViewInit {
+export class CustomListSummaryComponent implements OnInit {
   @Input() customList: ICustomList;
   @Input() index = 0;
   @Output() selectedCustomListIndex = new EventEmitter<number>();
@@ -25,21 +26,6 @@ export class CustomListSummaryComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit() {
-    // this._subscribeToFormChange();
-  }
-
-  ngAfterViewInit() {
-    // if (this.customList) {
-    //   const fgValue = {
-    //     _id: this.customList._id,
-    //     name: this.customList.name,
-    //     dataType: this.customList.dataType,
-    //     listValue: this.customList.listValue
-    //   };
-    //   this.vm.fg.patchValue(fgValue);
-    // } else {
-    //   this.vm.fg.patchValue(this.vm.defaultCustomListModel);
-    // }
   }
 
   updateSelectedCustomList(customListIndex) {
@@ -59,7 +45,15 @@ export class CustomListSummaryComponent implements OnInit, AfterViewInit {
       if (result.value === true) {
         this._apolloService.mutation<any> (deleteCustomListMutation, { id: customListId }, ['CustomList'])
           .then(res => {
-            if (res.data.removeCustomList.success) {
+            if (res.data.removeCustomList.errors[0].errors[0] === 'list in use') {
+              return SweetAlert({
+                title: 'List in use!',
+                text: `This list cannot be deleted because is in use.`,
+                type: 'error',
+                showConfirmButton: true,
+                confirmButtonText: 'Ok'
+              });
+            } else if (res.data.removeCustomList.success) {
               this.selectedCustomListIndex.emit(0);
               this.vm.removeCustomList(customListId);
             }
@@ -72,13 +66,5 @@ export class CustomListSummaryComponent implements OnInit, AfterViewInit {
     const description = this.customList.listValue.join(', ') || '';
     return description;
   }
-
-  // private _subscribeToFormChange() {
-  //   this.fg.valueChanges.subscribe(fg => {
-  //     if (fg.active !== undefined && fg.active !== '') {
-  //       this.switchedActive.emit(fg.active);
-  //     }
-  //   });
-  // }
 
 }

@@ -3,7 +3,7 @@
   .import-file-header(layout="row")
     i.zmdi.zmdi-storage
     .title Import your file
-  .import-file-body(layout="row")
+  .import-file-body(layout="row", layout-xs="column")
     .left-panel.flex
       .m-20(layout="row", layout-align="center center")
         .import-scv(*ngIf="csvFileData.inputName || noFileImported", layout="column", [class.selected-file]="csvFileData.inputName")

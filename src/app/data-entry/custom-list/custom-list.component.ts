@@ -53,7 +53,9 @@ export class CustomListComponent implements OnInit {
 
   private _subscribeToFormChange() {
     this.vm.fg.valueChanges.subscribe(fg => {
-      this.vm.customList[this.vm.selectedCustomListIndex].name = fg.name;
+      if (this.vm.customList.length - 1 >= this.vm.selectedCustomListIndex) {
+        this.vm.customList[this.vm.selectedCustomListIndex].name = fg.name;
+      }
     });
   }
 

@@ -9,6 +9,7 @@ query DataEntries {
       name
       path
       type
+      sourceOrigin
     }
     filterOperators {
       Number {

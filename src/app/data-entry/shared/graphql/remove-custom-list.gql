@@ -1,5 +1,8 @@
 mutation RemoveCustomList($id: String!) {
   removeCustomList(id: $id) {
     success
+    errors {
+      errors
+    }
   }
 }
