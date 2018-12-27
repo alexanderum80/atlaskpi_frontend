@@ -236,14 +236,14 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
 
     private _subscribeToKpiAndDateRange(): void {
         const that = this;
-        this.fg .valueChanges
-                .distinctUntilChanged()
-                .debounceTime(400)
-                .subscribe((value) => {
-                    const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
-                    const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
-                    if (value.kpi && value.predefinedDateRange && !loadingGroupings && !loadingComparison) {
-                        const payload = that._getGroupingInfoInput(value);
+        this.fg.valueChanges
+        .distinctUntilChanged()
+        .debounceTime(400)
+        .subscribe((value) => {
+            const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
+            const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
+            if (value.kpi && value.predefinedDateRange && !loadingGroupings && !loadingComparison) {
+                const payload = that._getGroupingInfoInput(value);
                         if (isEqual(that.lastKpiDateRangePayload, payload)) { return; }
                         that._getGroupingInfo(value);
                         that._getOldestDate(value.kpi);
@@ -431,9 +431,8 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
     }
 
     private _updateComparisonData(yearOldestDate: string) {
-
         if (this.fg.value.predefinedDateRange === '') { return; }
-        if (!yearOldestDate) { return; }
+        if (!yearOldestDate) { return this.vm.comparisonList = []; }
 
         this.fg.controls['loadingComparison'].patchValue(true, { emitEvent: false });
 

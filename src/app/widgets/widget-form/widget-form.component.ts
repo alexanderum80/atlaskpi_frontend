@@ -215,6 +215,11 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
         this.fg.get('predefinedDateRange').valueChanges.subscribe(newDateRange => {
             that.updateComparisonItems(newDateRange);
         });
+
+        this.fg.get('kpi').valueChanges.subscribe(newKpi => {
+            that.updateComparisonItems(this.fg.value.predefinedDateRange, newKpi);
+        });
+
         that.updateComparisonItems(this.fg.value.predefinedDateRange);
         this.cdr.detectChanges();
 
@@ -266,14 +271,17 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
         return this.fg.value.predefinedDateRange === 'custom';
     }
     
-    updateComparisonItems(dateRange) {
+    updateComparisonItems(dateRange, kpiId?) {
         if (!dateRange) {
             this.comparisonSelectionList = [];
             return;
         }
-        this._apolloService.networkQuery < string > (widgetsGraphqlActions.kpiOldestDateQuery, { id: this.fg.value.kpi })
+        this._apolloService
+            .networkQuery < string > (widgetsGraphqlActions.kpiOldestDateQuery, 
+                { id: kpiId ? kpiId : this.fg.value.kpi })
         .then(kpis => {
-            this.comparisonSelectionList = this._widgetFormService.getComparisonListForDateRangesAndKpiOldesDate(dateRange, kpis.getKpiOldestDate);
+            this.comparisonSelectionList = this._widgetFormService
+                .getComparisonListForDateRangesAndKpiOldesDate(dateRange, kpis.getKpiOldestDate);
         });
     }
 
