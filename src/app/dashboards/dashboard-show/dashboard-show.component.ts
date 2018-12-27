@@ -88,7 +88,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
     maps: any[] = [];
     refreshing = false;
     isMobile: boolean;
-    showMap = false;
+    showMap = true;
     loading = true;
     isEditChartFromDashboard = false;
     idChartSelected: string;
@@ -263,7 +263,6 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
 
     private _loadDashboardData(dashboard: any) {
         const that = this;
-
         if (!dashboard) {
             that.bigWidgets = [];
             that.smallWidgets = [];
@@ -295,7 +294,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             });
             this.showMap = true;
         } else {
-
+            
             this.showMap = false;
         }
         if (dashboard.widgets) {

@@ -8,6 +8,7 @@ mutation UpdateWidget($id: String!, $input: WidgetInput!) {
       type
       size
       color
+      fontColor
       chartWidgetAttributes {
         chart
       }

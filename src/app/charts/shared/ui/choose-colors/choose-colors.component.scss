@@ -1,0 +1,15 @@
+.block {
+    height: 100%;
+    margin-top: 20px;
+}
+
+.theme-color-box {
+    width: 40px;
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.column-color-box {
+    height: 250px;
+}

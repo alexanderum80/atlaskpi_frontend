@@ -1,11 +1,10 @@
-import { isNumber, find } from 'lodash';
+import { ChooseColorsComponent } from './../choose-colors/choose-colors.component';
+import { isNumber } from 'lodash';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-
-import { SelectionItem, ModalComponent } from '../../../../ng-material-components';
+import { SelectionItem } from '../../../../ng-material-components';
 import { ChartGalleryService } from '../../services';
-
-import { predefinedColors, Colors, labelItems } from './material-colors';
+import { predefinedColors, labelItems } from './material-colors';
 
 const ExpensesGroupingList = [
     { id: 'location', title: 'location', selected: false, disabled: false },
@@ -29,12 +28,9 @@ export class ChartFormatInfoComponent implements OnInit, AfterViewInit {
   @Output() TooltipChanges = new EventEmitter <any>();
   @Output() labelItemsColorsChanges = new EventEmitter <any>();
   @Output() serieColorChange = new EventEmitter <any>();
-  @ViewChild('selectIntensityModal') selectModal: ModalComponent;
+  @ViewChild(ChooseColorsComponent) chooseColors: ChooseColorsComponent;
 
   chartType: string;
-  button_state: any;
-
-  themeColors: any[];
 
   yAxisNumberFormatList: SelectionItem[] = [
     { id: null, title: 'Default', selected: false, disabled: false },
@@ -60,7 +56,7 @@ export class ChartFormatInfoComponent implements OnInit, AfterViewInit {
         { id: '72', title: '72' },
         ];
 
-  colorList: SelectionItem[] = [
+ /*  colorList: SelectionItem[] = [
         {  id: '#000000', title: 'black'},
         {  id: '#f53168', title: 'red'},
         {  id: '#ffa34a', title: 'orange'},
@@ -70,19 +66,13 @@ export class ChartFormatInfoComponent implements OnInit, AfterViewInit {
         {  id: '#8BC34A', title: 'sei-green'},
         {  id: '#b186e6', title: 'purple'},
         {  id: '#6280ff', title: 'light-purple'},
-  ];
+  ]; */
 
   predefinedColors = predefinedColors;
 
   selectedLabel: number;
 
   labelItems = labelItems;
-
-  colorsItems = Colors;
-
-  intensityDefaultValue = 'default';
-
-  intensityList: SelectionItem[] = [];
 
   toolTipFormatList: SelectionItem[] = [];
 
@@ -94,8 +84,6 @@ export class ChartFormatInfoComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this._getIntensityList();
-    this._subscribeToIntesityValueChange();
   }
 
   ngAfterViewInit() {
@@ -165,26 +153,6 @@ export class ChartFormatInfoComponent implements OnInit, AfterViewInit {
     this.TooltipChanges.emit(tooltip);
   }
 
-  private _getIntensityList() {
-    this.colorsItems.map(color => {
-      this.intensityList.push({
-        id: color.intensity,
-        title: color.intensity,
-        selected: false,
-        disabled: false
-      });
-    });
-  }
-
-  private _subscribeToIntesityValueChange() {
-    const that = this;
-    this.fg.valueChanges.subscribe(value => {
-      if (value.intensity) {
-        that.themeColors = that.colorsItems.filter(c => c.intensity === value.intensity);
-      }
-    });
-  }
-
   getSerieColorForChartDefinition(chartDefinition) {
     if (chartDefinition && chartDefinition.colors) {
       const serieColors = chartDefinition.colors;
@@ -245,7 +213,7 @@ export class ChartFormatInfoComponent implements OnInit, AfterViewInit {
     const isNumberValue = isNumber(inputValue);
     this.selectedSerieName = isNumberValue ? undefined : inputValue;
     this.selectedLabel = isNumberValue ? inputValue : undefined;
-    this.selectModal.open();
+    this.chooseColors.open();
   }
 
   onSelectColor(color) {
@@ -259,7 +227,6 @@ export class ChartFormatInfoComponent implements OnInit, AfterViewInit {
       }
       this.labelItemsColorsChanges.emit(this.labelItems);
     }
-    this.selectModal.close();
   }
 
   private _enableNextLabelItem() {

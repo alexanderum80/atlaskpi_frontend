@@ -11,6 +11,7 @@ import { IDataSourceField } from '../../shared/domain/kpis/data-source';
 export interface IShowMapPayload {
     dateRange: string;
     grouping: string;
+    zipCodeSource: string;
 }
 
 @Injectable()
@@ -32,6 +33,9 @@ export class ShowMapFormViewModel extends ViewModel<IShowMapPayload> {
     @Field({ type: String })
     grouping: string;
 
+    @Field({ type: String })
+    zipCodeSource: string;
+
     initialize(model: IShowMapPayload) {
         this.onInit(model);
         this._setDateRangeList();
@@ -40,7 +44,8 @@ export class ShowMapFormViewModel extends ViewModel<IShowMapPayload> {
     get payload(): IShowMapPayload {
         return {
             dateRange: this.dateRange,
-            grouping: this.grouping
+            grouping: this.grouping,
+            zipCodeSource: this.zipCodeSource
         };
     }
 
