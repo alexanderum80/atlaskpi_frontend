@@ -1,3 +1,4 @@
+import { IUserInfo } from './../../shared/models/user';
 import { DataEntryFormViewModel, DataEntrySchemaViewModel } from '../new-data-entry/data-entry.viewmodel';
 import { QueryRef, Apollo } from 'apollo-angular';
 import SweetAlert from 'sweetalert2';
@@ -10,6 +11,7 @@ import { concat, sortBy } from 'lodash';
 import { MenuItem } from 'src/app/ng-material-components';
 import { Router } from '@angular/router';
 
+const allUsersQuery = require('graphql-tag/loader!../../users/shared/graphql/get-all-users.gql');
 const dataEntriesQuery = require('graphql-tag/loader!../shared/graphql/data-entries.gql');
 const dataEntryIdQuery = require('graphql-tag/loader!../shared/graphql/data-entry-by-id.gql');
 const removeDataEntryMutation = require('graphql-tag/loader!../shared/graphql/remove-data-entry.gql');
@@ -36,6 +38,8 @@ export class ShowAllDataEntryComponent implements OnInit, OnDestroy {
   dataEntries: DataEntryList[];
   dataEntriesQueryRef: QueryRef<any>;
   private _subscription: Subscription[] = [];
+
+  allUsers: IUserInfo[];
 
   loading = true;
 
@@ -85,12 +89,19 @@ export class ShowAllDataEntryComponent implements OnInit, OnDestroy {
     private _router: Router
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this._getAllUsers();
     this._getDataEntries();
   }
 
   ngOnDestroy() {
     CommonService.unsubscribe(this._subscription);
+  }
+
+  private async _getAllUsers() {
+    this.allUsers = await this._apolloService.networkQuery<IUserInfo[]>(allUsersQuery).then(users => {
+       return users.allUsers;
+    });
   }
 
   private _getDataEntries() {
@@ -120,7 +131,8 @@ export class ShowAllDataEntryComponent implements OnInit, OnDestroy {
                 virtualSource: data.dataSource,
                 image: imageUrl,
                 users: concat(data.users, ', '),
-                actionItems: actionItems
+                actionItems: actionItems,
+                createdBy: this._getCreatedByName(data.createdBy)
               };
             }), ['_id']);
 
@@ -165,6 +177,12 @@ export class ShowAllDataEntryComponent implements OnInit, OnDestroy {
     }
     const extension = description.substr(lastIndex, description.length - 1);
     return extension;
+  }
+
+  private _getCreatedByName(userId) {
+    const user = this.allUsers.find(u => u._id === userId);
+    const userName = user.profile.firstName + ' ' + user.profile.lastName;
+    return userName;
   }
 
   actionClicked(item: MenuItem, dataEntry: DataEntryList) {

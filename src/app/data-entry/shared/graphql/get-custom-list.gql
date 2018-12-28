@@ -4,5 +4,6 @@ query CustomList($id: String) {
     name
     dataType
     listValue
+    users
   }
 }

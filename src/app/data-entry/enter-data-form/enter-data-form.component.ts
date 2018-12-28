@@ -29,6 +29,10 @@ export class EnterDataFormComponent implements OnInit {
   headerData: string[] = [];
   datePickerConfig: IDatePickerConfig;
 
+  fieldsData: any[] = [];
+
+  sortAscOnClic = true;
+
   showfilterRow = true;
 
   sortActionItems: MenuItem[] = [
@@ -66,6 +70,7 @@ export class EnterDataFormComponent implements OnInit {
   private _getDataEntryById() {
     this._subscription.push(this._route.params.subscribe(params => {
       if (params.id) {
+        this.isLoading = true;
         this._apolloService.networkQuery<string>(dataEntryIdQuery, {id: params.id}).then(res => {
           this.dataSourceCollection = JSON.parse(res.dataEntryByIdMapCollection);
           const schemaCollection = this.dataSourceCollection.schema;
@@ -89,6 +94,8 @@ export class EnterDataFormComponent implements OnInit {
             this.headerData.push(s.columnName);
           });
 
+          this.fieldsData = fields;
+
           const dateRangeField = fields.findIndex(f =>
             f.columnName.toLowerCase().replace(' ', '_') === this.dataSourceCollection.dateRangeField);
 
@@ -98,6 +105,9 @@ export class EnterDataFormComponent implements OnInit {
             forEach(schemaCollection, (value, key) => {
               if (key !== 'Source') {
                 let dataValue = d[value.path];
+                if (value.sourceOrigin) {
+                  dataValue = d[value.path].toString();
+                }
                 if (value.dataType === 'Date') {
                   dataValue = moment.utc(d[value.path]).format('MM/DD/YYYY');
                 }
@@ -126,9 +136,9 @@ export class EnterDataFormComponent implements OnInit {
 
           this._setFgValidators();
 
-          this._subscribeToFormChanges();
-
           this._addDataFilterRow(fields);
+
+          this._subscribeToFormChanges();
 
           this.isLoading = false;
         });
@@ -248,39 +258,15 @@ export class EnterDataFormComponent implements OnInit {
     return returnValue;
   }
 
-  getInputType(row, field) {
-    let returnValue = '';
-
-    const schema = <any>this.vm.fg.get('schema');
-    const dataControls = <FormArray>this.vm.fg.get('data');
-
-    if (row < dataControls.controls.length) {
-      const fieldSchema = schema.controls[field].controls.dataType.value;
-      switch (fieldSchema) {
-        case 'Numeric':
-          returnValue = 'number';
-          break;
-        case 'String':
-          returnValue = 'text';
-          break;
-        case 'Date':
-          returnValue = 'date';
-          break;
-        case 'Boolean':
-          returnValue = 'checkbox';
-          break;
-      }
-
-      if (schema.controls[field].controls.sourceOrigin.value) {
-        returnValue = 'customList';
-      }
+  getInputType(field) {
+    if (this.fieldsData[field].sourceOrigin) {
+      return 'customList';
     }
-    return returnValue;
+    return this.fieldsData[field].dataType;
   }
 
   getCustomList(field) {
-    const schema = <any>this.vm.fg.get('schema');
-    const sourceOrigin = schema.controls[field].controls.sourceOrigin.value;
+    const sourceOrigin = this.fieldsData[field].sourceOrigin;
     const customListSelection: SelectionItem[] = [];
     const customList = this.customListCollection.find(f => f._id === sourceOrigin);
 
@@ -292,6 +278,13 @@ export class EnterDataFormComponent implements OnInit {
       });
     });
     return customListSelection;
+  }
+
+  sortDataAsc(index) {
+    if (this.sortAscOnClic) {
+      this.sortActionClicked(this.sortActionItems[0].children[0], index);
+    }
+    this.sortAscOnClic = true;
   }
 
   sortActionClicked(event, index) {
@@ -314,6 +307,8 @@ export class EnterDataFormComponent implements OnInit {
     });
 
     this._addNewBlankRow();
+
+    this.sortAscOnClic = false;
   }
 
   toogleFilterRow() {

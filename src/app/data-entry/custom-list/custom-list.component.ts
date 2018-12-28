@@ -1,3 +1,4 @@
+import { UserService } from './../../shared/services/user.service';
 import SweetAlert from 'sweetalert2';
 import { BrowserService } from 'src/app/shared/services/browser.service';
 import { ApolloService } from './../../shared/services/apollo.service';
@@ -21,6 +22,7 @@ const ViewsMap = {
   styleUrls: ['./custom-list.component.scss']
 })
 export class CustomListComponent implements OnInit {
+  private _currentUser: string;
 
   actionActivityNames: IItemListActivityName;
 
@@ -34,17 +36,26 @@ export class CustomListComponent implements OnInit {
     public vm: CustomListFormViewModel,
     private _apolloService: ApolloService,
     private _browser: BrowserService,
+    private _userSvc: UserService
   ) {
     this.isMobile = _browser.isMobile();
   }
 
   async ngOnInit() {
-    // this.getCurrentUser();
+    this.currentUser();
     this.vm.initialize(this.vm.defaultCustomListModel);
     await this._getCustomList();
     this._subscribeToFormChange();
     this.isLoading = false;
     this.flipped = false;
+  }
+
+  currentUser(): any {
+    this._userSvc.user$.subscribe(user => {
+      if (user) {
+        this._currentUser = user._id;
+      }
+    });
   }
 
   get selectedCustomList() {
@@ -78,7 +89,7 @@ export class CustomListComponent implements OnInit {
   }
 
   isFormValid() {
-    return this.vm.fg.valid;
+    return this.vm.fg.valid && this.vm.customListModel.controls.length > 1;
   }
 
   onAddCustomList() {
@@ -126,6 +137,8 @@ export class CustomListComponent implements OnInit {
 
   save() {
     const payload = this.vm.payload;
+    payload['users'] = [this._currentUser];
+
     const mutation = payload._id ? updateCustomListMutation : addCustomListMutation;
 
     this._apolloService.networkQuery<any>(customListByNameQuery, { name: payload.name }).then(list => {

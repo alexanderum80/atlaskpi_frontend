@@ -16,8 +16,9 @@
     .left-panel {
         background-color: #EEEEEE;
         margin-bottom: 20px;
+
         img {
-            height: 120px;
+            height: 140px;
         }
         
         .import-scv, .import-excel {
@@ -64,7 +65,6 @@
         
         .custom-file-upload {
             border: none;
-            background-color: #5DA5DA;
             color: white;
             display: inline-block;
             padding: 6px 12px;

@@ -29,6 +29,5 @@ export interface ICustomData {
     records: string;
     dateRangeField?: string;
     users?: string[];
-    filePath?: string;
 }
 

@@ -21,6 +21,6 @@
     div(*ngFor="let customList of vm.customListModel.controls, index as i", layout="column")
         div(layout="row")
             .p-10 {{i + 1}}.
-            bw-text-box.flex-90([fg]="customList", field="value")
+            bw-text-box.flex-90([fg]="customList", field="value", [required]="true")
             i.zmdi.zmdi-close.close-btn([class.hidden]="i === 0 || i + 1 === vm.customListModel.controls.length",
                                         (click)="removeListItem(customList)")

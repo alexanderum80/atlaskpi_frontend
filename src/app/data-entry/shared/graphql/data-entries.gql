@@ -25,5 +25,6 @@ query DataEntries {
     sources
     dataEntry
     users
+    createdBy
   }
 }

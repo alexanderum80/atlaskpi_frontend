@@ -101,8 +101,7 @@ export class ImportFileComponent implements OnInit {
         fields: JSON.stringify(this.csvFileData.fields),
         records: JSON.stringify(this.csvFileData.records),
         dateRangeField: this.csvFileData.dateRangeField,
-        users: selectedUsers,
-        filePath: this.csvFileData.filePath
+        users: selectedUsers
       });
     }
     if (this.excelFileData.inputName) {
@@ -111,8 +110,7 @@ export class ImportFileComponent implements OnInit {
         fields: JSON.stringify(this.excelFileData.fields),
         records: JSON.stringify(this.excelFileData.records),
         dateRangeField: this.excelFileData.dateRangeField,
-        users: selectedUsers,
-        filePath: this.excelFileData.filePath
+        users: selectedUsers
       });
     }
 

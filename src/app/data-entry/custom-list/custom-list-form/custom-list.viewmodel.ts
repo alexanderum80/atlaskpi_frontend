@@ -9,6 +9,7 @@ export class ICustomList {
     name: string;
     dataType: string;
     listValue: ICustomValue[];
+    users?: string[];
 }
 
 export class ICustomValue {

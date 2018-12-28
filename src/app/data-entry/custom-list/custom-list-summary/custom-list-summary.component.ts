@@ -45,7 +45,7 @@ export class CustomListSummaryComponent implements OnInit {
       if (result.value === true) {
         this._apolloService.mutation<any> (deleteCustomListMutation, { id: customListId }, ['CustomList'])
           .then(res => {
-            if (res.data.removeCustomList.errors[0].errors[0] === 'list in use') {
+            if (res.data.removeCustomList.errors.length && res.data.removeCustomList.errors[0].errors[0] === 'list in use') {
               return SweetAlert({
                 title: 'List in use!',
                 text: `This list cannot be deleted because it's in use.`,

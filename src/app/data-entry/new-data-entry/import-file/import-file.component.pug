@@ -17,7 +17,7 @@
           .file-name(*ngIf="excelFileData.inputName", , layout-align="center") {{ excelFileData.inputName }}
           i.zmdi.zmdi-check-circle.check-icon(*ngIf="excelFileData.inputName")
       .p-30(layout="row", layout-align="center center")
-        label.custom-file-upload
+        label.custom-file-upload.bgm-blue
           i.zmdi.zmdi-download.p-r-10
           input(type="file", (change)="importFile($event)") 
           | BROWSE

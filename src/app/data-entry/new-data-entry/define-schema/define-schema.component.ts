@@ -11,9 +11,11 @@ import { SelectionItem } from 'src/app/ng-material-components';
 import { NewCustomListComponent } from '../../custom-list/new-custom-list/new-custom-list.component';
 import { Subscription } from 'rxjs';
 import { ICustomList, CustomListFormViewModel } from '../../custom-list/custom-list-form/custom-list.viewmodel';
+import { union } from 'lodash';
 
 const allUserQuery = require('graphql-tag/loader!../../shared/graphql/get-all-users.gql');
 const getCustomListQuery = require('graphql-tag/loader!../../shared/graphql/get-custom-list.gql');
+const updateCustomListMutation = require('graphql-tag/loader!../../shared/graphql/update-custom-list.gql');
 const dataSourceByNameQuery = require('graphql-tag/loader!../../shared/graphql/data-source-by-name.query.gql');
 const addDataEntryMutation = require('graphql-tag/loader!../../shared/graphql/add-data-entry.gql');
 
@@ -257,7 +259,23 @@ export class SchemaFormComponent implements OnInit {
         .then(result => {
           const resultData = result.data.addDataEntry || null;
           if (resultData) {
-            this._router.navigate(['data-entry', 'enter-data', resultData._id]);
+            debugger;
+            const customList = this.vmData.customListSource;
+            const sourceOrigin = customList.filter(list => {
+              const customListField = tableFields.find(f => f.dataType === list._id);
+              if (customListField) {
+                return list;
+              }
+            });
+            if (sourceOrigin.length) {
+              sourceOrigin.forEach(list => {
+                this._updateCustomListUsers(list, selectedUsers).then(() => {
+                  this._router.navigate(['data-entry', 'enter-data', resultData._id]);
+                });
+              });
+            } else {
+              this._router.navigate(['data-entry', 'enter-data', resultData._id]);
+            }
           }
         })
         .catch(err => console.log('Server errors: ' + JSON.stringify(err)));
@@ -267,6 +285,30 @@ export class SchemaFormComponent implements OnInit {
 
   cancel() {
     this._router.navigateByUrl('/data-entry/show-all');
+  }
+
+  private _updateCustomListUsers(customList, users): Promise<Object[]> {
+    return new Promise((resolve, reject) => {
+      users = union(users, customList.users);
+
+      const inputValue = {
+        _id: customList._id,
+        name: customList.name,
+        dataType: customList.dataType,
+        listValue: customList.listValue,
+        users: users
+      };
+
+      this._apollo.mutate<any>({
+        mutation: updateCustomListMutation,
+        variables: {input: inputValue}
+      })
+      .toPromise()
+      .then(res => {
+        resolve(res.data.updateCustomList);
+        return;
+      });
+    });
   }
 
   selectNewCustomList(list) {
