@@ -9,6 +9,7 @@ import { ChartDateRangeModel, IChartDateRange } from '../../../shared/models/dat
 import { IDashboard } from './dashboard.models';
 import {IChartTop} from '../../../shared/models/top-n-records';
 import { IMap } from '../../../maps/shared/models/map.models';
+import { IDataUserDate } from '../../../shared/models/data-user-date';
 
 export interface ChartData {
   _id: string;
@@ -149,6 +150,8 @@ export interface IChartFormValues {
   seriesDataLabels: boolean;
   // gridlines
   gridLineWidth?: number;
+  //add-created-updated-by-date
+ // dataUserDate?: IDataUserDate;
 
 }
 
@@ -200,6 +203,11 @@ export class ChartModel {
     xAxisSource: string;
     comparison?: string[];
     dashboards: IDashboard[];
+    //add-created-updated-by-date
+    createdBy?: string;
+    updatedBy?: string;
+    createdDate?: Date;
+    updatedDate?: Date;
 
     static fromJson(json: string): ChartModel {
       try {
@@ -211,8 +219,9 @@ export class ChartModel {
 
     static fromFormGroup(fg: FormGroup, chartDefinition: any, checkFormatter?: boolean): ChartModel {
       const proxyChartModel = new ChartModel({});
-      proxyChartModel.chartDefinition = chartDefinition;
 
+     // const dataUserDate = new 
+      proxyChartModel.chartDefinition = chartDefinition;
       // basic info
       proxyChartModel.title = fg.value.name;
       proxyChartModel.subtitle = fg.value.description;
@@ -288,7 +297,10 @@ export class ChartModel {
       }
       // convert the definition to string
       proxyChartModel.chartDefinition = JSON.stringify(proxyChartModel.chartDefinition);
-
+     //add-created-updated-by-date
+     
+     
+      
       return proxyChartModel;
     }
 

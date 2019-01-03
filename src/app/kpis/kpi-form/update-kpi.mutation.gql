@@ -24,6 +24,8 @@ mutation($id:String, $input: KPIAttributesInput) {
       type
       createdBy
       createdDate
+      updatedBy
+      updatedDate
     }
     errors {
       field

@@ -103,6 +103,11 @@ export interface IWidget {
     // preview
     preview?: boolean;
     tags?: string[];
+   /*  //add-created-updated-by-date
+    createdBy?: string;
+    updatedBy?: string;
+    createdDate?: Date;
+    updatedDate?: Date; */
 }
 
 export interface IWidgetInput {
@@ -116,6 +121,11 @@ export interface IWidgetInput {
     numericWidgetAttributes?: INumericWidgetAttributes;
     chartWidgetAttributes?: IChartWidgetAttributes;
     dashboards?: string[];
+     //add-created-updated-by-date
+    createdBy?: string;
+    updatedBy?: string;
+    createdDate?: Date;
+    updatedDate?: Date;
 }
 
 export interface IWidgetFormGroupValues {
@@ -157,6 +167,11 @@ export class WidgetModel extends BaseModel<IWidget> implements IWidget {
     numericWidgetAttributes?: INumericWidgetAttributes;
     chartWidgetAttributes?: IChartWidgetAttributes;
     tags: string[];
+    /*  //add-created-updated-by-date
+     createdBy?: string;
+     updatedBy?: string;
+     createdDate?: Date;
+     updatedDate?: Date; */
 
     public static fromJson(json: string): WidgetModel {
         try {
