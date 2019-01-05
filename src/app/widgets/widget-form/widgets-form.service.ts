@@ -400,6 +400,7 @@ export class WidgetsFormService {
           this.comparisonList.push(newItem);
         }
       }
+      debugger;
       return this.comparisonList;
   }
 

@@ -307,7 +307,10 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
         .then(kpis => {
             this.comparisonSelectionList = this._widgetFormService
                 .getComparisonListForDateRangesAndKpiOldesDate(dateRange, kpis.getKpiOldestDate);
+                const dd = this.fg.controls['comparison'].value;
+                debugger;
         });
+        
     }
 
     private _subscribeToFormFields() {
