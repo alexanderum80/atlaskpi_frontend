@@ -22,8 +22,9 @@ ng-template(#tableItem, let-item="item")
         .m-t-10.m-l-10 
             h2.title {{ item.title }}
             small {{ item.subtitle }}
+            span {{ item.extras.description }}
     //- extras
-    div(flex)
+    //-div(flex)
         .m-t-10.m-l-10
             span {{ item.extras.description }}
     div(flex)
