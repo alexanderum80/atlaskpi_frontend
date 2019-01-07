@@ -56,6 +56,10 @@ export interface ITarget {
     notificationConfig: ITargetNotificationConfig;
     active?: boolean;
     milestones?: IMilestone[];
+    createdBy?: string;
+    createdDate?: Date;
+    updatedBy?: string;
+    updatedDate?: Date;
 }
 
 export interface ISelectableTarget extends ITarget {
@@ -81,5 +85,9 @@ export function getNewTarget(userId: string) {
             users: [{ identifier: userId, deliveryMethods: [ DeliveryMethodEnum.email ] }]
         },
         milestones: [],
+        createdBy: null,
+        createdDate: null,
+        updatedBy: null,
+        updatedDate: null
     } as ITarget;
 }

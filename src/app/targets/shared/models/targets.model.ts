@@ -89,6 +89,10 @@ export interface ITargetNewInput {
     active?: boolean;
     selected?: boolean;
     period: string;
+    createdBy?: string;
+    createdDate?: Date;
+    updatedBy?: string;
+    updatedDate?: Date;
 }
 
 

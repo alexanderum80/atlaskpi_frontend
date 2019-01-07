@@ -1,6 +1,8 @@
-.list-item-tabular(layout="row")
-    ng-container(*ngTemplateOutlet="(tableRowTemplate ? tableRowTemplate : defaultTemplate);context:{ item: item }")
 
+.list-item-tabular(layout="row")
+    
+    ng-container(*ngTemplateOutlet="(tableRowTemplate ? tableRowTemplate : defaultTemplate);context:{ item: item }")
+    
     //- actions
     .p-15(flex-initial, layout="row")
         bw-actions(*ngIf="actionItems", [actionItems]="actionItems", (actionClicked)="onActionClicked($event)")

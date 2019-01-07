@@ -26,3 +26,11 @@ ng-template(#tableItem, let-item="item")
     div(flex)
         .m-t-10.m-l-10
             span {{ item.extras.description }}
+    div(flex)
+        .m-t-10.m-l-5 
+            h2.title {{ item.createdDate | date:'M/dd/yyyy'}}
+            small {{ item.owner }}
+    div(flex)
+        .m-t-10.m-l-5 
+            h2.title {{ item.updatedDate | date:'M/dd/yyyy'}}
+            small {{ item.updatedBy }}

@@ -7,10 +7,29 @@ kpi-item-list(
     [itemListActivityName]="actionActivityNames",
     [actionItems] = "vm.menuItems",
     [itemType]="itemType",
+    [tableRowTemplate]="tableItem",
     (onAddActionClicked)="addChart()",
     (onItemActionClicked)="actionClicked($event)",
     (onItemClicked)="editClickedList($event)")
 
+ng-template(#tableItem, let-item="item")
+    //- image
+    div(flex-initial)
+        img(*ngIf="item.imagePath", [src]="item.imagePath", [style.height.px]="55")
+    //- title & subtitle
+    
+    div(flex)
+        .m-t-10.m-l-10 
+            h2.title {{ item.title }}
+            small {{ item.subtitle }}
+    div(flex)
+        .m-t-10.m-l-5 
+            h2.title {{ item.createdDate | date:'M/dd/yyyy'}}
+            small {{ item.createdBy }}
+    div(flex)
+        .m-t-10.m-l-5 
+            h2.title {{ item.updatedDate | date:'M/dd/yyyy'}}
+            small {{ item.updatedBy }}
 //- confirm remove widget modal
 app-remove-confirmation([element]="'chart'", (dialogResult)="onDialogResult($event)")
 

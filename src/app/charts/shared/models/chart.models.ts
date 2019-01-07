@@ -76,6 +76,10 @@ export interface IChart {
     xAxisSource: string;
     dashboards?: string[];
     size?: string;
+    createdBy?: string;
+    createdDate?: Date;
+    updatedBy?: string;
+    updatedDate?: Date;
 }
 
 export interface IChartGalleryItem {

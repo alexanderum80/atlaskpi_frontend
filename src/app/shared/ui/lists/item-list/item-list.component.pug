@@ -31,6 +31,32 @@
                 (actionClicked)="itemActionClicked($event)")
 
         //- table view
+        .tabular-container.bgm-white.z-depth-1.p-10.m-l-10.m-r-10(*ngIf="showTabularItems", layout="column", layout-gt-sm="row")
+            //-.header-box(flex, layout="rows")
+                .title-box(flex)
+                    h2.title Items Data
+                .title-box
+                    h2.title Creation Data
+                .title-box
+                    h2.title Updation Data
+                .title-box
+                    h2.title  Actions
+            div.p-l-15.p-r-15(flex)
+                .m-t-10.m-l-10 
+                    h2.title Items Data
+            //- title & subtitle
+            
+            div.p-l-15.p-r-15(flex)
+                .m-t-10.m-l-10 
+                    h2.title Creation Data
+            div.p-l-10.p-r-10(flex)
+                .m-t-10.m-l-5 
+                    h2.title Updation Data
+            div.p-l-40.p-r-20(flex)
+                .m-t-10.m-l-5 
+                    h2.title ACTIONS
+            
+                
         .tabular-container.bgm-white.z-depth-1.p-20.m-l-10.m-r-10.m-b-20(*ngIf="showTabularItems", layout="column", layout-gt-sm="row")
             div(flex)
                 kpi-list-item-tabular(
