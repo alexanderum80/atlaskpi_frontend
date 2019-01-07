@@ -16,6 +16,7 @@ import gql from 'graphql-tag';
 import { isString } from 'lodash';
 import { SearchResultViewModel } from './search-results/search-results.viewmodel';
 import { sortBy } from 'lodash';
+import * as m from 'moment';
 
 /**
  * give me last month sales grouped by location and service type with a monthly frequency on a column chart
@@ -215,7 +216,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
     private _transformToChartInputModel(chart: IChart): IChartInput {
         return {
-            title: chart.title,
+            title: `${chart.title} (${m().format('MM/DD/YYYY HH:mm:ss')})`,
             kpis: [chart.kpis[0]._id],
             dateRange: chart.dateRange,
             frequency: chart.frequency,
