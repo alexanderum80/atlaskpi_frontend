@@ -192,10 +192,9 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
             const fontColor = new FormControl(false);
             this.fg.addControl('fontColor', fontColor);
         }
-        this._subscribeToFormFields();
 
         const widgetData = this._widgetFormService.getWidgetFormValues();
-
+        
         if (this.widgetDataFromKPI) {
             widgetData.name = this.widgetDataFromKPI.name;
             widgetData.size = this.widgetDataFromKPI.size;
@@ -206,9 +205,9 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
             widgetData.format = this.widgetDataFromKPI.format;
             widgetData.comparison = this.widgetDataFromKPI.comparison;
             widgetData.comparisonArrowDirection = this.widgetDataFromKPI.comparisonArrowDirection;
-
+            
             this.fg.patchValue(widgetData);
-
+            
             this._apolloService.networkQuery<IDateRangeItem[]>(chartsGraphqlActions.dateRanges).then(res => {
                 const dateRanges = res.dateRanges;
                 const listDateRange = dateRanges.find(d => d.dateRange.predefined === widgetData.predefinedDateRange);
@@ -218,20 +217,22 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
             this.fg.patchValue(widgetData);
         }
-
+        
         this._subscribeToServiceObservables();
-
+        
         this.fg.get('predefinedDateRange').valueChanges.subscribe(newDateRange => {
             that.updateComparisonItems(newDateRange);
         });
-
+        
         this.fg.get('kpi').valueChanges.subscribe(newKpi => {
             that.updateComparisonItems(this.fg.value.predefinedDateRange, newKpi);
         });
-
+        
         that.updateComparisonItems(this.fg.value.predefinedDateRange);
         this.cdr.detectChanges();
-
+       
+        this._subscribeToFormFields();
+        
         this._widgetFormService.updateExistDuplicatedName(false);
         this._subscribeToNameChanges();
         this.loading = false;
@@ -307,10 +308,7 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
         .then(kpis => {
             this.comparisonSelectionList = this._widgetFormService
                 .getComparisonListForDateRangesAndKpiOldesDate(dateRange, kpis.getKpiOldestDate);
-                const dd = this.fg.controls['comparison'].value;
-                debugger;
         });
-        
     }
 
     private _subscribeToFormFields() {
