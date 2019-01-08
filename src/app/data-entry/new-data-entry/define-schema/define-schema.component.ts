@@ -5,12 +5,12 @@ import { IUserInfo } from './../../../shared/models/user';
 import { UserService } from './../../../shared/services/user.service';
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { DataEntryFormViewModel } from '../data-entry.viewmodel';
+import { DataEntryFormViewModel } from '../../data-entry.viewmodel';
 import { Router } from '@angular/router';
 import { SelectionItem } from 'src/app/ng-material-components';
 import { NewCustomListComponent } from '../../custom-list/new-custom-list/new-custom-list.component';
 import { Subscription } from 'rxjs';
-import { ICustomList, CustomListFormViewModel } from '../../custom-list/custom-list-form/custom-list.viewmodel';
+import { ICustomList, CustomListFormViewModel } from '../../custom-list/custom-list.viewmodel';
 import { union } from 'lodash';
 
 const allUserQuery = require('graphql-tag/loader!../../shared/graphql/get-all-users.gql');
@@ -66,10 +66,11 @@ export class SchemaFormComponent implements OnInit {
     this.defaultDateRangeField = this.vmData.fg.controls.schema.value.findIndex(f => f.dataType === 'Date');
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this._getCurrentUser();
     this._getAllUsers();
-    this._getCustomList();
+    await this._getCustomList();
+    this._subscribeToFormChange();
   }
 
   private _getCurrentUser() {
@@ -146,13 +147,12 @@ export class SchemaFormComponent implements OnInit {
 
         this.lastInsertedCustomList = undefined;
       }
-
-      this._subscribeToFormChange();
     }));
   }
 
   private _subscribeToFormChange() {
     this.schemas.valueChanges.subscribe(fg => {
+      debugger;
       fg.map(value => {
         if (value.dataType === 'createList') {
           this.vmListForm.newCustomListIndex = this.schemas.controls.findIndex(f => f.value === value);
@@ -312,6 +312,7 @@ export class SchemaFormComponent implements OnInit {
   }
 
   selectNewCustomList(list) {
+    debugger;
     this.lastInsertedCustomList = list;
     this.lisOfCustomListQuery.refetch().then(() => this._getCustomList());
   }

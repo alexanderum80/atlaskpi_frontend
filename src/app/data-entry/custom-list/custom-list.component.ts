@@ -2,9 +2,10 @@ import { UserService } from './../../shared/services/user.service';
 import SweetAlert from 'sweetalert2';
 import { BrowserService } from 'src/app/shared/services/browser.service';
 import { ApolloService } from './../../shared/services/apollo.service';
-import { CustomListFormViewModel } from './custom-list-form/custom-list.viewmodel';
+import { CustomListFormViewModel } from './custom-list.viewmodel';
 import { IItemListActivityName } from './../../shared/interfaces/item-list-activity-names.interface';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 const customListQuery = require('graphql-tag/loader!../shared/graphql/get-custom-list.gql');
 const customListByNameQuery = require('graphql-tag/loader!../shared/graphql/custom-list-by-name.gql');
@@ -36,18 +37,23 @@ export class CustomListComponent implements OnInit {
     public vm: CustomListFormViewModel,
     private _apolloService: ApolloService,
     private _browser: BrowserService,
-    private _userSvc: UserService
+    private _userSvc: UserService,
+    private _router: Router
   ) {
     this.isMobile = _browser.isMobile();
   }
 
   async ngOnInit() {
-    this.currentUser();
-    this.vm.initialize(this.vm.defaultCustomListModel);
-    await this._getCustomList();
-    this._subscribeToFormChange();
-    this.isLoading = false;
-    this.flipped = false;
+    if (!this.vm.dataEntryPermission()) {
+      this._router.navigateByUrl('/unauthorized');
+    } else {
+      this.currentUser();
+      this.vm.initialize(this.vm.defaultCustomListModel);
+      await this._getCustomList();
+      this._subscribeToFormChange();
+      this.isLoading = false;
+      this.flipped = false;
+    }
   }
 
   currentUser(): any {
@@ -76,6 +82,7 @@ export class CustomListComponent implements OnInit {
         if (!data.customList.length) {
           this.vm.customList.push(this.vm.defaultCustomListModel);
         }
+        debugger;
         data.customList.forEach(element => {
           this.vm.customList.push({
             _id: element._id,
@@ -118,7 +125,6 @@ export class CustomListComponent implements OnInit {
       } else {
           this._switchView(ViewsMap.Details, ViewsMap.Summary);
       }
-
   }
 
   private _switchView(frontView, backView) {
@@ -136,6 +142,7 @@ export class CustomListComponent implements OnInit {
   }
 
   save() {
+    debugger;
     const payload = this.vm.payload;
     payload['users'] = [this._currentUser];
 

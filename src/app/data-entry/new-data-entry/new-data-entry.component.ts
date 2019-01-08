@@ -1,5 +1,6 @@
-import { DataEntryFormViewModel } from './data-entry.viewmodel';
-import { Component, OnDestroy } from '@angular/core';
+import { DataEntryFormViewModel } from '../data-entry.viewmodel';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kpi-new-data-entry',
@@ -7,11 +8,18 @@ import { Component, OnDestroy } from '@angular/core';
   styleUrls: ['./new-data-entry.component.scss'],
   providers: [DataEntryFormViewModel]
 })
-export class NewDataEntryComponent implements OnDestroy {
+export class NewDataEntryComponent implements OnInit, OnDestroy {
 
   constructor(
-    public vm: DataEntryFormViewModel
+    public vm: DataEntryFormViewModel,
+    private _router: Router
   ) {}
+
+  ngOnInit() {
+    if (!this.vm.dataEntryPermission()) {
+      this._router.navigateByUrl('/unauthorized');
+    }
+  }
 
   ngOnDestroy() {
     this.vm.selectedInputType = null;

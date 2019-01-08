@@ -51,7 +51,7 @@ export interface DataEntryList {
     description: string;
     virtualSource: string;
     image: string;
-    users: string;
+    users: string[];
     actionItems: MenuItem[];
 }
 

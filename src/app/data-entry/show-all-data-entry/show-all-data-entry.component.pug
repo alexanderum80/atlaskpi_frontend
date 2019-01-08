@@ -1,4 +1,4 @@
-.show-all-container
+.show-all-container(*ngIf="!uploadingFile")
     kpi-spinner(*ngIf="loading")
     .no-data(*ngIf="!dataEntries && !loading", flex, layout="column", layout-align="center center")
         i.zmdi.zmdi-storage
@@ -13,3 +13,5 @@
             .created-by {{ dataEntry.createdBy }}
     
         kpi-add-item((onItemClicked)="addDataEntry()")
+
+kpi-import-file(*ngIf="uploadingFile", [dataEntry]="dataEntryToUpload", (closeUploadFile)="closeUploadFile()")

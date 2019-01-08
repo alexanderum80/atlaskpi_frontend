@@ -1,8 +1,8 @@
 import { IUserInfo } from './../../shared/models/user';
-import { DataEntryFormViewModel, DataEntrySchemaViewModel } from '../new-data-entry/data-entry.viewmodel';
+import { DataEntryFormViewModel, DataEntrySchemaViewModel } from '../data-entry.viewmodel';
 import { QueryRef, Apollo } from 'apollo-angular';
 import SweetAlert from 'sweetalert2';
-import { DataEntryList } from '../shared/models/data-entry.models';
+import { DataEntryList, IDataEntrySource } from '../shared/models/data-entry.models';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CommonService } from 'src/app/shared/services';
@@ -34,7 +34,7 @@ const ImageUrl = {
   styleUrls: ['./show-all-data-entry.component.scss']
 })
 export class ShowAllDataEntryComponent implements OnInit, OnDestroy {
-
+  dataEntryCollection: IDataEntrySource[];
   dataEntries: DataEntryList[];
   dataEntriesQueryRef: QueryRef<any>;
   private _subscription: Subscription[] = [];
@@ -42,6 +42,8 @@ export class ShowAllDataEntryComponent implements OnInit, OnDestroy {
   allUsers: IUserInfo[];
 
   loading = true;
+
+  uploadingFile = false;
 
   actionItemsTable: MenuItem[] = [{
     id: '1',
@@ -82,6 +84,8 @@ export class ShowAllDataEntryComponent implements OnInit, OnDestroy {
     ]
   }];
 
+  dataEntryToUpload: IDataEntrySource;
+
   constructor(
     private _apolloService: ApolloService,
     private _apollo: Apollo,
@@ -90,8 +94,12 @@ export class ShowAllDataEntryComponent implements OnInit, OnDestroy {
   ) { }
 
   async ngOnInit() {
-    await this._getAllUsers();
-    this._getDataEntries();
+    if (!this.vm.dataEntryPermission()) {
+      this._router.navigateByUrl('/unauthorized');
+    } else {
+      await this._getAllUsers();
+      this._getDataEntries();
+    }
   }
 
   ngOnDestroy() {
@@ -114,6 +122,7 @@ export class ShowAllDataEntryComponent implements OnInit, OnDestroy {
         this.dataEntriesQueryRef.valueChanges.subscribe(res => {
           this.dataEntries = undefined;
           if (res.data.dataEntries.length) {
+            this.dataEntryCollection = res.data.dataEntries;
             this.dataEntries = sortBy(res.data.dataEntries.map(data => {
               let description: string = data.description;
               const fileExtensionIndex = description.lastIndexOf('.') !== -1 ?
@@ -130,7 +139,7 @@ export class ShowAllDataEntryComponent implements OnInit, OnDestroy {
                 description: description,
                 virtualSource: data.dataSource,
                 image: imageUrl,
-                users: concat(data.users, ', '),
+                users: data.users,
                 actionItems: actionItems,
                 createdBy: this._getCreatedByName(data.createdBy)
               };
@@ -188,7 +197,7 @@ export class ShowAllDataEntryComponent implements OnInit, OnDestroy {
   actionClicked(item: MenuItem, dataEntry: DataEntryList) {
     switch (item.id) {
       case 'upload-file':
-
+        this._uploadFile(dataEntry);
         break;
       case 'download':
         this._downloadFile(dataEntry._id);
@@ -201,6 +210,15 @@ export class ShowAllDataEntryComponent implements OnInit, OnDestroy {
 
   addDataEntry() {
     this._router.navigateByUrl('/data-entry/new');
+  }
+
+  private _uploadFile(dataEntry) {
+    this.dataEntryToUpload = this.dataEntryCollection.find(f => f._id === dataEntry._id);
+    this.uploadingFile = true;
+  }
+
+  closeUploadFile() {
+    this.uploadingFile = false;
   }
 
   private _downloadFile(dataEntryId: string) {

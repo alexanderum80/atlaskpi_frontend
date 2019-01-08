@@ -1,15 +1,17 @@
+import { DataEntryList, IDataEntrySource } from './../../shared/models/data-entry.models';
 import { UserService } from './../../../shared/services/user.service';
 import { IUserInfo } from './../../../shared/models/user';
 import { ApolloService } from '../../../shared/services/apollo.service';
-import { DataEntryFormViewModel } from '../data-entry.viewmodel';
+import { DataEntryFormViewModel } from '../../data-entry.viewmodel';
 import { ICustomData, ICustomSchemaInfo } from '../../shared/models/data-entry-form.model';
 import Sweetalert from 'sweetalert2';
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import * as XLSX from 'ts-xlsx';
 import { Router } from '@angular/router';
 import { DateFieldPopupComponent } from './date-field-popup/date-field-popup.component';
 
 const addDataEntryMutation = require('graphql-tag/loader!../../shared/graphql/add-data-entry.gql');
+const updateDataEntryMutation = require('graphql-tag/loader!../../shared/graphql/update-data-entry.gql');
 const dataSourceByNameQuery = require('graphql-tag/loader!../../shared/graphql/data-source-by-name.query.gql');
 const allUserQuery = require('graphql-tag/loader!../../shared/graphql/get-all-users.gql');
 
@@ -20,6 +22,8 @@ const allUserQuery = require('graphql-tag/loader!../../shared/graphql/get-all-us
 })
 export class ImportFileComponent implements OnInit {
   @ViewChild(DateFieldPopupComponent) dateFieldPopupComponent: DateFieldPopupComponent;
+  @Input() dataEntry: DataEntryList;
+  @Output() closeUploadFile = new EventEmitter();
 
   // csv
   csvImagePath: string;
@@ -79,13 +83,36 @@ export class ImportFileComponent implements OnInit {
   private _getAllUsers() {
       this._apolloService.networkQuery(allUserQuery).then(res => {
         this.usersList = res.allUsers.map(u => {
-          return {
-            _id: u._id,
-            fullName: u.profile.firstName + ' ' + u.profile.lastName,
-            pictureUrl: u.profilePictureUrl,
-            selected: this.currentUser._id === u._id ? true : false
-          };
+          if (this.dataEntry) {
+            const dataEntryUser = this.dataEntry.users.find(f => f === u._id);
+            return {
+              _id: u._id,
+              fullName: u.profile.firstName + ' ' + u.profile.lastName,
+              pictureUrl: u.profilePictureUrl,
+              selected: dataEntryUser ? true : false
+            };
+          } else {
+            return {
+              _id: u._id,
+              fullName: u.profile.firstName + ' ' + u.profile.lastName,
+              pictureUrl: u.profilePictureUrl,
+              selected: this.currentUser._id === u._id ? true : false
+            };
+          }
         });
+        // if (this.dataEntry) {
+        //   const fileType = this.dataEntry.description.includes('.csv') ? 'csv' : 'xls';
+        //   switch (fileType) {
+        //     case 'csv':
+        //       this.csvFileData.inputName = this.dataEntry.description + '.' + fileType;
+        //       this.csvFileData.fields = this.dataEntry..fields;
+        //       break;
+        //     case 'xls':
+        //       this.excelFileData.inputName = this.dataEntry.description + '.' + fileType;
+        //       this.excelFileData.fields = this.dataEntry.fields;
+        //       break;
+        //   }
+        // }
       });
   }
 
@@ -114,9 +141,18 @@ export class ImportFileComponent implements OnInit {
       });
     }
 
+    const mutation = !this.dataEntry ? addDataEntryMutation : updateDataEntryMutation;
+
     filesData.map(file => {
-      this._apolloService.mutation < ICustomData > (addDataEntryMutation, { input: file }, ['ServerSideConnectors', 'DataEntries'])
-      .then(this._router.navigateByUrl('/data-entry/show-all'))
+      const inputData = !this.dataEntry ? file : JSON.stringify(file);
+      this._apolloService.mutation < ICustomData > (mutation, { input: inputData }, ['ServerSideConnectors', 'DataEntries'])
+      .then(() => {
+        if (this.dataEntry) {
+          this.closeUploadFile.emit();
+        } else {
+          this._router.navigateByUrl('/data-entry/show-all');
+        }
+      })
       .catch(err => console.log('Server errors: ' + JSON.stringify(err)));
     });
   }
@@ -124,8 +160,12 @@ export class ImportFileComponent implements OnInit {
   cancel() {
     this.csvFileData.inputName = undefined;
     this.excelFileData.inputName = undefined;
-    this._router.navigateByUrl('/data-entry/show-all');
-  }
+    if (this.dataEntry) {
+      this.closeUploadFile.emit();
+    } else {
+      this._router.navigateByUrl('/data-entry/show-all');
+    }
+}
 
   isFormValid() {
     const selectedUsers = this.usersList ? this.usersList.filter(u => u.selected === true) : [];
@@ -173,6 +213,11 @@ export class ImportFileComponent implements OnInit {
           showConfirmButton: true,
           confirmButtonText: 'Ok'
         });
+      }
+
+      if (this.dataEntry) {
+        this._csvFileReset();
+        this._excelFileReset();
       }
 
       if (this.isCSVFile(this.file)) {

@@ -1,11 +1,12 @@
+import { AKPIDateFormatEnum } from './../../shared/models/date-range';
 import SweetAlert from 'sweetalert2';
-import { ICustomList } from '../custom-list/custom-list-form/custom-list.viewmodel';
+import { ICustomList } from '../custom-list/custom-list.viewmodel';
 import { SelectionItem } from 'src/app/ng-material-components';
 import { ICustomData } from './../shared/models/data-entry-form.model';
 import { MenuItem } from './../../ng-material-components/models/menu-item';
 import { ApolloService } from './../../shared/services/apollo.service';
 import { FormArray, FormGroup, FormControl, Validators } from '@angular/forms';
-import { DataEntryFormViewModel } from '../new-data-entry/data-entry.viewmodel';
+import { DataEntryFormViewModel } from '../data-entry.viewmodel';
 import { Component, OnInit } from '@angular/core';
 import { IDatePickerConfig } from '../../ng-material-components/modules/forms/date-picker/date-picker/date-picker-config.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -62,9 +63,13 @@ export class EnterDataFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this._setConfigDatePicker();
-    this._getDataEntryById();
-    this._getCustomList();
+    if (!this.vm.dataEntryPermission()) {
+      this._router.navigateByUrl('/unauthorized');
+    } else {
+      this._setConfigDatePicker();
+      this._getDataEntryById();
+      this._getCustomList();
+    }
   }
 
   private _getDataEntryById() {
@@ -153,9 +158,7 @@ export class EnterDataFormComponent implements OnInit {
   }
 
   private _addNewRow(data) {
-    const dataFormGroup = this.vm.fg.get('data') as FormArray;
-
-    dataFormGroup.push(new FormGroup(
+    (this.vm.fg.get('data') as FormArray).push(new FormGroup(
       data.map(d => {
         return new FormControl(d);
       })
@@ -259,10 +262,7 @@ export class EnterDataFormComponent implements OnInit {
   }
 
   getInputType(field) {
-    if (this.fieldsData[field].sourceOrigin) {
-      return 'customList';
-    }
-    return this.fieldsData[field].dataType;
+    return this.fieldsData[field].sourceOrigin ? 'customList' : this.fieldsData[field].dataType;
   }
 
   getCustomList(field) {

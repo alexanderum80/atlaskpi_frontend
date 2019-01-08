@@ -6,12 +6,12 @@ import { IUserInfo } from '../../../shared/models/user';
 import { UserService } from '../../../shared/services/user.service';
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { DataEntryFormViewModel } from '../data-entry.viewmodel';
+import { DataEntryFormViewModel } from '../../data-entry.viewmodel';
 import { Router } from '@angular/router';
 import { SelectionItem } from 'src/app/ng-material-components';
 import { NewCustomListComponent } from '../../custom-list/new-custom-list/new-custom-list.component';
 import { Subscription } from 'rxjs';
-import { ICustomList, CustomListFormViewModel } from '../../custom-list/custom-list-form/custom-list.viewmodel';
+import { ICustomList, CustomListFormViewModel } from '../../custom-list/custom-list.viewmodel';
 
 const allUserQuery = require('graphql-tag/loader!../../shared/graphql/get-all-users.gql');
 const dataSourceByNameQuery = require('graphql-tag/loader!../../shared/graphql/data-source-by-name.query.gql');

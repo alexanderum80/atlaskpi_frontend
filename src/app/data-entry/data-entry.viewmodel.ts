@@ -1,12 +1,13 @@
-import { ICustomList } from '../custom-list/custom-list-form/custom-list.viewmodel';
-import { DataEntryTypeEnum } from './../shared/models/data-entry.models';
+import { UserService } from './../shared/services/user.service';
+import { ICustomList } from './custom-list/custom-list.viewmodel';
+import { DataEntryTypeEnum } from './shared/models/data-entry.models';
 import { IListItem } from 'src/app/shared/ui/lists/list-item';
 import { isBoolean } from 'lodash';
-import { IDataType, ICustomDataInfo } from '../shared/models/data-entry-form.model';
-import { ICustomSchema, ICustomSchemaInfo } from '../shared/models/data-entry-form.model';
-import { ViewModel, Field, ArrayField } from '../../ng-material-components/viewModels';
+import { IDataType, ICustomDataInfo } from './shared/models/data-entry-form.model';
+import { ICustomSchema, ICustomSchemaInfo } from './shared/models/data-entry-form.model';
+import { ViewModel, Field, ArrayField } from '../ng-material-components/viewModels';
 import { Injectable } from '@angular/core';
-import { SelectionItem, MenuItem } from '../../ng-material-components';
+import { SelectionItem, MenuItem } from '../ng-material-components';
 
 export class DataEntrySchemaViewModel extends ViewModel<ICustomSchemaInfo> {
     @Field({ type: String, required: true })
@@ -93,7 +94,9 @@ export class DataEntryFormViewModel extends ViewModel<ICustomSchema> {
 
     private _fileExtensions = ['.csv', '.xls', '.xlsx'];
 
-    constructor() {
+    constructor(
+        private _userSvc: UserService
+    ) {
         super(null);
 
         this._defaultSchema = {
@@ -200,6 +203,10 @@ export class DataEntryFormViewModel extends ViewModel<ICustomSchema> {
 
     getSelectedTableOption() {
         return this._selectedTableOption;
+    }
+
+    dataEntryPermission() {
+        return this._userSvc.hasPermission('Assign User To', 'Data Entry');
     }
 
     isCorrectValue(dataType, value) {

@@ -1,5 +1,5 @@
-import { CustomListFormViewModel } from '../custom-list-form/custom-list.viewmodel';
-import { ICustomList } from '../custom-list-form/custom-list.viewmodel';
+import { CustomListFormViewModel } from '../custom-list.viewmodel';
+import { ICustomList } from '../custom-list.viewmodel';
 import SweetAlert from 'sweetalert2';
 import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';

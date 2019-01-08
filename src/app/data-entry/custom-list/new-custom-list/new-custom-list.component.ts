@@ -1,7 +1,8 @@
+import { UserService } from './../../../shared/services/user.service';
 import { FormArray, FormGroup, FormControl } from '@angular/forms';
 import SweetAlert from 'sweetalert2';
 import { ApolloService } from 'src/app/shared/services/apollo.service';
-import { CustomListFormViewModel, ICustomList } from '../custom-list-form/custom-list.viewmodel';
+import { CustomListFormViewModel, ICustomList } from '../custom-list.viewmodel';
 import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { ModalComponent } from 'src/app/ng-material-components';
 
@@ -17,19 +18,31 @@ export class NewCustomListComponent implements OnInit {
   @ViewChild('newCustomListModal') newCustomListModal: ModalComponent;
   @Output() newCustomListId = new EventEmitter<ICustomList>();
 
+  private _currentUser: string;
+
   constructor(
     private vm: CustomListFormViewModel,
-    private _apolloService: ApolloService
+    private _apolloService: ApolloService,
+    private _userSvc: UserService
   ) {
   }
 
   ngOnInit() {
+    this.currentUser();
+  }
+
+  currentUser(): any {
+    this._userSvc.user$.subscribe(user => {
+      if (user) {
+        this._currentUser = user._id;
+      }
+    });
   }
 
   open() {
     this.newCustomListModal.open();
     this.vm.fg.controls.name.setValue('');
-    this.vm.fg.controls.dataType.setValue('');
+    this.vm.fg.controls.dataType.setValue('String');
     this.vm.customListModel.controls = [];
     this.vm.customListModel.push(new FormGroup({
       value: new FormControl('')
@@ -38,6 +51,7 @@ export class NewCustomListComponent implements OnInit {
 
   save() {
     const payload = this.vm.payload;
+    payload['users'] = [this._currentUser];
 
     this._apolloService.networkQuery<any>(customListByNameQuery, { name: payload.name }).then(list => {
       if (list.customListByName) {
@@ -51,14 +65,15 @@ export class NewCustomListComponent implements OnInit {
       }
       this._apolloService.mutation<any>(addNewCustomListMutation, { input: payload }).then(res => {
         if (res.data.addCustomList.success) {
-          this.newCustomListId.emit(res.data.addCustomList.entity);
           this._closeModal();
+          this.newCustomListId.emit(res.data.addCustomList.entity);
         }
       });
     });
   }
 
   cancel() {
+    this._closeModal();
     const emptyPayload: ICustomList = {
       _id: '',
       name: null,
@@ -66,7 +81,6 @@ export class NewCustomListComponent implements OnInit {
       listValue: []
     };
     this.newCustomListId.emit(emptyPayload);
-    this._closeModal();
   }
 
   private _closeModal() {

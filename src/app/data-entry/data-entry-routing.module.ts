@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../shared/services';
 import { NewDataEntryComponent } from './new-data-entry/new-data-entry.component';
 import { CustomListComponent } from './custom-list/custom-list.component';
+import { ImportFileComponent } from './new-data-entry/import-file/import-file.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,7 @@ const routes: Routes = [
       { path: 'show-all', component: ShowAllDataEntryComponent, canActivate: [AuthGuard] },
       { path: 'new', component: NewDataEntryComponent, canActivate: [AuthGuard] },
       { path: 'enter-data/:id', component: EnterDataFormComponent, canActivate: [AuthGuard] },
+      { path: 'upload', component: ImportFileComponent, canActivate: [AuthGuard] },
     ]
   }
 ];

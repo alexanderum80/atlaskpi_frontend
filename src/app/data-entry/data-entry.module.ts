@@ -13,11 +13,11 @@ import { ImportFileComponent } from './new-data-entry/import-file/import-file.co
 import { SchemaFormComponent } from './new-data-entry/define-schema/define-schema.component';
 import { EnterDataFormComponent } from './enter-data-form/enter-data-form.component';
 import { DateFieldPopupComponent } from './new-data-entry/import-file/date-field-popup/date-field-popup.component';
-import { DataEntryFormViewModel } from './new-data-entry/data-entry.viewmodel';
+import { DataEntryFormViewModel } from './data-entry.viewmodel';
 import { UserSelectionComponent } from './shared/ui/user-selection/user-selection.component';
 import { CustomListFormComponent } from './custom-list/custom-list-form/custom-list-form.component';
 import { NewCustomListComponent } from './custom-list/new-custom-list/new-custom-list.component';
-import { CustomListFormViewModel } from './custom-list/custom-list-form/custom-list.viewmodel';
+import { CustomListFormViewModel } from './custom-list/custom-list.viewmodel';
 import { CustomListComponent } from './custom-list/custom-list.component';
 import { MyFilterPipe } from './shared/pipe/filter-pipe';
 

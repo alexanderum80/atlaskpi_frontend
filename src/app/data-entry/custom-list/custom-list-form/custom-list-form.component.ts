@@ -3,7 +3,7 @@ import { forEach } from 'lodash';
 import { ApolloService } from './../../../shared/services/apollo.service';
 import { SelectionItem } from './../../../ng-material-components/models/selection-item';
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
-import { CustomListFormViewModel, ICustomList } from './custom-list.viewmodel';
+import { CustomListFormViewModel, ICustomList } from '../custom-list.viewmodel';
 import { FormArray, FormGroup, FormControl } from '@angular/forms';
 
 const dataEntryCollectionQuery = require('graphql-tag/loader!../../shared/graphql/data-entry-collection.gql');

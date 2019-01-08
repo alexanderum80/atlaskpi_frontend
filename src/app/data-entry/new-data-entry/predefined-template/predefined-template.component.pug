@@ -38,8 +38,8 @@ bw-modal(#predefinedTemplateModal='', animation="true", keyboard="true", backdro
 
         bw-modal-body
             div(layout="column")
-                | Assign users with access to this file:
-                .p-20(*ngFor="let user of usersList, index as i")
+                .p-b-20 Assign users with access to this file:
+                div(*ngFor="let user of usersList, index as i")
                     kpi-user-selection.p-l-40(layout="row", [user]="user", (selectedStatus)="updateUserSelection($event, i)")
 
         bw-modal-footer

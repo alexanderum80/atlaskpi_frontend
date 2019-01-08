@@ -1,3 +1,4 @@
+import { UserService } from '../../shared/services/user.service';
 // Angular Imports
 import { FormArray } from '@angular/forms';
 import { Injectable } from '@angular/core';
@@ -28,7 +29,9 @@ export class ICustomListValue {
 @Injectable()
 export class CustomListFormViewModel extends ViewModel<ICustomList> {
 
-    constructor() {
+    constructor(
+        private _userSvc: UserService
+    ) {
         super(null);
     }
 
@@ -69,6 +72,7 @@ export class CustomListFormViewModel extends ViewModel<ICustomList> {
     }
 
     get payload() {
+        debugger;
         let listValues: string[] = this.fg.controls.listValue.value.map(v => {
             return v.value;
         });
@@ -84,6 +88,10 @@ export class CustomListFormViewModel extends ViewModel<ICustomList> {
 
     removeCustomList(listId: string) {
         this.customList = this.customList.filter(a => a._id !== listId);
+    }
+
+    dataEntryPermission() {
+        return this._userSvc.hasPermission('Assign User To', 'Data Entry');
     }
 
 }
