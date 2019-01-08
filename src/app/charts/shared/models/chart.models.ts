@@ -85,6 +85,7 @@ export interface IChartGalleryItem {
     img?: string;
     configName?: string;
     sampleDefinition?: any;
+    combinations?: string[];
 }
 
 
@@ -118,6 +119,7 @@ export interface IChartFormValues {
   name: string;
   group?: string;
   kpis?: [IKPI];
+  kpiIds: string[];
   description?: string;
   predefinedDateRange?: string;
   customFrom?: string;
@@ -127,7 +129,6 @@ export interface IChartFormValues {
   frequency?: string;
   sortingCriteria?: string;
   sortingOrder?: string;
-  kpi: string;
   grouping?: string;
   xAxisSource?: string;
   comparison?: string;
@@ -313,7 +314,7 @@ export class ChartModel {
         sortingOrder: this.sortingOrder,
         group: this.group || undefined,
         grouping: this.groupings ? this.groupings[0] || undefined : undefined,
-        kpi: this.kpis ? this.kpis[0]._id || undefined : undefined,
+        kpiIds: this.kpis ? this.kpis.map(k => k._id) : undefined,
         xAxisSource: this.xAxisSource || '',
         comparison: this.comparison ? this.comparison.map(c => c).join('|') : undefined,
         dashboards: this.dashboards ? this.dashboards.map(d => d._id).join('|') : undefined,

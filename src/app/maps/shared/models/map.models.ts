@@ -75,6 +75,8 @@ export interface IMapFormValues {
   name?: string;
   subtitle?: string;
   group?: string;
+  frequency?: string;
+  xAxisSource?: string;
   kpi?: string;
   description?: string;
   predefinedDateRange?: string;
@@ -84,6 +86,14 @@ export interface IMapFormValues {
   dashboards?: string;
   mapsize: string;
   zipCodeSource: string;
+  predefinedTop?: any;
+  customTop?: any;
+  sortingCriteria?: string;
+  sortingOrder?: string;
+  tooltipEnabled?: boolean;
+  seriesDataLabels?: boolean;
+  predefinedTooltipFormat?: string;
+  comparison?: string;
 }
 
 export interface IUpdateMapResponse {

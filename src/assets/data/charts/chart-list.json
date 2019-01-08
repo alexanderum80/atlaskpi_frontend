@@ -84,6 +84,44 @@
             "configName": "donut-3d"
         }
     ],
+    "combined": [
+        {
+            "name": "Area/Col",
+            "img": "/assets/img/charts/combined/area-column.svg",
+            "configName": "area-column",
+            "combinations": [ "area", "column" ]
+        },
+        {
+            "name": "Col/Line",
+            "img": "/assets/img/charts/combined/column-line.svg",
+            "configName": "column-line",
+            "combinations": [ "column", "line" ]
+        },
+        {
+            "name": "Col/SPLine",
+            "img": "/assets/img/charts/combined/column-spline.svg",
+            "configName": "column-spline",
+            "combinations": [ "column", "spline" ]
+        },
+        {
+            "name": "Area/Bar",
+            "img": "/assets/img/charts/combined/area-bar.svg",
+            "configName": "area-bar",
+            "combinations": [ "area", "bar" ]
+        },
+        {
+            "name": "Bar/Line",
+            "img": "/assets/img/charts/combined/bar-line.svg",
+            "configName": "bar-line",
+            "combinations": [ "bar", "line" ]
+        },
+        {
+            "name": "Bar/SPLine",
+            "img": "/assets/img/charts/combined/bar-spline.svg",
+            "configName": "bar-spline",
+            "combinations": [ "bar", "spline" ]
+        }
+    ],
 	"others": [{
             "name": "map",
             "img": "/assets/img/charts/others/map.png",

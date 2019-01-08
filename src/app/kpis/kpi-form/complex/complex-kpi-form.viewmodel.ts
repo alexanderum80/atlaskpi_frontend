@@ -45,7 +45,7 @@ export class ComplexKpiFormViewModel extends ViewModel<IKPI> {
         grouping: '',
         tooltipEnabled: true,
         predefinedTooltipFormat: 'multiple_percent',
-        kpi: '',
+        kpiIds: [],
         legendEnabled: false,
         predefinedDateRange: 'this year',
         invertAxisEnabled: false,
