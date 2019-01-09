@@ -218,7 +218,7 @@ export class ChartModel {
       proxyChartModel.title = fg.value.name;
       proxyChartModel.subtitle = fg.value.description;
       proxyChartModel.group = fg.value.group;
-      proxyChartModel.kpis = <any>[fg.value.kpi];
+      proxyChartModel.kpis = fg.value.kpis.filter(k => !!k);
       proxyChartModel.dateRange = { predefined: fg.value.predefinedDateRange,
                                     custom: { from: fg.value.customFrom || null,
                                               to: fg.value.customTo || null  }};

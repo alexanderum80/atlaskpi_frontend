@@ -108,27 +108,31 @@ const chartDefinitionFromKPI = {
         text: 'Powered by AtlasKPI'
     }
 };
-const ChartTypes = [{
-    id: 1,
-    title: 'Line'
-},
-{
-    id: 2,
-    title: 'Area'
-},
-{
-    id: 3,
-    title: 'Column'
-},
-{
-    id: 4,
-    title: 'Bar'
-},
-{
-    id: 7,
-    title: 'Pie'
-},
-];
+// const ChartTypes = [{
+//     id: 1,
+//     title: 'Line'
+// },
+// {
+//     id: 2,
+//     title: 'Area'
+// },
+// {
+//     id: 3,
+//     title: 'Column'
+// },
+// {
+//     id: 4,
+//     title: 'Bar'
+// },
+// {
+//     id: 7,
+//     title: 'Pie'
+// },
+// {
+//     id: 8,
+//     title: 'Combined'
+// },
+// ];
 
 interface Itypography {
     enable: boolean;
