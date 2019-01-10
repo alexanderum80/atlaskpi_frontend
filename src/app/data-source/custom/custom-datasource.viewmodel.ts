@@ -5,6 +5,7 @@ import { ViewModel, Field, ArrayField } from '../../ng-material-components/viewM
 import { Injectable } from '@angular/core';
 import { SelectionItem, MenuItem } from '../../ng-material-components';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { IWorkSheet } from 'xlsx';
 
 
 export class CustomSchemaViewModel extends ViewModel<ICustomSchemaInfo> {
@@ -229,17 +230,6 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
 
     get fileExtensions() {
         return this._fileExtensions;
-    }
-
-    getAlphabetExtended(): string[]{
-    let resultArr = this.Alphabet;
-    for(let i = 0; i < 3; i++){
-        for(let j = 0; j < 26; j++){
-
-            resultArr.push( this.Alphabet[i] + this.Alphabet[j]);        
-        }
-    }
-        return resultArr;
     }
 }
 
