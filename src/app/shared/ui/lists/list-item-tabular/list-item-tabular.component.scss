@@ -1,5 +1,5 @@
 .list-item-tabular {
-    border-bottom: 1px solid #f6f6f6;
+    //border-bottom: 1px solid #f6f6f6;
 
     &:hover {
         background-color: #f6f6f6;
@@ -13,4 +13,24 @@
     .title {
         font-weight: 400;
     }
+    margin: 0% !important;
+    padding: 0% !important;
+}
+.box-mobile {
+    width: 100%;
+    margin-left: 25px;
+    margin-bottom: 15px;
+}
+.data-box {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+.bgnColor {
+    background-color: #f5f0f0 !important; 
+    margin: 0% !important;
+    padding: 0% !important;
+}
+.user-box {
+    width: 50%;
 }

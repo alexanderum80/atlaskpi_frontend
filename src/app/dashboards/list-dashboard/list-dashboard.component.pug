@@ -11,7 +11,8 @@ kpi-item-list(
     [tableRowTemplate]="tableItem",
     (onAddActionClicked)="add()",
     (onItemActionClicked)="actionClicked($event)",
-    (onItemClicked)="editClickedList($event)")
+    (onItemClicked)="editClickedList($event)",
+    [titleRow]= "true")
 
 ng-template(#tableItem, let-item="item")
     //- image
