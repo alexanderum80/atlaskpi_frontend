@@ -5,7 +5,6 @@ import { ViewModel, Field, ArrayField } from '../../ng-material-components/viewM
 import { Injectable } from '@angular/core';
 import { SelectionItem, MenuItem } from '../../ng-material-components';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { IWorkSheet } from 'xlsx';
 
 
 export class CustomSchemaViewModel extends ViewModel<ICustomSchemaInfo> {
