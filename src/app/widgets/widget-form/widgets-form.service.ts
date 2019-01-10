@@ -240,11 +240,11 @@ export class WidgetsFormService {
     // i.e. { predefined: 'all times', custom: null }
     const hasDateRange: boolean = !isEmpty(attributes.dateRange) && !isEmpty(attributes.dateRange.predefined);
 
-    if(isEmpty(this.comparisonList) && attributes.comparison 
-    && Array.isArray(attributes.comparison) &&
-     attributes.comparison.length > 0){
-      return false;
-    }
+    // if(isEmpty(this.comparisonList) && attributes.comparison 
+    // && Array.isArray(attributes.comparison) &&
+    //  attributes.comparison.length > 0){
+    //   return false;
+    // }
 
     if (!hasComparison || !hasDateRange) {
       return true;
