@@ -21,9 +21,9 @@
           i.zmdi.zmdi-download.p-r-10
           input(type="file", (change)="importFile($event)") 
           | BROWSE
-    .p-l-40.flex(layout="column")
+    .p-l-40.flex.overflow-auto(layout="column")
       .p-b-10 Assign users with access to this file:
-      div(*ngFor="let user of usersList, index as i", layout="column")
+      .user-selection(*ngFor="let user of usersList, index as i", layout="column")
         kpi-user-selection(layout="row", [user]="user", (selectedStatus)="updateUserSelection($event, i)")
   .button-panel(layout="row", layout-align="end end")
       bw-button(icon="floppy", title="SAVE", color="blue", (clicked)="save()", [disabled]="!isFormValid()")

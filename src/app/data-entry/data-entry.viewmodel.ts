@@ -211,7 +211,6 @@ export class DataEntryFormViewModel extends ViewModel<ICustomSchema> {
     }
 
     dataEntryPermission() {
-        debugger;
         return this._userSvc.hasPermission('Assign User to', 'DataEntry');
     }
 

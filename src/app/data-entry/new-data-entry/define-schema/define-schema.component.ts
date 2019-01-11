@@ -152,7 +152,6 @@ export class SchemaFormComponent implements OnInit {
 
   private _subscribeToFormChange() {
     this.schemas.valueChanges.subscribe(fg => {
-      debugger;
       fg.map(value => {
         if (value.dataType === 'createList') {
           this.vmListForm.newCustomListIndex = this.schemas.controls.findIndex(f => f.value === value);
@@ -259,7 +258,6 @@ export class SchemaFormComponent implements OnInit {
         .then(result => {
           const resultData = result.data.addDataEntry || null;
           if (resultData) {
-            debugger;
             const customList = this.vmData.customListSource;
             const sourceOrigin = customList.filter(list => {
               const customListField = tableFields.find(f => f.dataType === list._id);
@@ -312,7 +310,6 @@ export class SchemaFormComponent implements OnInit {
   }
 
   selectNewCustomList(list) {
-    debugger;
     this.lastInsertedCustomList = list;
     this.lisOfCustomListQuery.refetch().then(() => this._getCustomList());
   }

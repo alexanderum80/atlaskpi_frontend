@@ -72,7 +72,6 @@ export class CustomListFormViewModel extends ViewModel<ICustomList> {
     }
 
     get payload() {
-        debugger;
         let listValues: string[] = this.fg.controls.listValue.value.map(v => {
             return v.value;
         });

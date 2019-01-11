@@ -82,7 +82,6 @@ export class CustomListComponent implements OnInit {
         if (!data.customList.length) {
           this.vm.customList.push(this.vm.defaultCustomListModel);
         }
-        debugger;
         data.customList.forEach(element => {
           this.vm.customList.push({
             _id: element._id,
@@ -142,7 +141,6 @@ export class CustomListComponent implements OnInit {
   }
 
   save() {
-    debugger;
     const payload = this.vm.payload;
     payload['users'] = [this._currentUser];
 

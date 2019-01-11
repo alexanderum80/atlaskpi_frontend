@@ -323,7 +323,6 @@ export class EnterDataFormComponent implements OnInit {
   }
 
   sortActionClicked(event, index) {
-    debugger;
     if (this.vm.fg.controls.schema.value[index].dataType === 'Date') {
       this.vm.dataCollection.forEach(data =>  {
         const datePartArray = data[index] ? data[index].split('/') : null;

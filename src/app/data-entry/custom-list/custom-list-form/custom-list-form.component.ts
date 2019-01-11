@@ -106,7 +106,6 @@ export class CustomListFormComponent implements OnInit, OnChanges {
         return;
     }
 
-    debugger;
     let customListInUse = false;
     if (this.customList._id) {
       for (let i = 0; i < this._dataEntry.length; i++) {
