@@ -292,12 +292,12 @@ export class ImportFileComponent {
   }
 
   getNumberFromCell(cellName: string): Number {
-    //TODO checks undefined
+    // E.g -> cellName = 'A12' -> indexLastLetter = 1 -> extractedNumber = 12
     const indexLastLetter = cellName.match(/[^A-Z]/).index;
 
-    const columnsCount = cellName.substring(indexLastLetter);
+    const extractedNumber = cellName.substring(indexLastLetter);
 
-    return +columnsCount;
+    return +extractedNumber;
   }
 
   private _getCsvHeaderArray(csvRecordsArr, tokenDelimeter) {
