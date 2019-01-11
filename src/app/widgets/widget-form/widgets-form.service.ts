@@ -123,7 +123,6 @@ export class WidgetsFormService {
   }
 
   processFormChanges(values: IWidgetFormGroupValues): Promise<IWidget> {
-    debugger;
     // common properties
     this._widgetModel['preview'] = true;
     this._widgetModel['name'] = values.name;
@@ -240,12 +239,6 @@ export class WidgetsFormService {
     const hasComparison: boolean = Array.isArray(attributes.comparison) && !isEmpty(attributes.comparison);
     // i.e. { predefined: 'all times', custom: null }
     const hasDateRange: boolean = !isEmpty(attributes.dateRange) && !isEmpty(attributes.dateRange.predefined);
-
-    // if(isEmpty(this.comparisonList) && attributes.comparison 
-    // && Array.isArray(attributes.comparison) &&
-    //  attributes.comparison.length > 0){
-    //   return false;
-    // }
 
     if (!hasComparison || !hasDateRange) {
       return true;
