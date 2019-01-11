@@ -104,6 +104,10 @@ export class TargetScreenService {
                 responsible: typeof m.responsible === 'string' ? (<string>m.responsible).split('|') : m.responsible,
                 status: m.status
             })),
+            createdBy: null,
+            updatedBy: null,
+            createdDate: null,
+            updatedDate: null
         } as ITarget;
 
         console.dir(target);

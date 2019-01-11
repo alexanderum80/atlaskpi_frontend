@@ -11,5 +11,9 @@ query Alerts {
             identifier
             deliveryMethods
         }
+      createdBy
+      createdAt
+      updatedBy
+      updatedDate
     }
 }
