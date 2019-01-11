@@ -123,6 +123,7 @@ export class WidgetsFormService {
   }
 
   processFormChanges(values: IWidgetFormGroupValues): Promise<IWidget> {
+    debugger;
     // common properties
     this._widgetModel['preview'] = true;
     this._widgetModel['name'] = values.name;
@@ -265,14 +266,8 @@ export class WidgetsFormService {
 
   private _getComparisonValue(values: IWidgetFormGroupValues): string[] {
 
-    const comparison = this._widgetModel.numericWidgetAttributes.comparison || undefined;
-
-    /* if date range is "all times", or if the comparison list is empty and 
-    comparison has some value */
-    if (values.predefinedDateRange === PredefinedDateRanges.allTimes
-      || (isEmpty(this.comparisonList) &&  comparison
-      && Array.isArray(comparison) && comparison.length > 0)) 
-      {
+    /* if date range is "all times" */
+    if (values.predefinedDateRange === PredefinedDateRanges.allTimes) {
       return [];
     }
     
