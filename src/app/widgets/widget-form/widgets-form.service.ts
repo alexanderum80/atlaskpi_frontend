@@ -240,12 +240,6 @@ export class WidgetsFormService {
     // i.e. { predefined: 'all times', custom: null }
     const hasDateRange: boolean = !isEmpty(attributes.dateRange) && !isEmpty(attributes.dateRange.predefined);
 
-    if(isEmpty(this.comparisonList) && attributes.comparison 
-    && Array.isArray(attributes.comparison) &&
-     attributes.comparison.length > 0){
-      return false;
-    }
-
     if (!hasComparison || !hasDateRange) {
       return true;
     }
@@ -265,14 +259,8 @@ export class WidgetsFormService {
 
   private _getComparisonValue(values: IWidgetFormGroupValues): string[] {
 
-    const comparison = this._widgetModel.numericWidgetAttributes.comparison || undefined;
-
-    /* if date range is "all times", or if the comparison list is empty and 
-    comparison has some value */
-    if (values.predefinedDateRange === PredefinedDateRanges.allTimes
-      || (isEmpty(this.comparisonList) &&  comparison
-      && Array.isArray(comparison) && comparison.length > 0)) 
-      {
+    /* if date range is "all times" */
+    if (values.predefinedDateRange === PredefinedDateRanges.allTimes) {
       return [];
     }
     
