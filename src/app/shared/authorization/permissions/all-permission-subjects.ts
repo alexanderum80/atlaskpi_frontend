@@ -18,6 +18,7 @@ export enum SubjectEnum {
     widget = 'widget',
     role = 'role',
     target = 'target',
-    alert = 'alert'
+    alert = 'alert',
+    dataEntry = 'dataentry'
     // ...
 }

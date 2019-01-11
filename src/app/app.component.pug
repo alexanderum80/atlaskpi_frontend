@@ -6,7 +6,7 @@
     .sidebar.left_side.hv-100(*ngIf="(authenticated$ | async) && !hideLayout", flex-none, [class.menu_margin]="sideBarOpen")
         kpi-sidebar
     //- main content
-    .main-content(flex)
+    .main-content.w-100(flex)
         .hv-100(layout="column")
             header(*ngIf="(authenticated$ | async)  && !hideLayout", flex-none)
                 kpi-header([sideBarOpen]="true", [showHelpCenter]="showHelpCenter")

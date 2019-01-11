@@ -8,6 +8,7 @@ import { ICustomSchema, ICustomSchemaInfo } from './shared/models/data-entry-for
 import { ViewModel, Field, ArrayField } from '../ng-material-components/viewModels';
 import { Injectable } from '@angular/core';
 import { SelectionItem, MenuItem } from '../ng-material-components';
+import { FormArray, FormGroup, FormControl } from '@angular/forms';
 
 export class DataEntrySchemaViewModel extends ViewModel<ICustomSchemaInfo> {
     @Field({ type: String, required: true })
@@ -85,6 +86,10 @@ export class DataEntryFormViewModel extends ViewModel<ICustomSchema> {
     private _defaultDateRangeSchema: ICustomSchema;
 
     private _customListSource: ICustomList[];
+
+    private _dataCollection: any[];
+
+    private _dataCollectionFiltered: any[];
 
     Alphabet = [
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
@@ -206,7 +211,8 @@ export class DataEntryFormViewModel extends ViewModel<ICustomSchema> {
     }
 
     dataEntryPermission() {
-        return this._userSvc.hasPermission('Assign User To', 'Data Entry');
+        debugger;
+        return this._userSvc.hasPermission('Assign User to', 'DataEntry');
     }
 
     isCorrectValue(dataType, value) {
@@ -289,6 +295,23 @@ export class DataEntryFormViewModel extends ViewModel<ICustomSchema> {
         a.click();
         window.URL.revokeObjectURL(url);
         a.remove();
+    }
+
+
+    setDataCollection(data) {
+        this._dataCollection = data;
+    }
+
+    get dataCollection() {
+        return this._dataCollection;
+    }
+
+    setDataCollectionFiltered(data) {
+        this._dataCollectionFiltered = data;
+    }
+
+    get dataCollectionFiltered() {
+        return this._dataCollectionFiltered;
     }
 
 }

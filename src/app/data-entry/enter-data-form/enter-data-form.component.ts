@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { AKPIDateFormatEnum } from './../../shared/models/date-range';
 import SweetAlert from 'sweetalert2';
 import { ICustomList } from '../custom-list/custom-list.viewmodel';
@@ -11,8 +12,9 @@ import { Component, OnInit } from '@angular/core';
 import { IDatePickerConfig } from '../../ng-material-components/modules/forms/date-picker/date-picker/date-picker-config.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { forEach, orderBy } from 'lodash';
+import { forEach, orderBy, toNumber } from 'lodash';
 import * as moment from 'moment';
+import { PagerService } from '../shared/service/pager.service';
 
 const dataEntryIdQuery = require('graphql-tag/loader!../shared/graphql/data-entry-by-id.gql');
 const customListIdQuery = require('graphql-tag/loader!../shared/graphql/get-custom-list.gql');
@@ -59,7 +61,8 @@ export class EnterDataFormComponent implements OnInit {
     public vm: DataEntryFormViewModel,
     private _route: ActivatedRoute,
     private _router: Router,
-    private _apolloService: ApolloService
+    private _apolloService: ApolloService,
+    public pagerService: PagerService,
   ) { }
 
   ngOnInit() {
@@ -122,6 +125,16 @@ export class EnterDataFormComponent implements OnInit {
             data.push(dataElement);
           });
 
+          // data.push(new FormGroup(
+          //     schemaCollection.map(() => {
+          //         return new FormControl();
+          //     })
+          // ));
+
+          this.vm.setDataCollection(data);
+
+          this.vm.setDataCollectionFiltered(data);
+
           const schema = {
             'schema': fields,
             'data': [],
@@ -132,18 +145,15 @@ export class EnterDataFormComponent implements OnInit {
 
           this.vm.initialize(schema);
 
-          for (let i = 0; i < data.length; i++) {
-            const element = data[i];
-            this._addNewRow(element);
-          }
-
-          this._addNewBlankRow();
+          this.pagerService.setPage(1, data);
 
           this._setFgValidators();
 
           this._addDataFilterRow(fields);
 
           this._subscribeToFormChanges();
+
+          this._subscribeToFilterFormChanges();
 
           this.isLoading = false;
         });
@@ -155,14 +165,6 @@ export class EnterDataFormComponent implements OnInit {
     this._apolloService.networkQuery<string>(customListIdQuery).then(res => {
       this.customListCollection = res.customList;
     });
-  }
-
-  private _addNewRow(data) {
-    (this.vm.fg.get('data') as FormArray).push(new FormGroup(
-      data.map(d => {
-        return new FormControl(d);
-      })
-    ));
   }
 
   private _addDataFilterRow(fields) {
@@ -181,17 +183,6 @@ export class EnterDataFormComponent implements OnInit {
     };
   }
 
-  private _addNewBlankRow() {
-    const dataFormGroup = this.vm.fg.get('data') as FormArray;
-    const schema = this.vm.fg.controls['schema'].value;
-
-    dataFormGroup.push(new FormGroup(
-    schema.map(() => {
-        return new FormControl();
-      })
-    ));
-  }
-
   private _setFgValidators() {
     const schemaFormGroup = (this.vm.fg.get('schema') as FormArray).controls;
     const dataFormGroup = (this.vm.fg.get('data') as FormArray).controls;
@@ -208,9 +199,14 @@ export class EnterDataFormComponent implements OnInit {
   private _subscribeToFormChanges() {
     const that = this;
     this.vm.fg.controls['data'].valueChanges.subscribe(value => {
+      const fgData = that.vm.fg.get('data') as FormArray;
+      if (fgData.controls[value.length - 1] && !fgData.controls[value.length - 1].pristine) {
+        this.pagerService.addNewBlankRow();
+      }
       const schemaFormGroup = this.vm.fg.controls['schema'].value;
       const totalFields = schemaFormGroup.length;
-      const totalData = value.length;
+      const totalData = this.pagerService.pager.currentPage === this.pagerService.pager.totalPages ?
+                        value.length - 1 : value.length;
       for (let d = 0; d < totalData; d++) {
         const data = value[d];
 
@@ -228,10 +224,49 @@ export class EnterDataFormComponent implements OnInit {
         }
       }
 
-      const fgData = that.vm.fg.get('data') as FormArray;
-      if (!fgData.controls[value.length - 1].pristine) {
-        this._addNewBlankRow();
+      this._updateModifiedData();
+    });
+  }
+
+  private _updateModifiedData() {
+    const fgData = (this.vm.fg.get('data') as FormArray).controls;
+    const dataCollection = this.vm.dataCollection;
+    const pager = this.pagerService.pager;
+
+    for (let index = pager.startIndex; index < pager.endIndex; index++) {
+      if (fgData.length === pager.pageSize) {
+        dataCollection[index] = [];
+        forEach(fgData[index].value, (value, key) => {
+          dataCollection[index].push(value);
+        });
+        Object.keys(fgData[index].value).forEach(valueIndex => {
+        });
       }
+    }
+  }
+
+  private _subscribeToFilterFormChanges() {
+    this.vm.fg.controls['dataFilter'].valueChanges.subscribe(filterValue => {
+      const filterFormValues = filterValue[0];
+      const indexFormValue = [];
+      const filterFormValue = [];
+      this.vm.setDataCollectionFiltered(this.vm.dataCollection);
+
+      forEach(filterFormValues, (value, key) => {
+        if (value !== '') {
+          indexFormValue.push(key);
+          filterFormValue.push(value);
+        }
+      });
+
+      // Filtering dataCollection
+      if (indexFormValue.length !== 0) {
+        indexFormValue.forEach((i, index) => {
+          this.vm.setDataCollectionFiltered(this.vm.dataCollectionFiltered.filter(v =>
+            v[i].toString().toLowerCase() === filterFormValue[index].toString().toLowerCase()));
+        });
+      }
+      this.pagerService.setPage(1, this.vm.dataCollectionFiltered);
     });
   }
 
@@ -288,25 +323,24 @@ export class EnterDataFormComponent implements OnInit {
   }
 
   sortActionClicked(event, index) {
-    const fgData = (this.vm.fg.get('data') as FormArray).controls;
-    let dataArray = [];
-
-    for (let c = 0; c < fgData.length - 1; c++) {
-      const data = fgData[c];
-      const dataElement = [];
-      (data as FormArray).controls.map(element => {
-        dataElement.push(element.value);
+    debugger;
+    if (this.vm.fg.controls.schema.value[index].dataType === 'Date') {
+      this.vm.dataCollection.forEach(data =>  {
+        const datePartArray = data[index] ? data[index].split('/') : null;
+        data[index] = datePartArray ? datePartArray[2] + '/' + datePartArray[0] + '/' + datePartArray[1] : null;
       });
-      dataArray.push(dataElement);
     }
 
-    (this.vm.fg.get('data') as FormArray).controls = [];
-    dataArray = orderBy(dataArray, index, event.id);
-    dataArray.map(data => {
-      this._addNewRow(data);
-    });
+    this.vm.setDataCollection(orderBy(this.vm.dataCollection, index, event.id));
 
-    this._addNewBlankRow();
+    if (this.vm.fg.controls.schema.value[index].dataType === 'Date') {
+      this.vm.dataCollection.forEach(data => {
+        const datePartArray = data[index] ? data[index].split('/') : null;
+        data[index] = datePartArray ? datePartArray[1] + '/' + datePartArray[2] + '/' + datePartArray[0] : null;
+      });
+    }
+
+    this.pagerService.setPage(1, this.vm.dataCollection);
 
     this.sortAscOnClic = false;
   }
@@ -325,21 +359,21 @@ export class EnterDataFormComponent implements OnInit {
       tableFields.push(schema.value);
     });
 
-    const dataFormGroup = this.vm.fg.get('data') as FormArray;
-    for (let i = 0; i < dataFormGroup.controls.length - 1; i++) {
-      const controlGroup = <any>dataFormGroup.controls[i];
-      const data = [];
-      controlGroup.controls.map(c => {
-        data.push(c.value);
-      });
+    // const dataFormGroup = this.vm.fg.get('data') as FormArray;
+    // for (let i = 0; i < dataFormGroup.controls.length - 1; i++) {
+    //   const controlGroup = <any>dataFormGroup.controls[i];
+    //   controlGroup.controls.map(c => {
+    //     data.push(c.value);
+    //   });
 
-      tableRecords.push(data);
-    }
+    //   const data = this.vm.dataCollection;
+    //   tableRecords.push(data);
+    // }
 
     const tableData: ICustomData = {
       inputName: this.dataSourceCollection.dataName,
       fields: JSON.stringify(tableFields),
-      records: JSON.stringify(tableRecords),
+      records: JSON.stringify(this.vm.dataCollection),
     };
 
     this._apolloService.mutation<any> (updateDataEntryMutation, { input: JSON.stringify(tableData) }, ['DataEntries'])

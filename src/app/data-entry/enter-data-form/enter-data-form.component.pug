@@ -1,6 +1,6 @@
 kpi-spinner(*ngIf="isLoading")
 
-.enter-data-form-container.h-100(*ngIf="!isLoading", layout="row", layout-padding)
+.enter-data-form-container.h-100.w-100.overflow-auto(*ngIf="!isLoading", layout="row", layout-padding)
     .flex(layout="column")
         .table.h-90.overflow-auto
             .table-header.bgm-blue(layout="row")
@@ -37,7 +37,7 @@ kpi-spinner(*ngIf="isLoading")
                                         [field]="f")
 
                 //- data rows
-                .data-row.flex(layout="row", *ngFor="let controls of vm.fg.get('data').controls | myfilter: vm.fg.get('dataFilter').controls, let c = index")
+                .data-row.flex(layout="row", *ngFor="let controls of vm.fg.get('data').controls, let c = index")
                     .columns.flex.m-l-20(*ngFor="let fieldName of controls.controls, let f = index")
                         div(*ngIf="getInputType(f) === 'Date'")
                             bw-date-picker(
@@ -64,6 +64,19 @@ kpi-spinner(*ngIf="isLoading")
                         .flex.err-message(*ngIf="fieldName && fieldName.errors && fieldName.errors.required") This field is required.
                         .flex.err-message(*ngIf="fieldName && fieldName.errors && fieldName.errors.invalidDataType") Incorrect data type.
 
-        .flex(layout="row", layout-align="end end") 
-            bw-button(icon="floppy", title="SAVE", color="blue", (clicked)="save()")
-            bw-button(icon="close", title="CANCEL", [simple]="true", color="black", (clicked)="cancel()")
+        div(layout="row")
+            .pagination.flex-70(*ngIf="pagerService.pager.pages && pagerService.pager.pages.length", layout="row")
+                .p-5([ngClass]="{disabled:pagerService.pager.currentPage === 1}")
+                    bw-button(title="<< First", color="blue", (clicked)="pagerService.setPage(1, vm.dataCollection)")
+                .p-5([ngClass]="{disabled:pagerService.pager.currentPage === 1}")
+                    bw-button(title="< Previous", color="blue", (clicked)="pagerService.setPage(pagerService.pager.currentPage - 1, vm.dataCollection)")
+                //- div(ngFor="let page of pagerService.pager.pages", [ngClass]="{active:pagerService.pager.currentPage === page}")
+                //-     bw-button([title]="page", color="blue", (clicked)="pagerService.setPage(page, vm.dataCollection)")
+                .p-5([ngClass]="{disabled:pagerService.pager.currentPage === pagerService.pager.totalPages}")
+                    bw-button(title="Next >", color="blue", (clicked)="pagerService.setPage(pagerService.pager.currentPage + 1, vm.dataCollection)")
+                .p-5([ngClass]="{disabled:pagerService.pager.currentPage === pagerService.pager.totalPages}")
+                    bw-button(title="Last >>", color="blue", (clicked)="pagerService.setPage(pagerService.pager.totalPages, vm.dataCollection)")
+
+            .flex(layout="row", layout-align="end center") 
+                bw-button(icon="floppy", title="SAVE", color="blue", (clicked)="save()")
+                bw-button(icon="close", title="CANCEL", [simple]="true", color="black", (clicked)="cancel()")

@@ -19,7 +19,7 @@ import { CustomListFormComponent } from './custom-list/custom-list-form/custom-l
 import { NewCustomListComponent } from './custom-list/new-custom-list/new-custom-list.component';
 import { CustomListFormViewModel } from './custom-list/custom-list.viewmodel';
 import { CustomListComponent } from './custom-list/custom-list.component';
-import { MyFilterPipe } from './shared/pipe/filter-pipe';
+import { PagerService } from './shared/service/pager.service';
 
 @NgModule({
   imports: [
@@ -29,11 +29,11 @@ import { MyFilterPipe } from './shared/pipe/filter-pipe';
     SharedModule,
     DataEntryRoutingModule
   ],
-  declarations: [DataEntryComponent, ShowAllDataEntryComponent, MyFilterPipe,
+  declarations: [DataEntryComponent, ShowAllDataEntryComponent,
         NewDataEntryComponent, ImportFileComponent, SchemaFormComponent,
         EnterDataFormComponent, DateFieldPopupComponent, UserSelectionComponent, PredefinedTemplateComponent,
         CustomListFormComponent, NewCustomListComponent, CustomListComponent, CustomListSummaryComponent],
   exports: [DataEntryComponent],
-  providers: [DataEntryFormViewModel, CustomListFormViewModel]
+  providers: [DataEntryFormViewModel, CustomListFormViewModel, PagerService]
 })
 export class DataEntryModule { }

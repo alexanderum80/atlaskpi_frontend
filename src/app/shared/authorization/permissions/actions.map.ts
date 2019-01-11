@@ -16,7 +16,8 @@ export const ActionsMap = {
     ChangeSettingsOnFly: 'ChangeSettingsOnFly',
     CompareOnFly: 'CompareOnFly',
     Download: 'Download',
-    SeeInfo: 'SeeInfo'
+    SeeInfo: 'SeeInfo',
+    AssignUserTo: 'Assign User To'
 };
 
 export const CrudActions = [
@@ -31,4 +32,8 @@ export const CommentActions = [
     ActionsMap.ViewComments,
     ActionsMap.EditComment,
     ActionsMap.DeleteComment,
+];
+
+export const DataEntryActions = [
+    ActionsMap.AssignUserTo
 ];
