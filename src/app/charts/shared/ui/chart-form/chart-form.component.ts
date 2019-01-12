@@ -13,7 +13,7 @@ import {
     OnDestroy,
     ViewChild
 } from '@angular/core';
-import { FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormGroup, FormArray, Validators, FormBuilder } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { isBoolean, isEmpty, map, cloneDeep } from 'lodash';
 import { Subject } from 'rxjs/Subject';
@@ -194,7 +194,8 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         private _apolloService: ApolloService,
         private _selectChartService: SelectedChartsService,
         private _browserService: BrowserService,
-        private _user: UserService) {
+        private _user: UserService,
+        private _formBuilder: FormBuilder) {
         Highcharts.setOptions({
             lang: {
                 decimalPoint: '.',
@@ -489,7 +490,17 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                 setTimeout(function () {
                     // depends on the kpi list
                     // that.fg.controls['kpi'].patchValue(values.kpiIds);
-                    that.fg.controls['kpi'].patchValue((<any>values).kpiIds.map(k => new FormControl(k, Validators.required)));
+                    const kpiArray = that.fg.controls['kpis'] as FormArray;
+                    while (kpiArray.length) {
+                        kpiArray.removeAt(0);
+                    }
+
+                    values.kpis.forEach(k => {
+                        kpiArray.push(that._formBuilder.group({
+                            type: new FormControl(k.type, Validators.required),
+                            kpi: new FormControl(k.kpi._id, Validators.required),
+                        }));
+                    });
 
                     if (values.predefinedDateRange === 'custom') {
                         that.fg.controls['customFrom'].patchValue(values.customFrom);
@@ -627,11 +638,11 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     get formValid() {
         if (this.ischartTypeMap) {
             return this.fg.value.name !== undefined && this.fg.value.name.length > 1 &&
-                this.fg.value.kpi !== undefined && this.fg.value.kpi.length > 0 &&
+                this.fg.value.kpis !== undefined && this.fg.value.kpis.length > 0 &&
                 this.fg.value.predefinedDateRange !== undefined && this.isMapSizeValid;
         } else {
             return !isEmpty(this.fg.value.name) &&
-            !isEmpty(this.fg.value.kpi) &&
+            !isEmpty(this.fg.value.kpis) &&
             !isEmpty(this.fg.value.predefinedDateRange) &&
             this.isChartCustomTopValid &&
             this.tooltipValid;

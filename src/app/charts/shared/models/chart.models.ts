@@ -112,14 +112,18 @@ export interface IChartVariable {
   frequency; string;
 }
 
+export interface IChartKpi {
+    type: string;
+    kpi: string;
+}
+
 export interface IChartFormValues {
   // basic info
   title?: string;
   subtitle?: string;
   name: string;
   group?: string;
-  kpis?: [IKPI];
-  kpiIds: string[];
+  kpis?: IChartKpi[];
   description?: string;
   predefinedDateRange?: string;
   customFrom?: string;
@@ -188,7 +192,7 @@ export class ChartModel {
     title: string;
     subtitle?: string;
     group?: string;
-    kpis: [IKPI];
+    kpis: IChartKpi[];
     dateRange: IChartDateRange;
     top: IChartTop;
     frequency: string;
@@ -314,7 +318,7 @@ export class ChartModel {
         sortingOrder: this.sortingOrder,
         group: this.group || undefined,
         grouping: this.groupings ? this.groupings[0] || undefined : undefined,
-        kpiIds: this.kpis ? this.kpis.map(k => k._id) : undefined,
+        kpis: this.kpis,
         xAxisSource: this.xAxisSource || '',
         comparison: this.comparison ? this.comparison.map(c => c).join('|') : undefined,
         dashboards: this.dashboards ? this.dashboards.map(d => d._id).join('|') : undefined,
