@@ -133,7 +133,6 @@ export class WidgetsFormService {
     this._widgetModel['order'] = Number(values.order);
     this._widgetModel['color'] = values.color;
     this._widgetModel['fontColor'] = values.fontColor;
-
     // numeric properties
     if (values.type === 'numeric') {
       this._widgetModel['chartWidgetAttributes'] = null;
@@ -199,7 +198,6 @@ export class WidgetsFormService {
 
     const kpiWithDaterange: boolean = !!(kpi && dateRange && dateRangeIsValid);
     const isComparisonValid: boolean = this._isComparisonValid();
-
     if (!this._widgetModel.name || !this._widgetModel.type
       || (!kpiWithDaterange && !chart) || !isComparisonValid
       || !this._widgetModel.color || !this._widgetModel.fontColor) {
@@ -400,7 +398,6 @@ export class WidgetsFormService {
           this.comparisonList.push(newItem);
         }
       }
-      debugger;
       return this.comparisonList;
   }
 

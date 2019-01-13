@@ -79,7 +79,6 @@ export class EditWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
   updateWidget() {
     const that = this;
     const payload = this._widgetFormService.getWidgetPayload();
-debugger
     this._widgetFormService.updateExistDuplicatedName(false);
     this._apolloService.networkQuery < IWidget > (getWidgetByTitle, { name: payload.name }).then(d => {
       if (d.widgetByName && d.widgetByName._id !== this.widgetId) {
