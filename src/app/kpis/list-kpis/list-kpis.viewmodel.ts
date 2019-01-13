@@ -72,6 +72,8 @@ export class ListKpisViewModel extends ViewModel<IFilter> {
                 },
                 createdBy: d.createdBy,
                 createdDate: moment(d.createdDate),
+                updatedBy: d.updatedBy,
+                updatedDate: moment(d.updatedDate),
                 orderFields: [{fieldName: d.createdBy ?  Object.getOwnPropertyNames(d)[6] : null,
                                fieldValue: d.createdBy ?  d.createdBy : null, descripcion: 'Created By'},
                               {fieldName: d.createdDate ? Object.getOwnPropertyNames(d)[7] : null,

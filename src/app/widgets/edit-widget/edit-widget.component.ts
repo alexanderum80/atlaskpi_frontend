@@ -1,4 +1,4 @@
-import { WindowService } from '../../shared/services';
+import { WindowService, UserService } from '../../shared/services';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -10,13 +10,14 @@ import Sweetalert from 'sweetalert2';
 
 import { UpdateWidgetActivity } from '../../shared/authorization/activities/widgets/update-widget.activity';
 import { Activity } from '../../shared/authorization/decorators/component-activity.decorator';
-import { IMutationResponse } from '../../shared/models';
+import { IMutationResponse, IUserInfo } from '../../shared/models';
 import { DialogResult } from '../../shared/models/dialog-result';
 import { ApolloService } from '../../shared/services/apollo.service';
 import { CommonService } from '../../shared/services/common.service';
 import { IWidget } from '../shared/models';
 import { widgetsGraphqlActions } from '../shared/graphql/widgets.graphql-actions';
 import { WidgetsFormService } from '../widget-form/widgets-form.service';
+import * as moment from 'moment';
 
 const getWidgetByTitle = require('graphql-tag/loader!../shared/graphql/get-widget-by-name.gql');
 
@@ -33,15 +34,20 @@ export class EditWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
   loading = true;
 
   private _subscription: Subscription[] = [];
-
+  currentUser: IUserInfo;
   constructor(private _widgetFormService: WidgetsFormService,
               private _apolloService: ApolloService,
               private _apollo: Apollo,
               private _router: Router,
               private fb: FormBuilder,
               private _route: ActivatedRoute,
-              private windowService: WindowService) { }
-
+              private windowService: WindowService,
+              private _userService: UserService) {
+                const that = this;
+                this._subscription.push(this._userService.user$.subscribe((user) => {
+                    that.currentUser = user;
+                }));
+              }
   ngOnInit() {
     const that = this;
     this._subscription.push(
@@ -79,6 +85,9 @@ export class EditWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
   updateWidget() {
     const that = this;
     const payload = this._widgetFormService.getWidgetPayload();
+    payload.updatedBy = this.currentUser._id;
+    payload.updatedDate = moment().toDate();
+
     this._widgetFormService.updateExistDuplicatedName(false);
     this._apolloService.networkQuery < IWidget > (getWidgetByTitle, { name: payload.name }).then(d => {
       if (d.widgetByName && d.widgetByName._id !== this.widgetId) {

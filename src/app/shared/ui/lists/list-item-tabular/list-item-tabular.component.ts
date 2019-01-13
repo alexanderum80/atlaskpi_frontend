@@ -5,6 +5,7 @@ import { MenuItem } from '../../../../dashboards/shared/models';
 import { IActionItemClickedArgs } from '../item-clicked-args';
 import { IListItem } from '../list-item';
 import {VisibleActionItemHelper} from '../../../helpers/visible-action-item.helper';
+import { BrowserService } from '../../../services/browser.service';
 
 @Component({
     selector: 'kpi-list-item-tabular',
@@ -12,14 +13,18 @@ import {VisibleActionItemHelper} from '../../../helpers/visible-action-item.help
     styleUrls: ['./list-item-tabular.component.scss']
 })
 export class ListItemTabularComponent implements OnInit {
+    isMobile: boolean;
     @Input() item: IListItem;
     @Input() actionItems: MenuItem[];
     @Input() itemClickable = false;
     @Input() tableRowTemplate: TemplateRef<any>;
+    @Input() rowCount: boolean;
 
     @Output() actionClicked = new EventEmitter < IActionItemClickedArgs > ();
 
-    constructor(private _router: Router) {}
+    constructor(private _router: Router, private _browser: BrowserService) {
+        this.isMobile = this._browser.isMobile();
+    }
 
     ngOnInit() {
         this._updateVisibleActionItem();
@@ -31,7 +36,9 @@ export class ListItemTabularComponent implements OnInit {
             item: this.item
         });
     }
-
+    get colorRow() {
+        return this.rowCount;
+    }
     private _updateVisibleActionItem(): void {
         if (VisibleActionItemHelper && VisibleActionItemHelper.updateActionItem) {
             VisibleActionItemHelper.updateActionItem(this._router.url, this.item, this.actionItems);

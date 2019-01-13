@@ -1,10 +1,12 @@
-.list-item-tabular(layout="row")
-    ng-container(*ngTemplateOutlet="(tableRowTemplate ? tableRowTemplate : defaultTemplate);context:{ item: item }")
 
+.list-item-tabular([ngClass]="{'bgnColor': colorRow && isMobile}",layout="row")
+    
+    ng-container(*ngTemplateOutlet="(tableRowTemplate && !isMobile ? tableRowTemplate : (!isMobile ? defaultTemplate : defaultTemplateMobile));context:{ item: item }")
+    
     //- actions
     .p-15(flex-initial, layout="row")
         bw-actions(*ngIf="actionItems", [actionItems]="actionItems", (actionClicked)="onActionClicked($event)")
-        .f-12.p-t-5 ACTIONS
+        .f-12.p-t-5(*ngIf="!isMobile") ACTIONS
 
 ng-template(#defaultTemplate)
     //- image
@@ -16,4 +18,32 @@ ng-template(#defaultTemplate)
         .m-t-10.m-l-10 
             h2.title {{ item.title }}
             small {{ item.subtitle }}
+    
+    div(flex)
+        .m-t-10.m-l-5 
+            h2.title {{ item.createdDate | date:'M/dd/yyyy'}}
+            small {{ item.createdBy }}
+    div(flex)
+        .m-t-10.m-l-5 
+            h2.title {{ item.updatedDate | date:'M/dd/yyyy'}}
+            small {{ item.updatedBy }}
+ng-template(#defaultTemplateMobile)
+    .box-mobile
+        //- image
+        .data-box(flex-initial, layout="row")
+            //- img(*ngIf="item.imagePath", [src]="item.imagePath")
+            //- i.zmdi(*ngIf="item.icon", class="zmdi-{{ item.icon }}")
+            //- title & subtitle
+            .m-t-10.m-l-10 
+                h2.title {{ item.title }}
+                small {{ item.subtitle }}
+        .data-box(flex)
+            div(flex-initial, layout="row")
+                .user-box.m-t-10.m-l-10 
+                    h2.title {{ item.createdDate | date:'M/dd/yyyy'}}
+                    small {{ item.createdBy }}
+                .user-box.m-t-10.m-l-10
+                    h2.title {{ item.updatedDate | date:'M/dd/yyyy'}}
+                    small {{ item.updatedBy }}
+        
     
