@@ -299,7 +299,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
 
     private _getOldestDate(kpis: string[]): void {
         this._apolloService
-        .networkQuery < string > (kpiOldestDateQuery, { id: kpis })
+        .networkQuery < string > (kpiOldestDateQuery, { ids: kpis })
         .then(kpis => {
             this._updateComparisonData(kpis.getKpiOldestDate);
         });
