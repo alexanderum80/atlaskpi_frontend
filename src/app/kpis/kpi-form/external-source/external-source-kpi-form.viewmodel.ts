@@ -59,7 +59,7 @@ export class ExternalSourceKpiFormViewModel extends ViewModel<IKPI> {
         grouping: 'location.name',
         tooltipEnabled: true,
         predefinedTooltipFormat: 'multiple_percent',
-        kpiIds: [],
+        kpis: [],
         legendEnabled: false,
         predefinedDateRange: 'this year',
         invertAxisEnabled: false,
