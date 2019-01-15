@@ -1,0 +1,3 @@
+mutation TestScheduleJobAlert($deliveryMethods: [String]!, $users: [String]!) {
+    testScheduleJobAlert(deliveryMethods: $deliveryMethods, users: $users)
+}

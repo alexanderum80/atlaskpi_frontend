@@ -8,8 +8,10 @@ import { IUser } from '../../users/shared/models/user';
 import { Subscription } from 'rxjs/Subscription';
 import {CommonService} from '../../shared/services/common.service';
 import { isEmpty, isNumber } from 'lodash';
+import { DeliveryMethodEnum } from '../../alerts/alerts.model';
 
 const usersQuery = require('graphql-tag/loader!./users.query.gql');
+const testAlertMutation = require('graphql-tag/loader!./test-widget-alert.gql');
 
 @Component({
   selector: 'kpi-widget-alert-form',
@@ -149,6 +151,24 @@ export class WidgetAlertFormComponent implements OnInit, OnDestroy {
 
   get editId(): string {
     return this._editId;
+  }
+
+  get canTestAlert() {
+      const value = this.vm.payload;
+      return value.notifyUsers.length && (value.emailNotified || value.pushNotification);
+  }
+
+  testAlert() {
+    const value = this.vm.payload;
+    const deliveryMethods = [];
+
+    if (value.emailNotified) { deliveryMethods.push(DeliveryMethodEnum.email); }
+    if (value.pushNotification) { deliveryMethods.push(DeliveryMethodEnum.push); }
+
+    return this._apollo.mutate({
+        mutation: testAlertMutation,
+        variables: { users: value.notifyUsers, deliveryMethods }
+    });
   }
 
 }

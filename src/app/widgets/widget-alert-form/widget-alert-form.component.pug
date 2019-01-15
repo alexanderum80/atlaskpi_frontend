@@ -45,7 +45,7 @@ div(layout-gt-sm="row", layout-xs="column")
 
       //- two icon text
       div(flex)
-        p How frequent you want to send the alert
+        p How frequent do you want to send the alert?
       
       //- list of frequencies
       div(flex)
@@ -65,7 +65,7 @@ div(layout-gt-sm="row", layout-xs="column")
 
       //- three icon text
       div(flex)
-        p How you want to deliver this notification
+        p How do you want to deliver this notification?
       
       //- email and push notification
       //- email
@@ -87,3 +87,7 @@ div(layout-gt-sm="row", layout-xs="column")
             bw-checkbox([fg]="vm.fg", field="pushNotification")
           div.p-t-5(flex-initial)
             p Mobile App
+
+    //- Test notification
+    div(flex)
+        bw-button(color="bluegray", icon="mail-send", title="Test Alert", (clicked)="testAlert().subscribe()", [disabled]="!canTestAlert")
