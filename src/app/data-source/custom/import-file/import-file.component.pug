@@ -5,8 +5,10 @@
     p(*ngIf="csvFileData.inputName", layout-align="center") {{ csvFileData.inputName }}
     i.zmdi.zmdi-check-circle.check-icon(*ngIf="csvFileData.inputName")
   .import-excel(*ngIf="excelFileData.inputName || noFileImported", layout="column", [class.selected-file]="excelFileData.inputName")
+    div(*ngIf="excelFileData.inputName && !(vm.dateFields && vm.dateFields.length)", style="text-align: center")
+      bw-preloader(color="gray")
     i.zmdi.zmdi-close.close-icon(*ngIf="excelFileData.inputName", (click)="dropImportedFile('excel')")
-    img(src="{{ excelImagePath }}", alt="Enter data image")
+    img(*ngIf="!excelFileData.inputName || vm.dateFields && vm.dateFields.length", src="{{ excelImagePath }}", alt="Enter data image")
     p(*ngIf="excelFileData.inputName", , layout-align="center") {{ excelFileData.inputName }}
     i.zmdi.zmdi-check-circle.check-icon(*ngIf="excelFileData.inputName")
 .p-30(layout="row", layout-align="center center")
@@ -17,7 +19,7 @@
 
 .button-panel(layout="row")
   bw-modal-footer
-    bw-button(icon="floppy", title="SAVE", color="blue", (clicked)="connect()", [disabled]="noFileImported")
+    bw-button(icon="floppy", title="SAVE", color="blue", (clicked)="connect()", [disabled]="noFileImported || !(vm.dateFields && vm.dateFields.length)")
     bw-button(icon="close", title="CANCEL", [simple]="true", (clicked)="cancel()")
 
 //- Popup for select date field
