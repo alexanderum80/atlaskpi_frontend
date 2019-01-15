@@ -17,6 +17,10 @@ query ListChartsQuery {
             }
           }
         chartDefinition
+        createdBy
+        createdDate
+        updatedBy
+        updatedDate
         }
     }
 }

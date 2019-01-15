@@ -142,7 +142,9 @@ export class ExternalSourceKpiFormViewModel extends ViewModel<IKPI> {
             tags: value.tags,
             source: value.source,
             createdBy: value.createdBy ? value.createdBy : this.currentUser._id,
-            createdDate: value.createdDate ? value.createdDate : moment().toDate()
+            createdDate: value.createdDate ? value.createdDate : moment().toDate(),
+            updatedBy:  this.currentUser._id,
+            updatedDate:  moment().toDate()
         };
 
         const result = { input: payload } as IKPIPayload;

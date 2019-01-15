@@ -8,8 +8,10 @@ export interface IAlerts {
     value: number;
     active: boolean;
     users: INotificationUsers[];
-    createdBy: string;
-    createdAt: Date;
+    createdBy?: string;
+    createdAt?: Date;
+    updatedBy?: string;
+    updatedDate?: Date;
 }
 
 export enum DeliveryMethodEnum {

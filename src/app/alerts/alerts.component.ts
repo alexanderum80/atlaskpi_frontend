@@ -119,7 +119,9 @@ export class AlertsComponent implements OnInit, AfterViewInit {
             active: element.active,
             users: element.users,
             createdBy: element.createdBy,
-            createdAt: element.createdAt
+            createdAt: element.createdAt,
+            updatedBy: element.updatedBy,
+            updatedDate: element.updatedDate
           });
       });
       this.updateSelectedAlertIndex(0, cancel);
@@ -153,7 +155,9 @@ export class AlertsComponent implements OnInit, AfterViewInit {
             deliveryMethods: [DeliveryMethodEnum.push],
         }],
         createdBy: '',
-        createdAt: moment().toDate()
+        createdAt: moment().toDate(),
+        updatedBy: '',
+        updatedDate: moment().toDate()
       });
       const lastAlertIndex = this.vm.alerts.length - 1;
       this.updateSelectedAlertIndex(lastAlertIndex);
@@ -241,34 +245,71 @@ export class AlertsComponent implements OnInit, AfterViewInit {
             });
           });
         });
-        payload = {
-          _id: this.fgDetails.value._id,
-          name: this.fgDetails.value.name,
-          kpi: this.fgDetails.value.kpi,
-          frequency: this.fgDetails.value.frequency,
-          condition: this.fgDetails.value.condition,
-          value: parseFloat(this.fgDetails.value.value),
-          active: this.vm.alerts[this.vm.selectedAlertIndex].active,
-          users: userNotification,
-          createdBy: this.vm.currentUser._id,
-          createdAt: moment().toDate()
-        };
+        if (this.fgDetails.value._id) {
+            payload = {
+              _id: this.fgDetails.value._id,
+              name: this.fgDetails.value.name,
+              kpi: this.fgDetails.value.kpi,
+              frequency: this.fgDetails.value.frequency,
+              condition: this.fgDetails.value.condition,
+              value: parseFloat(this.fgDetails.value.value),
+              active: this.vm.alerts[this.vm.selectedAlertIndex].active,
+              users: userNotification,
+              updatedBy: this.vm.currentUser._id,
+              updatedDate: moment().toDate()
+          };
+        } else {
+            payload = {
+              _id: this.fgDetails.value._id,
+              name: this.fgDetails.value.name,
+              kpi: this.fgDetails.value.kpi,
+              frequency: this.fgDetails.value.frequency,
+              condition: this.fgDetails.value.condition,
+              value: parseFloat(this.fgDetails.value.value),
+              active: this.vm.alerts[this.vm.selectedAlertIndex].active,
+              users: userNotification,
+              createdBy: this.vm.currentUser._id,
+              createdAt: moment().toDate(),
+              updatedBy: this.vm.currentUser._id,
+              updatedDate: moment().toDate()
+          };
+        }
+        
       }
       const mutation = (payload._id && payload._id !== '1')  ? updateAlertMutation : addAlertMutation;
-      const inputVar = {
-        input: {
-          name: payload.name,
-          kpi: payload.kpi,
-          frequency: payload.frequency,
-          condition: payload.condition,
-          value: payload.value,
-          active: payload.active,
-          users: payload.users,
-          createdBy: payload.createdBy,
-          createdAt: payload.createdAt
-        }
-      };
       const isAdding = payload._id && payload._id !== '1'  ? false : true;
+      let inputVar = {};
+      if (isAdding) {
+        inputVar =  {
+          input: {
+            name: payload.name,
+            kpi: payload.kpi,
+            frequency: payload.frequency,
+            condition: payload.condition,
+            value: payload.value,
+            active: payload.active,
+            users: payload.users,
+            createdBy: payload.createdBy,
+            createdAt: payload.createdAt,
+            updatedBy: payload.updatedBy,
+            updatedDate: payload.updatedDate
+          }
+        };
+      } else {
+        inputVar =  {
+          input: {
+            name: payload.name,
+            kpi: payload.kpi,
+            frequency: payload.frequency,
+            condition: payload.condition,
+            value: payload.value,
+            active: payload.active,
+            users: payload.users,
+            updatedBy: payload.updatedBy,
+            updatedDate: payload.updatedDate
+          }
+        };
+      }
       if (!isAdding) {
         inputVar['id'] = payload._id;
       }

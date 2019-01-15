@@ -15,6 +15,9 @@ import { ApolloService } from '../../shared/services/apollo.service';
 import Sweetalert from 'sweetalert2';
 import { Subscription } from 'rxjs/Subscription';
 import { Input, Output, EventEmitter } from '@angular/core';
+import { UserService } from '../../shared/services';
+import { IUserInfo } from '../../shared/models';
+import * as moment from 'moment';
 
 const getWidgetByTitle = require('graphql-tag/loader!../shared/graphql/get-widget-by-name.gql');
 
@@ -33,12 +36,18 @@ export class NewWidgetComponent implements OnInit, OnDestroy {
   fg: FormGroup = new FormGroup({});
 
   private _subscription: Subscription[] = [];
-
+  currentUser: IUserInfo;
   constructor(private _widgetFormService: WidgetsFormService,
               private _apolloService: ApolloService,
               private _apollo: Apollo,
               private fb: FormBuilder,
-              private _router: Router) { }
+              private _router: Router,
+              private _userService: UserService) {
+                const that = this;
+                this._subscription.push(this._userService.user$.subscribe((user) => {
+                    that.currentUser = user;
+                }));
+              }
 
   ngOnInit() {
     this._widgetFormService.newModel();
@@ -78,6 +87,10 @@ export class NewWidgetComponent implements OnInit, OnDestroy {
     const that = this;
 
     const payload = this._widgetFormService.getWidgetPayload();
+    payload.createdBy = this.currentUser._id;
+    payload.updatedBy = this.currentUser._id;
+    payload.createdDate = moment().toDate();
+    payload.updatedDate = moment().toDate();
 
     this._widgetFormService.updateExistDuplicatedName(false);
 

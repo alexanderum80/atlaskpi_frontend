@@ -230,16 +230,5 @@ export class CustomFormViewModel extends ViewModel<ICustomSchema> {
     get fileExtensions() {
         return this._fileExtensions;
     }
-
-    getAlphabetExtended(): string[]{
-    let resultArr = this.Alphabet;
-    for(let i = 0; i < 3; i++){
-        for(let j = 0; j < 26; j++){
-
-            resultArr.push( this.Alphabet[i] + this.Alphabet[j]);        
-        }
-    }
-        return resultArr;
-    }
 }
 
