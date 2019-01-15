@@ -271,7 +271,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                         }
 
                         for (const i of this.zipCodeSourceList) {
-                            this._apolloService.networkQuery < string > (kpiDataSourcesQuery, {id: kpiIds, zipField: i.id})
+                            this._apolloService.networkQuery < string > (kpiDataSourcesQuery, {ids: kpiIds, zipField: i.id})
                             .then(sources => {
                                 resSources = sources.getKpiDataSources[0];
                                 if (resSources === true) {
@@ -320,7 +320,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         }
         // TODO dateRange when is custom, that is hard coded at the moment
         const input = {
-            ids: item.kpis,
+            ids: item.kpis.map(k => k.kpi),
             dateRange: { predefined: dateRangePred , custom: customDateRange }
         };
 
@@ -342,7 +342,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                     }
                 return resolve(this.zipCodeSourceList);
             });
-         })
+         });
         }
 
     private _getGroupingInfo(item: any) { /* get groupingInfo */
