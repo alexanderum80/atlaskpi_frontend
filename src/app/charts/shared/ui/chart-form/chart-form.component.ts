@@ -13,7 +13,7 @@ import {
     OnDestroy,
     ViewChild
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormArray, Validators, FormBuilder } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { isBoolean, isEmpty, map, cloneDeep } from 'lodash';
 import { Subject } from 'rxjs/Subject';
@@ -27,7 +27,7 @@ import { BrowserService } from '../../../../shared/services/browser.service';
 import { prepareChartDefinitionForPreview, processChartActivityChange } from '../../extentions';
 import { allKpisWithData, KpisQuery } from '../../graphql';
 import { PreviewChartQuery } from '../../graphql/charts.gql';
-import { ChartModel } from '../../models';
+import { ChartModel, IChartFormValues } from '../../models';
 import { ChartGalleryService } from '../../services';
 import { TooltipFormats } from '../chart-format-info/tooltip-formats';
 import { CustomFormat } from '../chart-format-info/tooltip-custom-formats';
@@ -42,7 +42,7 @@ import { OnChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 import { ChartFormatInfoComponent } from '../chart-format-info/chart-format-info.component';
 import { IMapMarker } from '../../../../maps/shared/models/map-marker';
 import { objectWithoutProperties } from '../../../../shared/helpers/object.helpers';
-import { MapModel } from '../../../../maps/shared/models/map.models';
+import { MapModel, IMapFormValues } from '../../../../maps/shared/models/map.models';
 import { UserService } from '../../../../shared/services';
 
 
@@ -108,27 +108,31 @@ const chartDefinitionFromKPI = {
         text: 'Powered by AtlasKPI'
     }
 };
-const ChartTypes = [{
-    id: 1,
-    title: 'Line'
-},
-{
-    id: 2,
-    title: 'Area'
-},
-{
-    id: 3,
-    title: 'Column'
-},
-{
-    id: 4,
-    title: 'Bar'
-},
-{
-    id: 7,
-    title: 'Pie'
-},
-];
+// const ChartTypes = [{
+//     id: 1,
+//     title: 'Line'
+// },
+// {
+//     id: 2,
+//     title: 'Area'
+// },
+// {
+//     id: 3,
+//     title: 'Column'
+// },
+// {
+//     id: 4,
+//     title: 'Bar'
+// },
+// {
+//     id: 7,
+//     title: 'Pie'
+// },
+// {
+//     id: 8,
+//     title: 'Combined'
+// },
+// ];
 
 interface Itypography {
     enable: boolean;
@@ -190,7 +194,8 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         private _apolloService: ApolloService,
         private _selectChartService: SelectedChartsService,
         private _browserService: BrowserService,
-        private _user: UserService) {
+        private _user: UserService,
+        private _formBuilder: FormBuilder) {
         Highcharts.setOptions({
             lang: {
                 decimalPoint: '.',
@@ -234,6 +239,10 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             this.loadKpisToMaps();
         }
         // if (this.isFromDashboard && this.chartType === 'chart') { this.chartType = 'pie'; }
+
+        // create form array for kpis
+        this.fg.addControl('kpis', new FormArray([]));
+
         const loadingGroupings = new FormControl(false);
         this.fg.addControl('loadingGroupings', loadingGroupings);
 
@@ -480,7 +489,18 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                 // Update properties dependants on other fields
                 setTimeout(function () {
                     // depends on the kpi list
-                    that.fg.controls['kpi'].patchValue(values.kpi);
+                    // that.fg.controls['kpi'].patchValue(values.kpiIds);
+                    const kpiArray = that.fg.controls['kpis'] as FormArray;
+                    while (kpiArray.length) {
+                        kpiArray.removeAt(0);
+                    }
+
+                    values.kpis.forEach(k => {
+                        kpiArray.push(that._formBuilder.group({
+                            type: new FormControl(k.type, Validators.required),
+                            kpi: new FormControl(k.kpi._id, Validators.required),
+                        }));
+                    });
 
                     if (values.predefinedDateRange === 'custom') {
                         that.fg.controls['customFrom'].patchValue(values.customFrom);
@@ -512,22 +532,22 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                 setTimeout(() => {
                     that.fg.controls['xAxisSource'].setValue(values.xAxisSource);
                     if (that.fg.controls['grouping'] && values.grouping) {
-                
+
                         let groupingValue;
-                        //groupings is an array for maps an string for charts
-                        if(Array.isArray(values.grouping) && values.grouping.length === 2 ){
+                        // groupings is an array for maps an string for charts
+                        if (Array.isArray(values.grouping) && values.grouping.length === 2 ) {
                             groupingValue = values.grouping[1];
-                        }else if(Array.isArray(values.grouping)){
-                            groupingValue = ''
-                        }else{
-                            groupingValue= values.grouping;
+                        } else if (Array.isArray(values.grouping)) {
+                            groupingValue = '';
+                        } else {
+                            groupingValue = values.grouping;
                         }
-                        that.fg.controls['grouping'].setValue(groupingValue); 
+                        that.fg.controls['grouping'].setValue(groupingValue);
 
                     }
                     // zipCodeSource
                     if (that.fg.controls['zipCodeSource'] && values.zipCodeSource) {
-                        that.fg.controls['zipCodeSource'].setValue(values.zipCodeSource)
+                        that.fg.controls['zipCodeSource'].setValue(values.zipCodeSource);
                     }
                     // depends on the daterange selection
                     that.fg.controls['comparison'].setValue(values.comparison);
@@ -618,11 +638,11 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     get formValid() {
         if (this.ischartTypeMap) {
             return this.fg.value.name !== undefined && this.fg.value.name.length > 1 &&
-                this.fg.value.kpi !== undefined && this.fg.value.kpi.length > 0 &&
+                this.fg.value.kpis !== undefined && this.fg.value.kpis.length > 0 &&
                 this.fg.value.predefinedDateRange !== undefined && this.isMapSizeValid;
         } else {
             return !isEmpty(this.fg.value.name) &&
-            !isEmpty(this.fg.value.kpi) &&
+            !isEmpty(this.fg.value.kpis) &&
             !isEmpty(this.fg.value.predefinedDateRange) &&
             this.isChartCustomTopValid &&
             this.tooltipValid;
