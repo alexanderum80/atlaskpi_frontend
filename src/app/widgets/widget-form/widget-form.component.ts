@@ -6,7 +6,6 @@ import {
     EventEmitter,
     Input,
     ViewChild,
-    ElementRef,
     OnDestroy,
     OnInit,
     Output,
@@ -24,11 +23,8 @@ import { WidgetsFormService } from './widgets-form.service';
 import { IDatePickerConfig } from '../../ng-material-components/modules/forms/date-picker/date-picker/date-picker-config.model';
 import { ApolloService } from '../../shared/services/apollo.service';
 
-import { IDateRangeItem } from './../../shared/models/date-range';
-import { chartsGraphqlActions } from '../../charts/shared/graphql/charts.graphql-actions';
 import { widgetsGraphqlActions } from '../shared/graphql/widgets.graphql-actions';
 import { ChooseColorsComponent } from '../../charts/shared/ui/choose-colors/choose-colors.component';
-import { any } from 'codelyzer/util/function';
 
 const widgetSizeList: SelectionItem[] = [
     {

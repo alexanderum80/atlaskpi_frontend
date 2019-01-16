@@ -298,7 +298,7 @@ export class WidgetsFormService {
   private _materializeWidget(widget: IWidget): Promise<IWidget> {
     const that = this;
     const payload = this.getWidgetPayload();
-    debugger;
+
     return new Promise<IWidget>((resolve, reject) => {
       that._subscription.push(that._apollo.watchQuery<{ previewWidget: IWidget }>({
         query: widgetsGraphqlActions.previewWidget,
