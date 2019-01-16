@@ -6,5 +6,8 @@ query allDashboard {
     owner
     visible
     order
+    updatedBy
+    createdDate
+    updatedDate
   }
 }

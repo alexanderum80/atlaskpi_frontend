@@ -8,5 +8,7 @@ query Kpis {
         tags
         createdBy
         createdDate
+        updatedBy
+        updatedDate
     }
 }

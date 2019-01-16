@@ -46,7 +46,9 @@ export class AlertsFormService {
                 deliveryMethods: []
             }],
             createdBy: '',
-            createdAt: moment().toDate()
+            createdAt: moment().toDate(),
+            updatedBy: '',
+            updatedDate: moment().toDate()
         };
 
         this._frequencyList = [

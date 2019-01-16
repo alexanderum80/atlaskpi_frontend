@@ -32,7 +32,7 @@ import { IWidget, WidgetSizeEnum, WidgetSizeMap } from '../../widgets/shared/mod
 import { SocialWidgetBase } from './../../social-widgets/models/social-widget-base';
 import { objectWithoutProperties } from '../../shared/helpers/object.helpers';
 import { filterSearch, filterSearchMultiple } from 'src/app/shared/models/search';
-
+import * as moment from 'moment';
 export interface IMap {
   _id: string;
   imgpath: string;
@@ -504,7 +504,10 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
         maps: _selectedMaps,
         users: that.dashboardModel.users,
         owner: that.currentUser._id,
-        order: Math.round(that.dashboardModel.order)
+        order: Math.round(that.dashboardModel.order),
+        createdDate: moment().toDate(),
+        updatedBy: that.currentUser._id,
+        updatedDate: moment().toDate()
       };
       this._apollo.mutate({
         mutation: dashboardGraphqlActions.createDashboard,
@@ -564,7 +567,9 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
         socialwidgets: _selectedSWidgets,
         maps: _selectedMaps,
         users: that.dashboardModel.users,
-        order: Math.round(that.dashboardModel.order)
+        order: Math.round(that.dashboardModel.order),
+        updatedBy: that.currentUser._id,
+        updatedDate: moment().toDate()
       };
       this._apollo.mutate({
         mutation: dashboardGraphqlActions.updateDashboard,

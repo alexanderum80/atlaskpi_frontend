@@ -13,6 +13,7 @@ import SweetAlert from 'sweetalert2';
 import { lowerCaseFirst } from 'change-case';
 import { ApolloService } from '../../../../shared/services/apollo.service';
 import { IMenuItem } from '../../../models';
+import { BrowserService } from '../../../services/browser.service';
 
 const updateUserPreference = require('graphql-tag/loader!./update-user-preference.mutation.gql');
 
@@ -33,10 +34,13 @@ enum ItemActionEnum {
     styleUrls: ['./item-list.component.scss']
 })
 export class ItemListComponent implements OnInit, OnDestroy {
-
-    constructor( private _apolloService: ApolloService ) {}
+    isMobile: boolean;
+    constructor( private _apolloService: ApolloService, private _browser: BrowserService ) {
+        this.isMobile = this._browser.isMobile();
+    }
 
     @Input() allowAdd = true;
+    @Input() titleRow = false;
 
     @Input() itemViewModel?: any;
     @Input() addItemActivityName?: string;
@@ -132,6 +136,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
     private _subscription: Subscription[] = [];
     private _sortChildrens: IMenuItem[] = [];
 
+    rowColor = true;
     ngOnInit() {
 
         this.fg = new FormGroup({
@@ -141,11 +146,14 @@ export class ItemListComponent implements OnInit, OnDestroy {
         this._subscription.push(this.fg.valueChanges.subscribe(values => this._filterItems(values)));
         this._initializePermissions();
     }
-
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
     }
+    get rowsCount(): boolean {
 
+        this.rowColor = this.rowColor ? false : true;
+        return this.rowColor;
+    }
     get filteredItems(): IListItem[] {
         return this._filteredItems;
     }

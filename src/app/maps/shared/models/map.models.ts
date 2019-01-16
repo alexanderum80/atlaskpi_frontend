@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { IKPI } from '../../../shared/domain/kpis/kpi';
 import { IMutationResponse } from '../../../shared/models';
 import { ChartDateRangeModel, IChartDateRange } from '../../../shared/models/date-range';
+import { IDataUserDate } from '../../../shared/models/data-user-date';
 
 export interface MapData {
   _id: string;
@@ -123,6 +124,11 @@ export class MapModel {
     size: string;
     dashboards: string[];
     zipCodeSource: string;
+    //add-created-updated-by-date
+    createdBy?: string;
+    updatedBy?: string;
+    createdDate?: Date;
+    updatedDate?: Date;
 
     static fromJson(json: string): MapModel {
       try {
