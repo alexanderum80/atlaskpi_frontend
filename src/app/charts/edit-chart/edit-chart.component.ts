@@ -23,6 +23,10 @@ import { ChartFormComponent } from '../shared/ui/chart-form';
 import { ModifyChartActivity } from '../../shared/authorization/activities/charts/modify-chart.activity';
 import { Activity } from '../../shared/authorization/decorators/component-activity.decorator';
 import { inject } from 'async';
+import { MaterialUserInterfaceModule } from '../../ng-material-components';
+import { IUserInfo } from '../../shared/models';
+import { UserService } from '../../shared/services';
+import * as moment from 'moment';
 
 
 const Highcharts = require('highcharts/js/highcharts');
@@ -60,13 +64,19 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
 
     private _chartModel: IChart;
     private _subscription: Subscription[] = [];
+    currentUser: IUserInfo;
 
     constructor(private _apollo: Apollo,
                 private _apolloService: ApolloService,
                 private _router: Router,
                 private _route: ActivatedRoute,
-                private _selectChartService: SelectedChartsService
+                private _selectChartService: SelectedChartsService,
+                private _userService: UserService
                 ) {
+                    const that = this;
+                    this._subscription.push(this._userService.user$.subscribe((user) => {
+                        that.currentUser = user;
+                    }));
     }
 
     ngOnDestroy() {
@@ -172,6 +182,9 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
             this.chartFormComponent.processFormatChanges(this.fg.value);
             const model = ChartModel.fromFormGroup(this.fg, this.chartFormComponent.getChartDefinition(), true);
 
+            //add-created-updated-by-date
+            model.updatedBy = this.currentUser._id;
+            model.updatedDate = moment().toDate();
             // Apollo doesnt send the property when using Link Batch, if the data type is not the same as in the schema
             // so we are forcing the daterange to be an array of DateRanges.
             (<any>model).dateRange = [model.dateRange];
@@ -218,6 +231,9 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
 
             // this.chartFormComponent.processFormatChanges(this.fg.value);
             const model = MapModel.fromFormGroup(this.fg);
+            //add-created-updated-by-date
+            model.updatedBy = this.currentUser._id;
+            model.updatedDate = moment().toDate();
 
             this._apollo.mutate<IUpdateChartResponse>({
                 mutation: UpdateMapMutation,

@@ -11,7 +11,8 @@ kpi-item-list(
     [tableRowTemplate]="tableItem",
     (onAddActionClicked)="add()",
     (onItemActionClicked)="actionClicked($event)",
-    (onItemClicked)="editClickedList($event)")
+    (onItemClicked)="editClickedList($event)",
+    [titleRow]= "true")
 
 ng-template(#tableItem, let-item="item")
     //- image
@@ -22,7 +23,16 @@ ng-template(#tableItem, let-item="item")
         .m-t-10.m-l-10 
             h2.title {{ item.title }}
             small {{ item.subtitle }}
+            span {{ item.extras.description }}
     //- extras
-    div(flex)
+    //-div(flex)
         .m-t-10.m-l-10
             span {{ item.extras.description }}
+    div(flex)
+        .m-t-10.m-l-5 
+            h2.title {{ item.createdDate | date:'M/dd/yyyy'}}
+            small {{ item.owner }}
+    div(flex)
+        .m-t-10.m-l-5 
+            h2.title {{ item.updatedDate | date:'M/dd/yyyy'}}
+            small {{ item.updatedBy }}

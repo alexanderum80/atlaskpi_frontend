@@ -10,6 +10,9 @@ export interface IDashboard {
   owner?: string;
   visible?: boolean;
   order?: number;
+  createdDate?: Date;
+  updatedBy?: string;
+  updatedDate?: Date;
 }
 
 
@@ -47,20 +50,29 @@ export class Dashboard implements IDashboard {
   private _order: number;
   get order(): number { return this._order; }
 
+  private _createdDate: Date;
+  get createdDate(): Date { return this._createdDate; }
+
+  private _updatedBy: string;
+  get updatedBy(): string { return this._updatedBy; }
+
+  private _updatedDate: Date;
+  get updatedDate(): Date { return this._updatedDate; }
+
 
   static Create(id: string, name: string, description: string, charts: string[], widgets: string[],
                 socialwidgets: string[], maps: string[] , owner: string,
-                users: string[], visible?: boolean, order?: number):
+                users: string[], visible?: boolean, order?: number, createdDate?: Date, updatedBy?: string, updatedDate?: Date):
     IDashboard {
       const instance = new Dashboard(id, name, description, charts, widgets, socialwidgets, maps,
                                      owner,
-                                     users, visible, order);
+                                     users, visible, order, createdDate, updatedBy, updatedDate);
       return instance.name ? instance : null;
   }
 
   private constructor(id: string, name: string, description: string, charts: string[], widgets: string[],
                       socialwidgets: string[], maps: string[], owner: string,
-                      users: string[], visible?: boolean, order?: number) {
+                      users: string[], visible?: boolean, order?: number, createdDate?: Date, updatedBy?: string, updatedDate?: Date ) {
       if (!name || !description) {
           return;
       }
@@ -75,5 +87,8 @@ export class Dashboard implements IDashboard {
       this._owner = owner;
       this._visible = visible;
       this._order = order;
+      this._createdDate = createdDate;
+      this._updatedBy = updatedBy;
+      this._updatedDate = updatedDate;
   }
 }

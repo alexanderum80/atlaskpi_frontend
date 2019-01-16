@@ -58,7 +58,7 @@ export class ImportFileComponent implements OnInit {
   currentUser: IUserInfo;
 
   constructor(
-    private vm: DataEntryFormViewModel,
+    public vm: CustomFormViewModel,
     private _apolloService: ApolloService,
     private _router: Router,
     private _userService: UserService
@@ -204,16 +204,16 @@ export class ImportFileComponent implements OnInit {
     const fileName = this.file.name.substr(0, fileExtensionIndex);
 
     this._apolloService.networkQuery(dataSourceByNameQuery, { name: fileName })
-    .then(res => {
-      if (res.dataSourceByName) {
-        return Sweetalert({
-          title: 'File exists!',
-          text: 'The file you are trying to import already exists. Please select another one.',
-          type: 'error',
-          showConfirmButton: true,
-          confirmButtonText: 'Ok'
-        });
-      }
+      .then(res => {
+        if (res.dataSourceByName) {
+          return Sweetalert({
+            title: 'File exists!',
+            text: 'The file you are trying to import already exists. Please select another one.',
+            type: 'error',
+            showConfirmButton: true,
+            confirmButtonText: 'Ok'
+          });
+        }
 
       if (this.dataEntry) {
         this._csvFileReset();
@@ -224,11 +224,11 @@ export class ImportFileComponent implements OnInit {
         this._processCsvFile(this.file);
       }
 
-      if (this.isXLSFile(this.file)) {
-        this._processExcelFile(this.file);
-      }
-    })
-    .catch(err => console.log(err));
+        if (this.isXLSFile(this.file)) {
+          this._processExcelFile(this.file);
+        }
+      })
+      .catch(err => console.log(err));
   }
 
   isCSVFile(file) {
@@ -236,7 +236,7 @@ export class ImportFileComponent implements OnInit {
   }
 
   isXLSFile(file) {
-    return file.name.endsWith('.xlsx') ||  file.name.endsWith('.xls');
+    return file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
   }
 
   private _processCsvFile(file) {
@@ -287,31 +287,17 @@ export class ImportFileComponent implements OnInit {
   }
 
   private _processExcelFile(file) {
-      this._excelFileReset();
+    this._excelFileReset();
 
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-          const arrayBuffer = fileReader.result;
-          const data = new Uint8Array(<any>arrayBuffer);
-          const arr = new Array();
-          for (let i = 0; i !== data.length; ++i) {
-            arr[i] = String.fromCharCode(data[i]);
-          }
-          const bstr = arr.join('');
-          const workbook = XLSX.read(bstr, {type: 'binary'});
-          const first_sheet_name = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[first_sheet_name];
-          const alphExtended = this.vm.getAlphabetExtended();
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      const arrayBuffer = fileReader.result;
+      const data = new Uint8Array(<any>arrayBuffer);
+      const arr = new Array();
 
-          let j = 1;
-          for (let i = 1; i <= 2000; i++) {
-            const dataArray = [];
-            alphExtended.map(alph => {
-              const cell = alph + i;
-              let cellValue = '';
-              if (worksheet[cell]) {
-                cellValue = <any>worksheet[cell].w.trimEnd();
-              }
+      for (let i = 0; i !== data.length; ++i) {
+        arr[i] = String.fromCharCode(data[i]);
+      }
 
               if (j === 1) {
                 if (cellValue !== '') {
@@ -319,57 +305,104 @@ export class ImportFileComponent implements OnInit {
                     columnName: cellValue,
                     dataType: '',
                     required: false
-                  };
 
-                  this.excelFileData.fields.push(newfield);
-                }
-              } else if (dataArray.length < this.excelFileData.fields.length) {
-                dataArray.push(cellValue);
-              }
-            });
 
-            const dataArrayValueNotNull = dataArray.filter(d => d !== '');
-            if (dataArray.length > 0 && dataArrayValueNotNull.length > 0) {
-              this.excelFileData.records.push(dataArray);
+      let cellsArrayRaw = Object.keys(worksheet);
+
+      const indexRef = cellsArrayRaw.findIndex((v) => v === '!ref');
+
+      cellsArrayRaw.splice(indexRef, 1);
+
+      const indexMargins = cellsArrayRaw.findIndex((v) => v === '!margins')
+
+      cellsArrayRaw.splice(indexMargins, 1);
+
+      // ["A1", "B1", ....."A6"]
+      const cleanCellsArr = cellsArrayRaw;
+
+      // [ -2 ] because the last cell is the end of file and is empty
+      const lastCell = cleanCellsArr[cleanCellsArr.length - 2];
+
+      const columnsCount = this.getNumberFromCell(lastCell);
+
+      // loop through each row
+      for (let row = 1; row <= columnsCount; row++) {
+
+        const dataArray = [];
+        let cellsPerRow = cleanCellsArr.filter(cellName => this.getNumberFromCell(cellName) === row);
+
+        //loop through each column
+        for (let c = 0; c < cellsPerRow.length; c++) {
+
+          const cellValue = <any>worksheet[cellsPerRow[c]].w.trimEnd();
+
+          // field names
+          if (row === 1) {
+            if (cellValue !== '') {
+              const newfield: ICustomSchemaInfo = {
+                columnName: cellValue,
+                dataType: ''
+              };
+
+              this.excelFileData.fields.push(newfield);
             }
-
-            j += 1;
+          } else if (dataArray.length < this.excelFileData.fields.length) {
+            dataArray.push(cellValue);
           }
 
-          if (this.excelFileData.records.length > 0) {
-            for (let n = 0; n < this.excelFileData.records[0].length; n++) {
-              const element = this.excelFileData.records[0][n];
-              const cellDataType = this.vm.getDataTypeFromValue(element);
-              this.excelFileData.fields[n].dataType = cellDataType;
-            }
-          }
+        } //end of columns loop
 
-          if (!this.vm.isRequiredDataTypePresent(this.excelFileData.fields)) {
-            this._excelFileReset();
+        const dataArrayValueNotNull = dataArray.filter(d => d !== '');
+        if (dataArray.length > 0 && dataArrayValueNotNull.length > 0) {
+          this.excelFileData.records.push(dataArray);
+        } 
+      } //end of rows loop
 
-            return Sweetalert({
-              title: 'Invalid file!',
-              text: 'The file you are trying to import do not have the necessary data type.',
-              type: 'error',
-              showConfirmButton: true,
-              confirmButtonText: 'Ok'
-            });
-          } else {
-            this._verifyDateFields(this.excelFileData.fields);
-          }
-      };
-      fileReader.readAsArrayBuffer(file);
-      this.excelFileData.inputName = file.name;
+      if (this.excelFileData.records.length > 0) {
+        for (let n = 0; n < this.excelFileData.records[0].length; n++) {
+          const element = this.excelFileData.records[0][n];
+          const cellDataType = this.vm.getDataTypeFromValue(element);
+          this.excelFileData.fields[n].dataType = cellDataType;
+        }
+      }
+
+      if (!this.vm.isRequiredDataTypePresent(this.excelFileData.fields)) {
+        this._excelFileReset();
+
+        return Sweetalert({
+          title: 'Invalid file!',
+          text: 'The file you are trying to import do not have the necessary data type.',
+          type: 'error',
+          showConfirmButton: true,
+          confirmButtonText: 'Ok'
+        });
+      } else {
+        this._verifyDateFields(this.excelFileData.fields);
+      }
+    };
+
+    fileReader.readAsArrayBuffer(file);
+    this.excelFileData.inputName = file.name;
+  }
+
+  getNumberFromCell(cellName: string): Number {
+    // E.g -> cellName = 'A12' -> indexLastLetter = 1 -> extractedNumber = 12
+    const indexLastLetter = cellName.match(/[^A-Z]/).index;
+
+    const extractedNumber = cellName.substring(indexLastLetter);
+
+    return +extractedNumber;
   }
 
   private _getCsvHeaderArray(csvRecordsArr, tokenDelimeter) {
     const headers = csvRecordsArr[0].split(tokenDelimeter);
     const headerArray = [];
     for (let j = 0; j < headers.length; j++) {
-        headerArray.push(headers[j]);
+      headerArray.push(headers[j]);
     }
     return headerArray;
   }
+
 
   private _getFieldsArrayFromCSVFile(csvRecordsArray, tokenDelimeter) {
     const fieldsArray = csvRecordsArray[0].split(tokenDelimeter);
@@ -390,52 +423,52 @@ export class ImportFileComponent implements OnInit {
     const dataArr = [];
 
     for (let i = 1; i < csvRecordsArray.length; i++) {
-        const dataRow = csvRecordsArray[i].split(tokenDelimeter);
+      const dataRow = csvRecordsArray[i].split(tokenDelimeter);
 
-        const data = [];
-        let compositeField = '';
-        let concatData = false;
-        for (let j = 0; j < dataRow.length; j++) {
-          const value = dataRow[j];
-          if (value.startsWith('"') && value.endsWith('"')) {
-            data.push(value.replace(/"/g, ''));
-          } else if (value.startsWith('"')) {
-            compositeField = value;
-            concatData = true;
-          } else if (value.endsWith('"')) {
-            compositeField += ',' + value;
-            concatData = false;
-            data.push(compositeField.replace(/"/g, ''));
-          } else if (concatData) {
-            compositeField += ',' + value;
-          } else {
-            data.push(value);
-          }
+      const data = [];
+      let compositeField = '';
+      let concatData = false;
+      for (let j = 0; j < dataRow.length; j++) {
+        const value = dataRow[j];
+        if (value.startsWith('"') && value.endsWith('"')) {
+          data.push(value.replace(/"/g, ''));
+        } else if (value.startsWith('"')) {
+          compositeField = value;
+          concatData = true;
+        } else if (value.endsWith('"')) {
+          compositeField += ',' + value;
+          concatData = false;
+          data.push(compositeField.replace(/"/g, ''));
+        } else if (concatData) {
+          compositeField += ',' + value;
+        } else {
+          data.push(value);
         }
+      }
 
-        if (data.length !== headerLength) {
-            if (csvRecordsArray[i] === '') {
-              Sweetalert({
-                title: 'Invalid file',
-                text: 'Extra blank line is present at line number  ' + i + ', please remove it.',
-                type: 'error',
-                showConfirmButton: true,
-                confirmButtonText: 'Ok'
-              });
-              return [];
-            } else {
-              Sweetalert({
-                title: 'Invalid file',
-                text: 'Record at line number ' + i + ' contain ' + data.length + ' tokens, ' +
-                'and is not matching with header length of ' + headerLength,
-                type: 'error',
-                showConfirmButton: true,
-                confirmButtonText: 'Ok'
-              });
-              return [];
-            }
+      if (data.length !== headerLength) {
+        if (csvRecordsArray[i] === '') {
+          Sweetalert({
+            title: 'Invalid file',
+            text: 'Extra blank line is present at line number  ' + i + ', please remove it.',
+            type: 'error',
+            showConfirmButton: true,
+            confirmButtonText: 'Ok'
+          });
+          return [];
+        } else {
+          Sweetalert({
+            title: 'Invalid file',
+            text: 'Record at line number ' + i + ' contain ' + data.length + ' tokens, ' +
+              'and is not matching with header length of ' + headerLength,
+            type: 'error',
+            showConfirmButton: true,
+            confirmButtonText: 'Ok'
+          });
+          return [];
         }
-        dataArr.push(data);
+      }
+      dataArr.push(data);
     }
     return dataArr;
   }
@@ -478,8 +511,8 @@ export class ImportFileComponent implements OnInit {
   private _updateDateField(dateFieldName) {
     const fileType = this.isCSVFile(this.file) ? 'csv' : 'xls';
     const selectedDateFieldIndex = fileType === 'csv' ?
-            this.csvFileData.fields.findIndex(f => f.columnName === dateFieldName) :
-            this.excelFileData.fields.findIndex(f => f.columnName === dateFieldName);
+      this.csvFileData.fields.findIndex(f => f.columnName === dateFieldName) :
+      this.excelFileData.fields.findIndex(f => f.columnName === dateFieldName);
     if (fileType === 'csv') {
       this.csvFileData.dateRangeField = this.csvFileData.fields[selectedDateFieldIndex].columnName;
     } else {
