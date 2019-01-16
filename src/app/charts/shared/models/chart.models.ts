@@ -75,6 +75,7 @@ export interface IChart {
     xAxisSource: string;
     dashboards?: string[];
     size?: string;
+    position?: number;
 }
 
 export interface IChartGalleryItem {

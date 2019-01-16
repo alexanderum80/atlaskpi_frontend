@@ -12,7 +12,7 @@ import { MilestonesModule } from '../milestones';
 import { MaterialFormsModule, MaterialUserInterfaceModule } from '../ng-material-components';
 import { SharedModule } from '../shared';
 import { TargetsModule } from '../targets/targets.module';
-import { AutoRendereableChartComponent } from './auto-rendereable-chart/auto-rendereable-chart.component';
+import { AutoRenderableChartComponent } from './auto-renderable-chart/auto-renderable-chart.component';
 import { ChartTestComponent } from './chart-test/chart-test.component';
 import { ChartViewDashboardComponent } from './chart-view-dashboard/chart-view-dashboard.component';
 import { ChartViewMiniComponent } from './chart-view-mini/chart-view-mini.component';
@@ -41,6 +41,7 @@ import { MapsModule } from '../maps/maps.module';
 import highchartEvents from 'highcharts-custom-events';
 import { ChartComparisonComponent } from './chart-view/chart-comparison/chart-comparison.component';
 import { ChooseColorsComponent } from './shared/ui/choose-colors/choose-colors.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 // import { MyDatePickerModule } from 'mydatepicker';
 
@@ -63,6 +64,7 @@ export function highchartsModules() {
         ScrollEventModule,
         TargetsModule,
         MapsModule,
+        ReactiveFormsModule
     ],
     declarations: [
         ChartViewComponent,
@@ -86,7 +88,7 @@ export function highchartsModules() {
         CloneChartComponent,
         ChartViewDashboardComponent,
         ChangeSettingsOnFlyComponent,
-        AutoRendereableChartComponent,
+        AutoRenderableChartComponent,
         ChartDetailFilterComponent,
         ChartComparisonComponent,
         ChooseColorsComponent,
@@ -98,7 +100,7 @@ export function highchartsModules() {
         ListChartComponent,
         ChartViewDashboardComponent,
         ChartViewMiniComponent,
-        AutoRendereableChartComponent,
+        AutoRenderableChartComponent,
         NewChartComponent,
         EditChartComponent,
         ChooseColorsComponent,

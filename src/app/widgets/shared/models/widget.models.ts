@@ -103,6 +103,7 @@ export interface IWidget {
     // preview
     preview?: boolean;
     tags?: string[];
+    position?: number;
 }
 
 export interface IWidgetInput {

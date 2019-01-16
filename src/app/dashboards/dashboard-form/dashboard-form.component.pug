@@ -67,11 +67,11 @@
                             div(layout="column", layout-gt-sm="row", layout-wrap)
                                 div(*ngFor="let widget of filteredItemsWidgetsBig", flex="100", flex-gt-sm="50", flex-gt-lg="25")
                                     kpi-selectable-item-frame([item]="widget", (click)="toggleWidgetSelection(widget)")
-                                        kpi-auto-renderable-widget([item]="widget", [autoRender]="false", [widgetPreview]="true")
+                                        kpi-auto-renderable-widget([item]="widget", [autoRender]="false", [widgetPreview]="true", (validPosition)="onChangePosition($event)")
                                 
                                 div(*ngFor="let widget of filteredItemsWidgetsSmall", flex-xs="50", flex-gt-xs="50", flex-gt-sm="25", flex-gt-lg="12-5")
                                     kpi-selectable-item-frame([item]="widget", (click)="toggleWidgetSelection(widget)")
-                                        kpi-auto-renderable-widget([item]="widget", [autoRender]="false", , [widgetPreview]="true")
+                                        kpi-auto-renderable-widget([item]="widget", [autoRender]="false", [widgetPreview]="true", (validPosition)="onChangePosition($event)")
 
                                 bw-button.btn-addWidget(flex-none, color="blue", icon="plus", [circular]="true", (clicked)="openAddWidget()")
 
@@ -88,9 +88,11 @@
                             div(layout="column", layout-gt-sm="row", layout-wrap)
                                 .box(flex-xs="100", flex-gt-xs="100", flex-gt-sm="50", flex-gt-lg="33", *ngFor="let chart of filteredItemsCharts")
                                     kpi-selectable-item-frame([item]="chart", (click)="toggleChartSelection(chart)")
-                                        kpi-auto-rendereable-chart.pointer-cursor(
+                                        kpi-auto-renderable-chart.pointer-cursor(
                                                                                 [hidden]="!displayChart",
                                                                                 [autoRender]="false",
+                                                                                [isFromDashboardEdit]="true",
+                                                                                (validPosition)="onChangePosition($event)",
                                                                                 [item]="chart", [minHeight]="200", style="width: 100%")
 
                                 bw-button.btn-addChart(flex-none, color="blue", icon="plus", [circular]="true", (clicked)="openAddChart()")
@@ -108,7 +110,7 @@
                             div(layout="row", layout-wrap, layout-padding)
                                 div(*ngFor="let sw of visibleSocialWidgets", flex-xs="100", flex-sm="50", flex-md="50", flex-gt-md="50")
                                     kpi-selectable-item-frame([item]="sw", (click)="toggleSocialWidgetSelection(sw)")
-                                        kpi-social-widget.pointer-cursor([socialWidget]="sw")
+                                        kpi-social-widget.pointer-cursor([socialWidget]="sw", [isFromDashboardEdit]="true", (validPosition)="onChangePosition($event)")
                                                                                           
                                 // bw-button.btn-addSocialWidget(flex-none, color="blue", icon="plus", [circular]="true", (clicked)="openAddSocialWidget()")
                     bwTab.m-10.section-header(heading="Map", icon="map", (select)="switchTab('maps')")  
@@ -123,10 +125,7 @@
                             div(layout="row", layout-wrap, layout-padding, layout-align="center center")
                                 div(*ngFor="let map of filteredItemsMaps", flex-xs="100", flex-sm="50", flex-md="50", flex-gt-md="50")
                                     kpi-selectable-item-frame([item]="map", (click)="toggleMapSelection(map)")
-                                        .map-container(flex, layout="column")
-                                            .map-title {{map.title}}
-                                            img(src="../../assets/img/datasources/mapa.logo.png", alt="mapa")
-                                            .map-description {{map.subtitle}}
+                                        kpi-auto-renderable-map.pointer-cursor([item]="map", (validPosition)="onChangePosition($event)")
                                 bw-button.btn-addMap(flex-none, color="blue", icon="plus", [circular]="true", (clicked)="openAddMap()")
 //- mobile device button at the end
 .hide-gt-xs(*ngIf="!isAddChart && !isAddWidget && !isAddSocialWidget && !isAddMap && !loading && !isPreviewDashboard")

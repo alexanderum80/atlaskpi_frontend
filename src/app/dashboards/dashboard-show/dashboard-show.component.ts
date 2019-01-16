@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, QueryRef } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { toArray, map } from 'lodash';
+import { toArray, map, sortBy } from 'lodash';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import SweetAlert from 'sweetalert2';
@@ -294,7 +294,6 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             });
             this.showMap = true;
         } else {
-            
             this.showMap = false;
         }
         if (dashboard.widgets) {
@@ -398,6 +397,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
                     return c;
                 }
             });
+            that.charts = sortBy(that.charts, 'position');
         }
 
         if (data.dashboard.widgets) {
@@ -412,8 +412,10 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             });
             that.smallWidgets = widgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Small);
             that.smallWidgets.forEach(sWidget => sWidget.preview = true);
+            that.smallWidgets = sortBy(that.smallWidgets, 'position');
             that.bigWidgets = widgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Big);
             that.bigWidgets.forEach(bWidget => bWidget.preview = true);
+            that.bigWidgets = sortBy(that.bigWidgets, 'position');
         }
         if (data.dashboard.socialwidgets) {
             const socialWidgetsSource = data.dashboard.socialwidgets.map(sw => {
@@ -426,6 +428,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
                 }
             });
             that.socialWidgets = socialWidgetsSource.map(d => new SocialWidgetBase(<any>objectWithoutProperties(d, ['__typename'])));
+            that.socialWidgets = sortBy(that.socialWidgets, 'position');
         }
     }
 

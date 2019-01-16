@@ -25,6 +25,7 @@ export interface ISocialWidget {
     valueDescription: string;
     historicalData: ISocialWidgetHistoricalData;
     type: SocialWidgetType;
+    position?: number;
 }
 
 export class SocialWidgetBase implements ISocialWidget {
@@ -34,6 +35,7 @@ export class SocialWidgetBase implements ISocialWidget {
     valueDescription: string;
     historicalData: ISocialWidgetHistoricalData;
     type: SocialWidgetType;
+    position?: number;
 
     constructor(data: ISocialWidget) {
         this.connectorId = data.connectorId;

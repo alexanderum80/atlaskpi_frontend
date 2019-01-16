@@ -179,7 +179,7 @@ export class ListDashboardComponent implements OnInit {
         this.timeWait = false;
         this._apolloService.networkQuery < IUserInfo > (updateUserInfo).then(d => {
             that.vm.alistDashboardIdNoVisible = d.User;
-            this.itemType = d.User.preferences.dashboards.listMode === "standardView" ? 'standard' : 'table';
+            this.itemType = d.User.preferences.dashboards.listMode === 'standardView' ? 'standard' : 'table';
             this.timeWait = true;
         });
     }
@@ -191,7 +191,7 @@ export class ListDashboardComponent implements OnInit {
     }
 
     private _refreshDashboards(refresh?: boolean) {
-    const that = this;
+        const that = this;
         if (this.timeWait === false) {
             this._timeWait();
         } else {
