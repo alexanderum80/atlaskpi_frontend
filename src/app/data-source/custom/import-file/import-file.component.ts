@@ -42,7 +42,7 @@ export class ImportFileComponent {
   };
 
   constructor(
-    private vm: CustomFormViewModel,
+    public vm: CustomFormViewModel,
     private _apolloService: ApolloService,
     private _router: Router
   ) {

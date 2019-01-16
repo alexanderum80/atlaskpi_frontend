@@ -1017,6 +1017,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
         this.totalrunrateValues = 0;
         this.runrateValues = [];
         let freqbackCount = 0
+
         if (!this._hasGrouping()) {
             // calculate simple AVG
             for(let i = 0; i < this.previousfreq; i++) {

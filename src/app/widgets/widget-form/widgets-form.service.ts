@@ -15,11 +15,11 @@ import { IDateRangeItem, parseComparisonDateRange, IDateRange } from '../../shar
 import { widgetsGraphqlActions } from '../shared/graphql/widgets.graphql-actions';
 
 import {
-    IWidget,
-    IWidgetFormGroupValues,
-    IWidgetInput,
-    WidgetTypeEnum,
-    WidgetTypeMap,
+  IWidget,
+  IWidgetFormGroupValues,
+  IWidgetInput,
+  WidgetTypeEnum,
+  WidgetTypeMap,
 } from '../shared/models/widget.models';
 import { IKPI } from '../../shared/domain/kpis/kpi';
 import { INumericWidgetAttributes } from '../shared/models';
@@ -79,34 +79,34 @@ export class WidgetsFormService {
   private readonly _momentFormat = 'MM/DD/YYYY';
 
   constructor(private _apollo: Apollo) {
-    this.dateRangesQuery = this._apollo.watchQuery <{ dateRanges: IDateRangeItem[]}> ({
+    this.dateRangesQuery = this._apollo.watchQuery<{ dateRanges: IDateRangeItem[] }>({
       query: chartsGraphqlActions.dateRanges,
       fetchPolicy: 'network-only'
     });
     this._subscription.push(this.dateRangesQuery.valueChanges.subscribe(res => this._handleDateRangesQueryResponse(res)));
 
-    this.chartsQuery = this._apollo.watchQuery <{ listCharts: {data: IChart[]} }> ({
+    this.chartsQuery = this._apollo.watchQuery<{ listCharts: { data: IChart[] } }>({
       query: widgetsGraphqlActions.listWidgetCharts,
       fetchPolicy: 'network-only'
     });
 
     this._subscription.push(this.chartsQuery.valueChanges.subscribe(res => this._handleChartsQueryResponse(res)));
 
-    this.kpisQuery = this._apollo.watchQuery <{ kpis: IKPI[]}>
-    ({
+    this.kpisQuery = this._apollo.watchQuery<{ kpis: IKPI[] }>
+      ({
         query: KpisQuery,
         fetchPolicy: 'network-only'
-    });
+      });
 
     this._subscription.push(this.kpisQuery.valueChanges.subscribe(res => this._handleKpisQueryResponse(res)));
 
-    this.dashboardsQuery = this._apollo.watchQuery<{dashboards: IDashboard[]}>
-        ({
-          query: widgetsGraphqlActions.listWidgetDashboards,
-          fetchPolicy: 'network-only'
-        });
+    this.dashboardsQuery = this._apollo.watchQuery<{ dashboards: IDashboard[] }>
+      ({
+        query: widgetsGraphqlActions.listWidgetDashboards,
+        fetchPolicy: 'network-only'
+      });
 
-        this._subscription.push(this.dashboardsQuery.valueChanges.subscribe(res => this._handleDashboardsQueryResponse(res)));
+    this._subscription.push(this.dashboardsQuery.valueChanges.subscribe(res => this._handleDashboardsQueryResponse(res)));
   }
 
   newModel() {
@@ -137,26 +137,30 @@ export class WidgetsFormService {
     if (values.type === 'numeric') {
       this._widgetModel['chartWidgetAttributes'] = null;
       const customDateRange = (values.customFrom && values.customTo)
-                              ? { from: values.customFrom, to: values.customTo }
-                              : null;
+        ? { from: values.customFrom, to: values.customTo }
+        : null;
       this._widgetModel['numericWidgetAttributes'] = <any>this._widgetModel['numericWidgetAttributes'] || {};
-      this._widgetModel['numericWidgetAttributes']['dateRange'] = { predefined: values.predefinedDateRange,
-                                                                    custom: <any>customDateRange };
+      this._widgetModel['numericWidgetAttributes']['dateRange'] = {
+        predefined: values.predefinedDateRange,
+        custom: <any>customDateRange
+      };
       this._widgetModel['numericWidgetAttributes']['kpi'] = values.kpi;
       this._widgetModel['numericWidgetAttributes']['format'] = values.format || null;
 
 
       const dateRangeChanged = (values && values.predefinedDateRange && values.predefinedDateRange && !this._latestFormValue) ||
-                               (values.predefinedDateRange && this._latestFormValue.predefinedDateRange &&
-                                values.predefinedDateRange !== this._latestFormValue.predefinedDateRange) ||
-                               (values.customFrom && this._latestFormValue.customFrom &&
-                                 values.customTo && this._latestFormValue.customTo &&
-                                 JSON.stringify(customDateRange) !== JSON.stringify({ from: this._latestFormValue.customFrom,
-                                                                                     to: this._latestFormValue.customTo }));
+        (values.predefinedDateRange && this._latestFormValue.predefinedDateRange &&
+          values.predefinedDateRange !== this._latestFormValue.predefinedDateRange) ||
+        (values.customFrom && this._latestFormValue.customFrom &&
+          values.customTo && this._latestFormValue.customTo &&
+          JSON.stringify(customDateRange) !== JSON.stringify({
+            from: this._latestFormValue.customFrom,
+            to: this._latestFormValue.customTo
+          }));
 
       if (dateRangeChanged && values.predefinedDateRange && this._latestFormValue && this._latestFormValue.predefinedDateRange &&
         values.predefinedDateRange !== 'custom') {
-          this._widgetModel['numericWidgetAttributes']['dateRange']['custom'] = undefined;
+        this._widgetModel['numericWidgetAttributes']['dateRange']['custom'] = undefined;
       }
 
       if (!values.comparison /*|| dateRangeChanged */) {
@@ -181,18 +185,18 @@ export class WidgetsFormService {
     }
 
     this._latestFormValue = values;
-
+    
     const that = this;
     const kpi = this._widgetModel && this._widgetModel.numericWidgetAttributes
-                ? this._widgetModel.numericWidgetAttributes.kpi
-                : null;
+      ? this._widgetModel.numericWidgetAttributes.kpi
+      : null;
     const dateRange = this._widgetModel && this._widgetModel.numericWidgetAttributes &&
-                this._widgetModel.numericWidgetAttributes.dateRange
-                ? this._widgetModel.numericWidgetAttributes.dateRange
-                : null;
+      this._widgetModel.numericWidgetAttributes.dateRange
+      ? this._widgetModel.numericWidgetAttributes.dateRange
+      : null;
     const chart = this._widgetModel && this._widgetModel.chartWidgetAttributes
-                  ? this._widgetModel.chartWidgetAttributes.chart
-                  : null;
+      ? this._widgetModel.chartWidgetAttributes.chart
+      : null;
 
     const dateRangeIsValid: boolean = this._isDateRangeValid(dateRange);
 
@@ -201,8 +205,8 @@ export class WidgetsFormService {
     if (!this._widgetModel.name || !this._widgetModel.type
       || (!kpiWithDaterange && !chart) || !isComparisonValid
       || !this._widgetModel.color || !this._widgetModel.fontColor) {
-       that._widgetModelValidSubject.next(false);
-       return Promise.resolve(this._widgetModel);
+      that._widgetModelValidSubject.next(false);
+      return Promise.resolve(this._widgetModel);
     }
 
     return new Promise<IWidget>((resolve, reject) => {
@@ -219,9 +223,9 @@ export class WidgetsFormService {
         resolve(this._widgetModel);
         return;
       })
-      .catch(err => {
-        // console.log('error when requesting preview of widget: ' + err);
-      });
+        .catch(err => {
+          // console.log('error when requesting preview of widget: ' + err);
+        });
     });
   }
 
@@ -262,16 +266,16 @@ export class WidgetsFormService {
     if (values.predefinedDateRange === PredefinedDateRanges.allTimes) {
       return [];
     }
-    
+
     return [values.comparison];
   }
 
   private _isDateRangeValid(dateRange: IChartDateRange): boolean {
     if (dateRange && dateRange.predefined) {
-        if (dateRange.predefined === 'custom') {
-            return this._isCustomDateRangeValid(dateRange);
-        }
-        return true;
+      if (dateRange.predefined === 'custom') {
+        return this._isCustomDateRangeValid(dateRange);
+      }
+      return true;
     }
 
     return false;
@@ -286,7 +290,7 @@ export class WidgetsFormService {
     const customTo: moment.Moment = moment(dateRange.custom.to, this._momentFormat, 'en', true);
 
     const isCustomDateValid: boolean = customFrom.isValid() && customTo.isValid();
-    const isFromBeforeTo: boolean =  customTo.isSameOrAfter(customFrom);
+    const isFromBeforeTo: boolean = customTo.isSameOrAfter(customFrom);
 
     return isCustomDateValid && isFromBeforeTo;
   }
@@ -294,14 +298,14 @@ export class WidgetsFormService {
   private _materializeWidget(widget: IWidget): Promise<IWidget> {
     const that = this;
     const payload = this.getWidgetPayload();
-
+    debugger;
     return new Promise<IWidget>((resolve, reject) => {
-      that._subscription.push(that._apollo.watchQuery <{ previewWidget: IWidget}> ({
+      that._subscription.push(that._apollo.watchQuery<{ previewWidget: IWidget }>({
         query: widgetsGraphqlActions.previewWidget,
         variables: { input: payload },
         fetchPolicy: 'network-only'
       })
-      .valueChanges.subscribe(res => {
+        .valueChanges.subscribe(res => {
           if (res.data.previewWidget) {
             resolve(res.data.previewWidget);
             return;
@@ -309,7 +313,7 @@ export class WidgetsFormService {
 
           resolve(widget);
           return;
-      }));
+        }));
     });
   }
 
@@ -348,18 +352,18 @@ export class WidgetsFormService {
   }
 
   private _handleDashboardsQueryResponse(res: any) {
-        this._subscription.push(this.updatedDashboardsList$.subscribe(list => {
-          if (!list || !list.length) {
-            this.dashboards = res.data.dashboards;
-            this.dashboardList = ToSelectionItemList(this.dashboards, '_id', 'name');
-            this._dashboardListSubject.next(this.dashboardList);
-          } else {
-            if (list.length !== res.data.dashboards.length) {
-              this.dashboardList = ToSelectionItemList(list, '_id', 'name');
-              this._dashboardListSubject.next(this.dashboardList);
-            }
-          }
-        }));
+    this._subscription.push(this.updatedDashboardsList$.subscribe(list => {
+      if (!list || !list.length) {
+        this.dashboards = res.data.dashboards;
+        this.dashboardList = ToSelectionItemList(this.dashboards, '_id', 'name');
+        this._dashboardListSubject.next(this.dashboardList);
+      } else {
+        if (list.length !== res.data.dashboards.length) {
+          this.dashboardList = ToSelectionItemList(list, '_id', 'name');
+          this._dashboardListSubject.next(this.dashboardList);
+        }
+      }
+    }));
   }
 
   public getComparisonListForDateRangesAndKpiOldesDate (dateRangeString: string, yearOldestDate: string) {
@@ -368,6 +372,11 @@ export class WidgetsFormService {
 
     this.comparisonList = [];
     const dateRange = this.dateRanges.find(d => d.dateRange.predefined === dateRangeString);
+    
+    if (!dateRange) {
+      this.comparisonList = [];
+      return [];
+    }
     const itemsComparison: any = [dateRangeString, ''];
     let newItem: SelectionItem = {};
     for (let i = 0; i < dateRange.comparisonItems.length ; i++) {
@@ -390,84 +399,88 @@ export class WidgetsFormService {
   }
 
   private _getCleanWidgetModel(widget: IWidget): IWidget {
-      const customDateRange = (widget.numericWidgetAttributes &&
-                              widget.numericWidgetAttributes.dateRange &&
-                              widget.numericWidgetAttributes.dateRange.custom &&
-                              widget.numericWidgetAttributes.dateRange.custom.from &&
-                              widget.numericWidgetAttributes.dateRange.custom.to
-                              )
-                              ? { from: moment(widget.numericWidgetAttributes.dateRange.custom.from).format(this._momentFormat),
-                                  to: moment(widget.numericWidgetAttributes.dateRange.custom.to).format(this._momentFormat) } as any
-                              : null;
 
     switch (WidgetTypeMap[widget.type]) {
       case WidgetTypeEnum.Chart:
-            const chartWidget: IWidget = {
-              order: widget.order,
-              name: widget.name,
-              description: widget.description,
-              type: widget.type,
-              size: widget.size,
-              color: 'white', // all chart widgets are white
-              fontColor: 'black',
-              chartWidgetAttributes: {
-                chart: widget.chartWidgetAttributes.chart
-              },
-              preview: widget.preview,
-              materialized: widget.materialized
-                            ? {
-                               chart: widget.materialized ? widget.materialized.chart : null
-                             }
-                            : null,
-              tags: widget.tags,
-              dashboards: widget.dashboards
-            };
-            return chartWidget;
+        const chartWidget: IWidget = {
+          order: widget.order,
+          name: widget.name,
+          description: widget.description,
+          type: widget.type,
+          size: widget.size,
+          color: '#fff', // all chart widgets are white
+          fontColor: '#434348',
+          chartWidgetAttributes: {
+            chart: widget.chartWidgetAttributes.chart
+          },
+          preview: widget.preview,
+          materialized: widget.materialized
+            ? {
+              chart: widget.materialized ? widget.materialized.chart : null
+            }
+            : null,
+          tags: widget.tags,
+          dashboards: widget.dashboards
+        };
+        return chartWidget;
       case WidgetTypeEnum.Numeric:
-          const numericWidget: IWidget = {
-            order: widget.order,
-            name: widget.name,
-            description: widget.description,
-            type: widget.type,
-            size: widget.size,
-            color: widget.color,
-            fontColor: widget.fontColor,
-            numericWidgetAttributes: {
-              kpi: widget.numericWidgetAttributes.kpi,
-              format: widget.numericWidgetAttributes.format,
-              dateRange: {
-                predefined: widget.numericWidgetAttributes.dateRange.predefined,
-                custom: customDateRange
-              },
-              comparison: widget.numericWidgetAttributes.comparison,
-              comparisonArrowDirection: widget.numericWidgetAttributes.comparisonArrowDirection || '',
+
+        const customDateRange = (widget.numericWidgetAttributes &&
+          widget.numericWidgetAttributes.dateRange &&
+          widget.numericWidgetAttributes.dateRange.custom &&
+          widget.numericWidgetAttributes.dateRange.custom.from &&
+          widget.numericWidgetAttributes.dateRange.custom.to
+        )
+          ? {
+            from: moment(widget.numericWidgetAttributes.dateRange.custom.from).format(this._momentFormat),
+            to: moment(widget.numericWidgetAttributes.dateRange.custom.to).format(this._momentFormat)
+          } as any
+          : null;
+
+        const numericWidget: IWidget = {
+          order: widget.order,
+          name: widget.name,
+          description: widget.description,
+          type: widget.type,
+          size: widget.size,
+          color: widget.color,
+          fontColor: widget.fontColor,
+          numericWidgetAttributes: {
+            kpi: widget.numericWidgetAttributes.kpi,
+            format: widget.numericWidgetAttributes.format,
+            dateRange: {
+              predefined: widget.numericWidgetAttributes.dateRange.predefined,
+              custom: customDateRange
             },
-            materialized: widget.materialized
-                          ? {
-                              value: widget.materialized.value,
-                              comparison: widget.materialized.comparison
-                                          ? {
-                                              period: widget.materialized.comparison
-                                                      ? widget.materialized.comparison.period
-                                                      : null,
-                                              value: widget.materialized.comparison
-                                                    ? widget.materialized.comparison.value
-                                                    : null,
-                                              arrowDirection: widget.materialized.comparison
-                                                              ? widget.materialized.comparison.arrowDirection
-                                                              : null,
-                                            }
-                                          : null
-                            }
-                          : null,
-            preview: widget.preview,
-            tags: widget.tags,
-            dashboards: widget.dashboards
-          };
-          return numericWidget;
+            comparison: widget.numericWidgetAttributes.comparison,
+            comparisonArrowDirection: widget.numericWidgetAttributes.comparisonArrowDirection || '',
+          },
+          materialized: widget.materialized
+            ? {
+              value: widget.materialized.value,
+              comparison: widget.materialized.comparison
+                ? {
+                  period: widget.materialized.comparison
+                    ? widget.materialized.comparison.period
+                    : null,
+                  value: widget.materialized.comparison
+                    ? widget.materialized.comparison.value
+                    : null,
+                  arrowDirection: widget.materialized.comparison
+                    ? widget.materialized.comparison.arrowDirection
+                    : null,
+                }
+                : null
+            }
+            : null,
+          preview: widget.preview,
+          tags: widget.tags,
+          dashboards: widget.dashboards
+        };
+        return numericWidget;
 
       default:
-          return widget;
+        return widget;
     }
   }
 
@@ -481,61 +494,61 @@ export class WidgetsFormService {
   public getWidgetFormValues(): IWidgetFormGroupValues {
     switch (WidgetTypeMap[this._widgetModel.type]) {
       case WidgetTypeEnum.Chart:
-            const chartWidgetFormGroup: IWidgetFormGroupValues = {
-              order: String(this._widgetModel.order),
-              name: this._widgetModel.name,
-              description: this._widgetModel.description,
-              type: this._widgetModel.type,
-              size: this._widgetModel.size,
-              color: 'white', // all chart widgets are white
-              fontColor: 'black',
-              chart: this._widgetModel.chartWidgetAttributes.chart,
-              dashboards: this._widgetModel.dashboards ? this._widgetModel.dashboards.join('|') : ''
-            };
-            return chartWidgetFormGroup;
+        const chartWidgetFormGroup: IWidgetFormGroupValues = {
+          order: String(this._widgetModel.order),
+          name: this._widgetModel.name,
+          description: this._widgetModel.description,
+          type: this._widgetModel.type,
+          size: this._widgetModel.size,
+          color: '#fff', // all chart widgets are white
+          fontColor: '#434348',
+          chart: this._widgetModel.chartWidgetAttributes.chart,
+          dashboards: this._widgetModel.dashboards ? this._widgetModel.dashboards.join('|') : ''
+        };
+        return chartWidgetFormGroup;
       case WidgetTypeEnum.Numeric:
-          const numericWidget: IWidgetFormGroupValues = {
-            order: String(this._widgetModel.order),
-            name: this._widgetModel.name,
-            description: this._widgetModel.description,
-            type: this._widgetModel.type,
-            size: this._widgetModel.size,
-            color: this._widgetModel.color, // all chart widgets are white
-            fontColor: this._widgetModel.fontColor,
-            kpi: this._widgetModel.numericWidgetAttributes
-                  ? this._widgetModel.numericWidgetAttributes.kpi
-                  : '',
-            format: this._widgetModel.numericWidgetAttributes
-                  ? this._widgetModel.numericWidgetAttributes.format
-                  : '',
-            predefinedDateRange: this._widgetModel.numericWidgetAttributes
-                                 ? this._widgetModel.numericWidgetAttributes.dateRange.predefined
-                                 : '',
+        const numericWidget: IWidgetFormGroupValues = {
+          order: String(this._widgetModel.order),
+          name: this._widgetModel.name,
+          description: this._widgetModel.description,
+          type: this._widgetModel.type,
+          size: this._widgetModel.size,
+          color: this._widgetModel.color, // all chart widgets are white
+          fontColor: this._widgetModel.fontColor,
+          kpi: this._widgetModel.numericWidgetAttributes
+            ? this._widgetModel.numericWidgetAttributes.kpi
+            : '',
+          format: this._widgetModel.numericWidgetAttributes
+            ? this._widgetModel.numericWidgetAttributes.format
+            : '',
+          predefinedDateRange: this._widgetModel.numericWidgetAttributes
+            ? this._widgetModel.numericWidgetAttributes.dateRange.predefined
+            : '',
 
-            customFrom: this._widgetModel.numericWidgetAttributes
-                        ? this._widgetModel.numericWidgetAttributes.dateRange.custom
-                            ? moment(this._widgetModel.numericWidgetAttributes.dateRange.custom.from).format(this._momentFormat) || null
-                            : ''
-                        : '',
-            customTo: this._widgetModel.numericWidgetAttributes
-                        ?   this._widgetModel.numericWidgetAttributes.dateRange.custom
-                            ? moment(this._widgetModel.numericWidgetAttributes.dateRange.custom.to).format(this._momentFormat) || null
-                            : ''
-                        : '',
-            comparison: this._widgetModel.numericWidgetAttributes
-                        ? this._widgetModel.numericWidgetAttributes.comparison
-                          ? this._widgetModel.numericWidgetAttributes.comparison[0]
-                          : ''
-                        : '',
-            comparisonArrowDirection: this._widgetModel.numericWidgetAttributes
-                                      ? this._widgetModel.numericWidgetAttributes.comparisonArrowDirection
-                                      : '',
-            dashboards: this._widgetModel.dashboards ? this._widgetModel.dashboards.join('|') : ''
-          };
+          customFrom: this._widgetModel.numericWidgetAttributes
+            ? this._widgetModel.numericWidgetAttributes.dateRange.custom
+              ? moment(this._widgetModel.numericWidgetAttributes.dateRange.custom.from).format(this._momentFormat) || null
+              : ''
+            : '',
+          customTo: this._widgetModel.numericWidgetAttributes
+            ? this._widgetModel.numericWidgetAttributes.dateRange.custom
+              ? moment(this._widgetModel.numericWidgetAttributes.dateRange.custom.to).format(this._momentFormat) || null
+              : ''
+            : '',
+          comparison: this._widgetModel.numericWidgetAttributes
+            ? this._widgetModel.numericWidgetAttributes.comparison
+              ? this._widgetModel.numericWidgetAttributes.comparison[0]
+              : ''
+            : '',
+          comparisonArrowDirection: this._widgetModel.numericWidgetAttributes
+            ? this._widgetModel.numericWidgetAttributes.comparisonArrowDirection
+            : '',
+          dashboards: this._widgetModel.dashboards ? this._widgetModel.dashboards.join('|') : ''
+        };
         return numericWidget;
 
       default:
-          return null;
+        return null;
     }
   }
 

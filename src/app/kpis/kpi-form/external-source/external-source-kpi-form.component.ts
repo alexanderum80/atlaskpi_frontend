@@ -160,6 +160,8 @@ export class ExternalSourceKpiFormComponent implements OnInit, AfterViewInit {
                         this.vm.valuesPreviewWidget.name = this.currrentKPI.name;
                         this.vm.valuesPreviewWidget.kpi = this.currrentKPI._id;
                         this.vm.valuesPreviewWidget.color = this.vm.selectColorWidget();
+                        this.vm.valuesPreviewWidget.fontColor = this.vm.valuesPreviewWidget.color === '#fff'
+                        ? '#434348' : '#fff';
 
                         // for chart
                         this.vm.valuesPreviewChart.name = this.currrentKPI.name;

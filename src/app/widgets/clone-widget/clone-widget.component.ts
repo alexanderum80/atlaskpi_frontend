@@ -1,4 +1,4 @@
-import { WindowService } from '../../shared/services';
+import { WindowService, UserService } from '../../shared/services';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -11,7 +11,7 @@ import * as moment from 'moment';
 
 import { CloneWidgetActivity } from '../../shared/authorization/activities/widgets/clone-widget.activity';
 import { Activity } from '../../shared/authorization/decorators/component-activity.decorator';
-import { IMutationResponse } from '../../shared/models';
+import { IMutationResponse, IUserInfo } from '../../shared/models';
 import { DialogResult } from '../../shared/models/dialog-result';
 import { ApolloService } from '../../shared/services/apollo.service';
 import { CommonService } from '../../shared/services/common.service';
@@ -28,12 +28,14 @@ const getWidgetByTitle = require('graphql-tag/loader!../shared/graphql/get-widge
   styleUrls: ['./clone-widget.component.scss'],
   providers: [WidgetsFormService]
 })
-export class CloneWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CloneWidgetComponent implements OnInit, OnDestroy {
   fg: FormGroup = new FormGroup({});
   widgetId: string;
   loading = true;
 
   private _subscription: Subscription[] = [];
+  private currentUser: IUserInfo;
+
 
   constructor(private _widgetFormService: WidgetsFormService,
               private _apolloService: ApolloService,
@@ -41,7 +43,10 @@ export class CloneWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
               private _router: Router,
               private fb: FormBuilder,
               private _route: ActivatedRoute,
-              private windowService: WindowService) { }
+              private windowService: WindowService,
+              private _userService: UserService) {
+    this.currentUser = _userService.user;
+  }
 
   ngOnInit() {
     const that = this;
@@ -61,9 +66,6 @@ export class CloneWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy() {
     CommonService.unsubscribe(this._subscription);
   }
-  
-   ngAfterViewInit() {
-  }
 
   onWidgetFormEvent($event: DialogResult) {
     switch ($event) {
@@ -78,10 +80,14 @@ export class CloneWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   cloneWidget() {
-  
+
     const that = this;
 
     const payload = this._widgetFormService.getWidgetPayload();
+    payload.createdBy = this.currentUser._id;
+    payload.updatedBy = this.currentUser._id;
+    payload.createdDate = moment().toDate();
+    payload.updatedDate = moment().toDate();
 
     this._widgetFormService.updateExistDuplicatedName(false);
 
@@ -115,7 +121,7 @@ export class CloneWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
               }
           }));
         });
-  }  
+  }
 
   private _getWidgetByIdQuery(id: string): Observable<ApolloQueryResult<{ widget: IWidget}>> {
     return this._apollo.watchQuery<{ widget: IWidget }>({

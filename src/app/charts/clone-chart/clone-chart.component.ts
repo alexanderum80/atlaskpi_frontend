@@ -17,6 +17,8 @@ import { CreateChartMutation, CreateMapMutation ,  SingleChartQuery, SingleMapQu
 import { ChartModel, IChart, ISaveChartResponse, SingleChartResponse, SingleMapResponse } from '../shared/models';
 import { ChartFormComponent } from '../shared/ui/chart-form';
 import { MapModel } from '../../maps/shared/models/map.models';
+import { IUserInfo } from '../../shared/models';
+import { UserService } from '../../shared/services';
 
 @Activity(CloneChartActivity)
 @Component({
@@ -38,9 +40,13 @@ export class CloneChartComponent implements AfterViewInit, OnDestroy {
     private _chartModel: IChart;
     private _subscription: Subscription[] = [];
 
+    private currentUser: IUserInfo;
+
     constructor(private _apollo: Apollo,
                 private _router: Router,
-                private _route: ActivatedRoute) {
+                private _route: ActivatedRoute,
+                private _userService: UserService) {
+        this.currentUser = this._userService.user;
     }
 
     ngOnDestroy() {
@@ -98,6 +104,12 @@ export class CloneChartComponent implements AfterViewInit, OnDestroy {
         this.chartFormComponent.processFormatChanges(this.fg.value);
         const model = ChartModel.fromFormGroup(this.fg, this.chartFormComponent.getChartDefinition(), true);
 
+        // add-created-updated-by-date
+        model.createdBy = this.currentUser._id;
+        model.updatedBy = this.currentUser._id;
+        model.createdDate = moment().toDate();
+        model.updatedDate = moment().toDate();
+
         // Apollo doesnt send the property when using Link Batch, if the data type is not the same as in the schema
         // so we are forcing the daterange to be an array of DateRanges.
         (<any>model).dateRange = [model.dateRange];
@@ -123,6 +135,12 @@ export class CloneChartComponent implements AfterViewInit, OnDestroy {
     cloneMap() {
         const that = this;
         const model = MapModel.fromFormGroup(this.fg);
+
+        // add-created-updated-by-date
+        model.createdBy = this.currentUser._id;
+        model.updatedBy = this.currentUser._id;
+        model.createdDate = moment().toDate();
+        model.updatedDate = moment().toDate();
 
         this._apollo.mutate<ISaveChartResponse>({
             mutation: CreateMapMutation,
