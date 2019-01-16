@@ -4,18 +4,20 @@
     .text-right.c-gray(flex)
         #start-tour.pull-right
             i.zmdi.zmdi-help-outline.help-icon-chart.c-orange.m-r-10((click)="startTour()")
-    #select-kpi(flex)
-        bw-select-picker.p-l-35(flex, [fg]="fg",
-            label="Select KPI",
+
+    #select-chart-type(flex)
+        kpi-chart-type(flex, [fg]="fg",[isFromDashboard]="isFromDashboard", [chartType]="chartType", [isnewChartOrMap]="isnewChartOrMap")
+
+.m-10(*ngIf="fg.get('kpis')" layout="column")
+    #select-kpi(flex, *ngFor="let c of fg.get('kpis').controls")
+        bw-select-picker.p-l-35(flex, [fg]="c",
+            label="Select KPI for {{c.get('type').value}} chart",
             field="kpi",
             leftIcon="device-hub",
             [items]="kpiList",
             [liveSearch]="true",
             liveSearchPlaceholder="... search KPIs ...",
             noneSelectedText="NOTHING SELECTED")
-
-    #select-chart-type(flex)
-        kpi-chart-type(flex, [fg]="fg",[isFromDashboard]="isFromDashboard", [chartType]="chartType", [isnewChartOrMap]="isnewChartOrMap")
 
     //- date range and frequency
     .m-10(flex, layout-gt-sm="row", layout-xs="column")
