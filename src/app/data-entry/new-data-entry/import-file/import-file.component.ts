@@ -9,6 +9,7 @@ import { Component, ViewChild, OnInit, Input, EventEmitter, Output } from '@angu
 import * as XLSX from 'ts-xlsx';
 import { Router } from '@angular/router';
 import { DateFieldPopupComponent } from './date-field-popup/date-field-popup.component';
+import { CustomFormViewModel } from './custom-form.view-model';
 
 const addDataEntryMutation = require('graphql-tag/loader!../../shared/graphql/add-data-entry.gql');
 const updateDataEntryMutation = require('graphql-tag/loader!../../shared/graphql/update-data-entry.gql');
@@ -19,7 +20,8 @@ const processImportFileQuery = require('graphql-tag/loader!../../shared/graphql/
 @Component({
   selector: 'kpi-import-file',
   templateUrl: './import-file.component.pug',
-  styleUrls: ['./import-file.component.scss']
+  styleUrls: ['./import-file.component.scss'],
+  providers: [CustomFormViewModel],
 })
 export class ImportFileComponent implements OnInit {
   @ViewChild(DateFieldPopupComponent) dateFieldPopupComponent: DateFieldPopupComponent;
@@ -58,7 +60,7 @@ export class ImportFileComponent implements OnInit {
   currentUser: IUserInfo;
 
   constructor(
-    private vm: DataEntryFormViewModel,
+    public vm: CustomFormViewModel,
     private _apolloService: ApolloService,
     private _router: Router,
     private _userService: UserService
@@ -204,16 +206,16 @@ export class ImportFileComponent implements OnInit {
     const fileName = this.file.name.substr(0, fileExtensionIndex);
 
     this._apolloService.networkQuery(dataSourceByNameQuery, { name: fileName })
-    .then(res => {
-      if (res.dataSourceByName) {
-        return Sweetalert({
-          title: 'File exists!',
-          text: 'The file you are trying to import already exists. Please select another one.',
-          type: 'error',
-          showConfirmButton: true,
-          confirmButtonText: 'Ok'
-        });
-      }
+      .then(res => {
+        if (res.dataSourceByName) {
+          return Sweetalert({
+            title: 'File exists!',
+            text: 'The file you are trying to import already exists. Please select another one.',
+            type: 'error',
+            showConfirmButton: true,
+            confirmButtonText: 'Ok'
+          });
+        }
 
       if (this.dataEntry) {
         this._csvFileReset();
@@ -224,11 +226,11 @@ export class ImportFileComponent implements OnInit {
         this._processCsvFile(this.file);
       }
 
-      if (this.isXLSFile(this.file)) {
-        this._processExcelFile(this.file);
-      }
-    })
-    .catch(err => console.log(err));
+        if (this.isXLSFile(this.file)) {
+          this._processExcelFile(this.file);
+        }
+      })
+      .catch(err => console.log(err));
   }
 
   isCSVFile(file) {
@@ -236,7 +238,7 @@ export class ImportFileComponent implements OnInit {
   }
 
   isXLSFile(file) {
-    return file.name.endsWith('.xlsx') ||  file.name.endsWith('.xls');
+    return file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
   }
 
   private _processCsvFile(file) {
@@ -388,8 +390,8 @@ export class ImportFileComponent implements OnInit {
   private _updateDateField(dateFieldName) {
     const fileType = this.isCSVFile(this.file) ? 'csv' : 'xls';
     const selectedDateFieldIndex = fileType === 'csv' ?
-            this.csvFileData.fields.findIndex(f => f.columnName === dateFieldName) :
-            this.excelFileData.fields.findIndex(f => f.columnName === dateFieldName);
+      this.csvFileData.fields.findIndex(f => f.columnName === dateFieldName) :
+      this.excelFileData.fields.findIndex(f => f.columnName === dateFieldName);
     if (fileType === 'csv') {
       this.csvFileData.dateRangeField = this.csvFileData.fields[selectedDateFieldIndex].columnName;
     } else {

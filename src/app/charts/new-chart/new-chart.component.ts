@@ -23,8 +23,11 @@ import * as Promise from 'bluebird';
 import { Input, Output, EventEmitter } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { MapModel, IMap, ISaveMapResponse } from '../../maps/shared/models/map.models';
-import { CommonService } from '../../shared/services';
+import { CommonService, UserService } from '../../shared/services';
+import { IUserInfo } from '../../shared/models';
 
+import * as moment from 'moment';
+import { IDataUserDate } from '../../shared/models/data-user-date';
 
 const Highcharts = require('highcharts/js/highcharts');
 const getChartByTitle = require('graphql-tag/loader!../shared/graphql/get-chart-by-title.gql');
@@ -50,7 +53,7 @@ export class NewChartComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private readyToSave = false;
     private _subscription: Subscription[] = [];
-
+    currentUser: IUserInfo;
     constructor(private _apollo: Apollo,
                 private _apolloService: ApolloService,
                 private _router: Router,
@@ -58,7 +61,12 @@ export class NewChartComponent implements OnInit, AfterViewInit, OnDestroy {
                 private _selectChartService: SelectedChartsService,
                 private _selectMapService: SelectedMapsService,
                 private _galleryService: ChartGalleryService,
+                private _userService: UserService,
                 private fb: FormBuilder) {
+                    const that = this;
+                    this._subscription.push(this._userService.user$.subscribe((user) => {
+                        that.currentUser = user;
+                    }));
     }
 
     ngOnInit() {
@@ -134,10 +142,14 @@ export class NewChartComponent implements OnInit, AfterViewInit, OnDestroy {
 
             const model = ChartModel.fromFormGroup(this.fg, this.chartFormComponent.getChartDefinition(), true);
 
-
             if (!model.valid) {
                 return;
             }
+            // add-created-updated-by-date
+            model.createdBy = this.currentUser._id;
+            model.updatedBy = this.currentUser._id;
+            model.createdDate = moment().toDate();
+            model.updatedDate = moment().toDate();
 
             // Apollo doesnt send the property when using Link Batch, if the data type is not the same as in the schema
             // so we are forcing the daterange to be an array of DateRanges.
@@ -185,6 +197,11 @@ export class NewChartComponent implements OnInit, AfterViewInit, OnDestroy {
             if (!model.valid) {
                 return;
             }
+            //add-created-updated-by-date
+            model.createdBy = this.currentUser._id;
+            model.updatedBy = this.currentUser._id;
+            model.createdDate = moment().toDate();
+            model.updatedDate = moment().toDate();
             this._apollo.mutate<ISaveMapResponse>({
                 mutation: CreateMapMutation,
                 variables: { input: model }
@@ -203,6 +220,7 @@ export class NewChartComponent implements OnInit, AfterViewInit, OnDestroy {
             .catch(err => console.log(err));
         });
     }
+
 
     private _subscribeToNameChanges() {
         this.fg.controls['name'].valueChanges.subscribe(name => {

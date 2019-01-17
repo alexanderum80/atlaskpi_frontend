@@ -64,7 +64,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         comparison: 'previousPeriod',
         comparisonArrowDirection: 'up'
       };
-      
+
       valuesPreviewChart: IChartFormValues = {
         name: '',
         description: '',
@@ -74,7 +74,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         grouping: 'location.name',
         tooltipEnabled: true,
         predefinedTooltipFormat: 'multiple_percent',
-        kpi: '',
+        kpis: [],
         legendEnabled: false,
         predefinedDateRange: 'this year',
         invertAxisEnabled: false,
@@ -247,7 +247,9 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             tags: value.tags ? value.tags.map(t => t.value) : null,
             source: value.source,
             createdBy: value.createdBy ? value.createdBy : this.currentUser._id,
-            createdDate: value.createdDate ? value.createdDate : moment().toDate()
+            createdDate: value.createdDate ? value.createdDate : moment().toDate(),
+            updatedBy:  this.currentUser._id,
+            updatedDate:  moment().toDate()
         };
         const result: IKPIPayload = { input: payload };
 

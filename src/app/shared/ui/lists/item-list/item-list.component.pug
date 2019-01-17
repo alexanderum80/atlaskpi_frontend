@@ -1,4 +1,4 @@
-.item-list-container(layout="column", layout-padding)
+.item-list-container( layout="column", layout-padding)
     //- show the add button
     kpi-add-item(*ngIf="allowAdd", [itemViewModel]="itemViewModel", [addItemActivityName]="addItemActivityName", (onItemClicked)="addClicked()")
 
@@ -31,7 +31,25 @@
                 (actionClicked)="itemActionClicked($event)")
 
         //- table view
-        .tabular-container.bgm-white.z-depth-1.p-20.m-l-10.m-r-10.m-b-20(*ngIf="showTabularItems", layout="column", layout-gt-sm="row")
+        .tabular-container.bgm-white.z-depth-1.header-font.p-10.m-l-10.m-r-10(*ngIf="showTabularItems && !isMobile && titleRow", layout="column", layout-gt-sm="row")
+           
+            .titles.div.p-l-25
+                .m-t-10.m-l-10 
+                    h2.title Name
+            //- title & subtitle
+            
+            .data
+                .m-t-10.m-l-10 
+                    h2.title Created
+            .data
+                .m-t-10.m-l-20 
+                    h2.title Last Updated
+            .action.p-r-20
+                .m-t-10.m-l-5 
+                    h2.title ACTIONS
+            
+                
+        .tabular-container.bgm-white.z-depth-1.p-20.m-l-10.m-r-10.m-b-20(*ngIf="showTabularItems && !isMobile", layout="column", layout-gt-sm="row")
             div(flex)
                 kpi-list-item-tabular(
                     *ngFor="let item of filteredItems",
@@ -41,6 +59,18 @@
                     (click)="itemClicked($event, item)",
                     (actionClicked)="itemActionClicked($event)")
 
+        .tabular-container-mobile.bgm-white.z-depth-1(*ngIf="showTabularItems  && isMobile", layout="column", layout-gt-sm="row")
+            div(flex)
+                kpi-list-item-tabular(
+                    *ngFor="let item of filteredItems",
+                    [item]="item",
+                    [actionItems]="actionItems",
+                    [tableRowTemplate]="tableRowTemplate",
+                    (click)="itemClicked($event, item)",
+                    (actionClicked)="itemActionClicked($event)",
+                    [rowCount]="rowsCount")
+
+    
         //- future implementation
         //- div(*ngIf="showSmallItems", layout="row", layout-wrap, layout-padding)
         //-     kpi-list-item-small(*ngFor="let item of items", [item]="item")

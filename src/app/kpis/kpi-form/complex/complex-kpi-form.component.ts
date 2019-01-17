@@ -184,12 +184,13 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
                         this.vm.valuesPreviewWidget.name = this.currrentKPI.name;
                         this.vm.valuesPreviewWidget.kpi = this.currrentKPI._id;
                         this.vm.valuesPreviewWidget.color = this.vm.selectColorWidget();
-                        this.vm.valuesPreviewWidget.fontColor = this.vm.valuesPreviewWidget.color === ('white' || '#fff')
+                        this.vm.valuesPreviewWidget.fontColor = this.vm.valuesPreviewWidget.color === '#fff'
                             ? '#434348' : '#fff';
 
                         // for chart
                         this.vm.valuesPreviewChart.name = this.currrentKPI.name;
-                        this.vm.valuesPreviewChart.kpi = this.currrentKPI._id;
+                        // TODO: come back here later this may not right: the chart type
+                        this.vm.valuesPreviewChart.kpis = [{ type: 'column', kpi: this.currrentKPI._id }];
 
                         this.fromSaveAndVisualize = !this.fromSaveAndVisualize;
                         this.previewModal.open();

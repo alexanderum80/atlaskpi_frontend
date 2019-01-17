@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { IKPI } from '../../../shared/domain/kpis/kpi';
 import { IMutationResponse } from '../../../shared/models';
 import { ChartDateRangeModel, IChartDateRange } from '../../../shared/models/date-range';
+import { IDataUserDate } from '../../../shared/models/data-user-date';
 
 export interface MapData {
   _id: string;
@@ -75,6 +76,8 @@ export interface IMapFormValues {
   name?: string;
   subtitle?: string;
   group?: string;
+  frequency?: string;
+  xAxisSource?: string;
   kpi?: string;
   description?: string;
   predefinedDateRange?: string;
@@ -84,6 +87,14 @@ export interface IMapFormValues {
   dashboards?: string;
   mapsize: string;
   zipCodeSource: string;
+  predefinedTop?: any;
+  customTop?: any;
+  sortingCriteria?: string;
+  sortingOrder?: string;
+  tooltipEnabled?: boolean;
+  seriesDataLabels?: boolean;
+  predefinedTooltipFormat?: string;
+  comparison?: string;
 }
 
 export interface IUpdateMapResponse {
@@ -123,6 +134,11 @@ export class MapModel {
     size: string;
     dashboards: string[];
     zipCodeSource: string;
+    //add-created-updated-by-date
+    createdBy?: string;
+    updatedBy?: string;
+    createdDate?: Date;
+    updatedDate?: Date;
 
     static fromJson(json: string): MapModel {
       try {

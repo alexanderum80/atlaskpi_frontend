@@ -1,12 +1,13 @@
 import { UserService } from '../../shared/services/user.service';
 import { Field, ViewModel } from '../../ng-material-components/viewModels';
 import { IDashboard } from '../shared/models';
-import { Injectable } from '@angular/core';
+import { Injectable, DebugElement } from '@angular/core';
 import { IListItem } from '../../shared/ui/lists/list-item';
 import {MenuItem} from '../../ng-material-components';
 import { isNumber } from 'lodash';
 import { visibleMenuItem, notVisibleMenuItem } from '../../shared/helpers/visible-action-item.helper';
 import { IUserInfo } from '../../shared/models';
+import * as moment from 'moment-timezone';
 
 interface IFilter {
     search: string;
@@ -67,6 +68,13 @@ export class ListDashboardViewModel extends ViewModel<IFilter> {
                         ? false
                         : true;
             }
+            const valueOwner = JSON.parse(d.owner);
+            let nameOwner = '';
+             if ( valueOwner && valueOwner.profile) {
+                 nameOwner = valueOwner.profile.firstName + ' ' + valueOwner.profile.lastName;
+             } else {
+                 nameOwner = 'Owner Not Define';
+            }
             return {
                 id: d._id,
                 imagePath: '/assets/img/dashboard/dashboard.png',
@@ -75,7 +83,11 @@ export class ListDashboardViewModel extends ViewModel<IFilter> {
                 extras: {
                    // access: d.accessLevels
                 },
-                visible: isVisible
+                visible: isVisible,
+                owner: nameOwner,
+                createdDate: moment(d.createdDate),
+                updatedBy: d.updatedBy,
+                updatedDate: moment(d.updatedDate)
             };
         });
     }

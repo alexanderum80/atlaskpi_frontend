@@ -5,6 +5,7 @@ import { IUserInfo } from '../../shared/models/user';
 import { ViewModel } from '../../ng-material-components/viewModels/view-model';
 import { IListItem } from 'src/app/shared/ui/lists/list-item';
 import { ChartGalleryService } from '../shared';
+import * as moment from 'moment';
 
 @Injectable()
 export class ListChartViewModel extends ViewModel<any> {
@@ -87,7 +88,12 @@ export class ListChartViewModel extends ViewModel<any> {
                    // access: d.accessLevels
                 },
                 visible: true,
-                type: 'chart'
+                type: 'chart',
+                createdBy: c.createdBy,
+                createdDate: c.createdDate,
+                updatedBy: c.updatedBy,
+                updatedDate: c.updatedDate
+
             });
         });
 
@@ -107,7 +113,12 @@ export class ListChartViewModel extends ViewModel<any> {
                    // access: d.accessLevels
                 },
                 visible: true,
-                type: 'map'
+                type: 'map',
+                createdBy: c.createdBy,
+                createdDate: c.createdDate,
+                updatedBy: c.updatedBy,
+                updatedDate: c.updatedDate
+
             };
         });
         this._mapsItemList.map(m => this._chartsItemList.push(m) );
