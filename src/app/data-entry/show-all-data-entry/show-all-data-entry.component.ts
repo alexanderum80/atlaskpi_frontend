@@ -1,9 +1,11 @@
+import { ErrorComponent } from 'src/app/shared/ui/error/error.component';
+import { IModalError } from './../../shared/interfaces/modal-error.interface';
 import { IUserInfo } from './../../shared/models/user';
 import { DataEntryFormViewModel, DataEntrySchemaViewModel } from '../data-entry.viewmodel';
 import { QueryRef, Apollo } from 'apollo-angular';
 import SweetAlert from 'sweetalert2';
 import { DataEntryList, IDataEntrySource } from '../shared/models/data-entry.models';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CommonService } from 'src/app/shared/services';
 import { ApolloService } from 'src/app/shared/services/apollo.service';
@@ -34,6 +36,7 @@ const ImageUrl = {
   styleUrls: ['./show-all-data-entry.component.scss']
 })
 export class ShowAllDataEntryComponent implements OnInit, OnDestroy {
+  @ViewChild(ErrorComponent) errorModal: ErrorComponent;
   dataEntryCollection: IDataEntrySource[];
   dataEntries: DataEntryList[];
   dataEntriesQueryRef: QueryRef<any>;
@@ -44,6 +47,8 @@ export class ShowAllDataEntryComponent implements OnInit, OnDestroy {
   loading = true;
 
   uploadingFile = false;
+
+  lastError: IModalError;
 
   actionItemsTable: MenuItem[] = [{
     id: '1',
@@ -260,10 +265,25 @@ export class ShowAllDataEntryComponent implements OnInit, OnDestroy {
     })
     .then((res) => {
         if (res.value === true) {
-          this._subscription.push(this._apolloService.mutation<any>(removeDataEntryMutation, {name: name}, ['DataEntries']).then(() => {
+          this._subscription.push(this._apolloService.mutation<any>(removeDataEntryMutation, {name: name}, ['DataEntries']).then(result => {
+            if (result.data.removeDataEntry.success) {
+              console.log('data entry removed.');
+            } else {
+              const entity = JSON.parse(result.data.removeDataEntry.entity);
+              if (entity && entity.length) {
+                const kpis = entity.map(k => 'KPI: ' + k.name);
+
+                this.lastError = {
+                  title: 'Error removing data entry',
+                  msg: 'A data entry cannot be removed while it\'s being used. ' +
+                        'The following element(s) are currently using it: ',
+                  items: kpis
+                };
+                this.errorModal.open();
+              }
+            }
           }));
         }
     });
   }
-
 }

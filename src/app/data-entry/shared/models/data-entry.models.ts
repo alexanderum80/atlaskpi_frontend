@@ -61,3 +61,17 @@ export interface CustomList {
     dataType: string;
     listValue: string[];
 }
+
+export interface FileField {
+    columnName: string;
+    dataType: string;
+    required: boolean;
+}
+
+export interface FilesData {
+    inputName: string;
+    fields: FileField[];
+    records: any[];
+    dateRangeField: string;
+    filePath: string;
+}
