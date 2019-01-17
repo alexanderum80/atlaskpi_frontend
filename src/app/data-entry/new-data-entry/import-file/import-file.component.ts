@@ -9,6 +9,7 @@ import { Component, ViewChild, OnInit, Input, EventEmitter, Output } from '@angu
 import * as XLSX from 'ts-xlsx';
 import { Router } from '@angular/router';
 import { DateFieldPopupComponent } from './date-field-popup/date-field-popup.component';
+import { CustomFormViewModel } from './custom-form.view-model';
 
 const addDataEntryMutation = require('graphql-tag/loader!../../shared/graphql/add-data-entry.gql');
 const updateDataEntryMutation = require('graphql-tag/loader!../../shared/graphql/update-data-entry.gql');
@@ -18,7 +19,8 @@ const allUserQuery = require('graphql-tag/loader!../../shared/graphql/get-all-us
 @Component({
   selector: 'kpi-import-file',
   templateUrl: './import-file.component.pug',
-  styleUrls: ['./import-file.component.scss']
+  styleUrls: ['./import-file.component.scss'],
+  providers: [CustomFormViewModel],
 })
 export class ImportFileComponent implements OnInit {
   @ViewChild(DateFieldPopupComponent) dateFieldPopupComponent: DateFieldPopupComponent;
@@ -299,15 +301,13 @@ export class ImportFileComponent implements OnInit {
         arr[i] = String.fromCharCode(data[i]);
       }
 
-              if (j === 1) {
-                if (cellValue !== '') {
-                  const newfield: ICustomSchemaInfo = {
-                    columnName: cellValue,
-                    dataType: '',
-                    required: false
+      const bstr = arr.join('');
+      const workbook = XLSX.read(bstr, {type: 'binary'});
+      const first_sheet_name = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[first_sheet_name];
+    //   const alphExtended = this.vm.getAlphabetExtended();
 
-
-      let cellsArrayRaw = Object.keys(worksheet);
+      const cellsArrayRaw = Object.keys(worksheet);
 
       const indexRef = cellsArrayRaw.findIndex((v) => v === '!ref');
 
@@ -329,9 +329,9 @@ export class ImportFileComponent implements OnInit {
       for (let row = 1; row <= columnsCount; row++) {
 
         const dataArray = [];
-        let cellsPerRow = cleanCellsArr.filter(cellName => this.getNumberFromCell(cellName) === row);
+        const cellsPerRow = cleanCellsArr.filter(cellName => this.getNumberFromCell(cellName) === row);
 
-        //loop through each column
+        // loop through each column
         for (let c = 0; c < cellsPerRow.length; c++) {
 
           const cellValue = <any>worksheet[cellsPerRow[c]].w.trimEnd();
@@ -341,7 +341,8 @@ export class ImportFileComponent implements OnInit {
             if (cellValue !== '') {
               const newfield: ICustomSchemaInfo = {
                 columnName: cellValue,
-                dataType: ''
+                dataType: '',
+                required: false,
               };
 
               this.excelFileData.fields.push(newfield);
@@ -350,13 +351,14 @@ export class ImportFileComponent implements OnInit {
             dataArray.push(cellValue);
           }
 
-        } //end of columns loop
+        } // end of columns loop
 
         const dataArrayValueNotNull = dataArray.filter(d => d !== '');
         if (dataArray.length > 0 && dataArrayValueNotNull.length > 0) {
           this.excelFileData.records.push(dataArray);
-        } 
-      } //end of rows loop
+        }
+
+      } // end of rows loop
 
       if (this.excelFileData.records.length > 0) {
         for (let n = 0; n < this.excelFileData.records[0].length; n++) {

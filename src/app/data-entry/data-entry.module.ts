@@ -20,6 +20,7 @@ import { NewCustomListComponent } from './custom-list/new-custom-list/new-custom
 import { CustomListFormViewModel } from './custom-list/custom-list.viewmodel';
 import { CustomListComponent } from './custom-list/custom-list.component';
 import { PagerService } from './shared/service/pager.service';
+import { AgGridModule } from 'ag-grid-angular';
 
 @NgModule({
   imports: [
@@ -27,7 +28,8 @@ import { PagerService } from './shared/service/pager.service';
     MaterialFormsModule,
     MaterialUserInterfaceModule,
     SharedModule,
-    DataEntryRoutingModule
+    DataEntryRoutingModule,
+    AgGridModule.withComponents([]),
   ],
   declarations: [DataEntryComponent, ShowAllDataEntryComponent,
         NewDataEntryComponent, ImportFileComponent, SchemaFormComponent,

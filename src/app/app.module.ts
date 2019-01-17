@@ -50,6 +50,7 @@ import {
 import { MobileWelcomeComponent } from './mobile-welcome/mobile-welcome.component';
 import { DataEntryComponent } from './data-entry/data-entry.component';
 import { DataEntryModule } from './data-entry/data-entry.module';
+import { AgGridModule } from 'ag-grid-angular';
 
 @NgModule({
     declarations: [

@@ -15,6 +15,11 @@
 @import './assets/styles/calendar';
 @import './assets/styles/form';
 @import './assets/styles/date-time-picker';
+// ag-grid
+@import "~ag-grid-community/dist/styles/ag-grid.css";
+// @import "~ag-grid-community/dist/styles/ag-theme-balham.css";
+@import "~ag-grid-community/dist/styles/ag-theme-material.css";
+
 // ngx-datatable
 @import '~@swimlane/ngx-datatable/release/index.css';
 @import '~@swimlane/ngx-datatable/release/assets/icons.css';
