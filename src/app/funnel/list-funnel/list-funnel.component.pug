@@ -1,0 +1,14 @@
+kpi-item-list(
+    title="Funnels",
+    [items]="vm.funnelItems",
+    [itemViewModel]="vm",
+    [addItemActivityName]="'AddFunnelActivity'",
+    [itemListActivityName]="actionActivityNames",
+    itemType="standard",
+    (onAddActionClicked)="nothing()",
+    (onItemActionClicked)="nothing($event)",
+    (onItemClicked)="nothing($event)"
+    )
+
+//- outlet for add/edit and delete
+router-outlet

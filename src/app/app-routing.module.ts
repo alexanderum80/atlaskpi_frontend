@@ -30,6 +30,8 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { FormTargetsComponent } from './targets/form-targets/form-targets.component';
 import { AlertsComponent } from './alerts/alerts.component';
 import { MobileWelcomeComponent } from './mobile-welcome/mobile-welcome.component';
+import { FunnelComponent } from './funnel/funnel.component';
+import { ListFunnelComponent } from './funnel/list-funnel/list-funnel.component';
 
 const routes: Routes = [
   { path: 'unauthorized', component: UnauthorizedComponent },
@@ -59,6 +61,7 @@ const routes: Routes = [
   { path: 'targets', component: FormTargetsComponent},
   { path: 'alerts', component: AlertsComponent},
   { path: 'mobile-menu', component: MobileWelcomeComponent },
+  { path: 'funnel', component: ListFunnelComponent, canActivate: [AuthGuard]},
 ];
 
 @NgModule({
