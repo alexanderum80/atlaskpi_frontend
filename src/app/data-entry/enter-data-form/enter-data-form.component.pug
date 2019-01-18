@@ -1,12 +1,25 @@
+.pre-loader.text-center(*ngIf="isLoading")
+    bw-preloader(color="gray")
+
+//- .h2 {{ dataName }}
+
 ag-grid-angular(
-    *ngIf="rowData",
-    style="width: 100%; height: calc(100vh - 140px); padding: 10px;"
+    *ngIf="rowData && !isLoading",
+    [ngStyle]="gridLayoutStyle",
     class="ag-theme-material",
     [rowData]="rowData",
     [defaultColDef]="defaultColDef",
     [pagination]=true,
     [paginationAutoPageSize]=true,
-    [columnDefs]="columnDefs")
+    [columnDefs]="columnDefs",
+    [floatingFilter]=true,
+    (cellValueChanged)="onCellValueChanged($event)")
+
+.actions.m-t-10(*ngIf="rowData && !isLoading" layout="row", layout-align="end center")
+    div(flex-initial)
+        bw-button.addButton([disabled]="!(deService.changes$ | async).length", title="Save" color="blue", icon="check", (clicked)="save()")
+    div(flex-initial)
+        bw-button.addButton(color="black", title="Cancel", icon="check", [simple]="true", (clicked)="cancel()")
 
 
 //- kpi-spinner(*ngIf="isLoading")

@@ -30,8 +30,8 @@ export class BrowserService {
             });
         };
 
-        //- false until touch event
-        that._userTouchingSubject= new BehaviorSubject<boolean>(false);
+        // - false until touch event
+        that._userTouchingSubject = new BehaviorSubject<boolean>(false);
 
         window.addEventListener('touchstart', function onFirstTouch() {
             // we could use a class
