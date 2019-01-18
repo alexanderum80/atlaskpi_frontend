@@ -19,7 +19,6 @@ export enum SubjectEnum {
     role = 'role',
     target = 'target',
     alert = 'alert',
-    dataEntry = 'dataentry',
-    funnel = 'funnel'
+    dataEntry = 'dataentry'
     // ...
 }

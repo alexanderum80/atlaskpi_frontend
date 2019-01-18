@@ -51,7 +51,6 @@ import { MobileWelcomeComponent } from './mobile-welcome/mobile-welcome.componen
 import { DataEntryComponent } from './data-entry/data-entry.component';
 import { DataEntryModule } from './data-entry/data-entry.module';
 import { AgGridModule } from 'ag-grid-angular';
-import { FunnelModule } from './funnel';
 
 @NgModule({
     declarations: [
@@ -100,8 +99,7 @@ import { FunnelModule } from './funnel';
         // for upload image
         // SimpleImageUploadModule
 
-        TargetsModule,
-        FunnelModule
+        TargetsModule
     ],
     providers: [
         WindowService,

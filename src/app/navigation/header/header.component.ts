@@ -5,7 +5,7 @@ import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { isBoolean, isEmpty, isNull } from 'lodash';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { take } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 import SweetAlert from 'sweetalert2';

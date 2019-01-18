@@ -74,11 +74,6 @@ const MENU_ITEMS: MenuItem[] = [{
         }
     ]
 }, {
-    id: 'funnel',
-    title: 'Funnel',
-    icon: 'triangle-down',
-    route: '/funnel',
-}, {
     id: 'data-entry',
     title: 'Data entry',
     icon: 'keyboard'
@@ -375,14 +370,10 @@ export class SidebarService {
     private _processDataEntriesSubmenu(dataEntries: IDataEntrySource[]) {
         const items = this._itemsSubject.value;
 
-        const dataEntryItem = items.find(i => i.id === 'data-entry');
-
-        // items[4].children = [];
-        dataEntryItem.children = [];
+        items[4].children = [];
 
         if (dataEntries || dataEntries.length) {
-            // items[4].children = dataEntries.map(d => {
-            dataEntryItem.children = dataEntries.map(d => {
+            items[4].children = dataEntries.map(d => {
                 // check if the current root is relarted to the data entry
                 const lastIndexExtension = d.description.lastIndexOf('.');
                 const route = `/data-entry/enter-data/${d._id}`;
@@ -395,8 +386,7 @@ export class SidebarService {
             });
         }
 
-        // items[4].children.push({
-        dataEntryItem.children.push({
+        items[4].children.push({
                 id: 'custom-lists',
                 title: 'Custom Lists',
                 icon: 'storage',
@@ -404,8 +394,7 @@ export class SidebarService {
                 active: false
         });
 
-        // items[4].children.push({
-        dataEntryItem.children.push({
+        items[4].children.push({
             id: 'show-all',
             title: 'Show All',
             icon: 'collection-text',
