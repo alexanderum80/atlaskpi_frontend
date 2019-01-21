@@ -48,8 +48,8 @@ export class SidebarItemComponent implements OnInit, OnDestroy {
             return;
         }
 
-       this._createDashSub= this.sidebarService._userCanAddDash$.subscribe( value => 
-           {  
+       this._createDashSub = this.sidebarService._userCanAddDash$.subscribe( value =>
+           {
             this.canAddDashboard = value;
            });
 
@@ -87,7 +87,7 @@ export class SidebarItemComponent implements OnInit, OnDestroy {
     isVisible(menuItem: any): boolean {
         return !menuItem.parent
         || menuItem.parent.title.toLowerCase() !== 'dashboards'
-        || (menuItem.parent.title.toLowerCase() === 'dashboards' && 
+        || (menuItem.parent.title.toLowerCase() === 'dashboards' &&
         menuItem.visible === this.childrenVisible);
     }
 
@@ -99,11 +99,10 @@ export class SidebarItemComponent implements OnInit, OnDestroy {
 
     private _updateActiveStatus(selection: ISidebarItemSearchResult) {
         const item = this.menuItem;
-        
+
         if (selection.parent && item.children) {
             this.menuItem.active = item.id === selection.parent.id;
-          }
-         else if (selection.item && !item.children) {
+          } else if (selection.item && !item.children) {
             this.menuItem.active = item.id === selection.item.id;
         }
     }

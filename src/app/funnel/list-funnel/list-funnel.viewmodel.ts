@@ -35,7 +35,7 @@ export class ListFunnelViewModel extends ViewModel<IFilter> {
         this._funnels = list;
         this._funnelItemList = this._funnels.map(f => ({
             id: f._id,
-            imagePath: '/assets/img/pages/funnel-list-item.png',
+            imagePath: '/assets/img/pages/funnel-list-item.svg',
             title: f.name,
             subtitle: f.description,
         }));
@@ -46,5 +46,9 @@ export class ListFunnelViewModel extends ViewModel<IFilter> {
             return null;
         }
         return this._funnelItemList;
+    }
+
+    get listEmpty(): boolean {
+        return this._funnels && this._funnels.length === 0;
     }
 }

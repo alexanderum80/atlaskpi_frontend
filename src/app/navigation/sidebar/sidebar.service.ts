@@ -11,20 +11,30 @@ import { Subscription } from 'rxjs/Subscription';
 import { IDashboard } from '../../dashboards/shared/models';
 import { MenuItem } from '../../ng-material-components';
 import { AddDashboardActivity } from '../../shared/authorization/activities/dashboards/add-dashboard.activity';
-import { IUserInfo } from '../../shared/models';
+import { IUserInfo, IMenuItem } from '../../shared/models';
 import { StoreHelper } from '../../shared/services';
 import { UserService } from '../../shared/services/user.service';
 import { SideBarViewModel } from './sidebar.viewmodel';
 import { sortBy } from 'lodash';
 import { environment } from '../../../environments/environment';
 import { IDataSource } from 'src/app/shared/domain/kpis/data-source';
+import { IFunnel } from '../../funnel/shared/models/funnel.model';
 
 export interface ISidebarItemSearchResult {
     parent?: MenuItem;
     item: MenuItem;
 }
 
-const MENU_ITEMS: MenuItem[] = [{
+const funnelListMock: IFunnel[] =
+// [];
+[
+    { _id: '1', name: 'Sales Funnel', description: 'This is the sales funnel' },
+    { _id: '2', name: 'Inquires Funnel', description: 'This is the inquires funnel' },
+];
+
+
+const MENU_ITEMS: MenuItem[] = [
+{
     id: 'dashboard',
     title: 'Dashboards',
     icon: 'widgets',
@@ -77,7 +87,6 @@ const MENU_ITEMS: MenuItem[] = [{
     id: 'funnel',
     title: 'Funnel',
     icon: 'triangle-down',
-    route: '/funnel',
 }, {
     id: 'data-entry',
     title: 'Data entry',
@@ -199,6 +208,7 @@ export class SidebarService {
                     that.checkPemits(u);
                     that._getDashboards(u);
                     that._getManualEntrys(u);
+                    that._initializeFunnelMenuItem();
                 }
             });
 
@@ -415,6 +425,79 @@ export class SidebarService {
 
     }
 
+
+    private _initializeFunnelMenuItem(): void {
+        // get the funnels
+        this._processFunnelSubmenu(funnelListMock);
+    }
+
+    private _processFunnelSubmenu(funnels: IFunnel[]) {
+        const menuItems = this._itemsSubject.value;
+        const canAddFunnels = true;
+
+        let isInFunnelRoute = false;
+
+        const funnelMenuItem = menuItems.find(i => i.id === 'funnel');
+        const listFunnelMenuItem = this._getListFunnelMenuItem();
+
+        funnelMenuItem.children = [];
+
+        if (!funnels || !funnels.length) {
+
+            if (canAddFunnels) {
+                funnelMenuItem.active = true;
+                funnelMenuItem.children = [ listFunnelMenuItem ];
+                this._itemsSubject.next(menuItems);
+            }
+
+            return;
+        }
+
+        // this.vm.listFunnel.active = false;
+
+        funnelMenuItem.children = funnels.map(x => {
+            // check if the current root is relarted to the dashboards
+            const route = `/funnel/${x._id}`;
+            const active = route === this._currentRoute;
+
+            if (active) {
+                isInFunnelRoute = true;
+            }
+
+            return {
+                route,
+                active,
+                id: x.name,
+                title: x.name,
+                group: 'funnel',
+                isVisible: true
+            };
+        });
+
+        // mark the dashboards parent as selected if a dashboard was selected
+        if (isInFunnelRoute) {
+            funnelMenuItem.active = true;
+        }
+
+        if (canAddFunnels) {
+            funnelMenuItem.children.push(listFunnelMenuItem);
+        }
+
+        this._itemsSubject.next(menuItems);
+    }
+
+    private _getListFunnelMenuItem(options?: IMenuItem): IMenuItem {
+        const { active = false, visible = true } = options || {};
+        return {
+            active,
+            visible,
+            id: 'list-funnel',
+            title: 'List Funnels',
+            icon: 'collection-text',
+            route: `/funnel/list`,
+        };
+    }
+
     resetMenuItems() {
 
         MENU_ITEMS[0] = {
@@ -435,7 +518,7 @@ export class SidebarService {
 
 
     checkPemits(user): void {
-           this._userCanAddDashSubject.next(this.addDashboardActivity.check(user));
-        }
+        this._userCanAddDashSubject.next(this.addDashboardActivity.check(user));
+    }
 
 }

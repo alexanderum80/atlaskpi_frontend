@@ -8,4 +8,5 @@ export interface IMenuItem {
     children?: IMenuItem[];
     parent?: IMenuItem;
     visible?: boolean;
+    active?: boolean;
 }

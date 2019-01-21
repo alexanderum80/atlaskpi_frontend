@@ -1,4 +1,8 @@
+.h-100(*ngIf = "vm.listEmpty")
+    kpi-no-funnel
+
 kpi-item-list(
+    *ngIf="!vm.listEmpty",
     title="Funnels",
     [items]="vm.funnelItems",
     [itemViewModel]="vm",
@@ -7,8 +11,5 @@ kpi-item-list(
     itemType="standard",
     (onAddActionClicked)="nothing()",
     (onItemActionClicked)="nothing($event)",
-    (onItemClicked)="nothing($event)"
-    )
+    (onItemClicked)="nothing($event)")
 
-//- outlet for add/edit and delete
-router-outlet

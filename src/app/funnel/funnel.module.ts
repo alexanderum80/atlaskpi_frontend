@@ -6,15 +6,19 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared';
 import { FunnelComponent } from './funnel.component';
 import { ListFunnelComponent } from './list-funnel/list-funnel.component';
+import { NoFunnelComponent } from './no-funnel/no-funnel.component';
+import { MaterialFormsModule, MaterialUserInterfaceModule } from '../ng-material-components';
 
 @NgModule({
   imports: [
     CommonModule,
     ReactiveFormsModule,
     SharedModule,
+    MaterialFormsModule,
+    MaterialUserInterfaceModule,
     FunnelRoutingModule
   ],
-  declarations: [FunnelComponent, ListFunnelComponent],
+  declarations: [FunnelComponent, ListFunnelComponent, NoFunnelComponent],
   exports: [FunnelComponent],
   providers: []
 })
