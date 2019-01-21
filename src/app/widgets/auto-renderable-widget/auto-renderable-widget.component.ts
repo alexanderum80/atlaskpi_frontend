@@ -10,13 +10,14 @@ import { ENGINE_METHOD_PKEY_ASN1_METHS } from 'constants';
 @Component({
   selector: 'kpi-auto-renderable-widget',
   templateUrl: './auto-renderable-widget.component.pug',
-  styleUrls: ['./auto-renderable-widget.component.scss']
+  styleUrls: ['./auto-renderable-widget.component.scss'],
 })
 export class AutoRenderableWidgetComponent implements OnInit, AfterViewInit {
   @Input() item: IWidget;
   @Input() autoRender = true;
   @Input() placeholderImg;
   @Input() widgetPreview = false;
+  @Input() isFromDashboardEdit = false;
   @Output() done = new EventEmitter<any>();
   @Output() validPosition = new EventEmitter<boolean>(true);
 
@@ -30,6 +31,7 @@ export class AutoRenderableWidgetComponent implements OnInit, AfterViewInit {
               private _selectionService: GenericSelectionService) { }
 
   ngOnInit() {
+    if (!this.isFromDashboardEdit) { return; }
     this.fgWidget = new FormGroup({
       'position': new FormControl(''),
     });

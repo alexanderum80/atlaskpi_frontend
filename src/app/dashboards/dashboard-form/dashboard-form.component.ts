@@ -449,8 +449,33 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
       dashboardGraphqlActions.previewDashboard,
       { input: payload }
     )
-    .then((res: { previewDashboard: IDashboard }) => {
-      that.dashboardPayload = res.previewDashboard;
+    .then((res: { previewDashboard: any }) => {
+      const widgets: any[] = res.previewDashboard.widgets.map(w => JSON.parse(w)) || [];
+      widgets.map(w => {
+        w['position'] = this._selectionService._selectionList.find(s => s.id === w._id && s.type === 'widget').position;
+      } );
+      const charts: any[] = res.previewDashboard.charts.map(c => JSON.parse(c)) || [];
+      charts.map(w => {
+        w['position'] = this._selectionService._selectionList.find(s => s.id === w._id && s.type === 'chart').position;
+      } );
+      const swidgets: any[] = res.previewDashboard.socialwidgets.map(s => JSON.parse(s)) || [];
+      swidgets.map(w => {
+        w['position'] = this._selectionService._selectionList.find(s => s.id === w.connectorId && s.type === 'sw').position;
+      } );
+      const maps: any[] = res.previewDashboard.maps.map(m => JSON.parse(m)) || [];
+      maps.map(w => {
+        w['position'] = this._selectionService._selectionList.find(s => s.id === w._id && s.type === 'map').position;
+      } );
+      that.dashboardPayload = {
+        name: res.previewDashboard.name,
+        description: res.previewDashboard.description,
+        users: res.previewDashboard.users,
+        order: that.dashboardModel.order,
+        widgets: widgets,
+        charts: charts,
+        socialwidgets: swidgets,
+        maps: maps
+        };
       that.loading = false;
       that.isPreviewDashboard = true;
     });
@@ -646,14 +671,12 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
             users: rawDashboard.users,
             order: rawDashboard.order
           };
-
           that.dashboardModel = {
             name: rawDashboard.name,
             description: rawDashboard.description,
             charts: rawDashboard.charts.map(c => JSON.parse(c)._id),
             widgets: rawDashboard.widgets.map(w => JSON.parse(w)._id),
-            socialwidgets: [],
-            // rawDashboard.socialwidgets.map(sw => JSON.parse(sw).connectorId),
+            socialwidgets: rawDashboard.socialwidgets.map(sw => JSON.parse(sw).connectorId),
             maps: rawDashboard.maps.map(m => JSON.parse(m)),
             users: rawDashboard.users,
             owner: rawDashboard.owner,

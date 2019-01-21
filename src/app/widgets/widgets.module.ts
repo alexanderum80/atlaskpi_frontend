@@ -25,6 +25,7 @@ import { WidgetAlertFormComponent } from './widget-alert-form/widget-alert-form.
 import { WidgetNoAlertsComponent } from './widget-no-alerts/widget-no-alerts.component';
 import { AutoRenderableWidgetComponent } from './auto-renderable-widget/auto-renderable-widget.component';
 import { WidgetsAlertListComponent } from './widgets-alert-list/widgets-alert-list.component';
+import { GenericSelectionService } from '../shared/services/generic-selection.service';
 
 @NgModule({
   imports: [
@@ -44,7 +45,7 @@ import { WidgetsAlertListComponent } from './widgets-alert-list/widgets-alert-li
                 ],
   exports: [WidgetViewComponent, NewWidgetComponent, WidgetAlertComponent, WidgetAlertFormComponent,
             WidgetNoAlertsComponent, WidgetsAlertListComponent, AutoRenderableWidgetComponent],
-  providers: [WidgetsFormService, UserService]
+  providers: [WidgetsFormService, UserService, GenericSelectionService]
 
 })
 export class WidgetsModule { }
