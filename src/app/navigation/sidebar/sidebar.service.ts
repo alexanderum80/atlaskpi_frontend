@@ -17,8 +17,8 @@ import { UserService } from '../../shared/services/user.service';
 import { SideBarViewModel } from './sidebar.viewmodel';
 import { sortBy } from 'lodash';
 import { environment } from '../../../environments/environment';
-import { IDataSource } from 'src/app/shared/domain/kpis/data-source';
-import { IFunnel } from '../../funnel/shared/models/funnel.model';
+import { IDataSource } from '../../shared/domain/kpis/data-source';
+import { IFunnel } from '../../funnels/shared/models/funnel.model';
 
 export interface ISidebarItemSearchResult {
     parent?: MenuItem;
@@ -425,7 +425,6 @@ export class SidebarService {
 
     }
 
-
     private _initializeFunnelMenuItem(): void {
         // get the funnels
         this._processFunnelSubmenu(funnelListMock);
@@ -435,7 +434,7 @@ export class SidebarService {
         const menuItems = this._itemsSubject.value;
         const canAddFunnels = true;
 
-        let isInFunnelRoute = false;
+        const isInFunnelRoute = this._currentRoute.indexOf('/funnels/') !== -1;
 
         const funnelMenuItem = menuItems.find(i => i.id === 'funnel');
         const listFunnelMenuItem = this._getListFunnelMenuItem();
@@ -457,12 +456,8 @@ export class SidebarService {
 
         funnelMenuItem.children = funnels.map(x => {
             // check if the current root is relarted to the dashboards
-            const route = `/funnel/${x._id}`;
+            const route = `/funnels/${x._id}`;
             const active = route === this._currentRoute;
-
-            if (active) {
-                isInFunnelRoute = true;
-            }
 
             return {
                 route,
@@ -492,9 +487,9 @@ export class SidebarService {
             active,
             visible,
             id: 'list-funnel',
-            title: 'List Funnels',
+            title: 'Manage Funnels',
             icon: 'collection-text',
-            route: `/funnel/list`,
+            route: `/funnels/list`,
         };
     }
 

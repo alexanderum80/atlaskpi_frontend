@@ -1,0 +1,21 @@
+.z-depth-1.bgm-white.m-10.p-10(layout="column")
+        div(flex, layout-xs="column", layout-gt-sm="row")
+      
+            .funnel-form(flex)
+                kpi-funnel-form([funnelModel]='testFunnel')
+
+
+            //- to be a funnel preview component
+            .funnel-preview.p-15(flex-initial, layout="column", layout-align="center center")
+                p.text-center.m-b-15(flex-initial) Funnel Preview:
+
+                div(flex)
+                    p THE PREVIEW GOES HERE
+
+                  
+        div(flex-initial)
+                .m-t-25.m-b-5(layout="row", layout-padding, layout-align="end end")
+                    bw-button(flex-initial, color="blue", title="Save", icon="floppy",
+                                            class="normal")
+                    bw-button(flex-initial, color="gray", [simple]="true", title="Cancel", icon="close",
+                                            class="normal")

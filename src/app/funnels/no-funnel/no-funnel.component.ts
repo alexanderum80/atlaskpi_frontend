@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AddFunnelActivity } from '../../shared/authorization/activities/funnel/add-funnel.activity';
 import { NoFunnelViewModel } from './no-funnel.viewmodel';
-import { Router } from '../../../../node_modules/@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kpi-no-funnel',
@@ -19,7 +19,7 @@ export class NoFunnelComponent {
   }
 
   onAddFunnel() {
-    this._router.navigateByUrl('/funnel/add');
+    this._router.navigateByUrl('/funnels/add');
   }
 
 }

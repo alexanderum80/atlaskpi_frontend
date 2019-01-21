@@ -5,6 +5,7 @@ import { ViewFunnelActivity } from '../../shared/authorization/activities/funnel
 import { IItemListActivityName } from '../../shared/interfaces/item-list-activity-names.interface';
 import { Subscription } from 'rxjs/Subscription';
 import { AddFunnelActivity } from '../../shared/authorization/activities/funnel/add-funnel.activity';
+import { Router } from '@angular/router';
 
 const funnelListMock: IFunnel[] =
 // [];
@@ -27,6 +28,7 @@ export class ListFunnelComponent implements OnInit {
     listEmpty = false;
 
     constructor(
+        private _router: Router,
         public vm: ListFunnelViewModel,
 
         // Activities
@@ -54,4 +56,9 @@ export class ListFunnelComponent implements OnInit {
     nothing() {
       return;
     }
+
+    add() {
+        this._router.navigateByUrl('/funnels/new');
+    }
+
 }
