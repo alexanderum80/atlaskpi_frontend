@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IFunnel } from '../shared/models/funnel-plain';
+import { IFunnel } from '../shared/models/funnel.model';
 
 @Component({
   selector: 'kpi-new-funnel',

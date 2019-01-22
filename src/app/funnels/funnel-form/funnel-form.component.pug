@@ -1,8 +1,14 @@
 .m-t-25(flex, layout="column", layout-padding)
     bw-text-box(flex-initial, [fg]="fg", field="name", label="Name", leftIcon="label")
     bw-text-box(flex-initial, [fg]="fg", field="name", label="Name", leftIcon="label")
+   
+    p {{ fg.value | json }}
+
     .m-10(flex-initial, *ngFor="let stage of funnelModel?.stages; let i = index")
-        kpi-collapsable.m-l-15.m-b-15(headerText="Stage 1:", [color]="'black'")
-            .m-t-15.m-l-25(layout="column")
-                p stage {{ i }}
-                
+        kpi-collapsable.m-15(headerText="Stage {{ i + 1 }}", [color]="'black'")
+            kpi-stage-form([parentFormArray]="fg.get('stages')", [stageModel]="stage", (stageRemoved)="onStageRemoved($event)")
+
+    div(flex, layout="row", layout-padding, layout-align="end end")
+        div(flex-initial)
+            .m-l-15(flex)
+                bw-button(color="blue", icon="plus", title="Add Stage", (clicked)="addStage()")           

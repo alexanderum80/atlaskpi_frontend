@@ -11,6 +11,7 @@ import { MaterialFormsModule, MaterialUserInterfaceModule } from '../ng-material
 import { ShowFunnelComponent } from './show-funnel/show-funnel.component';
 import { NewFunnelComponent } from './new-funnel/new-funnel.component';
 import { FunnelFormComponent } from './funnel-form/funnel-form.component';
+import { StageFormComponent } from './stage-form/stage-form.component';
 
 @NgModule({
   imports: [
@@ -21,7 +22,7 @@ import { FunnelFormComponent } from './funnel-form/funnel-form.component';
     MaterialUserInterfaceModule,
     FunnelRoutingModule
   ],
-  declarations: [FunnelComponent, ListFunnelComponent, NoFunnelComponent, ShowFunnelComponent, NewFunnelComponent, FunnelFormComponent],
+  declarations: [FunnelComponent, ListFunnelComponent, NoFunnelComponent, ShowFunnelComponent, NewFunnelComponent, FunnelFormComponent, StageFormComponent],
   exports: [FunnelComponent],
   providers: []
 })

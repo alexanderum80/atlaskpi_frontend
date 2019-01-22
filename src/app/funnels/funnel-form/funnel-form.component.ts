@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, FormArray } from '@angular/forms';
-import { IFunnel } from '../shared/models/funnel.model';
+import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
+import { IFunnel, IFunnelStage } from '../shared/models/funnel.model';
+import { FormBuilderTypeSafe, FormGroupTypeSafe } from '../../shared/services';
 
 @Component({
   selector: 'kpi-funnel-form',
@@ -21,19 +22,35 @@ export class FunnelFormComponent {
         this._updateFunnelFormGroup(value);
     }
 
-    fg: FormGroup;
-
-    constructor(
-        private fb: FormBuilder
-    ) {
-      this.fg = this._createFunnelFormGroup();
+    private _fg: FormGroupTypeSafe<IFunnel>;
+    get fg(): FormGroupTypeSafe<IFunnel> {
+        return this._fg;
     }
 
-    private _createFunnelFormGroup(): FormGroup {
-        return this.fb.group({
-            name: new FormControl(''),
-            description: new FormControl(''),
-            stages: new FormArray([])
+    constructor(
+        private fb: FormBuilderTypeSafe
+    ) {
+      this._fg = this._createFunnelFormGroup();
+    }
+
+    addStage(): void {
+        const newStage: IFunnelStage = {
+            order: this.funnelModel.stages.length + 1,
+        };
+
+        this._funnelModel.stages.push(newStage);
+    }
+
+    onStageRemoved(stage: IFunnelStage): void {
+        this._funnelModel.stages = this.funnelModel.stages.filter(s => s !== stage);
+    }
+
+    private _createFunnelFormGroup(): FormGroupTypeSafe<IFunnel> {
+        return this.fb.group<IFunnel>({
+            _id: [null],
+            name: [null, Validators.required],
+            description: [null, Validators.required],
+            stages: this.fb.array([])
         });
     }
 
@@ -45,5 +62,20 @@ export class FunnelFormComponent {
             description
         });
     }
+
+    // private getStageForm(s: IFunnelStage) {
+    //     if (!s) { s = { } as any; }
+
+    //     return this.fb.group<IFunnelStage>({
+    //         order: [this.funnelModel.stages.length + 1 ],
+    //         name: [null, Validators.required],
+    //         description: [null, Validators.required],
+    //         kpi: [null, Validators.required],
+    //         selectedFields: [null],
+    //         compareToStage: [null],
+    //         foreground: [null, Validators.required],
+    //         background: [null, Validators.required]
+    //     });
+    // }
 
 }

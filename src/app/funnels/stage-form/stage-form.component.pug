@@ -1,0 +1,14 @@
+.m-t-5(flex, layout="column", layout-padding)
+    .name-delete-button(flex, layout="row", layout-padding, layout-align="end end")
+        bw-text-box(flex, [fg]="fg", field="name", label="Name", leftIcon="label")
+        div(flex-initial)
+          bw-button(color="red", title="Remove", (clicked)="removeStage()")
+    
+    .kpi-date-range(flex, layout-sm="column", layout-gt-sm="row")
+        bw-text-box(flex, [fg]="fg", field="kpi", label="Kpi", leftIcon="label")
+        bw-text-box(flex, [fg]="fg", field="dateRange", label="Date Range", leftIcon="label")
+
+
+
+
+
