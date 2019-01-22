@@ -14,15 +14,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { forEach, orderBy, toNumber } from 'lodash';
 import * as moment from 'moment';
-import { EnterDataFormService } from './enter-data-form.service';
+import { EnterDataFormService, IDataColumn } from './enter-data-form.service';
 import { BrowserService } from '../../shared/services/browser.service';
 
 const dataEntryIdQuery = require('graphql-tag/loader!../shared/graphql/data-entry-by-id.gql');
 const customListIdQuery = require('graphql-tag/loader!../shared/graphql/get-custom-list.gql');
 const updateDataEntryMutation = require('graphql-tag/loader!../shared/graphql/update-data-entry.gql');
 
-const sidebarStyle = { width: 'calc(100vw - 240px)', height: 'calc(100vh - 140px)', padding: '10px' };
-const noSidebarStyle = { width: '100vw', height: '100vh', padding: '10px' };
+const sidebarStyle = { width: 'calc(100vw - 240px)', height: 'calc(100vh - 210px)', padding: '10px' };
+const noSidebarStyle = { width: '100vw', height: 'calc(100vh - 210px)', padding: '10px' };
 
 @Component({
     selector: 'kpi-enter-data-form',
@@ -37,6 +37,7 @@ export class EnterDataFormComponent implements OnInit, OnDestroy {
         filter: true,
         sortable: true,
         editable: true,
+        resizable: true,
     };
     columnDefs = [];
     rowData: any[];
@@ -44,12 +45,11 @@ export class EnterDataFormComponent implements OnInit, OnDestroy {
     sidebarOpen: boolean;
 
     name: string;
-    dataName: string;
     dataSourceCollection: any;
-    customListCollection: any;
-    schemaCollection: any;
 
     private _subscription: Subscription[] = [];
+    private gridApi;
+    private gridColumnApi;
 
     constructor(
         public vm: DataEntryFormViewModel,
@@ -82,8 +82,13 @@ export class EnterDataFormComponent implements OnInit, OnDestroy {
         return this.sidebarOpen ? sidebarStyle : noSidebarStyle;
     }
 
+    onGridReady(params) {
+        this.gridApi = params.api;
+        this.gridColumnApi = params.columnApi;
+      }
+
     onCellValueChanged(info) {
-        this.deService.registerChange(info.data);
+        this.deService.registerChange(info);
     }
 
     save() {
@@ -135,54 +140,10 @@ export class EnterDataFormComponent implements OnInit, OnDestroy {
         this.isLoading = true;
 
         this._apolloService.networkQuery<string>(dataEntryIdQuery, { id }).then(res => {
-            that.dataSourceCollection = JSON.parse(res.dataEntryByIdMapCollection);
-            that.schemaCollection = that.dataSourceCollection.schema;
-            that.rowData = that.deService.prepareRecords(that.dataSourceCollection);
-            that.dataName = that.dataSourceCollection.dataName;
-            that.name = that.dataSourceCollection.name;
-
-            // prepare column definitions
-            that.columnDefs = [];
-
-            forEach(that.schemaCollection, (value, key) => {
-                if (key !== 'Source') {
-                    const columnDef: any = {
-                        headerName: key,
-                        field: value.path,
-                        filter: that._getColumnFilter(value.dataType),
-                    };
-
-                    // check for numeric columns
-                    if (value.dataType === 'Numeric') {
-                        columnDef.type = 'numericColumn';
-                    }
-
-                    if (value.sourceOrigin) {
-                        const customList = that.dataSourceCollection.customLists.find(l => l._id === value.sourceOrigin);
-                        columnDef.cellEditor = 'agSelectCellEditor';
-                        columnDef.cellEditorParams = {
-                            values: customList.listValue
-                        };
-                    }
-
-                    that.columnDefs.push(columnDef);
-                }
-            });
+            const dataSource = JSON.parse(res.dataEntryByIdMapCollection);
+            this.deService.registerDataSource(dataSource);
             that.isLoading = false;
         });
-    }
-
-    private _getColumnFilter(dataType: string) {
-        switch (dataType) {
-            case 'String':
-                return 'agTextColumnFilter';
-            case 'Numeric':
-                return 'agNumberColumnFilter';
-            case 'Date':
-                return 'agDateColumnFilter';
-            default:
-                break;
-        }
     }
 
 }
