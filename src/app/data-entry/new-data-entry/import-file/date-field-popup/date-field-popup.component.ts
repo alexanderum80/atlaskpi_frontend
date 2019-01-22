@@ -1,7 +1,7 @@
 import { DialogResult } from './../../../../shared/models/dialog-result';
 import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { ModalComponent } from 'src/app/ng-material-components';
-import { DataEntryFormViewModel } from '../../../data-entry.viewmodel';
+import { CustomFormViewModel } from '../custom-form.view-model';
 
 @Component({
   selector: 'kpi-date-field-popup',
@@ -15,7 +15,7 @@ export class DateFieldPopupComponent implements OnInit {
   defaultValue;
 
   constructor(
-    public vm: DataEntryFormViewModel
+    public vm: CustomFormViewModel
   ) { }
 
   ngOnInit() {
