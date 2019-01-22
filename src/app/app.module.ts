@@ -52,6 +52,7 @@ import { DataEntryComponent } from './data-entry/data-entry.component';
 import { DataEntryModule } from './data-entry/data-entry.module';
 import { AgGridModule } from 'ag-grid-angular';
 import { FunnelModule } from './funnels';
+import { DateService } from './shared/services';
 
 @NgModule({
     declarations: [

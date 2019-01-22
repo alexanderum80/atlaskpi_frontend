@@ -1,7 +1,24 @@
-import { IChartDateRange, FrequencyEnum, parsePredefinedDate } from '../models';
+import { IChartDateRange, FrequencyEnum, parsePredefinedDate, IDateRangeItem } from '../models';
 import * as m from 'moment';
+import { Injectable } from '@angular/core';
+import { Apollo } from 'apollo-angular';
+import { combineLatest, Observable, throwError } from 'rxjs';
+import { filter, map, tap, catchError } from 'rxjs/operators';
 
+const dateRangeQuery = require('graphql-tag/loader!./date-ranges.query.gql');
+
+@Injectable()
 export class DateService {
+
+    private _dateRanges: IDateRangeItem[];
+    get dateRanges(): IDateRangeItem[] {
+        return this._dateRanges;
+    }
+
+    constructor(
+        private apollo: Apollo,
+    ) {
+    }
 
     buildStartOfFrequencyList(chartDateRange: IChartDateRange, frequency: FrequencyEnum): m.Moment[] {
         let dr = chartDateRange.custom;
@@ -73,6 +90,23 @@ export class DateService {
         }
 
         return d.format(format);
+    }
+
+    get dateRanges$(): Observable<IDateRangeItem[]> {
+        return this.apollo.query<{ dateRanges: IDateRangeItem[] }>({
+            query: dateRangeQuery,
+            fetchPolicy: 'cache-first',
+        })
+        .pipe(
+            tap(_ => {
+                this._dateRanges = _.data.dateRanges;
+            }),
+            catchError(error => {
+                console.log(error);
+                return throwError(error);
+            }),
+            map(_ => _.data.dateRanges),
+        );
     }
 
 }

@@ -1,7 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
+import { Validators } from '@angular/forms';
 import { IFunnel, IFunnelStage } from '../shared/models/funnel.model';
 import { FormBuilderTypeSafe, FormGroupTypeSafe } from '../../shared/services';
+import { SelectionItem, guid } from '../../ng-material-components';
 
 @Component({
   selector: 'kpi-funnel-form',
@@ -9,8 +10,11 @@ import { FormBuilderTypeSafe, FormGroupTypeSafe } from '../../shared/services';
   styleUrls: ['./funnel-form.component.scss']
 })
 export class FunnelFormComponent {
-
-    private _funnelModel: IFunnel;
+    private _funnelModel: IFunnel = {
+        name: '',
+        description: '',
+        stages: [ ]
+    };
 
     get funnelModel(): IFunnel {
         return this._funnelModel;
@@ -28,14 +32,14 @@ export class FunnelFormComponent {
     }
 
     constructor(
-        private fb: FormBuilderTypeSafe
+        private fb: FormBuilderTypeSafe,
     ) {
       this._fg = this._createFunnelFormGroup();
     }
 
     addStage(): void {
         const newStage: IFunnelStage = {
-            order: this.funnelModel.stages.length + 1,
+            id: guid()
         };
 
         this._funnelModel.stages.push(newStage);
@@ -63,19 +67,5 @@ export class FunnelFormComponent {
         });
     }
 
-    // private getStageForm(s: IFunnelStage) {
-    //     if (!s) { s = { } as any; }
-
-    //     return this.fb.group<IFunnelStage>({
-    //         order: [this.funnelModel.stages.length + 1 ],
-    //         name: [null, Validators.required],
-    //         description: [null, Validators.required],
-    //         kpi: [null, Validators.required],
-    //         selectedFields: [null],
-    //         compareToStage: [null],
-    //         foreground: [null, Validators.required],
-    //         background: [null, Validators.required]
-    //     });
-    // }
 
 }

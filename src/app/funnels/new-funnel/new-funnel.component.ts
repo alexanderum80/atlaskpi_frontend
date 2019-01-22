@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { IFunnel } from '../shared/models/funnel.model';
+
+import { IChartDateRange } from '../../shared/models';
+import { Observable } from 'rxjs';
+import { FunnelService } from '../shared/services/funnel.service';
 
 @Component({
   selector: 'kpi-new-funnel',
@@ -8,19 +11,14 @@ import { IFunnel } from '../shared/models/funnel.model';
 })
 export class NewFunnelComponent implements OnInit {
 
-  testFunnel: IFunnel = {
-    _id: '1',
-    name: 'test',
-    description: 'test',
-    stages: [ {
-      order: 1,
-      name: 'uno'
-    }]
-  };
+  ready$: Observable<boolean>;
 
-  constructor() { }
+  constructor(
+    private funnelService: FunnelService
+  ) { }
 
   ngOnInit() {
+    this.ready$ = this.funnelService.loadDependencies$();
   }
 
 }

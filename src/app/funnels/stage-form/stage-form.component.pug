@@ -1,13 +1,42 @@
 .m-t-5(flex, layout="column", layout-padding)
-    .name-delete-button(flex, layout="row", layout-padding, layout-align="end end")
+    .name-delete-button(flex, layout="row", layout-padding, layout-align="center center")
         bw-text-box(flex, [fg]="fg", field="name", label="Name", leftIcon="label")
-        div(flex-initial)
+        .m-l-10(flex-initial)
           bw-button(color="red", title="Remove", (clicked)="removeStage()")
     
-    .kpi-date-range(flex, layout-sm="column", layout-gt-sm="row")
-        bw-text-box(flex, [fg]="fg", field="kpi", label="Kpi", leftIcon="label")
-        bw-text-box(flex, [fg]="fg", field="dateRange", label="Date Range", leftIcon="label")
-
+    
+    //- bw-text-box(flex, [fg]="fg", field="kpi", label="Kpi", leftIcon="label")
+    bw-select-picker(flex, [fg]="fg",
+        label="Select KPI",
+        field="kpi",
+        leftIcon="device-hub",
+        [items]="kpiSelectionList",
+        [liveSearch]="true",
+        liveSearchPlaceholder="... search KPIs ...",
+        noneSelectedText="NOTHING SELECTED")
+    
+    //- bw-text-box(flex, [fg]="fg.get('dateRange')", field="predefined", label="Date Range", leftIcon="label")
+    //- bw-select-picker(
+    //-     flex, 
+    //-     [fg]="fg.get('dateRange')",
+    //-     label="Date Range",
+    //-     leftIcon="calendar",
+    //-     field="predefined",
+    //-     [items]="dateRangeSelectionList",
+    //-     [liveSearch]="true",
+    //-     liveSearchPlaceholder="... search date ranges ...",
+    //-     noneSelectedText="NOTHING SELECTED")
+    
+    //- .animated.fadeIn.m-l-15(*ngIf="showCustomDateRangeControl", flex)
+    //-     bw-date-picker.p-b-5(flex, [fg]="fg.get('dateRange').get('custom')", field="from", label="MM/DD/YYYY", [config]="datePickerConfig")
+    //-     bw-date-picker(flex, [fg]="fg.get('dateRange').get('custom')", field="to", label="MM/DD/YYYY", [config]="datePickerConfig")
+    
+    kpi-kpi-daterange-picker(
+        [fg]="fg.get('dateRange')",
+        [dateRange]="stageModel.dateRange",
+        [required]="true",
+        [fromRequired]="true",
+        [toRequired]="true")
 
 
 

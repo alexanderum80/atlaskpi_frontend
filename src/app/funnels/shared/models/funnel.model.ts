@@ -1,14 +1,14 @@
 import { IChartDateRange } from '../../../shared/models';
 
 export interface IFunnel {
-    _id: string;
+    _id?: string;
     name: string;
     description?: string;
     stages: IFunnelStage[];
 }
 
 export interface IFunnelStage {
-    order?: number;
+    id?: string;
     name?: string;
     kpi?: string;
     dateRange?: IChartDateRange;
