@@ -21,6 +21,9 @@ const dataEntryIdQuery = require('graphql-tag/loader!../shared/graphql/data-entr
 const customListIdQuery = require('graphql-tag/loader!../shared/graphql/get-custom-list.gql');
 const updateDataEntryMutation = require('graphql-tag/loader!../shared/graphql/update-data-entry.gql');
 
+const sidebarStyle = { width: 'calc(100vw - 240px)', height: 'calc(100vh - 140px)', padding: '10px' };
+const noSidebarStyle = { width: '100vw', height: '100vh', padding: '10px' };
+
 @Component({
     selector: 'kpi-enter-data-form',
     templateUrl: './enter-data-form.component.pug',
@@ -40,6 +43,7 @@ export class EnterDataFormComponent implements OnInit, OnDestroy {
     isLoading = false;
     sidebarOpen: boolean;
 
+    name: string;
     dataName: string;
     dataSourceCollection: any;
     customListCollection: any;
@@ -61,8 +65,9 @@ export class EnterDataFormComponent implements OnInit, OnDestroy {
             return this._router.navigateByUrl('/unauthorized');
         }
 
-        this._getDataEntryById();
-        this._getCustomList();
+        this._subscription.push(this._route.params.subscribe(params => {
+            if (params.id) { this.loadData(params.id); }
+        }));
 
         this._subscription.push(this._browserService.viewportSize$.subscribe(size => {
             this.sidebarOpen = size.width >= 1200;
@@ -74,9 +79,7 @@ export class EnterDataFormComponent implements OnInit, OnDestroy {
     }
 
     get gridLayoutStyle() {
-        return this.sidebarOpen
-            ? { width: 'calc(100vw - 240px);', height: 'calc(100vh - 140px);', padding: '10px;' }
-            : { width: '100vw;', height: '100vh;', padding: '10px;' };
+        return this.sidebarOpen ? sidebarStyle : noSidebarStyle;
     }
 
     onCellValueChanged(info) {
@@ -84,7 +87,14 @@ export class EnterDataFormComponent implements OnInit, OnDestroy {
     }
 
     save() {
-        this._apolloService.mutation<any>(updateDataEntryMutation, { input: JSON.stringify(tableData) }, ['DataEntries'])
+        this._apolloService.mutation<any>(
+            updateDataEntryMutation,
+            {
+                id: this._route.snapshot.params.id,
+                input: JSON.stringify(this.deService.registeredChanges)
+            },
+            ['DataEntries']
+        )
             .then(result => {
                 if (result.data.updateDataEntry.success) {
                     SweetAlert({
@@ -120,29 +130,21 @@ export class EnterDataFormComponent implements OnInit, OnDestroy {
         }
     }
 
-    private _getDataEntryById() {
-        const that = this;
-        this._subscription.push(this._route.params.subscribe(params => {
-            if (params.id) {
-                this.loadData(params.id);
-            }
-        }));
-    }
-
     private loadData(id: string) {
         const that = this;
         this.isLoading = true;
 
         this._apolloService.networkQuery<string>(dataEntryIdQuery, { id }).then(res => {
             that.dataSourceCollection = JSON.parse(res.dataEntryByIdMapCollection);
-            this.schemaCollection = this.dataSourceCollection.schema;
-            that.rowData = this.dataSourceCollection.data;
-            this.dataName = this.dataSourceCollection.dataName;
+            that.schemaCollection = that.dataSourceCollection.schema;
+            that.rowData = that.deService.prepareRecords(that.dataSourceCollection);
+            that.dataName = that.dataSourceCollection.dataName;
+            that.name = that.dataSourceCollection.name;
 
             // prepare column definitions
             that.columnDefs = [];
 
-            forEach(this.schemaCollection, (value, key) => {
+            forEach(that.schemaCollection, (value, key) => {
                 if (key !== 'Source') {
                     const columnDef: any = {
                         headerName: key,
@@ -155,16 +157,18 @@ export class EnterDataFormComponent implements OnInit, OnDestroy {
                         columnDef.type = 'numericColumn';
                     }
 
+                    if (value.sourceOrigin) {
+                        const customList = that.dataSourceCollection.customLists.find(l => l._id === value.sourceOrigin);
+                        columnDef.cellEditor = 'agSelectCellEditor';
+                        columnDef.cellEditorParams = {
+                            values: customList.listValue
+                        };
+                    }
+
                     that.columnDefs.push(columnDef);
                 }
             });
             that.isLoading = false;
-        });
-    }
-
-    private _getCustomList() {
-        this._apolloService.networkQuery<string>(customListIdQuery).then(res => {
-            this.customListCollection = res.customList;
         });
     }
 

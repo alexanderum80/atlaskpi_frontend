@@ -1,0 +1,3 @@
+query ProcessImportFile($fileData: String!, $fileType: String!) {
+  processImportFile(fileData: $fileData, fileType: $fileType)
+}

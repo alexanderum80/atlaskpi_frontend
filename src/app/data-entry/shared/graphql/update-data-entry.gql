@@ -1,5 +1,5 @@
-mutation UpdateDataEntry($input: String!) {
-  updateDataEntry(input: $input) {
+mutation UpdateDataEntry($id: String!, $input: String!) {
+  updateDataEntry(id: $id, input: $input) {
     success
   }
 }

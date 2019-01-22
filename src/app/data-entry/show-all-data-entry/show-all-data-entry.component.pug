@@ -15,3 +15,5 @@
         kpi-add-item((onItemClicked)="addDataEntry()")
 
 kpi-import-file(*ngIf="uploadingFile", [dataEntry]="dataEntryToUpload", (closeUploadFile)="closeUploadFile()")
+
+app-error([error]="lastError")

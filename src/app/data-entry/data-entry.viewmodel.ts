@@ -91,10 +91,6 @@ export class DataEntryFormViewModel extends ViewModel<ICustomSchema> {
 
     private _dataCollectionFiltered: any[];
 
-    Alphabet = [
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
-    ];
-
     dateFields: MenuItem[] = [];
 
     private _fileExtensions = ['.csv', '.xls', '.xlsx'];
@@ -236,22 +232,6 @@ export class DataEntryFormViewModel extends ViewModel<ICustomSchema> {
         return isCorrectValue;
     }
 
-    getDataTypeFromValue(value) {
-        let dataType: string;
-        if (value === null || value === '') {
-            dataType = 'String';
-        } else if (isBoolean(value) || value === '0' || value === '1') {
-            dataType = 'Boolean';
-        } else if (!isNaN(+value)) {
-            dataType = 'Number';
-        } else if (!isNaN(Date.parse(value))) {
-            dataType = 'Date';
-        } else {
-            dataType = 'String';
-        }
-        return dataType;
-    }
-
     isRequiredDataTypePresent(dataTypeArray) {
         let dataTypePresent = true;
         this._requiredDataType.map(o => {
@@ -266,16 +246,6 @@ export class DataEntryFormViewModel extends ViewModel<ICustomSchema> {
 
     get fileExtensions() {
         return this._fileExtensions;
-    }
-
-    getAlphabetExtended(): string[] {
-        let resultArr = this.Alphabet;
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 26; j++) {
-                resultArr.push( this.Alphabet[i] + this.Alphabet[j]);
-            }
-        }
-        return resultArr;
     }
 
     downloadToCsvFile(collectionName, fields, dataArray) {

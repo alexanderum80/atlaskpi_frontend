@@ -1,5 +1,6 @@
 mutation RemoveDataEntry($name: String!) {
   removeDataEntry(name: $name) {
-   success
+  	success
+   	entity
   }
 }
