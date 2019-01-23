@@ -108,7 +108,7 @@ export class ShowMapFormComponent implements OnInit, AfterViewInit {
       }
     }];
     const input = {
-      id: this.kpi,
+      ids: [this.kpi],
       dateRange: dateRangeInput
     };
 

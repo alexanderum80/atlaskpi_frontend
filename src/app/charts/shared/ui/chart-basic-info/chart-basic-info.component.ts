@@ -247,8 +247,8 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         .distinctUntilChanged()
         .debounceTime(400)
         .subscribe((value) => {
-            const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
-            const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
+            const loadingGroupings = value.ideoloadingGroupings || false;
+            const loadingComparison = value.loadingComparison || false;
             const kpiIds = value.kpis.map(k => k.kpi) as string[];
 
             if (kpiIds && kpiIds.length && value.predefinedDateRange && !loadingGroupings && !loadingComparison) {
@@ -261,27 +261,27 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
             // const kpi_ids = this.fg.value.kpis;
             // Enable-Disable the map type chart
             // FIX THIS 
-            if (kpiIds) {
-                let resSources;
+            if (kpiIds && kpiIds.filter(k => !!k).length) {
+                // let resSources;
                 this._getZipCodesSource(value)
                     .then(result => {
-                        if (this.zipCodeSourceList.length === 0 ) {
-                            this._showMapTypeChart();
-                            return;
-                        }
+                        // if (this.zipCodeSourceList.length === 0 ) {
+                        //     // this._showMapTypeChart();
+                        //     return;
+                        // }
 
-                        for (const i of this.zipCodeSourceList) {
-                            this._apolloService.networkQuery < string > (kpiDataSourcesQuery, {ids: kpiIds, zipField: i.id})
-                            .then(sources => {
-                                resSources = sources.getKpiDataSources[0];
-                                if (resSources === true) {
-                                    that._chartGalleryService.showMap = resSources;
-                                    this.previousChartType = this.chartType;
-                                } else {
-                                    this._showMapTypeChart();
-                                }
-                            });
-                        }
+                        // for (const i of this.zipCodeSourceList) {
+                        //     this._apolloService.networkQuery < string > (kpiDataSourcesQuery, {ids: kpiIds, zipField: i.id})
+                        //     .then(sources => {
+                        //         resSources = sources.getKpiDataSources[0];
+                        //         if (resSources === true) {
+                        //             // that._chartGalleryService.showMap = resSources;
+                        //             this.previousChartType = this.chartType;
+                        //         } else {
+                        //             // this._showMapTypeChart();
+                        //         }
+                        //     });
+                        // }
                     });
 
                 }
@@ -289,13 +289,13 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         });
     }
 
-    private _showMapTypeChart() {
-        this._chartGalleryService.showMap = false;
-        if (!this._chartGalleryService.showMap && this.chartType === this.previousChartType) {
-            this.chartType = 'pie';
-        }
-        this.previousChartType = this.chartType;
-    }
+    // private _showMapTypeChart() {
+    //     this._chartGalleryService.showMap = false;
+    //     if (!this._chartGalleryService.showMap && this.chartType === this.previousChartType) {
+    //         this.chartType = 'pie';
+    //     }
+    //     this.previousChartType = this.chartType;
+    // }
 
     private _getOldestDate(kpis: string[]): void {
         this._apolloService

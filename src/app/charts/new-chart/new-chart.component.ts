@@ -145,7 +145,7 @@ export class NewChartComponent implements OnInit, AfterViewInit, OnDestroy {
             if (!model.valid) {
                 return;
             }
-            //add-created-updated-by-date
+            // add-created-updated-by-date
             model.createdBy = this.currentUser._id;
             model.updatedBy = this.currentUser._id;
             model.createdDate = moment().toDate();

@@ -253,18 +253,18 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         const that = this;
         that.fg.valueChanges.debounceTime(500)
            .subscribe(values => {
-               if (this.ischartTypeMap) {
+               if (that.ischartTypeMap) {
                 // Here i must run the query
                 // to obtain map data
-                if (this.fg.value.kpi && this.fg.value.kpi !== ''
-                    && (this.fg.value.predefinedDateRange !== ''
-                    || this.fg.value.predefinedDateRange === 'custom' && this.fg.value.customFrom !== ''
-                    && this.fg.value.customTo !== '')) {
+                if (that.fg.value.kpis && that.fg.value.kpis.filter(k => !!k)
+                    && (that.fg.value.predefinedDateRange !== ''
+                    || that.fg.value.predefinedDateRange === 'custom' && that.fg.value.customFrom !== ''
+                    && that.fg.value.customTo !== '')) {
                     that._bringMapMarkers();
                 }
-                this.canSave = this.formValid;
+                that.canSave = that.formValid;
                } else {
-                    if (this.chartModel) {
+                    if (that.chartModel) {
                         that.processFormatChanges(values)
                             .then(() => that.previewChartQuery());
                     }
@@ -327,7 +327,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             this._apolloService.networkQuery <any> (mapMarkersQuery, { input:
                 { dateRange: JSON.stringify(tmpDateRange),
                     grouping: this.fg.value.grouping ? [this.fg.value.zipCodeSource, this.fg.value.grouping] : [this.fg.value.zipCodeSource],
-                    kpi: this.fg.value.kpi
+                    kpi: this.fg.value.kpis[0].kpi
                 } })
                 .then(res => {
                     that.mapMarkers = res.mapMarkers.map(m => objectWithoutProperties(m, ['__typename']));
@@ -429,7 +429,12 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                     that._galleryService.updateToolTipList(that.chartDefinition.chart.type);
 
                     if (that.chartDefinition && !this.chartDataFromKPI) {
-                        that.chartType = (that.chartModel.type || that.chartDefinition.chart.type);
+                        if (that.chartModel.kpis.length === 1) {
+                            that.chartType = (that.chartModel.type || that.chartDefinition.chart.type);
+                        } else {
+                            that.chartType = 'combined';
+                        }
+
                     } else {
                         that.chartType = (that.chartDefinition && this.chartDataFromKPI) ?
                             chartDefinitionFromKPI.chart.type :
@@ -773,8 +778,8 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
         const that = this;
 
         this._subscription.push(this._galleryService.activeChart$.subscribe((chart) => {
-            this.ischartTypeMap = chart.name === 'map';
-            if (!this.ischartTypeMap) {
+            that.ischartTypeMap = chart.name === 'map';
+            if (!that.ischartTypeMap) {
                 that._galleryService.getChartSampleDefinition( < any > chart.type, chart)
                     .subscribe((sampleChart) => {
                         processChartActivityChange(that, chart, sampleChart);

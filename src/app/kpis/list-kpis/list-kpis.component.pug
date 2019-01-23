@@ -1,4 +1,4 @@
-
+kpi-spinner(*ngIf="loading")
 kpi-item-list(
     title="KPIs",
     aliases="kpis",
@@ -8,7 +8,6 @@ kpi-item-list(
     [itemListActivityName]="actionActivityNames",
     [actionItems] = "vm.menuItems",
     [itemType]="itemType",
-    [tableRowTemplate]="tableItem",
     (onAddActionClicked)="add()",
     (onItemActionClicked)="actionClicked($event)",
     (onItemClicked)="editClickedList($event)",
