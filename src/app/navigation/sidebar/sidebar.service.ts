@@ -77,33 +77,35 @@ const MENU_ITEMS: MenuItem[] = [{
     id: 'data-entry',
     title: 'Data entry',
     icon: 'keyboard'
-}, {
-    id: 'company',
-    title: 'Company',
-    icon: 'home',
-    children: [
-        {
-            id: 'departments',
-            title: 'Departments',
-            route: 'departments'
-        },
-        {
-            id: 'businessUnits',
-            title: 'Business Units',
-            route: 'business-units'
-        },
-        {
-            id: 'locations',
-            title: 'Locations',
-            route: 'locations'
-        },
-        {
-            id: 'employees',
-            title: 'Employees',
-            route: 'employees'
-        }
-    ]
-}, {
+}
+// , {
+//     id: 'company',
+//     title: 'Company',
+//     icon: 'home',
+//     children: [
+//         {
+//             id: 'departments',
+//             title: 'Departments',
+//             route: 'departments'
+//         },
+//         {
+//             id: 'businessUnits',
+//             title: 'Business Units',
+//             route: 'business-units'
+//         },
+//         {
+//             id: 'locations',
+//             title: 'Locations',
+//             route: 'locations'
+//         },
+//         {
+//             id: 'employees',
+//             title: 'Employees',
+//             route: 'employees'
+//         }
+//     ]
+// }
+, {
     id: 'settings',
     title: 'Settings',
     icon: 'settings',

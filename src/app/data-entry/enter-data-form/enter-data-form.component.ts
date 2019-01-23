@@ -92,6 +92,8 @@ export class EnterDataFormComponent implements OnInit, OnDestroy {
     }
 
     save() {
+        this.deService.registeredChanges.map( record => record.source = "Manual entry");
+
         this._apolloService.mutation<any>(
             updateDataEntryMutation,
             {

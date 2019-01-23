@@ -61,7 +61,7 @@ export class EnterDataFormService {
         this.applyValueDataType(change);
 
         let changes = this._changesSubject.value;
-        const changeExist = changes.find(c => c._id === change.data._id);
+        const changeExist = changes.find(c => c === change.data);
 
         if (!changeExist) {
             changes = [...changes, change.data];
@@ -103,7 +103,7 @@ export class EnterDataFormService {
                 };
 
                 // check for numeric columns
-                if (value.dataType === 'Numeric') {
+                if (value.dataType === 'Number') {
                     columnDef.type = 'numericColumn';
                 }
 
@@ -126,10 +126,12 @@ export class EnterDataFormService {
         switch (dataType) {
             case 'String':
                 return 'agTextColumnFilter';
-            case 'Numeric':
+            case 'Number':
                 return 'agNumberColumnFilter';
             case 'Date':
                 return 'agDateColumnFilter';
+            case 'Boolean':
+                return true;
             default:
                 break;
         }
