@@ -13,6 +13,7 @@ import { NewFunnelComponent } from './new-funnel/new-funnel.component';
 import { FunnelFormComponent } from './funnel-form/funnel-form.component';
 import { StageFormComponent } from './stage-form/stage-form.component';
 import { FunnelService } from './shared/services/funnel.service';
+import { ChartsModule } from '../charts';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import { FunnelService } from './shared/services/funnel.service';
     SharedModule,
     MaterialFormsModule,
     MaterialUserInterfaceModule,
-    FunnelRoutingModule
+    FunnelRoutingModule,
+    ChartsModule
   ],
   declarations: [
     FunnelComponent,

@@ -6,7 +6,9 @@
     
     
     //- bw-text-box(flex, [fg]="fg", field="kpi", label="Kpi", leftIcon="label")
-    bw-select-picker(flex, [fg]="fg",
+    bw-select-picker(
+        flex,
+        [fg]="fg",
         label="Select KPI",
         field="kpi",
         leftIcon="device-hub",
@@ -32,12 +34,47 @@
     //-     bw-date-picker(flex, [fg]="fg.get('dateRange').get('custom')", field="to", label="MM/DD/YYYY", [config]="datePickerConfig")
     
     kpi-kpi-daterange-picker(
+        flex, 
         [fg]="fg.get('dateRange')",
         [dateRange]="stageModel.dateRange",
         [required]="true",
         [fromRequired]="true",
         [toRequired]="true")
 
+    bw-select-picker(
+        flex,
+        [fg]="fg",
+        label="Select Fields to Project",
+        field="fieldsToProject",
+        leftIcon="device-hub",
+        [items]="kpiSelectionList",
+        [liveSearch]="true",
+        [multiple]="true",
+        liveSearchPlaceholder="... search fields ...",
+        noneSelectedText="NOTHING SELECTED")
+
+    bw-select-picker(
+        flex,
+        [fg]="fg",
+        label="Select Stage",
+        field="compareToStage",
+        leftIcon="device-hub",
+        [items]="kpiSelectionList",
+        [liveSearch]="true",
+        liveSearchPlaceholder="... select stage ...",
+        noneSelectedText="NOTHING SELECTED")
+
+    .color-picker(flex, layout="column", layout-gt-sm="row", layout-padding)
+        div(flex)            
+            .label-box.z-depth-1.p-relative(layout="row") Foreground
+                .label-slash
+                .label-color-box([ngStyle]="{'background-color': fg.value.foreground}", (click)="openSelectColor('foreground')")
+        div(flex)
+            .label-box.z-depth-1.p-relative(layout="row") Background
+                .label-slash
+                .label-color-box([ngStyle]="{'background-color': fg.value.background}", (click)="openSelectColor('background')")            
 
 
+//- Choose Color Form
+kpi-choose-colors(flex, [fg]="fg", (colorChoosed)="onSelectColor($event)")
 

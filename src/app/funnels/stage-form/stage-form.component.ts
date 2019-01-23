@@ -1,10 +1,16 @@
-import { Component, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { IFunnelStage, IFunnel } from '../shared/models/funnel.model';
 import { FormGroupTypeSafe, FormBuilderTypeSafe } from '../../shared/services';
 import { FormArray, Validators } from '../../../../node_modules/@angular/forms';
 import { IChartDateRange, IDateRange } from '../../shared/models';
 import { SelectionItem, guid } from '../../ng-material-components';
 import { FunnelService } from '../shared/services/funnel.service';
+import { ChooseColorsComponent } from '../../shared/ui/choose-colors/choose-colors.component';
+
+enum FunnelColorElementEnum {
+  foreground = 'foreground',
+  background = 'background'
+}
 
 @Component({
   selector: 'kpi-stage-form',
@@ -35,10 +41,14 @@ export class StageFormComponent implements OnDestroy {
 
     @Output() stageRemoved = new EventEmitter<IFunnelStage>();
 
+    @ViewChild(ChooseColorsComponent) chooseColors: ChooseColorsComponent;
+
     fg: FormGroupTypeSafe<IFunnelStage>;
 
     kpiSelectionList: SelectionItem[];
     dateRangeSelectionList: SelectionItem[] = [];
+
+    selectedColorElement: FunnelColorElementEnum;
 
     private formControlIndex;
 
@@ -60,6 +70,23 @@ export class StageFormComponent implements OnDestroy {
       this.stageRemoved.emit(this._stageModel);
     }
 
+    openSelectColor(element: FunnelColorElementEnum) {
+        this.selectedColorElement = element;
+        this.chooseColors.open();
+    }
+
+    onSelectColor(selectedColor: string) {
+        switch (this.selectedColorElement) {
+          case FunnelColorElementEnum.foreground:
+              this.fg.getSafe(s => s.foreground).patchValue(selectedColor);
+              break;
+
+          case FunnelColorElementEnum.background:
+              this.fg.getSafe(s => s.background).patchValue(selectedColor);
+              break;
+        }
+    }
+
     private _createStageFormGroup(): FormGroupTypeSafe<IFunnelStage> {
         return this.fb.group<IFunnelStage>({
             id: [guid()],
@@ -75,7 +102,7 @@ export class StageFormComponent implements OnDestroy {
               from: [null],
               to: [null]
             }),
-            selectedFields: [null],
+            fieldsToProject: [null],
             compareToStage: [null],
             foreground: [null, Validators.required],
             background: [null, Validators.required],

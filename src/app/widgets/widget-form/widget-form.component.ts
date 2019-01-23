@@ -26,7 +26,7 @@ import { ApolloService } from '../../shared/services/apollo.service';
 
 import { IDateRangeItem } from './../../shared/models/date-range';
 import { chartsGraphqlActions } from '../../charts/shared/graphql/charts.graphql-actions';
-import { ChooseColorsComponent } from '../../charts/shared/ui/choose-colors/choose-colors.component';
+import { ChooseColorsComponent } from '../../shared/ui/choose-colors/choose-colors.component';
 
 const widgetSizeList: SelectionItem[] = [
     {

@@ -12,7 +12,7 @@ export interface IFunnelStage {
     name?: string;
     kpi?: string;
     dateRange?: IChartDateRange;
-    selectedFields?: string[];
+    fieldsToProject?: string[];
     compareToStage?: string;
     foreground?: string;
     background?: string;

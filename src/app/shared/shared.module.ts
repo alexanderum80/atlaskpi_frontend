@@ -59,6 +59,7 @@ import { FileInputComponent } from './ui/file-input/file-input.component';
 import { RemoveConfirmationComponent } from './ui/remove-confirmation/remove-confirmation.component';
 import { ErrorComponent } from './ui/error/error.component';
 import { IsInViewportDirective } from './directives/is-in-viewport.directive';
+import { ChooseColorsComponent } from './ui/choose-colors/choose-colors.component';
 
 @NgModule({
     imports: [
@@ -89,6 +90,7 @@ import { IsInViewportDirective } from './directives/is-in-viewport.directive';
         SpinnerComponent,
         ListItemStandardComponent,
         ItemListComponent,
+        ChooseColorsComponent,
         // pipes
         MomentFormatPipe,
         NgxResizeWatcherDirective,
@@ -120,6 +122,7 @@ import { IsInViewportDirective } from './directives/is-in-viewport.directive';
         ItemListComponent,
         TagsComponent,
         FileInputComponent,
+        ChooseColorsComponent,
         // pipes
         MomentFormatPipe,
         ListItemTabularComponent,
