@@ -1,9 +1,8 @@
 @import '../../../../assets/styles/themes/_cosmetic-mixins';
 
 .spinner-container {
-    position: absolute;
-    left: 0;
-    top: 0;
+    position: fixed;
+    top: 65px;
     right: 0;
     bottom: 0;
     background-color: black;

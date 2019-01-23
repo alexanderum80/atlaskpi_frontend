@@ -48,6 +48,8 @@ export class ListChartComponent implements OnInit, OnDestroy {
     @ViewChild(RemoveConfirmationComponent) removeConfirmModal: RemoveConfirmationComponent;
     @ViewChild(ErrorComponent) errorModal: ErrorComponent;
 
+    loadingCharts: boolean;
+    loadingMaps: boolean;
     charts: IChart[] = [];
     maps: any[] = [];
     fg: FormGroup = new FormGroup({});
@@ -114,6 +116,8 @@ export class ListChartComponent implements OnInit, OnDestroy {
 
     private _subscribeToListOfCharts() {
         const that = this;
+        this.loadingCharts = true;
+
         this._subscription.push(this._apollo.watchQuery <ListChartsQueryResponse> ({
             query: ListChartsQuery,
             fetchPolicy: 'network-only'
@@ -124,11 +128,15 @@ export class ListChartComponent implements OnInit, OnDestroy {
                 this.vm.setChartsList(this.charts);
                 const cdcd = this.vm.chartsList;
             }
+
+            this.loadingCharts = false;
         }));
     }
 
     private _subscribeToListOfMaps() {
         const that = this;
+        this.loadingMaps = true;
+
         this._subscription.push(this._apollo.watchQuery <ListMapsQueryResponse> ({
             query: ListMapsQuery,
             fetchPolicy: 'network-only'
@@ -139,6 +147,8 @@ export class ListChartComponent implements OnInit, OnDestroy {
                 that.maps = asa.map( m => JSON.parse(m));
                 this.vm.setMapsList(that.maps);
             }
+
+            this.loadingMaps = false;
         }));
     }
 

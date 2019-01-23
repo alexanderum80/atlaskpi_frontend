@@ -42,6 +42,7 @@ export class ListKpisComponent implements OnInit, OnDestroy {
 
     actionActivityNames: IItemListActivityName = {};
     lastError: IModalError;
+    loading: boolean;
 
     private _subscription: Subscription[] = [];
     itemType: string;
@@ -56,10 +57,6 @@ export class ListKpisComponent implements OnInit, OnDestroy {
         public updateKpiActivity: UpdateKpiActivity,
         public cloneKpiActivity: CloneKpiActivity,
         private _userService: UserService,
-
-
-
-
         public deleteKpiActivity: DeleteKpiActivity) {
             this.actionActivityNames = {
                 edit: this.updateKpiActivity.name,
@@ -78,7 +75,7 @@ export class ListKpisComponent implements OnInit, OnDestroy {
             this._refreshKpis();
 
         }
-        
+
         this._subscription.push(this._route.queryParams.subscribe(p => {
             if (p.refresh) {
                 that._refreshKpis();
@@ -182,15 +179,17 @@ export class ListKpisComponent implements OnInit, OnDestroy {
     private _refresUserInfo(refresh ?: boolean) {
         const that = this;
         this._apolloService.networkQuery < IUserInfo > (updateUserInfo).then(d => {
-            this.itemType = d.User.preferences.kpis.listMode === "standardView" ? 'standard' : 'table';
+            this.itemType = d.User.preferences.kpis.listMode === 'standardView' ? 'standard' : 'table';
         });
     }
 
     private _refreshKpis(refresh ?: boolean) {
         const that = this;
+        this.loading = true;
 
         this._apolloService.networkQuery < IKPI[] > (kpisQuery).then(d => {
             that.vm.kpis = d.kpis;
+            this.loading = false;
         });
     }
 }

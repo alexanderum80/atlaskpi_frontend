@@ -59,8 +59,8 @@ export class ChartComparisonComponent implements OnInit {
             //     return;
             // }
 
-            const kpi_id = this.chartData.kpis[0]._id;
-            this._apolloService.networkQuery<string>(kpiOldestDateQuery, { id: kpi_id }).then(kpis => {
+            const kpiIds = this.chartData.kpis.map(k => k.kpi._id); // [0]._id;
+            this._apolloService.networkQuery<string>(kpiOldestDateQuery, { ids: kpiIds }).then(kpis => {
                 const dateRange = this.dateRanges.find(d => d.dateRange.predefined === dateRangeString);
                 this.comparisons = this.updateComparisonData(dateRange, kpis.getKpiOldestDate);
                 // change array reference when updating compare actions
