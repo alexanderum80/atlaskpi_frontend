@@ -9,9 +9,9 @@ import { Subscription } from 'rxjs/Subscription';
 import {CommonService} from '../../shared/services/common.service';
 import { isEmpty, isNumber } from 'lodash';
 import { DeliveryMethodEnum } from '../../alerts/alerts.model';
+import { NotificationService } from '../../shared/services/notification.service';
 
 const usersQuery = require('graphql-tag/loader!./users.query.gql');
-const testAlertMutation = require('graphql-tag/loader!./test-widget-alert.gql');
 
 @Component({
   selector: 'kpi-widget-alert-form',
@@ -30,7 +30,8 @@ export class WidgetAlertFormComponent implements OnInit, OnDestroy {
     private _apollo: Apollo,
     private _cdr: ChangeDetectorRef,
     private _fb: FormBuilder,
-    public vm: WidgetAlertFormViewModel
+    public vm: WidgetAlertFormViewModel,
+    private notificationService: NotificationService,
   ) {}
 
   ngOnInit() {
@@ -165,10 +166,7 @@ export class WidgetAlertFormComponent implements OnInit, OnDestroy {
     if (value.emailNotified) { deliveryMethods.push(DeliveryMethodEnum.email); }
     if (value.pushNotification) { deliveryMethods.push(DeliveryMethodEnum.push); }
 
-    return this._apollo.mutate({
-        mutation: testAlertMutation,
-        variables: { users: value.notifyUsers, deliveryMethods }
-    });
+    return this.notificationService.send(value.notifyUsers as string[], deliveryMethods, 'Your SPA Revenue is $750.50');
   }
 
 }
