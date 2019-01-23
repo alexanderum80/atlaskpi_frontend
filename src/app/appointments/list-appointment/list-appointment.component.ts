@@ -87,14 +87,9 @@ interface ExtendedCalendarEvent extends CalendarEvent {
 })
 export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('eventInfoModal') eventInfoModal: ModalComponent;
-    // @ViewChild('providerpicker') providerpicker: SelectPickerComponent;
     @ViewChild('resourcesPicker') resourcesPicker: SelectPickerComponent;
 
-    // @ViewChild(AddEditAppointmentComponent) addAppointmentComponent: AddEditAppointmentComponent;
-    // @ViewChild('removeEventModal') removeEventModal: ModalComponent;
-    // @ViewChild('addAppointmentModal') addAppointmentModal: ModalComponent;
-
-    // providerList: SelectionItem[] = [];
+    loading: boolean;
 
     mobileCalendar = MobileCalendarEnum.modern;
     classicCalendarInitialized = false;
@@ -115,28 +110,11 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
     events: ExtendedCalendarEvent[];
     eventsSubject = new BehaviorSubject<ExtendedCalendarEvent[]>([]);
 
-    // eventRemove: ExtendedCalendarEvent;
-    // eventEdit: ExtendedCalendarEvent;
-    // appointmentRemove: IAppointment;
     view = 'month';
     viewDate: Date = new Date();
     activeDayIsOpen = true;
 
-    actions: CalendarEventAction[] = [
-        // {
-        //   label: '<i class="zmdi zmdi-edit"></i>',
-        //   onClick: ({ event }: { event: ExtendedCalendarEvent }): void => {
-        //   // this.editEvent(event);
-        //   }
-        // },
-        // {
-        //   label: '<i class="zmdi zmdi-delete c-red flex-nogrow" >',
-        //   onClick: ({ event }: { event: ExtendedCalendarEvent }): void => {
-        //     this.eventRemove = event;
-        //     this.removeEventModal.open();
-        //   }
-        // }
-    ];
+    actions: CalendarEventAction[] = [];
 
     eventModalData: {
         action: string;
@@ -154,6 +132,8 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
     user: IUserInfo;
     apptCancelledPreference: boolean;
     preventEmitClick = false;
+
+    private selectedResources: string;
 
     constructor(
         private _apollo: Apollo,
@@ -220,6 +200,12 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
                 .map(c => c.selectedAppointmentsResource)
                 .debounceTime(250)
                 .subscribe(selectedResources => {
+                    if (this.selectedResource === selectedResources) {
+                        return;
+                    }
+
+                    this.selectedResource = selectedResources;
+
                     const updatedResourcesList = that.resourcesList.map(
                         p =>
                             new SelectionItem(
@@ -280,6 +266,8 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
 
     fetchEvents() {
         const that = this;
+        this.loading = true;
+
         this._setUserPreference();
 
         this.subscriptions.push(
@@ -336,6 +324,8 @@ export class ListAppointmentComponent implements OnInit, AfterViewInit, OnDestro
                     // filter blanks
                     // .filter(appointment => appointment.title && appointment.title.length);
                     that.eventsSubject.next(that.events);
+
+                    this.loading = false;
                 }),
         );
     }

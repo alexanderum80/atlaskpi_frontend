@@ -64,7 +64,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         comparison: 'previousPeriod',
         comparisonArrowDirection: 'up'
       };
-      
+
       valuesPreviewChart: IChartFormValues = {
         name: '',
         description: '',
@@ -74,7 +74,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         grouping: 'location.name',
         tooltipEnabled: true,
         predefinedTooltipFormat: 'multiple_percent',
-        kpi: '',
+        kpis: [],
         legendEnabled: false,
         predefinedDateRange: 'this year',
         invertAxisEnabled: false,

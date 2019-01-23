@@ -77,7 +77,7 @@ export class ChangeSettingsOnFlyComponent implements OnInit, AfterViewInit {
         const that = this;
         this._apolloService.networkQuery < SelectionItem > (SettingsOnFlyKpisQuery)
         .then(kpis => {
-            const kpi = kpis.settingOnFlyKpis.find(k => k._id === this.chartData.kpis[0]._id);
+            const kpi = kpis.settingOnFlyKpis.find(k => k._id === this.chartData.kpis[0].kpi._id);
             if (kpi) {
                 this.groupingList = kpi.groupingInfo.map(g => new SelectionItem(g.value, g.name));
             }
