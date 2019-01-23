@@ -3,6 +3,8 @@ import { Validators } from '@angular/forms';
 import { IFunnel, IFunnelStage } from '../shared/models/funnel.model';
 import { FormBuilderTypeSafe, FormGroupTypeSafe } from '../../shared/services';
 import { SelectionItem, guid } from '../../ng-material-components';
+import { FunnelService } from '../shared/services/funnel.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'kpi-funnel-form',
@@ -10,21 +12,13 @@ import { SelectionItem, guid } from '../../ng-material-components';
   styleUrls: ['./funnel-form.component.scss']
 })
 export class FunnelFormComponent {
-    private _funnelModel: IFunnel = {
-        name: '',
-        description: '',
-        stages: [ ]
-    };
-
-    get funnelModel(): IFunnel {
-        return this._funnelModel;
-    }
-
+    private _funnelModel: IFunnel;
     @Input('funnelModel')
     set funnelModel(value: IFunnel) {
         this._funnelModel = value;
         this._updateFunnelFormGroup(value);
     }
+    get funnelModel(): IFunnel { return this._funnelModel; }
 
     private _fg: FormGroupTypeSafe<IFunnel>;
     get fg(): FormGroupTypeSafe<IFunnel> {
@@ -32,17 +26,14 @@ export class FunnelFormComponent {
     }
 
     constructor(
+        private funnelService: FunnelService,
         private fb: FormBuilderTypeSafe,
     ) {
-      this._fg = this._createFunnelFormGroup();
+        this._fg = this._createFunnelFormGroup();
     }
 
     addStage(): void {
-        const newStage: IFunnelStage = {
-            id: guid()
-        };
-
-        this._funnelModel.stages.push(newStage);
+       this.funnelService.addStage();
     }
 
     onStageRemoved(stage: IFunnelStage): void {

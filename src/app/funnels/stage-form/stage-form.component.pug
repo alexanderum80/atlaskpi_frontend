@@ -1,3 +1,4 @@
+pre form valid {{ fg.valid }}
 .m-t-5(flex, layout="column", layout-padding)
     .name-delete-button(flex, layout="row", layout-padding, layout-align="center center")
         bw-text-box(flex, [fg]="fg", field="name", label="Name", leftIcon="label")
@@ -47,19 +48,21 @@
         label="Select Fields to Project",
         field="fieldsToProject",
         leftIcon="device-hub",
-        [items]="kpiSelectionList",
-        [liveSearch]="true",
+        [items]="fieldSelectionList",
         [multiple]="true",
+        [liveSearch]="true",
         liveSearchPlaceholder="... search fields ...",
         noneSelectedText="NOTHING SELECTED")
 
     bw-select-picker(
+        [ngClass]="{'is-disabled': (compareToStageList$ | async)?.length === 0 }"
         flex,
         [fg]="fg",
-        label="Select Stage",
+        label="Compare To Stage",
         field="compareToStage",
         leftIcon="device-hub",
-        [items]="kpiSelectionList",
+        [items]="(compareToStageList$ | async)",
+        [disabled]="(compareToStageList$ | async)?.length === 0"
         [liveSearch]="true",
         liveSearchPlaceholder="... select stage ...",
         noneSelectedText="NOTHING SELECTED")

@@ -1,10 +1,12 @@
 .m-t-25(flex, layout="column", layout-padding)
     bw-text-box(flex-initial, [fg]="fg", field="name", label="Name", leftIcon="label")
-    bw-text-box(flex-initial, [fg]="fg", field="name", label="Name", leftIcon="label")
+    bw-text-box(flex-initial, [fg]="fg", field="description", label="Description", leftIcon="label")
    
     pre {{ fg.value | json }}
 
-    .m-10(flex-initial, *ngFor="let stage of funnelModel?.stages; let i = index")
+    pre funnel form valid {{ fg.valid }}
+
+    div(flex-initial, *ngFor="let stage of funnelModel?.stages; let i = index")
         kpi-collapsable.m-15(headerText="Stage", [color]="'black'")
             kpi-stage-form(
                 [parentFormArray]="fg.get('stages')",

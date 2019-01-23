@@ -1,4 +1,4 @@
-import { Component, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { IFunnelStage, IFunnel } from '../shared/models/funnel.model';
 import { FormGroupTypeSafe, FormBuilderTypeSafe } from '../../shared/services';
 import { FormArray, Validators } from '../../../../node_modules/@angular/forms';
@@ -6,6 +6,11 @@ import { IChartDateRange, IDateRange } from '../../shared/models';
 import { SelectionItem, guid } from '../../ng-material-components';
 import { FunnelService } from '../shared/services/funnel.service';
 import { ChooseColorsComponent } from '../../shared/ui/choose-colors/choose-colors.component';
+import { Subscription } from 'rxjs/Subscription';
+import { IKpiDateRangePickerDateRange } from '../shared/models/models';
+import { Observable, throwError, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 
 enum FunnelColorElementEnum {
   foreground = 'foreground',
@@ -17,7 +22,7 @@ enum FunnelColorElementEnum {
   templateUrl: './stage-form.component.pug',
   styleUrls: ['./stage-form.component.scss']
 })
-export class StageFormComponent implements OnDestroy {
+export class StageFormComponent implements OnInit, OnDestroy {
 
     datePickerConfig = {
       showGoToCurrent: false,
@@ -46,24 +51,58 @@ export class StageFormComponent implements OnDestroy {
     fg: FormGroupTypeSafe<IFunnelStage>;
 
     kpiSelectionList: SelectionItem[];
-    dateRangeSelectionList: SelectionItem[] = [];
+    fieldSelectionList: SelectionItem[] = [];
+    compareToStageList$: Observable<SelectionItem[]>;
 
     selectedColorElement: FunnelColorElementEnum;
 
-    private formControlIndex;
+    subscriptions: Subscription[] = [];
+
+    private _lastKpiDateRangePayload;
 
     constructor(
       private fb: FormBuilderTypeSafe,
-      private funnelService: FunnelService
+      private _funnelService: FunnelService
     ) {
-      this.fg = this._createStageFormGroup();
-      this.kpiSelectionList = funnelService.kpiSelectionList;
-      // this.dateRangeSelectionList = funnelService.dateRangeSelectionList;
+        this.fg = this._createStageFormGroup();
+    }
+
+    ngOnInit() {
+        this.kpiSelectionList = this._funnelService.kpiSelectionList;
+
+        this.subscriptions.push(
+            this.fg.getSafe(f => f.kpi)
+                .valueChanges
+                .subscribe(v => this._updateAvailableFields({ kpi: v}))
+        );
+
+        this.subscriptions.push(
+            this.fg.getSafe(f => f.dateRange)
+                .valueChanges
+                .subscribe(v => this._updateAvailableFields({ dateRange: v}))
+        );
+
+        this.subscriptions.push(
+            this.fg.getSafe(f => f.name)
+                .valueChanges
+                .distinctUntilChanged()
+                .debounceTime(250)
+                .subscribe(v => this._updateStageName(v))
+        );
+
+        this.compareToStageList$
+            = this._funnelService.stagesSelectionList$.pipe(
+                map(originalStageList => {
+                    const index = originalStageList.findIndex(s => s.id === this._stageModel.id);
+                    return originalStageList.filter((x, i) => x.id !== this.stageModel.id && i < index);
+                })
+            );
     }
 
     ngOnDestroy() {
-      const filterIndex = this.parentFormArray.controls.findIndex(c => c === this.fg);
-      if (filterIndex > -1) { this.parentFormArray.removeAt(filterIndex); }
+        this.subscriptions.forEach(s => s.unsubscribe());
+        const filterIndex = this.parentFormArray.controls.findIndex(c => c === this.fg);
+        if (filterIndex > -1) { this.parentFormArray.removeAt(filterIndex); }
     }
 
     removeStage(): void {
@@ -98,14 +137,14 @@ export class StageFormComponent implements OnDestroy {
               //   from: [null],
               //   to: [null]
               // })
-              predefinedDateRange: [null],
+              predefinedDateRange: [null, Validators.required],
               from: [null],
               to: [null]
             }),
             fieldsToProject: [null],
             compareToStage: [null],
-            foreground: [null, Validators.required],
-            background: [null, Validators.required],
+            foreground: ['#fff', Validators.required],
+            background: ['#7cb5ec', Validators.required],
         });
     }
 
@@ -123,12 +162,31 @@ export class StageFormComponent implements OnDestroy {
         });
     }
 
+    private async _updateAvailableFields(options: { kpi?: string, dateRange?: IKpiDateRangePickerDateRange }) {
+        let { kpi = null, dateRange = null } = options;
+
+        const formValue = this.fg.value;
+
+        kpi = kpi || formValue.kpi;
+        dateRange = dateRange || (formValue.dateRange as IKpiDateRangePickerDateRange);
+
+        const selectedPayload = JSON.stringify({ kpi, dateRange });
+
+        if (selectedPayload === this._lastKpiDateRangePayload) { return; }
+        this._lastKpiDateRangePayload = selectedPayload;
+
+        const res = await this._funnelService.getAvailableFields(kpi, dateRange);
+        this.fieldSelectionList = res;
+    }
+
+    private _updateStageName(name: string) {
+        this._funnelService.updateStage(this._stageModel, { name });
+    }
+
     get showCustomDateRangeControl(): boolean {
       return this.fg
                  .getSafe(c => c.dateRange)
                  .value['predefined'] === 'custom';
     }
-
-
 
 }

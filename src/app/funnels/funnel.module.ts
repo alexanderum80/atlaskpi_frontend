@@ -22,8 +22,7 @@ import { ChartsModule } from '../charts';
     SharedModule,
     MaterialFormsModule,
     MaterialUserInterfaceModule,
-    FunnelRoutingModule,
-    ChartsModule
+    FunnelRoutingModule
   ],
   declarations: [
     FunnelComponent,

@@ -1,0 +1,6 @@
+query KPIGroupings($input: KpiGroupingsInput) {
+    kpiGroupings(input: $input) {
+        value
+        name
+    }
+}
