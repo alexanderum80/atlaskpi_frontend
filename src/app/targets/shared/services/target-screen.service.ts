@@ -5,7 +5,7 @@ import SweetAlert from 'sweetalert2';
 import { ChartData } from '../../../charts/shared';
 import { FormBuilderTypeSafe, FormGroupTypeSafe, UserService } from '../../../shared/services';
 import { IListItem } from '../../../shared/ui/lists/list-item';
-import { getNewTarget, ITarget } from '../models/target';
+import { getNewTarget, ITarget, ITargetUser } from '../models/target';
 import { TargetFormModel } from '../models/target-form.model';
 import { FrequencyEnum, PredefinedDateRanges } from '../../../shared/models';
 import { IBasicUser } from '../models/target-user';
@@ -168,6 +168,10 @@ export class TargetScreenService {
 
     removeUser(index: number) {
         this._formModel.removeUser(index);
+    }
+
+    getUsers() {
+        return this._formModel.form.getSafe(f => f.notificationConfig.users).value as ITargetUser[];
     }
 
     addMilestone() {
