@@ -1,3 +1,4 @@
+kpi-spinner(*ngIf="loading")
 .text-center.m-5(*ngIf="isMobile")
     a.switch-link((click)="toggleCalendarVersion()") Switch to {{this.nextCalendarVersion}} calendar version
 
@@ -14,18 +15,7 @@ kpi-sidebar-calendar(*ngIf="shouldDisplayModernCalendar")
                                     field="cancelled",
                                     label="Show cancellations"
             )
-            //- bw-select-picker.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
-            //-                         [fg]="fg", 
-            //-                         field="provider",
-            //-                         label="Providers:",
-            //-                         [multiple]="true",
-            //-                         [items]="providerList",
-            //-                         [liveSearch]="true",
-            //-                         noneSelectedText="All Providers",
-            //-                         #providerpicker,
-            //-                         #sideBarSelectProvider=""
-            //-                         )  
-
+        
             bw-select-picker.m-r-20(flex, flex-xs="100", flex-gt-sm="33",
                                     [fg]="fg", 
                                     field="resource",
@@ -128,17 +118,3 @@ bw-modal(#eventInfoModal='', animation="true", keyboard="true", backdrop="true",
       
     bw-modal-footer
         bw-button(color="blue", title="Ok", class="normal", (clicked)="modalClose()")
-
-
-//- bw-modal(#removeEventModal='', animation="true", keyboard="true", backdrop="true", size="md",
-//-          (onClosed)="cancelRemove()", (onDismiss)="cancelRemove()")
-//-   bw-modal-header
-//-     h4.modal-title.c-black Remove Appointment
-//-   bw-modal-body
-//-     div(layout="row", layout-padding, layout-align="center center")
-//-         i.zmdi.zmdi-delete.c-red.big-icon(flex-none)
-//-         strong(flex) Are you sure you want to permanently remove this Appointment?
-      
-//-   bw-modal-footer
-//-     bw-button(color="blue", title="Confirm", class="normal", (clicked)="deleteEvent()")
-//-     bw-button(title="Cancel", [simple]="true", icon="close", (clicked)="cancelRemove()")
