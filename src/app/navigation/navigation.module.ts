@@ -1,3 +1,4 @@
+import { DataEntryModule } from './../data-entry/data-entry.module';
 import { ResultGroupsComponent } from './global-search/results-groups/result-groups.component';
 import { SearchResultsComponent } from './global-search/search-results/search-results.component';
 import { AddDashboardActivity } from '../shared/authorization/activities/dashboards/add-dashboard.activity';
@@ -37,6 +38,7 @@ import { SearchResultViewModel } from './global-search/search-results/search-res
         MaterialUserInterfaceModule,
         MaterialFormsModule,
         ChartsModule,
+        DataEntryModule,
         KpisModule,
         DataSourceModule,
         RolesModule,

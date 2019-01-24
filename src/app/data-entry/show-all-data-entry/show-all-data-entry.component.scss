@@ -1,0 +1,59 @@
+.show-all-container {
+    height: 95%;
+    padding: 10px;
+
+    .no-data {
+        height: 100%;
+        padding: 5%;
+
+        i.zmdi.zmdi-storage {
+            font-size: 150px;
+            opacity: 0.5;
+        }
+    
+        .no-manual-text {
+            font-size: 1.3em;
+            padding: 20px;
+            opacity: 0.8;
+        } 
+    }
+
+    .data {
+        height: 100%;
+        padding: 10px;
+        flex-wrap: wrap;
+
+        .data-entry-container {
+            margin: 10px;
+            background-color: white;
+            height: 200px;
+            width: 200px;
+
+            bw-actions {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+            }
+
+            img {
+                height: 100px;
+                width: 100px;
+                margin: 20px;
+            }
+
+            .title {
+                padding: 2px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .created-by {
+                padding-top: 5px;
+                opacity: 0.8;
+                font-size: 0.9em;
+            }
+        }
+    }
+    
+}

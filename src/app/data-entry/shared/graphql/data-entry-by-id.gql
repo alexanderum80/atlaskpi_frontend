@@ -1,0 +1,3 @@
+query dataEntryByIdMapCollection($id: String!) {
+  dataEntryByIdMapCollection(id: $id) 
+}

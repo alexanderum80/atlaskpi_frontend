@@ -1,0 +1,108 @@
+.pre-loader.text-center(*ngIf="isLoading")
+    bw-preloader(color="gray")
+
+h3.lead {{ name }}
+
+ag-grid-angular(
+    *ngIf="deService.rowData && !isLoading",
+    [ngStyle]="gridLayoutStyle",
+    class="ag-theme-material",
+    [rowData]="deService.rowData",
+    [defaultColDef]="defaultColDef",
+    [pagination]=true,
+    [paginationAutoPageSize]=true,
+    [context]="deService.schema",
+    [columnDefs]="deService.columnDefs",
+    [floatingFilter]=true,
+    (cellValueChanged)="onCellValueChanged($event)",
+    (gridReady)="onGridReady($event)")
+
+.actions.m-t-10(*ngIf="deService.rowData && !isLoading" layout="row", layout-align="end center")
+    div(flex-initial)
+        bw-button.addButton([disabled]="!(deService.changes$ | async).length", title="Save" color="blue", icon="check", (clicked)="save()")
+    div(flex-initial)
+        bw-button.addButton(color="black", title="Cancel", icon="check", [simple]="true", (clicked)="cancel()")
+
+
+//- kpi-spinner(*ngIf="isLoading")
+
+//- .enter-data-form-container.h-100.w-100.overflow-auto(*ngIf="!isLoading", layout="row", layout-padding)
+//-     .flex(layout="column")
+//-         .table.h-90.overflow-auto
+//-             .table-header.bgm-blue(layout="row")
+//-                 i.zmdi.zmdi-filter-list.filter-icon([class.show-filter-row]="showfilterRow", (click)="toogleFilterRow()")
+//-                 .flex.m-l-20(*ngFor="let header of headerData, index as i", layout="row")
+//-                     .flex.column-text {{ header }}
+//-                     div(flex-none, layout-align="end end")
+//-                         bw-actions.c-white((click)="sortDataAsc(i)", [actionItems]="sortActionItems", color="white", class="f-20", (actionClicked)="sortActionClicked($event, i)")
+//-             .table-body(layout="column")
+//-                 //- filter row
+//-                 .data-row-filter([class.hidden]="!showfilterRow")
+//-                     .flex(layout="row", *ngFor="let controls of vm.fg.get('dataFilter').controls, let c = index")
+//-                         .columns.flex.m-l-20(*ngFor="let fieldName of controls.controls, let f = index")
+//-                             div(*ngIf="getInputType(f) === 'Date'")
+//-                                 bw-date-picker(
+//-                                         [fg]="controls",
+//-                                         [field]="f",
+//-                                         [config]="datePickerConfig")
+//-                             div(*ngIf="getInputType(f) === 'Boolean'")
+//-                                 bw-checkbox(
+//-                                         [fg]="controls",
+//-                                         [field]="f")
+//-                             div(*ngIf="getInputType(f) === 'customList'")
+//-                                 bw-select-picker.w-100(
+//-                                         [fg]="controls",
+//-                                         [field]="f",
+//-                                         [items]="getCustomList(f)",
+//-                                         [liveSearch]="true",
+//-                                         liveSearchPlaceholder="...search...",
+//-                                         noneSelectedText="NOTHING SELECTED")
+//-                             div(*ngIf="getInputType(f) === 'Number' || getInputType(f) === 'String'")
+//-                                 bw-text-box(
+//-                                         [fg]="controls",
+//-                                         [field]="f")
+
+//-                 //- data rows
+//-                 .data-row.flex(layout="row", *ngFor="let controls of vm.fg.get('data').controls, let c = index")
+//-                     .columns.flex.m-l-20(*ngFor="let fieldName of controls.controls, let f = index")
+//-                         div(*ngIf="getInputType(f) === 'Date'")
+//-                             bw-date-picker(
+//-                                     [fg]="controls",
+//-                                     [field]="f",
+//-                                     [config]="datePickerConfig")
+//-                         div(*ngIf="getInputType(f) === 'Boolean'")
+//-                             bw-checkbox(
+//-                                     [fg]="controls",
+//-                                     [field]="f")
+//-                         div(*ngIf="getInputType(f) === 'customList'")
+//-                             bw-select-picker.w-100(
+//-                                     [fg]="controls",
+//-                                     [field]="f",
+//-                                     [items]="getCustomList(f)",
+//-                                     [liveSearch]="true",
+//-                                     liveSearchPlaceholder="...search...",
+//-                                     noneSelectedText="NOTHING SELECTED")
+//-                         div(*ngIf="getInputType(f) === 'Number' || getInputType(f) === 'String'")
+//-                             bw-text-box(
+//-                                     [fg]="controls",
+//-                                     [field]="f")
+
+//-                         .flex.err-message(*ngIf="fieldName && fieldName.errors && fieldName.errors.required") This field is required.
+//-                         .flex.err-message(*ngIf="fieldName && fieldName.errors && fieldName.errors.invalidDataType") Incorrect data type.
+
+//-         div(layout="row")
+//-             .pagination.flex-70(*ngIf="pagerService.pager.pages && pagerService.pager.pages.length", layout="row")
+//-                 .p-5([ngClass]="{disabled:pagerService.pager.currentPage === 1}")
+//-                     bw-button(title="<< First", color="blue", (clicked)="pagerService.setPage(1, vm.dataCollection)")
+//-                 .p-5([ngClass]="{disabled:pagerService.pager.currentPage === 1}")
+//-                     bw-button(title="< Previous", color="blue", (clicked)="pagerService.setPage(pagerService.pager.currentPage - 1, vm.dataCollection)")
+//-                 //- div(ngFor="let page of pagerService.pager.pages", [ngClass]="{active:pagerService.pager.currentPage === page}")
+//-                 //-     bw-button([title]="page", color="blue", (clicked)="pagerService.setPage(page, vm.dataCollection)")
+//-                 .p-5([ngClass]="{disabled:pagerService.pager.currentPage === pagerService.pager.totalPages}")
+//-                     bw-button(title="Next >", color="blue", (clicked)="pagerService.setPage(pagerService.pager.currentPage + 1, vm.dataCollection)")
+//-                 .p-5([ngClass]="{disabled:pagerService.pager.currentPage === pagerService.pager.totalPages}")
+//-                     bw-button(title="Last >>", color="blue", (clicked)="pagerService.setPage(pagerService.pager.totalPages, vm.dataCollection)")
+
+//-             .flex(layout="row", layout-align="end center") 
+//-                 bw-button(icon="floppy", title="SAVE", color="blue", (clicked)="save()")
+//-                 bw-button(icon="close", title="CANCEL", [simple]="true", color="black", (clicked)="cancel()")

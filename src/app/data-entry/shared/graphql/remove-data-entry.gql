@@ -1,0 +1,6 @@
+mutation RemoveDataEntry($name: String!) {
+  removeDataEntry(name: $name) {
+  	success
+   	entity
+  }
+}
