@@ -71,7 +71,7 @@ export class FunnelFormComponent implements OnInit, OnDestroy {
         this.funnelService.addStage();
     }
 
-    onRemoveStage(stage: IFunnelStage) {
+    removeStage(stage: IFunnelStage) {
         this.funnelService.removeStage(stage);
     }
 

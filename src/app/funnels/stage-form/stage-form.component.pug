@@ -3,7 +3,7 @@ pre form valid {{ fg.valid }}
     .name-delete-button(flex, layout="row", layout-padding, layout-align="center center")
         bw-text-box(flex, [fg]="fg", field="name", label="Name", leftIcon="label")
         .m-l-10(flex-initial)
-          bw-button(color="red", title="Remove", (clicked)="removeStage()")
+          bw-button(color="red", title="Remove", (clicked)="onRemoveStage()")
     
     
     //- bw-text-box(flex, [fg]="fg", field="kpi", label="Kpi", leftIcon="label")

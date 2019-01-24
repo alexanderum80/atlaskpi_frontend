@@ -9,7 +9,7 @@
             kpi-stage-form(
                 [parentFormArray]="fg.get('stages')",
                 [stageModel]="stage",
-                (stageRemoved)="onRemoveStage($event)"
+                (removeStage)="removeStage($event)"
             )
                 
 

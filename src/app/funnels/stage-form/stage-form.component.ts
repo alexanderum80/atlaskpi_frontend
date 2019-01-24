@@ -44,7 +44,7 @@ export class StageFormComponent implements OnInit, OnDestroy {
         value.push(this.fg);
     }
 
-    @Output() stageRemoved = new EventEmitter<IFunnelStage>();
+    @Output() removeStage = new EventEmitter<IFunnelStage>();
 
     @ViewChild(ChooseColorsComponent) chooseColors: ChooseColorsComponent;
 
@@ -105,8 +105,8 @@ export class StageFormComponent implements OnInit, OnDestroy {
         if (filterIndex > -1) { this.parentFormArray.removeAt(filterIndex); }
     }
 
-    removeStage(): void {
-      this.stageRemoved.emit(this._stageModel);
+    onRemoveStage(): void {
+      this.removeStage.emit(this._stageModel);
     }
 
     openSelectColor(element: FunnelColorElementEnum) {
