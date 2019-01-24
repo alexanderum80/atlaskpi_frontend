@@ -1,5 +1,31 @@
 @import '../../../assets/styles/themes/_cosmetic-mixins';
 $vertical-spacing: 27px;
+.position input {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    background-color: white;
+    color: black;
+    font: .8em sans-serif;
+    font-weight: 700;
+    text-align: center;
+    border: none;
+    z-index: 50;
+}
+.err-position {
+    border: 2px solid red !important;
+}
+
+.err-message {
+    position: absolute;
+    top: 32px;
+    right: 10px;
+    color: red;
+    font: .8em sans-serif;
+    text-align: center;
+}
+
 .widget {
     &.big {
         min-height: 165px;
@@ -11,7 +37,7 @@ $vertical-spacing: 27px;
     }
     .description-button {
         position: absolute;
-        right: 5px;
+        right: 35px;
         top: 5px;
     }
     .widget-title {
@@ -42,6 +68,7 @@ $vertical-spacing: 27px;
         font-size: 0.9em;
         margin-bottom: $vertical-spacing;
     }
+    
     .widget-description {
         background-color: rgba(0, 0, 0, 0.9);
         color: white;

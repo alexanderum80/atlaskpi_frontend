@@ -1,3 +1,4 @@
+import { FormGroup } from '@angular/forms';
 import { CommonService } from '../../shared/services';
 import { DeleteWidgetActivity } from '../../shared/authorization/activities/widgets/delete-widget.activity';
 import { UpdateWidgetActivity } from '../../shared/authorization/activities/widgets/update-widget.activity';
@@ -16,6 +17,7 @@ import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs/Subscription';
 import { CloneWidgetActivity } from 'src/app/shared/authorization/activities/widgets/clone-widget.activity';
 import { getNameColor } from '../../charts/shared/ui/chart-format-info/material-colors';
+import { GenericSelectionService } from '../../shared/services/generic-selection.service';
 
 const Highcharts = require('highcharts/js/highcharts');
 const scheduleJobByWidgetIdGql = require('graphql-tag/loader!./scheduleJob-by-widget-id.query.gql');
@@ -29,8 +31,10 @@ const scheduleJobByWidgetIdGql = require('graphql-tag/loader!./scheduleJob-by-wi
 })
 export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
     @Input() widget: IWidget;
+    @Input() fg: FormGroup = null;
     @Input() widgetPreview: boolean;
     @Output() done = new EventEmitter<any>();
+    @Output() validPosition = new EventEmitter<boolean>(true);
 
     chart: Chart;
     showDescription = false;
@@ -75,6 +79,11 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         ]
     }];
 
+    selectionSubscription: Subscription;
+
+    widgetSelected = false;
+    previousPositionValue = 0;
+
     constructor(
         private sanitizer: DomSanitizer,
         private _apollo: Apollo,
@@ -82,6 +91,7 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         public updateWidgetActivity: UpdateWidgetActivity,
         public deleteWidgetActivity: DeleteWidgetActivity,
         public cloneWidgetActivity: CloneWidgetActivity,
+        private _selectionService: GenericSelectionService
     ) {}
 
     ngOnChanges(changes: SimpleChanges) {
@@ -117,10 +127,29 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
                                 this.deleteWidgetActivity,
                                 this.cloneWidgetActivity]);
         this._disabledActionItem();
+        if (this.fg) {
+            this.selectionSubscription = this._selectionService.selection$.subscribe(selectedItems => {
+                const exist = selectedItems.find(i => i.id === this.widget._id);
+                if (exist) {
+                this.widgetSelected = true;
+                } else {
+                this.widgetSelected = false;
+                }
+            });
+        }
     }
 
     ngOnDestroy() {
         CommonService.unsubscribe(this._subscription);
+    }
+
+    onClickPosition() {
+        this._selectionService.allowDisableSelection = false;
+        this.previousPositionValue = this.fg.controls['position'].value;
+    }
+    changePosition(event) {
+        // const itemChange = { id: this.widget._id, position: parseInt(event, 0) };
+        // this._selectionService.updateItemPosition(itemChange);
     }
 
     setStyle() {
@@ -129,6 +158,13 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
             'color': this.widgetFontColor,
         };
     }
+
+    lostFocusPosition() {
+        if (this.fg.controls['position'].errors) {
+          const fgValue = { position: this.previousPositionValue };
+          this.fg.patchValue(fgValue);
+        }
+      }
 
     private _renderChart() {
         const chart = < IChart > JSON.parse(this.widget.materialized.chart);

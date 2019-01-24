@@ -16,27 +16,28 @@ div > bw-button {
     z-index: 20;
 }
 
-.position input {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 20px;
-    background-color: white;
-    color: black;
-    font: .8em sans-serif;
-    font-weight: 700;
-    text-align: center;
-    border: none;
-}
-.err-position {
-    border: 2px solid red !important;
-}
+// .position input {
+//     position: absolute;
+//     top: 10px;
+//     right: 10px;
+//     width: 20px;
+//     background-color: white;
+//     color: black;
+//     font: .8em sans-serif;
+//     font-weight: 700;
+//     text-align: center;
+//     border: none;
+//     z-index: 50;
+// }
+// .err-position {
+//     border: 2px solid red !important;
+// }
 
-.err-message {
+/* .err-message {
     position: absolute;
     top: 32px;
     right: 10px;
     color: red;
     font: .8em sans-serif;
     text-align: center;
-}
+} */

@@ -26,6 +26,7 @@ export class AutoRenderableWidgetComponent implements OnInit, AfterViewInit {
   widgetSelected = false;
   selectionSubscription: Subscription;
   fgWidget: FormGroup;
+  previousPositionValue = 0;
 
   constructor(private _apollo: Apollo,
               private _selectionService: GenericSelectionService) { }
@@ -42,6 +43,7 @@ export class AutoRenderableWidgetComponent implements OnInit, AfterViewInit {
         const fgValue = {
           position: exist.position
         };
+        this.previousPositionValue = exist.position;
         this.fgWidget.patchValue(fgValue);
         this.widgetSelected = true;
       } else {
@@ -64,6 +66,7 @@ export class AutoRenderableWidgetComponent implements OnInit, AfterViewInit {
     } else {
       this.validPosition.emit(true);
       this.changePosition(value.position);
+      this.previousPositionValue = value.position;
     }
    });
   }
@@ -104,6 +107,13 @@ export class AutoRenderableWidgetComponent implements OnInit, AfterViewInit {
     });
   }
 
+  lostFocusPosition() {
+    if (this.fgWidget.controls['position'].errors) {
+      const fgValue = { position: this.previousPositionValue };
+      this.fgWidget.patchValue(fgValue);
+    }
+  }
+
   changePosition(event) {
     const itemChange = { id: this.item._id, position: parseInt(event, 0) };
     this._selectionService.updateItemPosition(itemChange);
@@ -128,7 +138,7 @@ export class AutoRenderableWidgetComponent implements OnInit, AfterViewInit {
   }
 
   get placeholderVisible() {
-    return !this.loading && !this.widget;
+    return !this.loading && !this.widget && this.widgetPreview;
   }
 
   get previewButtonColor() {
