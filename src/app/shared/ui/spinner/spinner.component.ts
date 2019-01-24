@@ -30,7 +30,7 @@ export class SpinnerComponent {
 
     private updateLeftValue(size: IViewportSize) {
         this.left = size.width >= 1200 ? 220 : 0;
-        this.leftSpinner = this.sanitizer.bypassSecurityTrustStyle(size.width >= 1200 ? 'calc(50% + 120px)' : 'calc(50% - 60px)');
+        this.leftSpinner = this.sanitizer.bypassSecurityTrustStyle(size.width >= 1200 ? 'calc(50% + 44px)' : 'calc(50% - 66px)');
     }
 
 }
