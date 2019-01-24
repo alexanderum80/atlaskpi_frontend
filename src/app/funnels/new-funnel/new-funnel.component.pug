@@ -1,15 +1,15 @@
 .z-depth-1.bgm-white.m-10.p-10(*ngIf="ready$ | async", layout="column")
-        div(flex, layout-xs="column", layout-gt-sm="row", layout-align="center center")
+        div(flex, layout-xs="column", layout-gt-sm="row", layout-align="start start")
       
-            .funnel-form(flex)
+            .funnel-form.w-100(flex)
                 kpi-funnel-form([funnelModel]="funnelModel")
 
             //- to be a funnel preview component
-            .funnel-preview.p-15(flex, layout="column", layout-align="center center")
+            .funnel-preview.w-100.p-15(flex, layout="column", layout-align="center center")
                 p.text-center.m-b-15(flex-initial) Funnel Preview:
 
                 div(flex)
-                    kpi-funnel-preview
+                    kpi-funnel-preview([renderedFunnel]="(renderedFunnel$ | async)")
 
                   
         div(flex-initial)

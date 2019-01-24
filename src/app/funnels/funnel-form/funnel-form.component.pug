@@ -1,17 +1,15 @@
-.m-t-25(flex, layout="column", layout-padding)
-    bw-text-box(flex-initial, [fg]="fg", field="name", label="Name", leftIcon="label")
-    bw-text-box(flex-initial, [fg]="fg", field="description", label="Description", leftIcon="label")
+.m-t-25(flex, layout="column", layout-padding, layout-align="start start")
+    bw-text-box.w-100(flex-initial, [fg]="fg", field="name", label="Name", leftIcon="label")
    
-    pre {{ fg.value | json }}
+    //- pre {{ fg.value | json }}
+    //- pre funnel form valid {{ fg.valid }}
 
-    pre funnel form valid {{ fg.valid }}
-
-    div(flex-initial, *ngFor="let stage of funnelModel?.stages; let i = index")
+    .w-100(flex-initial, *ngFor="let stage of funnelModel?.stages; let i = index")
         kpi-collapsable.m-15(headerText="Stage", [color]="'black'")
             kpi-stage-form(
                 [parentFormArray]="fg.get('stages')",
                 [stageModel]="stage",
-                (stageRemoved)="onStageRemoved($event)"
+                (stageRemoved)="onRemoveStage($event)"
             )
                 
 
