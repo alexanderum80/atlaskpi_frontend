@@ -1,0 +1,5 @@
+.stage-body([style.color]="stage.foreground", layout="column", layout-padding, layout-align="center center")
+    .centered(flex, layout="row", layout-align="center center")
+        .count.m-10(flex-initial) \#{{stage.count}}
+        .amount.m-10(flex-initial) ${{formattedAmount}}
+

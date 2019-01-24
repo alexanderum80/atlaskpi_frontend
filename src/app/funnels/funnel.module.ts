@@ -13,8 +13,8 @@ import { NewFunnelComponent } from './new-funnel/new-funnel.component';
 import { FunnelFormComponent } from './funnel-form/funnel-form.component';
 import { StageFormComponent } from './stage-form/stage-form.component';
 import { FunnelService } from './shared/services/funnel.service';
-import { ChartsModule } from '../charts';
 import { FunnelPreviewComponent } from './funnel-preview/funnel-preview.component';
+import { FunnelPreviewStageComponent } from './funnel-preview-stage/funnel-preview-stage.component';
 
 @NgModule({
   imports: [
@@ -33,7 +33,8 @@ import { FunnelPreviewComponent } from './funnel-preview/funnel-preview.componen
     NewFunnelComponent,
     FunnelFormComponent,
     StageFormComponent,
-    FunnelPreviewComponent],
+    FunnelPreviewComponent,
+    FunnelPreviewStageComponent],
   exports: [FunnelComponent],
   providers: [ FunnelService ]
 })
