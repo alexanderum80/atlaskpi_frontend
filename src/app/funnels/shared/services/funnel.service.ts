@@ -139,7 +139,6 @@ export class FunnelService {
     async getAvailableFields(kpi: string, dateRange: IKpiDateRangePickerDateRange ): Promise<SelectionItem[]> {
         if (!kpi || !dateRange) { return []; }
 
-
         if (!dateRange.predefinedDateRange) { return []; }
 
         // incomplete custom dateRange
@@ -147,7 +146,6 @@ export class FunnelService {
              && (!dateRange.from || !dateRange.to)) {
              return [];
         }
-
 
         const input = this._getGroupingInfoInput(kpi, dateRange);
 
@@ -261,7 +259,7 @@ export class FunnelService {
         this.stagesSelectionList$.next(stagesSelectionList);
     }
 
-    private _getGroupingInfoInput(kpi: string, dateRange: IKpiDateRangePickerDateRange): { id: string, dateRange: IChartDateRange[] } {
+    private _getGroupingInfoInput(kpi: string, dateRange: IKpiDateRangePickerDateRange): { ids: string[], dateRange: IChartDateRange[] } {
         const dr = { predefined: dateRange.predefinedDateRange, custom: null};
 
         // process custom dateRange
@@ -273,7 +271,7 @@ export class FunnelService {
         }
 
         return {
-            id: kpi,
+            ids: [kpi],
             dateRange: [dr]
         };
     }

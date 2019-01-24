@@ -87,6 +87,11 @@ const MENU_ITEMS: MenuItem[] = [
     id: 'data-entry',
     title: 'Data entry',
     icon: 'keyboard'
+},
+{
+    id: 'funnel',
+    title: 'Funnel',
+    icon: 'triangle-down',
 }
 // , {
 //     id: 'company',

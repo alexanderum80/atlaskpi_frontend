@@ -4,8 +4,8 @@ import { Injectable } from '@angular/core';
 
 import { Field, ViewModel } from '../../ng-material-components/viewModels';
 import { IListItem } from '../../shared/ui/lists/list-item';
-import { IFilter } from '../../shared/models/filter.model';
 import { IFunnel } from '../shared/models/funnel.model';
+import { IFilter } from '../../shared/models/filter.model';
 
 @Injectable()
 export class ListFunnelViewModel extends ViewModel<IFilter> {
