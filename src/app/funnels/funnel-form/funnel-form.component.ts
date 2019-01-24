@@ -44,17 +44,15 @@ export class FunnelFormComponent {
         return this.fb.group<IFunnel>({
             _id: [null],
             name: [null, Validators.required],
-            description: [null, Validators.required],
             stages: this.fb.array([])
         });
     }
 
     private _updateFunnelFormGroup(value: IFunnel) {
-        const { name = '', description = '' } = value || {};
+        const { name = '' } = value || {};
 
         this.fg.patchValue({
             name,
-            description
         });
     }
 

@@ -1,0 +1,14 @@
+.funnel-body { 
+    min-width: 400px;
+    min-height: 400px; 
+    background-color: #dddd; 
+    
+    -webkit-clip-path: polygon(0 0, 100% 0, 69% 57%, 69% 100%, 29% 100%, 28% 58%);
+    clip-path: polygon(0 0, 100% 0, 69% 57%, 69% 100%, 29% 100%, 28% 58%);
+} 
+
+.stage {
+    min-height: 20px;
+    border: 1px solid #eeeeee;
+}
+

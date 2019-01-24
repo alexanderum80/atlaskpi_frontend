@@ -93,8 +93,8 @@ export class StageFormComponent implements OnInit, OnDestroy {
         this.compareToStageList$
             = this._funnelService.stagesSelectionList$.pipe(
                 map(originalStageList => {
-                    const index = originalStageList.findIndex(s => s.id === this._stageModel.id);
-                    return originalStageList.filter((x, i) => x.id !== this.stageModel.id && i < index);
+                    const index = originalStageList.findIndex((s => s.id === this._stageModel._id));
+                    return originalStageList.filter((x, i) => x.id !== this.stageModel._id && i < index);
                 })
             );
     }
@@ -128,7 +128,8 @@ export class StageFormComponent implements OnInit, OnDestroy {
 
     private _createStageFormGroup(): FormGroupTypeSafe<IFunnelStage> {
         return this.fb.group<IFunnelStage>({
-            id: [guid()],
+            _id: [guid()],
+            order: [null],
             name: [null, Validators.required],
             kpi: [null, Validators.required],
             dateRange: this.fb.group<any>({
@@ -153,7 +154,7 @@ export class StageFormComponent implements OnInit, OnDestroy {
         if (!value) { return this.fg.reset(); }
 
         const {
-          id = '',
+          _id = '',
           name = '',
         } = value || {};
 

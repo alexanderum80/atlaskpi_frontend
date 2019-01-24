@@ -12,7 +12,6 @@ import { IFunnel } from '../shared/models/funnel.model';
 export class NewFunnelComponent implements OnInit {
   funnelModel: IFunnel = {
       name: '',
-      description: '',
       stages: [ ]
   };
 

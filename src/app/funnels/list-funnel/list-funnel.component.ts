@@ -10,8 +10,8 @@ import { Router } from '@angular/router';
 const funnelListMock: IFunnel[] =
 // [];
 [
-    { _id: '1', name: 'Sales Funnel', description: 'This is the sales funnel', stages: [] },
-    { _id: '2', name: 'Inquires Funnel', description: 'This is the inquires funnel',  stages: [] },
+    { _id: '1', name: 'Sales Funnel', stages: [] },
+    { _id: '2', name: 'Inquires Funnel', stages: [] },
 ];
 
 @Component({

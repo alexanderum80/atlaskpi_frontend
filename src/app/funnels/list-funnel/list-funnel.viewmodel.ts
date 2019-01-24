@@ -37,7 +37,6 @@ export class ListFunnelViewModel extends ViewModel<IFilter> {
             id: f._id,
             imagePath: '/assets/img/pages/funnel-list-item.svg',
             title: f.name,
-            subtitle: f.description,
         }));
     }
 

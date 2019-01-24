@@ -6,7 +6,7 @@ import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { SelectionItem, guid } from '../../../ng-material-components';
 import { ToSelectionItemList } from '../../../shared/extentions';
 import { FormGroupTypeSafe } from '../../../shared/services';
-import { IFunnel, IFunnelStage } from '../models/funnel.model';
+import { IFunnel, IFunnelStage, IFunnelStageOptions } from '../models/funnel.model';
 import { IKpiDateRangePickerDateRange } from '../models/models';
 import { ApolloService } from '../../../shared/services/apollo.service';
 import { isEmpty } from 'lodash';
@@ -92,8 +92,13 @@ export class FunnelService {
 
     addStage() {
         const newStage: IFunnelStage = {
-            id: guid(),
-            name: 'New Stage'
+            _id: guid(),
+            order: this._funnelModel.stages.length,
+            name: 'New Stage',
+            kpi: null,
+            dateRange: null,
+            foreground: '#fff',
+            background: '#7cb5ec'
         };
 
         this._funnelModel.stages.push(newStage);
@@ -101,7 +106,7 @@ export class FunnelService {
         this._emitStagesList();
     }
 
-    updateStage(stage: IFunnelStage, props: IFunnelStage) {
+    updateStage(stage: IFunnelStage, props: IFunnelStageOptions) {
         const { name } = props;
         const foundStage = this._funnelModel.stages.find(s => s === stage);
 
@@ -117,7 +122,7 @@ export class FunnelService {
 
     private _emitStagesList() {
         const stagesSelectionList
-        = ToSelectionItemList(this._funnelModel.stages, 'id', 'name');
+        = ToSelectionItemList(this._funnelModel.stages, '_id', 'name');
 
         this.stagesSelectionList$.next(stagesSelectionList);
     }

@@ -14,6 +14,7 @@ import { FunnelFormComponent } from './funnel-form/funnel-form.component';
 import { StageFormComponent } from './stage-form/stage-form.component';
 import { FunnelService } from './shared/services/funnel.service';
 import { ChartsModule } from '../charts';
+import { FunnelPreviewComponent } from './funnel-preview/funnel-preview.component';
 
 @NgModule({
   imports: [
@@ -31,7 +32,8 @@ import { ChartsModule } from '../charts';
     ShowFunnelComponent,
     NewFunnelComponent,
     FunnelFormComponent,
-    StageFormComponent],
+    StageFormComponent,
+    FunnelPreviewComponent],
   exports: [FunnelComponent],
   providers: [ FunnelService ]
 })
