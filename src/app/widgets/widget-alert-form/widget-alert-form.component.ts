@@ -8,6 +8,8 @@ import { IUser } from '../../users/shared/models/user';
 import { Subscription } from 'rxjs/Subscription';
 import {CommonService} from '../../shared/services/common.service';
 import { isEmpty, isNumber } from 'lodash';
+import { DeliveryMethodEnum } from '../../alerts/alerts.model';
+import { NotificationService } from '../../shared/services/notification.service';
 
 const usersQuery = require('graphql-tag/loader!./users.query.gql');
 
@@ -28,7 +30,8 @@ export class WidgetAlertFormComponent implements OnInit, OnDestroy {
     private _apollo: Apollo,
     private _cdr: ChangeDetectorRef,
     private _fb: FormBuilder,
-    public vm: WidgetAlertFormViewModel
+    public vm: WidgetAlertFormViewModel,
+    private notificationService: NotificationService,
   ) {}
 
   ngOnInit() {
@@ -149,6 +152,21 @@ export class WidgetAlertFormComponent implements OnInit, OnDestroy {
 
   get editId(): string {
     return this._editId;
+  }
+
+  get canTestAlert() {
+      const value = this.vm.payload;
+      return value.notifyUsers.length && (value.emailNotified || value.pushNotification);
+  }
+
+  testAlert() {
+    const value = this.vm.payload;
+    const deliveryMethods = [];
+
+    if (value.emailNotified) { deliveryMethods.push(DeliveryMethodEnum.email); }
+    if (value.pushNotification) { deliveryMethods.push(DeliveryMethodEnum.push); }
+
+    return this.notificationService.send(value.notifyUsers as string[], deliveryMethods, 'Your SPA Revenue is $750.50');
   }
 
 }

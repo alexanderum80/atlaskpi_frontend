@@ -19,7 +19,6 @@ import { CustomListFormComponent } from './custom-list/custom-list-form/custom-l
 import { NewCustomListComponent } from './custom-list/new-custom-list/new-custom-list.component';
 import { CustomListFormViewModel } from './custom-list/custom-list.viewmodel';
 import { CustomListComponent } from './custom-list/custom-list.component';
-import { PagerService } from './shared/service/pager.service';
 import { AgGridModule } from 'ag-grid-angular';
 
 @NgModule({
@@ -36,6 +35,6 @@ import { AgGridModule } from 'ag-grid-angular';
         EnterDataFormComponent, DateFieldPopupComponent, UserSelectionComponent, PredefinedTemplateComponent,
         CustomListFormComponent, NewCustomListComponent, CustomListComponent, CustomListSummaryComponent],
   exports: [DataEntryComponent],
-  providers: [DataEntryFormViewModel, CustomListFormViewModel, PagerService]
+  providers: [DataEntryFormViewModel, CustomListFormViewModel]
 })
 export class DataEntryModule { }

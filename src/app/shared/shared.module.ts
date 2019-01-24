@@ -59,6 +59,7 @@ import { FileInputComponent } from './ui/file-input/file-input.component';
 import { RemoveConfirmationComponent } from './ui/remove-confirmation/remove-confirmation.component';
 import { ErrorComponent } from './ui/error/error.component';
 import { IsInViewportDirective } from './directives/is-in-viewport.directive';
+import { NotificationService } from './services/notification.service';
 import { ChooseColorsComponent } from './ui/choose-colors/choose-colors.component';
 
 @NgModule({
@@ -151,6 +152,7 @@ import { ChooseColorsComponent } from './ui/choose-colors/choose-colors.componen
         FileUploadClientService,
         FormBuilderTypeSafe,
         DateService,
+        NotificationService,
     ],
 })
 export class SharedModule { }

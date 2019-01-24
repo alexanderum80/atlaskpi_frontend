@@ -10,6 +10,7 @@ import * as XLSX from 'ts-xlsx';
 import { Router } from '@angular/router';
 import { DateFieldPopupComponent } from './date-field-popup/date-field-popup.component';
 import { CustomFormViewModel } from './custom-form.view-model';
+import { camelCase } from 'change-case';
 
 const addDataEntryMutation = require('graphql-tag/loader!../../shared/graphql/add-data-entry.gql');
 const updateDataEntryMutation = require('graphql-tag/loader!../../shared/graphql/update-data-entry.gql');
@@ -205,7 +206,7 @@ export class ImportFileComponent implements OnInit {
     const fileExtensionIndex = this.file.name.lastIndexOf('.') !== -1 ? this.file.name.lastIndexOf('.') : this.file.name.length - 1;
     const fileName = this.file.name.substr(0, fileExtensionIndex);
 
-    this._apolloService.networkQuery(dataSourceByNameQuery, { name: fileName })
+    this._apolloService.networkQuery(dataSourceByNameQuery, { name: camelCase(fileName).toLowerCase() })
       .then(res => {
         if (res.dataSourceByName) {
           return Sweetalert({

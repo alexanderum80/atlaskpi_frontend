@@ -1,5 +1,5 @@
+kpi-spinner(*ngIf="loading")
 .dashboard-show.p-relative(*ngIf="!isEditChartFromDashboard", layout="column")
-    kpi-spinner(*ngIf="loading")
     .big-widgets(*ngIf="bigWidgets.length", flex-none, [attr.layout-padding]="!isMobile")
         div(layout="row", layout-wrap, layout-padding)
             div(*ngFor="let bWidget of bigWidgets",

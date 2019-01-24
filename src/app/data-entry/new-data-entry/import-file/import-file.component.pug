@@ -12,8 +12,10 @@
           .file-name(*ngIf="csvFileData.inputName", layout-align="center") {{ csvFileData.inputName }}
           i.zmdi.zmdi-check-circle.check-icon(*ngIf="csvFileData.inputName")
         .import-excel(*ngIf="excelFileData.inputName || noFileImported", layout="column", [class.selected-file]="excelFileData.inputName")
+          div(*ngIf="excelFileData.inputName && !(vm.dateFields && vm.dateFields.length)", style="text-align: center")
+           bw-preloader(color="gray")
           i.zmdi.zmdi-close.close-icon(*ngIf="excelFileData.inputName", (click)="dropImportedFile('excel')")
-          img(src="{{ excelImagePath }}", alt="Enter data image")
+          img(*ngIf="!excelFileData.inputName || vm.dateFields && vm.dateFields.length", src="{{ excelImagePath }}", alt="Enter data image")
           .file-name(*ngIf="excelFileData.inputName", , layout-align="center") {{ excelFileData.inputName }}
           i.zmdi.zmdi-check-circle.check-icon(*ngIf="excelFileData.inputName")
       .p-30(layout="row", layout-align="center center")
@@ -26,7 +28,7 @@
       .user-selection(*ngFor="let user of usersList, index as i", layout="column")
         kpi-user-selection(layout="row", [user]="user", (selectedStatus)="updateUserSelection($event, i)")
   .button-panel(layout="row", layout-align="end end")
-      bw-button(icon="floppy", title="SAVE", color="blue", (clicked)="save()", [disabled]="!isFormValid()")
+      bw-button(icon="floppy", title="SAVE", color="blue", (clicked)="save()", [disabled]="!isFormValid() && !(vm.dateFields && vm.dateFields.length)")
       bw-button(icon="close", title="CANCEL", [simple]="true", color="black", (clicked)="cancel()")
 
   //- Popup for select date field
