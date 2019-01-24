@@ -11,6 +11,7 @@ ag-grid-angular(
     [defaultColDef]="defaultColDef",
     [pagination]=true,
     [paginationAutoPageSize]=true,
+    [context]="deService.schema",
     [columnDefs]="deService.columnDefs",
     [floatingFilter]=true,
     (cellValueChanged)="onCellValueChanged($event)",

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { isEmpty } from 'lodash';
 
 export interface IDataChanged {
     _id: string;
@@ -39,6 +40,11 @@ export class EnterDataFormService {
         this.res = res;
         this.columnDefs = this.prepareColumns(res);
         this.rowData = this.prepareRecords(res);
+        this._changesSubject.next([]);
+    }
+
+    get schema() {
+        return this.res.schema;
     }
 
     get name() {
@@ -58,9 +64,9 @@ export class EnterDataFormService {
     }
 
     registerChange(change: any): any {
-        this.applyValueDataType(change);
-
+        //this.applyValueDataType(change);
         let changes = this._changesSubject.value;
+
         const changeExist = changes.find(c => c === change.data);
 
         if (!changeExist) {
@@ -100,6 +106,9 @@ export class EnterDataFormService {
                     headerName: key,
                     field: value.path,
                     filter: this.getColumnFilter(value.dataType),
+                    valueSetter: (params) => {
+                        return this.applyValueDataType(params);
+                    }
                 };
 
                 // check for numeric columns
@@ -140,24 +149,54 @@ export class EnterDataFormService {
     private applyValueDataType(change: any): any {
         const fieldName = change.colDef.field;
         const fieldDefinition = this.getField(fieldName);
-        let newValue = change.value;
+        let newValue = change.newValue;
+        
+        //- no change or empty in a required field
+        if(change.newValue === change.oldValue.toString() ||
+        (fieldDefinition.required && newValue === "" )){
+            return false;
+        }
 
         switch (fieldDefinition.dataType) {
             case 'String':
-                newValue = String(change.value);
+                newValue = String(newValue);
                 break;
             case 'Number':
-                newValue = Number(change.value);
+                newValue = Number(newValue);
+                if(isNaN(newValue)){
+                    return false;
+                }
                 break;
             case 'Date':
-                newValue = new Date(change.value);
+                newValue = new Date(newValue);
+                if(isNaN(newValue.getTime() )){
+                    return false;
+                }
                 break;
+            case 'Boolean':
+                let temp;
+                newValue = newValue.toLowerCase();
+                temp = newValue === "true" || newValue === "false";
 
+                if(!temp){
+                    //- not required and is empty
+                    if(newValue == "") {
+                        newValue = null;
+                    } 
+                    //- other value Eg. newValue: "not boolean"
+                    else{  return false; }
+                } 
+                //- is a valid boolean string
+                else{
+                    newValue = (newValue === "true");
+                }
+                break;
             default:
                 break;
         }
 
         change.data[fieldName] = newValue;
+        return true;
     }
 
     private getField(name: string) {
