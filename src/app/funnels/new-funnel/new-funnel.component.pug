@@ -1,7 +1,7 @@
-.z-depth-1.bgm-white.m-10.p-10(*ngIf="ready$ | async", layout="column")
-        div(flex, layout-xs="column", layout-gt-sm="row", layout-align="start start")
+.z-depth-1.bgm-white.m-10.p-10.h-100(*ngIf="ready$ | async", layout="column")
+        .h-100(flex, layout-xs="column", layout-gt-sm="row", layout-align="start start")
       
-            .funnel-form.w-100(flex)
+            .funnel-form.w-100.h-100.overflow-auto(flex)
                 kpi-funnel-form([funnelModel]="funnelModel")
 
             //- to be a funnel preview component

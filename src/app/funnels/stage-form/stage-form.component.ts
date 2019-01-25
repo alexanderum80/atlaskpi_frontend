@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { IFunnelStage, IFunnel } from '../shared/models/funnel.model';
 import { FormGroupTypeSafe, FormBuilderTypeSafe } from '../../shared/services';
 import { FormArray, Validators, FormGroup } from '@angular/forms';
@@ -38,7 +38,7 @@ function customDateRangeValidator() {
 @Component({
   selector: 'kpi-stage-form',
   templateUrl: './stage-form.component.pug',
-  styleUrls: ['./stage-form.component.scss']
+  styleUrls: ['./stage-form.component.scss'],
 })
 export class StageFormComponent implements OnInit, OnDestroy {
 
