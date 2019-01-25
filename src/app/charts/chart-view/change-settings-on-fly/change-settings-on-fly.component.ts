@@ -2,6 +2,7 @@ import { ChartBasicInfoComponent } from '../../shared/ui/chart-basic-info';
 import { SelectionItem } from '../../../ng-material-components/models';
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { intersectionBy } from 'lodash';
 
 import { ChartViewComponent, DateRange } from '..';
 import { DialogResult } from '../../../shared/models/dialog-result';
@@ -77,9 +78,14 @@ export class ChangeSettingsOnFlyComponent implements OnInit, AfterViewInit {
         const that = this;
         this._apolloService.networkQuery < SelectionItem > (SettingsOnFlyKpisQuery)
         .then(kpis => {
-            const kpi = kpis.settingOnFlyKpis.find(k => k._id === this.chartData.kpis[0].kpi._id);
-            if (kpi) {
-                this.groupingList = kpi.groupingInfo.map(g => new SelectionItem(g.value, g.name));
+            const chartKpis = this.chartData.kpis.map(k => k.kpi._id);
+            const kpisFound = kpis.settingOnFlyKpis.filter(k => chartKpis.indexOf(k._id) !== -1);
+            if (kpisFound.length) {
+                const groupings = {};
+
+                this.groupingList = intersectionBy(...kpisFound.map(k => k.groupingInfo), 'value').map((g: any) => {
+                    return new SelectionItem(g.value, g.name);
+                });
             }
         });
     }
