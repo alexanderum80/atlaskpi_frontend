@@ -343,9 +343,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     .toPromise()
     .then(response => {
       this.allMaps = response.data.listMaps.map(m => JSON.parse(m));
-      this.allMaps.forEach(m => {
-        m.markers = m.markers.map(mk => objectWithoutProperties(mk, ['__typename']));
-      });
+    
       this._filteredMaps = this.allMaps;
       this.mapsLoading = false;
       if (options.updateSelection) {  this._updateMapSelection(); }
