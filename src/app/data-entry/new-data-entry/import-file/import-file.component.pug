@@ -28,7 +28,7 @@
       .user-selection(*ngFor="let user of usersList, index as i", layout="column")
         kpi-user-selection(layout="row", [user]="user", (selectedStatus)="updateUserSelection($event, i)")
   .button-panel(layout="row", layout-align="end end")
-      bw-button(icon="floppy", title="SAVE", color="blue", (clicked)="save()", [disabled]="!isFormValid() && !(vm.dateFields && vm.dateFields.length)")
+      bw-button(icon="floppy", title="SAVE", color="blue", (clicked)="save()", [disabled]="!isFormValid() || !(vm.dateFields && vm.dateFields.length)")
       bw-button(icon="close", title="CANCEL", [simple]="true", color="black", (clicked)="cancel()")
 
   //- Popup for select date field
