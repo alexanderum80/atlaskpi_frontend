@@ -10,10 +10,10 @@ import { IFunnel, IFunnelStage, IFunnelStageOptions } from '../models/funnel.mod
 import { IKpiDateRangePickerDateRange } from '../models/models';
 import { ApolloService } from '../../../shared/services/apollo.service';
 import { isEmpty } from 'lodash';
-import { IChartDateRange } from '../../../shared/models';
+import { IChartDateRange, convertDateRangeToStringDateRange, AKPIDateFormatEnum } from '../../../shared/models';
 import * as moment from 'moment';
 import { IRenderedFunnel, IRenderedFunnelStage } from '../models/rendered-funnel.model';
-
+import { cloneDeep } from 'lodash';
 
 const sampleFunnel: IRenderedFunnel = {
     _id: '1',
@@ -72,6 +72,9 @@ const sampleFunnel: IRenderedFunnel = {
   };
 
 const kpiIdNameList = require('graphql-tag/loader!../graphql/kpi-list.query.gql');
+const renderFunnelByDefinitionQuery
+    = require('graphql-tag/loader!../graphql/render-funnel-by-definition.query.gql');
+
 
 // TODO: Implement a getAvailableFieldsQuery in the backed.
 // now using KPIGroupings for testing purposes
@@ -211,37 +214,63 @@ export class FunnelService {
         this.renderedFunnelModel$.next(this._renderedFunnelModel);
     }
 
-    renderFunnel(value: IFunnel) {
-        const { name, stages } = value;
+    async renderFunnelByDefinition(funnelModel: IFunnel) {
+        let rendered;
 
-        const mockStages: IRenderedFunnelStage[]  = [];
+        const input = cloneDeep(funnelModel);
 
-        if (!value.stages || !value.stages.length) { return { name, stages: []} as IRenderedFunnel; }
+        let count = 1;
+        for (const stage of input.stages) {
+             // transform the date Range to ChartDateRange
+             const stageDr = stage.dateRange as IKpiDateRangePickerDateRange;
 
-        // this method should go to the server
-        // mockig the data for now
+             const newDateRange = {
+                 predefined: stageDr.predefinedDateRange,
+                 custom: null,
+             };
+ 
+             if (stageDr.from && stageDr.to ) {
+                 const from = moment(stageDr.from).format(AKPIDateFormatEnum.US_DATE);
+                 const to = moment(stageDr.to).format(AKPIDateFormatEnum.US_DATE);
+                 newDateRange.custom = {
+                     from,
+                     to
+                 };
+             }
+             stage.dateRange = newDateRange;
+ 
+             // put the order
+             stage.order = count;
 
-        value.stages.forEach((stage, index) => {
-            const { compareToStage, foreground, background } = stage;
-            const stageName = stage.name;
+             count += 1;
+        }
 
-            const newStage: IRenderedFunnelStage = {
-                foreground,
-                background,
-                name: stageName,
-                compareToStageName: compareToStage,
-                amount: sampleFunnel.stages[index].amount,
-                count: sampleFunnel.stages[index].count,
-                order: index
-            };
+        // const inputDr = input.as IKpiDateRangePickerDateRange;
 
-            mockStages.push(newStage);
-        });
+        // if (dateRange.custom) {
+        //     const from = moment(dateRange.custom.from).format(AKPIDateFormatEnum.US_DATE);
+        //     const to = moment(dateRange.custom.to).format(AKPIDateFormatEnum.US_DATE);
+        //     newDateRange.custom = {
+        //         from,
+        //         to
+        //     };
+        // }
 
-        const rendered: IRenderedFunnel = {
-            name,
-            stages: mockStages
-        };
+
+        try {
+            const res = await this.apollo.query<{ renderFunnelByDefinition: IRenderedFunnel }>({
+                query: renderFunnelByDefinitionQuery,
+                variables: { input },
+                fetchPolicy: 'network-only',
+            }).toPromise();
+
+            if (res.data) {
+                rendered = res.data.renderFunnelByDefinition;
+            }
+
+        } catch (err) {
+            console.log(err);
+        }
 
         this._renderedFunnelModel = rendered;
         this.renderedFunnelModel$.next(this._renderedFunnelModel);

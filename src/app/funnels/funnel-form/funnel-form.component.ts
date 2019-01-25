@@ -54,7 +54,7 @@ export class FunnelFormComponent implements OnInit, OnDestroy {
                         return;
                     }
 
-                    this.funnelService.renderFunnel(v);
+                    this.funnelService.renderFunnelByDefinition(v);
                 }),
         );
 

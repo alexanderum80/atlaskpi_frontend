@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { IFunnelStage, IFunnel } from '../shared/models/funnel.model';
 import { FormGroupTypeSafe, FormBuilderTypeSafe } from '../../shared/services';
-import { FormArray, Validators } from '../../../../node_modules/@angular/forms';
+import { FormArray, Validators, FormGroup } from '@angular/forms';
 import { IChartDateRange, IDateRange } from '../../shared/models';
 import { SelectionItem, guid } from '../../ng-material-components';
 import { FunnelService } from '../shared/services/funnel.service';
@@ -10,11 +10,29 @@ import { Subscription } from 'rxjs/Subscription';
 import { IKpiDateRangePickerDateRange } from '../shared/models/models';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
-
+import * as moment from 'moment';
 
 enum FunnelColorElementEnum {
   foreground = 'foreground',
   background = 'background'
+}
+
+function customDateRangeValidator() {
+    return (group: FormGroup): {[key: string]: any} => {
+      const predefined = group.controls['predefinedDateRange'];
+      const from = group.controls['from'];
+      const to = group.controls['to'];
+
+      if (predefined.value !== 'custom') {
+        return null;
+      }
+
+      if (!moment(from.value).isValid() || !moment(to.value).isValid()) {
+          return {
+              dateRangeInvalid: true
+          };
+      }
+    };
 }
 
 @Component({
@@ -128,7 +146,7 @@ export class StageFormComponent implements OnInit, OnDestroy {
 
     private _createStageFormGroup(): FormGroupTypeSafe<IFunnelStage> {
         return this.fb.group<IFunnelStage>({
-            _id: [guid()],
+            _id: [null],
             order: [null],
             name: [null, Validators.required],
             kpi: [null, Validators.required],
@@ -141,11 +159,11 @@ export class StageFormComponent implements OnInit, OnDestroy {
               predefinedDateRange: [null, Validators.required],
               from: [null],
               to: [null]
-            }),
+            }, { validator: customDateRangeValidator () }),
             fieldsToProject: [null],
             compareToStage: [null],
-            foreground: ['#fff', Validators.required],
-            background: ['#7cb5ec', Validators.required],
+            foreground: [null, Validators.required],
+            background: [null, Validators.required],
         });
     }
 
@@ -156,10 +174,15 @@ export class StageFormComponent implements OnInit, OnDestroy {
         const {
           _id = '',
           name = '',
+          foreground = '',
+          background = '',
         } = value || {};
 
         this.fg.patchValueSafe({
+            _id,
             name,
+            foreground,
+            background
         });
     }
 
