@@ -21,13 +21,6 @@ import { SharedModule } from '../shared';
 import { CallRailComponent } from './call-rail/call-rail.component';
 import { CallRailApikeyTooltipComponent } from './call-rail/call-rail-apikey-tooltip/call-rail-apikey-tooltip.component';
 import { CallRailAccountidTooltipComponent } from './call-rail/call-rail-accountid-tooltip/call-rail-accountid-tooltip.component';
-import { CustomComponent } from './custom/custom-datasource.component';
-import { ImportFileComponent } from './custom/import-file/import-file.component';
-import { DataManuallyComponent } from './custom/data-manually/data-manually.component';
-import { SchemaFormComponent } from './custom/data-manually/schema-form/schema-form.component';
-import { EnterDataFormComponent } from './custom/data-manually/enter-data-form/enter-data-form.component';
-import { CustomFormViewModel } from './custom/custom-datasource.viewmodel';
-import { DateFieldPopupComponent } from './custom/import-file/date-field-popup/date-field-popup.component';
 import { RadioGroupService } from '../ng-material-components/modules/forms/radio/radio-group.service';
 
 @NgModule({
@@ -42,18 +35,13 @@ import { RadioGroupService } from '../ng-material-components/modules/forms/radio
   declarations: [DataSourceComponent, ListAllDataSourcesComponent, ListConnectedDataSourcesComponent,
                   NoDatasourcesComponent, CallRailComponent, CallRailApikeyTooltipComponent,
                   CallRailAccountidTooltipComponent,
-                  CustomComponent,
-                  ImportFileComponent,
-                  DataManuallyComponent,
-                  SchemaFormComponent,
-                  EnterDataFormComponent,
-                  DateFieldPopupComponent ],
+                ],
   exports: [DataSourceComponent, ListAllDataSourcesComponent, ListConnectedDataSourcesComponent
   ],
   providers: [
     DataSourceService, ServerSideDataSourceService,
     FacebookAuthService, InstagramAuthService, TwitterAuthService, YoutubeAuthService,
-    GoogleAnaliticsAuthService, SquareAuthService, CustomFormViewModel, RadioGroupService
+    GoogleAnaliticsAuthService, SquareAuthService, RadioGroupService
   ]
 })
 export class DataSourceModule { }

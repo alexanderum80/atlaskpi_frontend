@@ -1,0 +1,10 @@
+bw-modal(#newCustomListModal='', animation="true", keyboard="true", backdrop="true", size="md",
+         (onClosed)="cancel()", (onDismiss)="cancel()")
+  bw-modal-header
+    h4.modal-title.c-black Create your list
+  bw-modal-body
+    div(flex)
+      kpi-custom-list-form
+  bw-modal-footer
+    bw-button(color="blue", title="Save", class="normal", (clicked)="save()")
+    bw-button(title="Cancel", [simple]="true", icon="close", (clicked)="cancel()")

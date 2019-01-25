@@ -1,0 +1,62 @@
+.define-schema-container
+    div(layout="row")
+        i.zmdi.zmdi-local-offer.p-t-15.p-r-10
+        bw-text-box.flex-60.flex-sm-80.flex-xs-100([fg]="vmData.fg", field="dataName", label="Enter a name for this file", [required]="true", color="black")
+
+    kpi-collapsable.m-l-15.m-b-15([(collapsed)]="isCollapsedSchema", headerText="Define your schema")
+        //- table header
+        .table-header(layout="row")
+            div(flex="40", layout="column", layout-padding)
+                .schema-header Column name:
+            div(flex="40", layout="column", layout-padding)
+                .schema-header Data Validation
+            div(flex="15", layout="column", layout-padding)
+                .schema-header Is required
+
+        //- table body
+        div(flex, *ngFor="let schema of schemas.controls; let i=index")
+            .schema-form-container(flex="100", layout="row")
+                div(flex="40", layout="row", layout-padding)
+                    .zmdi.zmdi-view-headline
+                    div(flex="100", layout="row") 
+                        bw-text-box.w-100(
+                                    [fg]="schema",
+                                    field="columnName",
+                                    [required]="true",
+                                    placeholder="Choose a name")
+
+                div(flex="40", layout="column", layout-padding)
+                    div(flex="100", layout="row") 
+                        bw-select-picker.w-100(
+                                    [fg]="schema",
+                                    field="dataType",
+                                    [required]="true",
+                                    [items]="customList",
+                                    [liveSearch]="true",
+                                    liveSearchPlaceholder="...search...",
+                                    noneSelectedText="NOTHING SELECTED")
+                
+                bw-checkbox(flex="15", [fg]="schema", field="required", [value]="schema.required")
+                
+                .zmdi.zmdi-close(flex-none, (click)="removeSchema(schema)")
+            
+            .date-field.p-b-10
+                bw-radio-group(*ngIf="moreThanOneDateField(schema)", [fg]="vmData.fg", field="dateRangeField", [defaultValue]="defaultDateRangeField")
+                    bw-radio(
+                        label="Use this for date ranges",
+                        [value]="i")
+
+        .m-t-10.m-r-40(layout="row", layout-align="end")
+            bw-button(icon="plus", title="ADD COLUMN", color="blue", (clicked)="addSchema()")
+
+    kpi-collapsable.m-l-15.m-b-15([(collapsed)]="isCollapsedAssignUser", headerText="Assign users")
+      .p-20
+        div(*ngFor="let user of usersList, index as i", layout="column")
+            kpi-user-selection.p-l-40(layout="row", [user]="user", (selectedStatus)="updateUserSelection($event, i)")
+
+
+    div(layout="row", layout-align="end end")
+        bw-button(icon="floppy", title="SAVE", color="blue", (clicked)="save()", [disabled]="!isFormValid()")
+        bw-button(icon="close", title="CANCEL", [simple]="true", color="black", (clicked)="cancel()")
+
+kpi-new-custom-list((newCustomListId)="selectNewCustomList($event)")

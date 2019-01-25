@@ -210,7 +210,7 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
                             ? '#434348' : '#fff';
                             // for chart
                             this.vm.valuesPreviewChart.name = this.currrentKPI.name;
-                            this.vm.valuesPreviewChart.kpi = this.currrentKPI._id;
+                            this.vm.valuesPreviewChart.kpis = [{ type: 'column', kpi: { _id: this.currrentKPI._id } as any }];
 
                             this.fromSaveAndVisualize = !this.fromSaveAndVisualize;
                             this.previewModal.open();

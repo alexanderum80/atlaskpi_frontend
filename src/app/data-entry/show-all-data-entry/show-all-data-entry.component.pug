@@ -1,0 +1,19 @@
+.show-all-container(*ngIf="!uploadingFile")
+    kpi-spinner(*ngIf="loading")
+    .no-data(*ngIf="!dataEntries && !loading", flex, layout="column", layout-align="center center")
+        i.zmdi.zmdi-storage
+        .no-manual-text You have no manual source entered yet. Click add button to start adding your custom data sources.
+        bw-button(title="ADD SOURCE", icon="plus", color="blue", [rounded]="true", (clicked)="addDataEntry()")
+
+    .data(*ngIf="dataEntries && !loading", layout="row")
+        .data-entry-container.z-depth-1.p-relative(*ngFor="let dataEntry of dataEntries", layout="column", layout-align="start center")
+            bw-actions([actionItems]="dataEntry.actionItems", (actionClicked)="actionClicked($event, dataEntry)")
+            img(src="{{ dataEntry.image }}", alt="Data Entry type image")
+            .title {{ dataEntry.description }}
+            .created-by {{ dataEntry.createdBy }}
+    
+        kpi-add-item((onItemClicked)="addDataEntry()")
+
+kpi-import-file(*ngIf="uploadingFile", [dataEntry]="dataEntryToUpload", (closeUploadFile)="closeUploadFile()")
+
+app-error([error]="lastError")

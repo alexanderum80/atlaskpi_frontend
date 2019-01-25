@@ -29,5 +29,9 @@ div(layout="column", layout-padding)
                             i.zmdi.zmdi-tablet-android
                           div(flex="20", flex-xs="10")  
                             .zmdi.zmdi-close.f-20.c-red([class.hidden]="i === 0", (click)="removeNotification(notification)")
-div(layout="row", layout-align="start")
-    bw-button(icon="plus", title="USER", color="blue", (clicked)="addNotification()")
+
+div(layout="row" layout-align="end center")
+        div(flex)
+            bw-button(icon="plus", title="USER", color="blue", (clicked)="addNotification()")
+        div(flex)
+            bw-button(title="Test Notification", color="bluegray", icon="mail-send", type="button", (clicked)="testNotification()")

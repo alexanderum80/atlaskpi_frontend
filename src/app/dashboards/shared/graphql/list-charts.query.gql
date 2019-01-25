@@ -7,7 +7,7 @@ query ListChartQuery {
         frequency
         chartDefinition
         group
-        kpis
+        kpis { type, kpi }
         groupings
         xAxisSource
         dateRange {

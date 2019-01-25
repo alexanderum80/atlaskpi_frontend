@@ -1,0 +1,7 @@
+mutation AddDataEntry($input: IDataEntryInput!) {
+  addDataEntry(input: $input) {
+    _id
+    name
+    description
+  }
+}

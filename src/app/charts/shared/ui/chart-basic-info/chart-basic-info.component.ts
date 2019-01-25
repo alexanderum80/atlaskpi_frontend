@@ -1,10 +1,10 @@
-import { IChartGalleryItem } from './../../models/chart.models';
+import { IChartGalleryItem, ChartType } from './../../models/chart.models';
 
 import { OnFieldChanges } from '../../../../ng-material-components/viewModels';
 import 'rxjs/add/operator/debounceTime';
 
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, OnChanges } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, FormArray, Validators, FormBuilder } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { camelCase, title } from 'change-case';
 import { clone, find, isEmpty, isEqual, toArray } from 'lodash';
@@ -123,6 +123,8 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
 
         }
     ];
+
+    chartCombinations: (ChartType | string)[];
     comparisonList: SelectionItem[] = [];
     isCollapsedComparison = true;
     isCollapsedSorting = true;
@@ -157,7 +159,8 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                 private _apollo: Apollo,
                 private _apolloService: ApolloService,
                 private _browser: BrowserService,
-                public vm: ChartBasicInfoViewModel) {
+                public vm: ChartBasicInfoViewModel,
+                private formBuilder: FormBuilder) {
         this._dateRangesQuery();
         toArray(PredefinedDateRanges)
          .forEach(d => { this.dateRangeList.push({ id: d, title: d, selected: false, disabled: false }); });
@@ -244,55 +247,59 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         .distinctUntilChanged()
         .debounceTime(400)
         .subscribe((value) => {
-            const loadingGroupings = (this.fg.get('loadingGroupings') || {} as FormControl).value || false;
-            const loadingComparison = (this.fg.get('loadingComparison') || {} as FormControl).value || false;
-            if (value.kpi && value.predefinedDateRange && !loadingGroupings && !loadingComparison) {
-                const payload = that._getGroupingInfoInput(value);
+            const loadingGroupings = value.ideoloadingGroupings || false;
+            const loadingComparison = value.loadingComparison || false;
+            const kpiIds = value.kpis.map(k => k.kpi) as string[];
+
+            if (kpiIds && kpiIds.length && value.predefinedDateRange && !loadingGroupings && !loadingComparison) {
+                const payload = that._getGroupingInfoInput();
                 if (isEqual(that.lastKpiDateRangePayload, payload)) { return; }
                 that._getGroupingInfo(value);
-                that._getOldestDate(value.kpi);
+                that._getOldestDate(kpiIds);
                 that.lastKpiDateRangePayload = payload;
             }
-            const kpi_id = this.fg.value.kpi;
+            // const kpi_ids = this.fg.value.kpis;
             // Enable-Disable the map type chart
-            if (kpi_id !== '') {
-                let resSources;
+            // FIX THIS 
+            if (kpiIds && kpiIds.filter(k => !!k).length) {
+                // let resSources;
                 this._getZipCodesSource(value)
-                    .then(result => { 
-                        if (this.zipCodeSourceList.length === 0 ) {
-                            this._showMapTypeShart() 
-                            return;
-                        } 
-                        for (let i of this.zipCodeSourceList) {
-                            this._apolloService.networkQuery < string > (kpiDataSourcesQuery, {id: kpi_id, zipField: i.id})
-                            .then(sources => {
-                                resSources = sources.getKpiDataSources[0];
-                                if (resSources === true) {
-                                    that._chartGalleryService.showMap = resSources;
-                                    this.previousChartType = this.chartType;
-                                } else {
-                                    this._showMapTypeShart() 
-                                };
-                            });
-                        }
-                    }); 
-                      
-                }   
-               
+                    .then(result => {
+                        // if (this.zipCodeSourceList.length === 0 ) {
+                        //     // this._showMapTypeChart();
+                        //     return;
+                        // }
+
+                        // for (const i of this.zipCodeSourceList) {
+                        //     this._apolloService.networkQuery < string > (kpiDataSourcesQuery, {ids: kpiIds, zipField: i.id})
+                        //     .then(sources => {
+                        //         resSources = sources.getKpiDataSources[0];
+                        //         if (resSources === true) {
+                        //             // that._chartGalleryService.showMap = resSources;
+                        //             this.previousChartType = this.chartType;
+                        //         } else {
+                        //             // this._showMapTypeChart();
+                        //         }
+                        //     });
+                        // }
+                    });
+
+                }
+
         });
     }
 
-    private _showMapTypeShart() {
-        this._chartGalleryService.showMap = false;
-        if (!this._chartGalleryService.showMap && this.chartType === this.previousChartType) {
-            this.chartType = 'pie';
-        }
-        this.previousChartType = this.chartType;
-    }
+    // private _showMapTypeChart() {
+    //     this._chartGalleryService.showMap = false;
+    //     if (!this._chartGalleryService.showMap && this.chartType === this.previousChartType) {
+    //         this.chartType = 'pie';
+    //     }
+    //     this.previousChartType = this.chartType;
+    // }
 
-    private _getOldestDate(kpi: string): void {
+    private _getOldestDate(kpis: string[]): void {
         this._apolloService
-        .networkQuery < string > (kpiOldestDateQuery, { id: kpi })
+        .networkQuery < string > (kpiOldestDateQuery, { ids: kpis })
         .then(kpis => {
             this._updateComparisonData(kpis.getKpiOldestDate);
         });
@@ -300,48 +307,49 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
 
     private _getZipCodesSource(item: any): Promise<any> {
         const that = this;
-        if (!item.kpi) { 
-             return new Promise ((resolve, reject) => resolve([]) ); 
-        };
+
+        if (!item.kpis) {
+             return new Promise.resolve([]);
+        }
 
         const customDateRange = (!!item.customFrom && !!item.customTo) ? {from: item.customFrom, to: item.customTo} : null;
         const dateRangePred = (item.predefinedDateRange) ? item.predefinedDateRange : PredefinedDateRanges.allTimes;
 
-        if(dateRangePred === "custom" && !customDateRange){
-            return new Promise ((resolve, reject) => {
-                resolve(this.zipCodeSourceList || []) });
+        if (dateRangePred === 'custom' && !customDateRange) {
+            return new Promise.resolve(this.zipCodeSourceList || []);
         }
         // TODO dateRange when is custom, that is hard coded at the moment
         const input = {
-            id: item.kpi,
+            ids: item.kpis.map(k => k.kpi),
             dateRange: { predefined: dateRangePred , custom: customDateRange }
-        }
+        };
+
         return new Promise <any> ((resolve, reject) => {
-            
             this._apolloService.networkQuery(kpiGroupingsQuery, { input })
             .then(data => {
                 let zipCodeSourceList = [];
                 that.zipCodeSourceList = [];
                 zipCodeSourceList = data.kpiGroupings
                     .filter(d => d.name.toLowerCase().includes('zip' || 'postal'))
-                    .map(d => new SelectionItem(d.value, d.name))
+                    .map(d => new SelectionItem(d.value, d.name));
                     that.zipCodeSourceList = zipCodeSourceList;
+
                     if (data && this.ischartTypeMap === true) {
                         if (that.fg.controls['zipCodeSource'].value === '' && that.zipCodeSourceList
                         .find(d => d.id === 'customer.zip')) {
                             that.fg.controls['zipCodeSource'].patchValue('customer.zip');
                         }
                     }
-                return resolve(this.zipCodeSourceList);  
-            });  
-         })
+                return resolve(this.zipCodeSourceList);
+            });
+         });
         }
 
     private _getGroupingInfo(item: any) { /* get groupingInfo */
         const that = this;
 
         // basic payload check
-        if (!item.kpi || !item.predefinedDateRange) {
+        if (!item.kpis || !item.predefinedDateRange) {
             return;
         }
 
@@ -351,7 +359,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                 return;
         }
 
-        const input = this._getGroupingInfoInput(item);
+        const input = this._getGroupingInfoInput();
         this.fg.controls['loadingGroupings'].patchValue(true, { emitEvent: false });
 
         this._apolloService.networkQuery(kpiGroupingsQuery, { input })
@@ -362,7 +370,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                 if (data || !isEmpty(data.kpiGroupings)) {
                     groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
                 }
-                
+
                 that.groupingList = groupingList;
                 const currentGroupingValue = this.fg.get('grouping').value || '';
                 let nextGropingValue;
@@ -376,8 +384,8 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
             });
     }
 
-    private _getGroupingInfoInput(item: any): { id: string, dateRange: IChartDateRange[] } {
-        item = this.fg.value;
+    private _getGroupingInfoInput(): { ids: string[], dateRange: IChartDateRange[] } {
+        const item = this.fg.value;
         const dateRange = { predefined: item.predefinedDateRange, custom: null};
 
         // process custom dateRange
@@ -389,7 +397,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         }
 
         return {
-            id: item.kpi,
+            ids: item.kpis.map(k => k.kpi),
             dateRange: [dateRange]
         };
     }
@@ -428,9 +436,27 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         this.vm.disableChartTour();
     }
 
+    private _createKpiFormGroup(chartType: ChartType | string) {
+        return this.formBuilder.group({
+            type: new FormControl(chartType),
+            kpi: new FormControl()
+        });
+    }
+
     private _subscribeToChartTypeChanges() {
         const that = this;
         this._chartGalleryService.activeChart$.subscribe((chart) => {
+            that.chartCombinations = chart.combinations || [chart.type];
+            const kpiFormArray = that.fg.controls['kpis'] as FormArray;
+
+            while (kpiFormArray.length !== 0) {
+                kpiFormArray.removeAt(0);
+            }
+
+            that.chartCombinations.map(c => that._createKpiFormGroup(c)).forEach(c => {
+                kpiFormArray.push(c);
+            });
+
             that.groupingList = [];
             this._getGroupingInfo(chart);
             that.chartType = String(chart.type);

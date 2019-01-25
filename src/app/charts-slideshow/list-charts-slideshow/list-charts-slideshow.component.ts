@@ -23,148 +23,148 @@ const RemoveSlideshow = require('graphql-tag/loader!../shared/graphql/del-slides
 
 @Activity(ViewSlideShowActivity)
 @Component({
-  selector: 'kpi-list-charts-slideshow',
-  templateUrl: './list-charts-slideshow.component.pug',
-  styleUrls: ['./list-charts-slideshow.component.scss'],
-  providers: [ListChartViewModel, AddSlideshowActivity, UpdateSlideshowActivity, DeleteSlideshowActivity]
+    selector: 'kpi-list-charts-slideshow',
+    templateUrl: './list-charts-slideshow.component.pug',
+    styleUrls: ['./list-charts-slideshow.component.scss'],
+    providers: [ListChartViewModel, AddSlideshowActivity, UpdateSlideshowActivity, DeleteSlideshowActivity]
 })
 export class ListChartsSlideshowComponent implements OnInit, OnDestroy {
-  @ViewChild(ShowChartSlideshowComponent) slideshowComponent: ShowChartSlideshowComponent;
-  @ViewChild('removeConfirmationModal') removeModal: ModalComponent;
+    @ViewChild(ShowChartSlideshowComponent) slideshowComponent: ShowChartSlideshowComponent;
+    @ViewChild('removeConfirmationModal') removeModal: ModalComponent;
 
-  private _subscription: Subscription[] = [];
+    private _subscription: Subscription[] = [];
 
-  slideshowModel: IChartSlideshow;
-  slideshowItems: IChartSlideshow[];
+    slideshowModel: IChartSlideshow;
+    slideshowItems: IChartSlideshow[];
 
-  actionItems: MenuItem[] = [
-    {
-        id: 'edit',
-        icon: 'edit',
-    },
-    {
-        id: 'delete',
-        icon: 'delete'
-    }
-  ];
+    actionItems: MenuItem[] = [
+        {
+            id: 'edit',
+            icon: 'edit',
+        },
+        {
+            id: 'delete',
+            icon: 'delete'
+        }
+    ];
 
-  _slideShow: IChartSlideshow;
-  slideShowList: IChartSlideshow[];
-  slideshowPlaying: IChartSlideshow = null;
-  actionItemsTarget: string;
-  loading = false;
-  listEmpty = false;
+    _slideShow: IChartSlideshow;
+    slideShowList: IChartSlideshow[];
+    slideshowPlaying: IChartSlideshow = null;
+    actionItemsTarget: string;
+    loading = false;
+    listEmpty = false;
 
-  constructor(
-    private _router: Router,
-    private _apollo: Apollo,
-    public vm: ListChartViewModel,
-    public addSlideshowActivity: AddSlideshowActivity,
-    public updateSlideshowActivity: UpdateSlideshowActivity,
-    public deleteSlideshowActivity: DeleteSlideshowActivity
+    constructor(
+        private _router: Router,
+        private _apollo: Apollo,
+        public vm: ListChartViewModel,
+        public addSlideshowActivity: AddSlideshowActivity,
+        public updateSlideshowActivity: UpdateSlideshowActivity,
+        public deleteSlideshowActivity: DeleteSlideshowActivity
     ) { }
 
-  ngOnInit() {
-    this.vm.addActivities([this.addSlideshowActivity, this.updateSlideshowActivity, this.deleteSlideshowActivity]);
-    this._listChartSlideShow();
-    this._disableActionItem();
-  }
-
-  ngOnDestroy() {
-    CommonService.unsubscribe(this._subscription);
-  }
-
-  private _listChartSlideShow() {
-    const that = this;
-
-    that.loading = true;
-    this._subscription.push(that._apollo.watchQuery<any> ({
-      query: ListChartSlideShowQuery,
-      fetchPolicy: 'network-only'
-    })
-    .valueChanges.subscribe(response => {
-        that.slideShowList = response.data.slideshows;
-        that.listEmpty = that.slideShowList.length === 0;
-        that.loading = false;
-    }));
-  }
-
-  addSlideshow() {
-    this._router.navigateByUrl('/charts-slideshow/add');
-  }
-
-  runSlideShow(slideshow: IChartSlideshow) {
-    this.slideshowPlaying = slideshow;
-  }
-
-  stopSlideshow() {
-    this.slideshowPlaying = null;
-  }
-
-  _editSlideShow(item: IChartSlideshow) {
-    this._router.navigate(['charts-slideshow', 'edit', item._id]);
-  }
-
-  _delSlideShow(item: IChartSlideshow) {
-    this.slideshowModel = item;
-    this.removeModal.open();
-  }
-
-  confirmRemove(): void {
-     const that = this;
-
-     this._apollo.mutate({
-       mutation: RemoveSlideshow,
-       variables: {
-         _id: that.slideshowModel._id
-       }
-     })
-     .toPromise()
-     .then(r => {
-      that._listChartSlideShow();
-     });
-     this.removeModal.close();
-  }
-
-  cancelRemove(): void {
-    this.removeModal.close();
-  }
-
-  actionClicked(item, row) {
-    this.actionItemsTarget = item.id;
-
-    switch (item.id) {
-        case 'edit':
-            this._editSlideShow(row);
-            break;
-
-        case 'delete':
-            this._delSlideShow(row);
-            break;
+    ngOnInit() {
+        this.vm.addActivities([this.addSlideshowActivity, this.updateSlideshowActivity, this.deleteSlideshowActivity]);
+        this._listChartSlideShow();
+        this._disableActionItem();
     }
-  }
 
-  private _disableActionItem(): void {
-    if (this.actionItems && this.actionItems.length) {
-      this.actionItems.forEach(item => {
-        if (item.id === 'edit') {
-          item.disabled = this._editSlideShowPermission();
-        }
-        if (item.id === 'delete') {
-          item.disabled = this._deleteSlideShowPermission();
-        }
-      });
+    ngOnDestroy() {
+        CommonService.unsubscribe(this._subscription);
     }
-  }
 
-  // check if user have permission to edit slideshow
-  private _editSlideShowPermission() {
-    return !this.vm.authorizedTo('UpdateSlideshowActivity');
-  }
+    private _listChartSlideShow() {
+        const that = this;
 
-  // check if user have permission to delete slideshow
-  private _deleteSlideShowPermission() {
-    return !this.vm.authorizedTo('DeleteSlideshowActivity');
-  }
+        that.loading = true;
+        this._subscription.push(that._apollo.watchQuery<any>({
+            query: ListChartSlideShowQuery,
+            fetchPolicy: 'network-only'
+        })
+            .valueChanges.subscribe(response => {
+                that.slideShowList = response.data.slideshows;
+                that.listEmpty = that.slideShowList.length === 0;
+                that.loading = false;
+            }));
+    }
+
+    addSlideshow() {
+        this._router.navigateByUrl('/charts-slideshow/add');
+    }
+
+    runSlideShow(slideshow: IChartSlideshow) {
+        this.slideshowPlaying = slideshow;
+    }
+
+    stopSlideshow() {
+        this.slideshowPlaying = null;
+    }
+
+    _editSlideShow(item: IChartSlideshow) {
+        this._router.navigate(['charts-slideshow', 'edit', item._id]);
+    }
+
+    _delSlideShow(item: IChartSlideshow) {
+        this.slideshowModel = item;
+        this.removeModal.open();
+    }
+
+    confirmRemove(): void {
+        const that = this;
+
+        this._apollo.mutate({
+            mutation: RemoveSlideshow,
+            variables: {
+                _id: that.slideshowModel._id
+            }
+        })
+            .toPromise()
+            .then(r => {
+                that._listChartSlideShow();
+            });
+        this.removeModal.close();
+    }
+
+    cancelRemove(): void {
+        this.removeModal.close();
+    }
+
+    actionClicked(item, row) {
+        this.actionItemsTarget = item.id;
+
+        switch (item.id) {
+            case 'edit':
+                this._editSlideShow(row);
+                break;
+
+            case 'delete':
+                this._delSlideShow(row);
+                break;
+        }
+    }
+
+    private _disableActionItem(): void {
+        if (this.actionItems && this.actionItems.length) {
+            this.actionItems.forEach(item => {
+                if (item.id === 'edit') {
+                    item.disabled = this._editSlideShowPermission();
+                }
+                if (item.id === 'delete') {
+                    item.disabled = this._deleteSlideShowPermission();
+                }
+            });
+        }
+    }
+
+    // check if user have permission to edit slideshow
+    private _editSlideShowPermission() {
+        return !this.vm.authorizedTo('UpdateSlideshowActivity');
+    }
+
+    // check if user have permission to delete slideshow
+    private _deleteSlideShowPermission() {
+        return !this.vm.authorizedTo('DeleteSlideshowActivity');
+    }
 
 }

@@ -1,3 +1,4 @@
+import { ShowAllDataEntryComponent } from './data-entry/show-all-data-entry/show-all-data-entry.component';
 import { LoadingProfileComponent } from './loading-profile/loading-profile.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -39,6 +40,7 @@ const routes: Routes = [
   { path: 'users', component: UsersComponent },
   { path: 'charts', component: ListChartComponent, canActivate: [ AuthGuard ] },
   { path: 'charts-slideshow', component: ListChartsSlideshowComponent, canActivate: [ AuthGuard ]},
+  { path: 'data-entry', component: ShowAllDataEntryComponent, canActivate: [ AuthGuard ]},
   { path: 'charts/format', component: ChartFormComponent, canActivate: [AuthGuard] },
   { path: 'kpis', component: KpisComponent, canActivate: [AuthGuard] },
   { path: 'datasource', component: ListConnectedDataSourcesComponent, canActivate: [AuthGuard] },

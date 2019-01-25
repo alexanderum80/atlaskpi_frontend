@@ -91,6 +91,7 @@ export interface IChartGalleryItem {
     img?: string;
     configName?: string;
     sampleDefinition?: any;
+    combinations?: string[];
 }
 
 
@@ -117,13 +118,18 @@ export interface IChartVariable {
   frequency; string;
 }
 
+export interface IChartKpi {
+    type: string;
+    kpi: string;
+}
+
 export interface IChartFormValues {
   // basic info
   title?: string;
   subtitle?: string;
   name: string;
   group?: string;
-  kpis?: [IKPI];
+  kpis?: IChartKpi[];
   description?: string;
   predefinedDateRange?: string;
   customFrom?: string;
@@ -133,7 +139,6 @@ export interface IChartFormValues {
   frequency?: string;
   sortingCriteria?: string;
   sortingOrder?: string;
-  kpi: string;
   grouping?: string;
   xAxisSource?: string;
   comparison?: string;
@@ -195,7 +200,7 @@ export class ChartModel {
     title: string;
     subtitle?: string;
     group?: string;
-    kpis: [IKPI];
+    kpis: IChartKpi[];
     dateRange: IChartDateRange;
     top: IChartTop;
     frequency: string;
@@ -231,7 +236,7 @@ export class ChartModel {
       proxyChartModel.title = fg.value.name;
       proxyChartModel.subtitle = fg.value.description;
       proxyChartModel.group = fg.value.group;
-      proxyChartModel.kpis = <any>[fg.value.kpi];
+      proxyChartModel.kpis = fg.value.kpis.filter(k => !!k);
       proxyChartModel.dateRange = { predefined: fg.value.predefinedDateRange,
                                     custom: { from: fg.value.customFrom || null,
                                               to: fg.value.customTo || null  }};
@@ -330,7 +335,7 @@ export class ChartModel {
         sortingOrder: this.sortingOrder,
         group: this.group || undefined,
         grouping: this.groupings ? this.groupings[0] || undefined : undefined,
-        kpi: this.kpis ? this.kpis[0]._id || undefined : undefined,
+        kpis: this.kpis,
         xAxisSource: this.xAxisSource || '',
         comparison: this.comparison ? this.comparison.map(c => c).join('|') : undefined,
         dashboards: this.dashboards ? this.dashboards.map(d => d._id).join('|') : undefined,

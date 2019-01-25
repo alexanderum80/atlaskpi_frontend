@@ -39,6 +39,7 @@ export class ListDashboardComponent implements OnInit {
     subscriptions: Subscription[] = [];
     timeWait = true;
     itemType: string;
+    loading: boolean;
 
     constructor(
         private _route: ActivatedRoute,
@@ -49,13 +50,13 @@ export class ListDashboardComponent implements OnInit {
         public updateDashboardActivity: UpdateDashboardActivity,
         private _userService: UserService,
         public deleteDashboardActivity: DeleteDashboardActivity) {
-            const that = this;
-            this.subscriptions.push(
+        const that = this;
+        this.subscriptions.push(
             this._userService.user$
-            .distinctUntilChanged()
-            .subscribe((user: IUserInfo) => {
-                that.user = user;
-            }));
+                .distinctUntilChanged()
+                .subscribe((user: IUserInfo) => {
+                    that.user = user;
+                }));
         this.actionActivityNames = {
             edit: this.updateDashboardActivity.name,
             delete: this.deleteDashboardActivity.name,
@@ -99,27 +100,27 @@ export class ListDashboardComponent implements OnInit {
     private update(item: IActionItemClickedArgs) {
         const that = this;
         const idDash = item.item.id;
-            if (!this.user || !this.user._id) {
-                return;
-            } else {
-                this.subscriptions.push(
-                    that._apolloService.mutation < {
+        if (!this.user || !this.user._id) {
+            return;
+        } else {
+            this.subscriptions.push(
+                that._apolloService.mutation<{
                     updateUserPreference: {
                         success
                     }
-                    } > (updateUserPreference, {
-                        id: this.user._id,
-                        input: {dashboardIdNoVisible: idDash }
-                    })
+                }>(updateUserPreference, {
+                    id: this.user._id,
+                    input: { dashboardIdNoVisible: idDash }
+                })
                     .then(result => {
                         const response = result;
-                            if (response.data.updateUserPreference.success === true) {
-                                this._refresUserInfo(true);
-                                this._refreshDashboards(true);
-                              }
+                        if (response.data.updateUserPreference.success === true) {
+                            this._refresUserInfo(true);
+                            this._refreshDashboards(true);
+                        }
                     })
-                );
-            }
+            );
+        }
     }
 
     editClickedList($event) {
@@ -137,21 +138,21 @@ export class ListDashboardComponent implements OnInit {
         const that = this;
 
         SweetAlert({
-                title: 'Are you sure?',
-                text: 'Once deleted, you will not be able to recover this dashboard',
-                type: 'warning',
-                showConfirmButton: true,
-                showCancelButton: true
-            })
+            title: 'Are you sure?',
+            text: 'Once deleted, you will not be able to recover this dashboard',
+            type: 'warning',
+            showConfirmButton: true,
+            showCancelButton: true
+        })
             .then((res) => {
                 if (res.value === true) {
-                    that._apolloService.mutation < {
-                            deleteDashboard: {
-                                success: boolean
-                            }
-                        } > (deleteDashboardMutation, {
-                            id: idDashboard
-                        }, [
+                    that._apolloService.mutation<{
+                        deleteDashboard: {
+                            success: boolean
+                        }
+                    }>(deleteDashboardMutation, {
+                        id: idDashboard
+                    }, [
                             'Dashboards',
                             'allDashboard',
                             'idNameDashboardList'
@@ -174,10 +175,10 @@ export class ListDashboardComponent implements OnInit {
         this.vm.alistDashboardIdNoVisible = user;
     }
 
-    private _refresUserInfo(refresh ?: boolean) {
+    private _refresUserInfo(refresh?: boolean) {
         const that = this;
         this.timeWait = false;
-        this._apolloService.networkQuery < IUserInfo > (updateUserInfo).then(d => {
+        this._apolloService.networkQuery<IUserInfo>(updateUserInfo).then(d => {
             that.vm.alistDashboardIdNoVisible = d.User;
             this.itemType = d.User.preferences.dashboards.listMode === 'standardView' ? 'standard' : 'table';
             this.timeWait = true;
@@ -195,8 +196,10 @@ export class ListDashboardComponent implements OnInit {
         if (this.timeWait === false) {
             this._timeWait();
         } else {
-            this._apolloService.networkQuery < IDashboard[] > (dashboardsQuery).then(d => {
+            this.loading = true;
+            this._apolloService.networkQuery<IDashboard[]>(dashboardsQuery).then(d => {
                 that.vm.dashboards = sortBy(d.dashboards, ['order', '_id']);
+                that.loading = false;
             });
         }
     }

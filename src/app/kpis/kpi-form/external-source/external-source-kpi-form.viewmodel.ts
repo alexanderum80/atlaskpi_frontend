@@ -50,7 +50,7 @@ export class ExternalSourceKpiFormViewModel extends ViewModel<IKPI> {
         comparisonArrowDirection: 'up'
       };
 
-      valuesPreviewChart : IChartFormValues = {
+      valuesPreviewChart: IChartFormValues = {
         name: '',
         description: '',
         dashboards: '',
@@ -59,7 +59,7 @@ export class ExternalSourceKpiFormViewModel extends ViewModel<IKPI> {
         grouping: 'location.name',
         tooltipEnabled: true,
         predefinedTooltipFormat: 'multiple_percent',
-        kpi: '',
+        kpis: [],
         legendEnabled: false,
         predefinedDateRange: 'this year',
         invertAxisEnabled: false,

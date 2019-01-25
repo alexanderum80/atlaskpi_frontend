@@ -1,0 +1,89 @@
+.import-file-header {
+    padding: 10px 0;
+
+    i {
+        font-size: 22px;
+    }
+
+    .title {
+        padding-left: 10px;
+        font-size: 1.2em;
+    }
+}
+
+.import-file-body {
+    
+    .left-panel {
+        background-color: #EEEEEE;
+        margin-bottom: 20px;
+
+        img {
+            height: 140px;
+        }
+        
+        .import-scv, .import-excel {
+            position: relative;
+            opacity: 0.6;
+            padding: 20px;
+            margin: 10px;
+            width: 200px;
+
+            .file-name {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap; 
+                font-size: 14px;
+            }
+        
+            .close-icon {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+            }
+        
+            .close-icon:hover {
+                cursor: pointer;
+            }
+        
+            .check-icon {
+                position: absolute;
+                bottom: 5px;
+                right: 5px;
+                color: #5DA5DA;
+            }
+        }
+        
+        .selected-file {
+            border: 2px solid #5DA5DA;
+            border-radius: 5px;
+            opacity: 1;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .custom-file-upload {
+            border: none;
+            color: white;
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+        
+    }
+
+    .user-selection {
+        min-height: 40px;
+    }
+
+}
+
+
+// .button-panel {
+//     position: absolute;
+//     right: 10px;
+//     bottom: 30px;
+//     text-align: right;
+//     border-top: 1px solid transparent;
+// }
