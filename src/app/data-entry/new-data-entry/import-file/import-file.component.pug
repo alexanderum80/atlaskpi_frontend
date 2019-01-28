@@ -1,5 +1,6 @@
 
-.m-5.p-30.h-100.bgm-white(layout="column")
+kpi-spinner(*ngIf="!showUploadForm")
+.m-5.p-30.h-100.bgm-white(*ngIf="showUploadForm", layout="column")
   .import-file-header(layout="row")
     i.zmdi.zmdi-storage
     .title Import your file
