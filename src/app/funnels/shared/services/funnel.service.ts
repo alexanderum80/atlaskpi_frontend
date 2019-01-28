@@ -5,12 +5,12 @@ import { filter, map, tap, catchError } from 'rxjs/operators';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { SelectionItem, guid } from '../../../ng-material-components';
 import { ToSelectionItemList } from '../../../shared/extentions';
-import { FormGroupTypeSafe } from '../../../shared/services';
+import { FormGroupTypeSafe, UserService } from '../../../shared/services';
 import { IFunnel, IFunnelStage, IFunnelStageOptions } from '../models/funnel.model';
 import { IKpiDateRangePickerDateRange } from '../models/models';
 import { ApolloService } from '../../../shared/services/apollo.service';
 import { isEmpty } from 'lodash';
-import { IChartDateRange, convertDateRangeToStringDateRange, AKPIDateFormatEnum } from '../../../shared/models';
+import { IChartDateRange, convertDateRangeToStringDateRange, AKPIDateFormatEnum, IUserInfo } from '../../../shared/models';
 import * as moment from 'moment';
 import { IRenderedFunnel, IRenderedFunnelStage } from '../models/rendered-funnel.model';
 import { cloneDeep } from 'lodash';
@@ -90,6 +90,9 @@ export class FunnelService {
     get funnelModel(): IFunnel { return this._funnelModel; }
 
     private _fg: FormGroupTypeSafe<IFunnel>;
+    set fg(form: FormGroupTypeSafe<IFunnel>) {
+        this._fg = form;
+    }
     get fg(): FormGroupTypeSafe<IFunnel> {
         return this._fg;
     }
@@ -104,11 +107,16 @@ export class FunnelService {
     };
 
     renderedFunnelModel$ = new BehaviorSubject<IRenderedFunnel>(null);
+    currentUser: IUserInfo;
 
     constructor(
         private apollo: Apollo,
         private _apolloService: ApolloService,
-    ) { }
+        private _userService: UserService,
+
+    ) {
+        this.currentUser = this._userService.user;
+    }
 
     loadDependencies$(): Observable<boolean> {
        return this.apollo.query<{ kpis: { _id: string, name: string }[] }>({
@@ -228,7 +236,7 @@ export class FunnelService {
                  predefined: stageDr.predefinedDateRange,
                  custom: null,
              };
- 
+
              if (stageDr.from && stageDr.to ) {
                  const from = moment(stageDr.from).format(AKPIDateFormatEnum.US_DATE);
                  const to = moment(stageDr.to).format(AKPIDateFormatEnum.US_DATE);
@@ -238,24 +246,12 @@ export class FunnelService {
                  };
              }
              stage.dateRange = newDateRange;
- 
+
              // put the order
              stage.order = count;
 
              count += 1;
         }
-
-        // const inputDr = input.as IKpiDateRangePickerDateRange;
-
-        // if (dateRange.custom) {
-        //     const from = moment(dateRange.custom.from).format(AKPIDateFormatEnum.US_DATE);
-        //     const to = moment(dateRange.custom.to).format(AKPIDateFormatEnum.US_DATE);
-        //     newDateRange.custom = {
-        //         from,
-        //         to
-        //     };
-        // }
-
 
         try {
             const res = await this.apollo.query<{ renderFunnelByDefinition: IRenderedFunnel }>({
@@ -279,6 +275,48 @@ export class FunnelService {
     performFunnelInvalidFlow() {
         this._renderedFunnelModel = null;
         this.renderedFunnelModel$.next(this._renderedFunnelModel);
+    }
+
+    getFormData() {
+        const data = cloneDeep(this._fg.value);
+
+        let count = 1;
+        for (const stage of data.stages) {
+             // transform the date Range to ChartDateRange
+             const stageDr = stage.dateRange as IKpiDateRangePickerDateRange;
+
+             const newDateRange = {
+                 predefined: stageDr.predefinedDateRange,
+                 custom: null,
+             };
+
+             if (stageDr.from && stageDr.to ) {
+                 const from = moment(stageDr.from).format(AKPIDateFormatEnum.US_DATE);
+                 const to = moment(stageDr.to).format(AKPIDateFormatEnum.US_DATE);
+                 newDateRange.custom = {
+                     from,
+                     to
+                 };
+             }
+             stage.dateRange = newDateRange;
+
+             // put the order
+             stage.order = count;
+
+             count += 1;
+        }
+
+        // add-created-updated-by-date
+        data.createdBy = this.currentUser._id;
+        data.updatedBy = this.currentUser._id;
+        data.createdDate = moment().toDate();
+        data.updatedDate = moment().toDate();
+
+        return data;
+    }
+
+    get formValid() {
+        return this._fg && this._fg.valid;
     }
 
     private _emitStagesList() {

@@ -4,6 +4,11 @@ export interface IFunnel {
     _id?: string;
     name: string;
     stages: IFunnelStage[];
+
+    createdBy?: string;
+    updatedBy?: string;
+    createdDate?: Date;
+    updatedDate?: Date;
 }
 
 export interface IFunnelStage {

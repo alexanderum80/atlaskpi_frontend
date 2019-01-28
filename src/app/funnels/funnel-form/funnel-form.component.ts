@@ -36,6 +36,8 @@ export class FunnelFormComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.funnelService.fg = this._fg;
+
         this.subscriptions.push(
             this.fg
                 .getSafe(s => s.name)

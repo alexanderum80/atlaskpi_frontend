@@ -4,6 +4,16 @@ import { Observable } from 'rxjs';
 import { FunnelService } from '../shared/services/funnel.service';
 import { IFunnel } from '../shared/models/funnel.model';
 import { IRenderedFunnel } from '../shared/models/rendered-funnel.model';
+import { cloneDeep } from '../../../../node_modules/apollo-utilities';
+import { IKpiDateRangePickerDateRange } from '../shared/models/models';
+import * as moment from 'moment';
+import { AKPIDateFormatEnum, IUserInfo, IMutationResponse } from '../../shared/models';
+import { Apollo } from 'apollo-angular';
+import { UserService } from '../../shared/services';
+import { Router } from '@angular/router';
+
+
+const createFunnelMutation = require('graphql-tag/loader!../shared/graphql/create-funnel.mutation.gql');
 
 @Component({
   selector: 'kpi-new-funnel',
@@ -19,10 +29,15 @@ export class NewFunnelComponent implements OnInit {
   ready$: Observable<boolean>;
 
   renderedFunnel$: Observable<IRenderedFunnel>;
+  currentUser: IUserInfo;
 
   constructor(
-      private funnelService: FunnelService
+      private funnelService: FunnelService,
+      private apollo: Apollo,
+      private _userService: UserService,
+      private _router: Router,
   ) {
+    this.currentUser = this._userService.user;
   }
 
 
@@ -30,6 +45,26 @@ export class NewFunnelComponent implements OnInit {
       this.ready$ = this.funnelService.loadDependencies$();
       this.funnelService.funnelModel = this.funnelModel;
       this.renderedFunnel$ = this.funnelService.renderedFunnelModel$;
+  }
+
+  async saveFunnel() {
+        const input = this.funnelService.getFormData();
+
+        delete(input._id);
+
+        try {
+            const res = await this.apollo.mutate<{ createFunnel: IMutationResponse}>({
+                mutation: createFunnelMutation,
+                variables:  { input }
+            }).toPromise();
+
+            if (res.data && res.data.createFunnel.entity) {
+                this._router.navigateByUrl('/funnels/list');
+            }
+
+        } catch (err) {
+            console.log(err);
+        }
   }
 
 }
