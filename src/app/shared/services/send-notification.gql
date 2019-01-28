@@ -1,0 +1,3 @@
+mutation SendNotification($deliveryMethods: [String]!, $users: [String]!, $message: String!) {
+    sendNotification(deliveryMethods: $deliveryMethods, users: $users, message: $message)
+}

@@ -48,6 +48,9 @@ import {
     HttpBatchLink,
   } from 'apollo-angular-link-http-batch';
 import { MobileWelcomeComponent } from './mobile-welcome/mobile-welcome.component';
+import { DataEntryComponent } from './data-entry/data-entry.component';
+import { DataEntryModule } from './data-entry/data-entry.module';
+import { AgGridModule } from 'ag-grid-angular';
 
 @NgModule({
     declarations: [
@@ -79,6 +82,7 @@ import { MobileWelcomeComponent } from './mobile-welcome/mobile-welcome.componen
         DashboardsModule,
         ChartsSlideshowModule, // Add by Delvis
         // AccountModule,
+        DataEntryModule,
         UsersModule,
         BusinessUnitsModule,
         NotificationsModule,

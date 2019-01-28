@@ -1,0 +1,49 @@
+bw-modal(#predefinedTemplateModal='', animation="true", keyboard="true", backdrop="true", size="md",
+         (onClosed)="cancel()", (onDismiss)="cancel()")
+
+    div(*ngIf="currentStep === 1")
+        bw-modal-header
+            div(layout="row")
+                .title Select your template
+        bw-modal-body
+            .p-20.m-b-40.z-depth-1(layout="column")
+                div(layout="row")
+                    img(src="../../../../assets/img/datasources/hand_ar.PNG", alt="AR template")
+                    .p-l-10.p-t-20(layout="column")
+                        .t-bold AR
+                        .t-12 Invoice amount, Due Date, Notes
+                    .p-l-20(layout="column")
+                        bw-button(icon="download", title="Sample Data", [simple]="true", color="black", (clicked)="downloadTemplate()")
+                        bw-button(icon="keyboard", title="Enter Data", color="blue", (clicked)="enterData()")
+
+                div.p-t-10(layout="row")
+                    img(src="../../../../../assets/img/datasources/hand_ap.PNG", alt="AR template")
+                    .p-l-10.p-t-20(layout="column")
+                        .t-bold AP
+                        .t-12 Invoice amount, Due Date, Notes
+                    .p-l-20(layout="column")
+                        bw-button(icon="download", title="Sample Data", [simple]="true", color="black", (clicked)="downloadTemplate()")
+                        bw-button(icon="keyboard", title="Enter Data", color="blue", (clicked)="enterData()")
+
+        bw-modal-footer
+            div(layout="row", layout-align="end end")
+                bw-button(icon="close", title="CANCEL", [simple]="true", color="black", (clicked)="cancel()")
+
+
+    div.p-l-40(*ngIf="currentStep === 2")
+        bw-modal-header
+            div(layout="row")
+                i.zmdi.zmdi-local-offer.p-t-15.p-r-10
+                bw-text-box.flex-60.flex-sm-80.flex-xs-100([fg]="vm.fg", field="dataName", label="Enter a name for this file", [required]="true", color="black")
+
+        bw-modal-body
+            div(layout="column")
+                .p-b-20 Assign users with access to this file:
+                div(*ngFor="let user of usersList, index as i")
+                    kpi-user-selection.p-l-40(layout="row", [user]="user", (selectedStatus)="updateUserSelection($event, i)")
+
+        bw-modal-footer
+            div(layout="row", layout-align="end end")
+                bw-button.p-5(icon="chevron-left", title="BACK", color="blue", (clicked)="goBack()")
+                bw-button.p-5(icon="floppy", title="SAVE", color="blue", (clicked)="save()", [disabled]="!isFormValid()")
+                bw-button.p-5(icon="close", title="CANCEL", [simple]="true", color="black", (clicked)="cancel()")

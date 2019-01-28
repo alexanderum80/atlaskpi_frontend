@@ -1,3 +1,4 @@
+import { IDataEntrySource } from '../../data-entry/shared/models/data-entry.models';
 import { observable } from 'rxjs/symbol/observable';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -16,6 +17,7 @@ import { UserService } from '../../shared/services/user.service';
 import { SideBarViewModel } from './sidebar.viewmodel';
 import { sortBy } from 'lodash';
 import { environment } from '../../../environments/environment';
+import { IDataSource } from 'src/app/shared/domain/kpis/data-source';
 
 export interface ISidebarItemSearchResult {
     parent?: MenuItem;
@@ -71,8 +73,12 @@ const MENU_ITEMS: MenuItem[] = [{
             title: 'Alerts'
         }
     ]
-}, 
-// {
+}, {
+    id: 'data-entry',
+    title: 'Data entry',
+    icon: 'keyboard'
+}
+// , {
 //     id: 'company',
 //     title: 'Company',
 //     icon: 'home',
@@ -98,8 +104,8 @@ const MENU_ITEMS: MenuItem[] = [{
 //             route: 'employees'
 //         }
 //     ]
-// }, 
-{
+// }
+, {
     id: 'settings',
     title: 'Settings',
     icon: 'settings',
@@ -149,6 +155,16 @@ query Dashboards($group: String!) {
 }
 `;
 
+const DataEntriesQuery = gql `
+query DataEntries {
+  dataEntries {
+        _id
+        name
+        description
+    }
+}
+`;
+
 @Injectable()
 export class SidebarService {
     private _itemsSubject = new BehaviorSubject < MenuItem[] > (MENU_ITEMS);
@@ -156,10 +172,11 @@ export class SidebarService {
     private _currentRoute: string;
     private _subscription: Subscription[] = [];
     private _dashboardQuery: QueryRef<{}>;
+    private _dataEntriesQuery: QueryRef<{}>;
     private _itemsNotVisibles = 0;
     private _itemsNotVisiblesSubject = new BehaviorSubject < number > (0);
     private _userCanAddDashSubject = new BehaviorSubject < boolean > (false);
-    
+
     userCanAddDashboard: boolean;
 
     constructor(
@@ -174,12 +191,12 @@ export class SidebarService {
         this.vm.addActivities([this.addDashboardActivity]);
 
         const that = this;
-        this._userService.user$.subscribe(u => 
-            {
-                if(u){
+        this._userService.user$.subscribe(u => {
+                if (u) {
                     that.checkPemits(u);
-                    that._getDashboards(u);  
-                }       
+                    that._getDashboards(u);
+                    that._getManualEntrys(u);
+                }
             });
 
         this._subscription.push(this._userCanAddDash$.subscribe( permit =>
@@ -283,7 +300,7 @@ export class SidebarService {
         }
 
         if (!dashboards || !dashboards.length) {
-            if(userCanAddDashboards){
+            if (userCanAddDashboards) {
                 items[0].active = true;
                 this.vm.listDashboard.active = true;
                 this._router.navigate([this.vm.listDashboard.route]);
@@ -321,7 +338,7 @@ export class SidebarService {
         if (isDashboardRoute) {
             items[0].active = true;
         }
-     
+
         const firstDashboardExist = items != null
                                 && items[0].children != null
                                 && items[0].children.length > 0
@@ -334,13 +351,68 @@ export class SidebarService {
         this._itemsNotVisiblesSubject.next(this._itemsNotVisibles);
     }
 
+    private _getManualEntrys(user: IUserInfo) {
+        const that = this;
+        if (!this._dataEntriesQuery) {
+            this._dataEntriesQuery = this._apollo.watchQuery({
+                query: DataEntriesQuery,
+            });
+            this.subscription.push(this._dataEntriesQuery.valueChanges.subscribe(({ data }: any) => {
+                const dataEntriesSorted = sortBy(data.dataEntries, ['_id']);
+                that._processDataEntriesSubmenu(dataEntriesSorted);
+            }));
+        } else {
+            this._dataEntriesQuery.refetch({ }).then((res: any) => {
+                const dataEntriesSorted = sortBy(res.data.dataEntries, ['_id']);
+                that._processDataEntriesSubmenu(dataEntriesSorted);
+            });
+        }
+    }
+
+    private _processDataEntriesSubmenu(dataEntries: IDataEntrySource[]) {
+        const items = this._itemsSubject.value;
+
+        items[4].children = [];
+
+        if (dataEntries || dataEntries.length) {
+            items[4].children = dataEntries.map(d => {
+                // check if the current root is relarted to the data entry
+                const lastIndexExtension = d.description.lastIndexOf('.');
+                const route = `/data-entry/enter-data/${d._id}`;
+                return {
+                    id: d.name,
+                    title: d.description.substr(0, lastIndexExtension !== -1 ? lastIndexExtension : d.description.length),
+                    route: route,
+                    group: 'data-entry',
+                };
+            });
+        }
+
+        items[4].children.push({
+                id: 'custom-lists',
+                title: 'Custom Lists',
+                icon: 'storage',
+                route: 'data-entry/custom-lists',
+                active: false
+        });
+
+        items[4].children.push({
+            id: 'show-all',
+            title: 'Show All',
+            icon: 'collection-text',
+            route: 'data-entry/show-all',
+            active: false
+        });
+
+    }
+
     resetMenuItems() {
 
         MENU_ITEMS[0] = {
             id: 'dashboard',
             title: 'Dashboards',
             icon: 'widgets',
-        }
+        };
         this._itemsSubject.next(MENU_ITEMS);
     }
 
@@ -348,14 +420,13 @@ export class SidebarService {
         this._userCanAddDashSubject.next(false);
     }
 
-    resetItemsNotVisible(){
+    resetItemsNotVisible() {
         this._itemsNotVisiblesSubject.next(0);
     }
 
 
-    checkPemits(user): void{
+    checkPemits(user): void {
            this._userCanAddDashSubject.next(this.addDashboardActivity.check(user));
         }
 
-    
 }

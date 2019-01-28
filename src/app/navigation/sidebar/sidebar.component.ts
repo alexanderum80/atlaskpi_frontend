@@ -33,6 +33,11 @@ const menuItems: MenuItem[] = [{
     icon: 'grid',
     route: 'datasource'
 }, {
+    id: 'data-entry',
+    title: 'Data entry',
+    icon: 'keyboard',
+    route: 'data-entry'
+}, {
     id: 'company',
     title: 'Company',
     icon: 'home',

@@ -29,5 +29,9 @@
                 i.zmdi.zmdi-delete(*ngIf="i !== 0", (click)="removeUser(i)")
 
     .text-left(flex)
-        bw-button(title="Add user", color="green", icon="plus", type="button", (clicked)="addUser()")
+        div(layout="row" layout-align="end center")
+            div(flex)
+                bw-button(title="Add user", color="green", icon="plus", type="button", (clicked)="addUser()")
+            div(flex)
+                bw-button(title="Test Notification", color="bluegray", icon="mail-send", type="button", (clicked)="testNotification()")
     

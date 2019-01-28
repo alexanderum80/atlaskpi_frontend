@@ -1,0 +1,25 @@
+.custom-list {
+    padding: 20px 10px;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    .name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .remove-button {
+        font-size: 30px;
+        padding-left: 10px;
+        color: red;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}

@@ -76,6 +76,8 @@ export interface IMapFormValues {
   name?: string;
   subtitle?: string;
   group?: string;
+  frequency?: string;
+  xAxisSource?: string;
   kpi?: string;
   description?: string;
   predefinedDateRange?: string;
@@ -85,6 +87,14 @@ export interface IMapFormValues {
   dashboards?: string;
   mapsize: string;
   zipCodeSource: string;
+  predefinedTop?: any;
+  customTop?: any;
+  sortingCriteria?: string;
+  sortingOrder?: string;
+  tooltipEnabled?: boolean;
+  seriesDataLabels?: boolean;
+  predefinedTooltipFormat?: string;
+  comparison?: string;
 }
 
 export interface IUpdateMapResponse {
@@ -144,7 +154,7 @@ export class MapModel {
       proxyMapModel.title = fg.value.name;
       proxyMapModel.subtitle = fg.value.description;
       proxyMapModel.group = fg.value.group;
-      proxyMapModel.kpi = <any>fg.value.kpi;
+      proxyMapModel.kpi = <any>fg.value.kpis[0].kpi;
       proxyMapModel.dateRange = { predefined: fg.value.predefinedDateRange,
                                     custom: { from: fg.value.customFrom || null,
                                               to: fg.value.customTo || null  }};

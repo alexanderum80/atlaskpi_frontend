@@ -1,0 +1,6 @@
+.custom-list(flex, layout="row", (click)="updateSelectedCustomList(index)")
+  div.flex-20
+    i.zmdi.zmdi-delete.remove-button(*ngIf="index === vm.selectedCustomListIndex", (click)="removeCustomList(customList._id)")
+  .flex-70.title(layout-column)
+    .name {{ customList.name }}
+    .description {{ customListDescription }}

@@ -1,5 +1,3 @@
-import { forEach } from 'lodash';
-import { CustomComponent } from '../custom/custom-datasource.component';
 import { CommonService } from '../../shared/services/common.service';
 import { AddConnectorActivity } from '../../shared/authorization/activities/data-sources/add-connector.activity';
 import { ViewConnectorActivity } from '../../shared/authorization/activities/data-sources/view-connector.activity';
@@ -7,39 +5,30 @@ import { Activity } from '../../shared/authorization/decorators/component-activi
 import { DeleteConnectorActivity } from '../../shared/authorization/activities/data-sources/delete-connector.activity';
 import { ListConnectedDataSourcesViewModel } from './list-connected-data-sources.viewmodel';
 import { ServerSideConnectorFactory } from '../shared/models/data-sources/server-side-connector.factory';
-import { ServerSideDataSourceService } from '../shared/services/data-source.service/server-side-data-sources.service';
 import { IServerSideOAuthConnector, getConnectorType } from '../shared/models/data-sources/server-side-oauth-connector.base';
 import {
   Component,
   OnInit,
-  Input,
   Renderer2,
   ViewChild,
   OnDestroy
 } from '@angular/core';
 import {Router} from '@angular/router';
-import { ConnectorTypeEnum } from '../shared/models/data-sources/connector-type-enum';
 import {
   IOAuthConnector, OAuthConnector,
 } from '../shared/models/data-sources/oauth-connector.base';
 import { DataSourceService } from '../shared/services/data-source.service/data-source.service';
-import { AutoUnsubscribe } from '../shared/auto-unsubscribe';
 import { Apollo } from 'apollo-angular';
 import SweetAlert from 'sweetalert2';
 import { CallRailComponent } from '../call-rail/call-rail.component';
 import { environment } from '../../../environments/environment';
 import { Subscription } from 'rxjs/Subscription';
-import { CustomFormViewModel } from '../custom/custom-datasource.viewmodel';
-import { FormArray, FormGroup, FormControl } from '@angular/forms';
 import { ApolloService } from '../../shared/services/apollo.service';
-import * as moment from 'moment';
-import { ModalComponent } from 'src/app/ng-material-components/modules/user-interface/modal/modal.component';
 import { IModalError } from 'src/app/shared/interfaces/modal-error.interface';
 import { ErrorComponent } from 'src/app/shared/ui/error/error.component';
 
 const ServerSideConnectorsQuery = require('graphql-tag/loader!./list-server-side-connectors.query.gql');
 const RemoveServerSideConnectorQuery = require('graphql-tag/loader!./remove-server-side-connector.mutation.gql');
-const dataSourceCollectionQuery = require('graphql-tag/loader!./data-source-collection.query.gql');
 export interface IConnectorDetail {
   _id: string;
   name: string;
@@ -56,7 +45,6 @@ export interface IConnectorDetail {
 })
 export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
   @ViewChild(CallRailComponent) callRailComponent: CallRailComponent;
-  @ViewChild(CustomComponent) customComponent: CustomComponent;
   @ViewChild(ErrorComponent) errorModal: ErrorComponent;
 
   lastError: IModalError;
@@ -73,7 +61,6 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
     private _renderer: Renderer2,
     private _apollo: Apollo,
     private _apolloService: ApolloService,
-    private _vm: CustomFormViewModel,
     public vm: ListConnectedDataSourcesViewModel,
     public deleteConnectorActivity: DeleteConnectorActivity,
     public addConnectorActivity: AddConnectorActivity
@@ -94,63 +81,7 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
     this._router.navigateByUrl('/datasource/listAllDataSourcesComponent');
   }
 
-  editDataSource(dataSource) {
-      this._apolloService.networkQuery(dataSourceCollectionQuery, {name: dataSource._name})
-      .then(res => {
-        const dataSourceCollection = JSON.parse(res['dataSourceCollection']);
-        const schemaCollection = dataSourceCollection.schema;
-        const dataCollection = dataSourceCollection.data;
-        const dataName = dataSourceCollection.dataName;
-
-        const fields = [];
-        forEach(schemaCollection, (value, key) => {
-          if (key !== 'Source') {
-            fields.push({
-              'columnName': key,
-              'dataType': value.dataType
-            });
-          }
-        });
-
-        const dateRangeField = fields.findIndex(f => f.columnName.toLowerCase().replace(' ', '_') === dataSourceCollection.dateRangeField);
-
-        const data = [];
-        dataCollection.map(d => {
-          const dataElement = [];
-          forEach(schemaCollection, (value, key) => {
-            if (key !== 'Source') {
-              let dataValue = d[value.path];
-              if (value.dataType === 'Date') {
-                dataValue = moment.utc(d[value.path]).format('MM/DD/YYYY');
-              }
-              dataElement.push(dataValue);
-            }
-          });
-          data.push(dataElement);
-        });
-
-        const schema = {
-          'schema': fields,
-          'data': [],
-          'dataName': dataName,
-          'dateRangeField': dateRangeField.toString()
-        };
-
-        this._vm.initialize(schema);
-
-        this._vm.updateSelectedInputType('manually');
-        this._vm.updateIsEdit(true);
-
-        for (let i = 0; i < data.length; i++) {
-          const element = data[i];
-          this._addNewRow(element);
-        }
-
-        this.customComponent.open();
-      });
-  }
-
-  public deleteDataSource(dataSource: IOAuthConnector) {         // Delete from list and from service
+    public deleteDataSource(dataSource: IOAuthConnector) {         // Delete from list and from service
     this._subscription.push(
       this._dataSourceService.deleteDataSourceFromListConnected(dataSource)
         .subscribe((dataSources: IOAuthConnector[]) => this.listConnectedDataSources = dataSources)
@@ -242,12 +173,6 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
         return;
     }
 
-    if ((<any>dataSource)._name === 'Custom') {
-        // open custom ui
-        this.customComponent.open();
-        return;
-    }
-
     const url = dataSource.getAuthorizeUri();
 
     this._registerServerSideConnectorHook();
@@ -278,16 +203,6 @@ export class ListConnectedDataSourcesComponent implements OnInit, OnDestroy {
               return;
           }
       });
-  }
-
-  private _addNewRow(data) {
-    const dataFormGroup = this._vm.fg.get('data') as FormArray;
-
-    dataFormGroup.push(new FormGroup(
-      data.map(d => {
-        return new FormControl(d);
-      })
-    ));
   }
 
   get serverSideDataSourcesEmpty(): boolean {
