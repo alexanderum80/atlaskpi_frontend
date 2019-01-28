@@ -309,7 +309,7 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         this._apolloService
             .networkQuery < string > (widgetsGraphqlActions.kpiOldestDateQuery, 
-                { id: kpiId ? kpiId : this.fg.value.kpi })
+                { ids: kpiId ? [kpiId] : [this.fg.value.kpi] })
         .then(kpis => {
             this.comparisonSelectionList = this._widgetFormService
                 .getComparisonListForDateRangesAndKpiOldesDate(dateRange, kpis.getKpiOldestDate);
