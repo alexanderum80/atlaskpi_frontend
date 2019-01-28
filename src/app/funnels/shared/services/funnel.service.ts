@@ -101,7 +101,7 @@ export class FunnelService {
 
     stagesSelectionList$ = new BehaviorSubject<SelectionItem[]>([]);
 
-    private _renderedFunnelModel: IRenderedFunnel = {
+    renderedFunnelModel: IRenderedFunnel = {
         name: 'Sample Funnel',
         stages: []
     };
@@ -118,7 +118,7 @@ export class FunnelService {
         this.currentUser = this._userService.user;
     }
 
-    loadDependencies$(): Observable<boolean> {
+    loadFormDependencies$(): Observable<boolean> {
        return this.apollo.query<{ kpis: { _id: string, name: string }[] }>({
                 query: kpiIdNameList,
                 fetchPolicy: 'network-only',
@@ -187,10 +187,10 @@ export class FunnelService {
     }
 
     updateFunnelName(name: string) {
-        if (!this._renderedFunnelModel) { return; }
+        if (!this.renderedFunnelModel) { return; }
 
-        this._renderedFunnelModel.name = name;
-        this.renderedFunnelModel$.next(this._renderedFunnelModel);
+        this.renderedFunnelModel.name = name;
+        this.renderedFunnelModel$.next(this.renderedFunnelModel);
     }
 
     updateStage(stage: IFunnelStage, props: IFunnelStageOptions) {
@@ -208,9 +208,9 @@ export class FunnelService {
 
         // preview
 
-        if (!this._renderedFunnelModel) { return; }
+        if (!this.renderedFunnelModel) { return; }
 
-        const foundPreviewModelStage = this._renderedFunnelModel.stages.find(s => s._id === stage._id);
+        const foundPreviewModelStage = this.renderedFunnelModel.stages.find(s => s._id === stage._id);
 
         if (!foundPreviewModelStage) {
             console.log('funnel preview stage not found');
@@ -219,7 +219,7 @@ export class FunnelService {
 
         foundPreviewModelStage.name = name;
 
-        this.renderedFunnelModel$.next(this._renderedFunnelModel);
+        this.renderedFunnelModel$.next(this.renderedFunnelModel);
     }
 
     async renderFunnelByDefinition(funnelModel: IFunnel) {
@@ -268,13 +268,13 @@ export class FunnelService {
             console.log(err);
         }
 
-        this._renderedFunnelModel = rendered;
-        this.renderedFunnelModel$.next(this._renderedFunnelModel);
+        this.renderedFunnelModel = rendered;
+        this.renderedFunnelModel$.next(this.renderedFunnelModel);
     }
 
     performFunnelInvalidFlow() {
-        this._renderedFunnelModel = null;
-        this.renderedFunnelModel$.next(this._renderedFunnelModel);
+        this.renderedFunnelModel = null;
+        this.renderedFunnelModel$.next(this.renderedFunnelModel);
     }
 
     getFormData() {
@@ -344,15 +344,15 @@ export class FunnelService {
     }
 
     private _tryToRender(value: IFunnel) {
-        if (!value) { return; }
+        if (!value || !value.name) { return; }
 
         const { name = '', stages = [] } = value;
 
-        this._renderedFunnelModel = this._renderedFunnelModel || { name: '', stages: []};
+        this.renderedFunnelModel = this.renderedFunnelModel || { name: '', stages: []};
 
-        this._renderedFunnelModel.name = name;
+        // this._renderedFunnelModel.name = name;
 
-        this.renderedFunnelModel$.next(this._renderedFunnelModel);
+        this.renderedFunnelModel$.next(this.renderedFunnelModel);
     }
 
 }

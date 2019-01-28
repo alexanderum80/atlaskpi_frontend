@@ -15,6 +15,7 @@ import { StageFormComponent } from './stage-form/stage-form.component';
 import { FunnelService } from './shared/services/funnel.service';
 import { FunnelPreviewComponent } from './funnel-preview/funnel-preview.component';
 import { FunnelPreviewStageComponent } from './funnel-preview-stage/funnel-preview-stage.component';
+import { EditFunnelComponent } from './edit-funnel/edit-funnel.component';
 
 @NgModule({
   imports: [
@@ -34,7 +35,8 @@ import { FunnelPreviewStageComponent } from './funnel-preview-stage/funnel-previ
     FunnelFormComponent,
     StageFormComponent,
     FunnelPreviewComponent,
-    FunnelPreviewStageComponent],
+    FunnelPreviewStageComponent,
+    EditFunnelComponent],
   exports: [FunnelComponent],
   providers: [ FunnelService ]
 })

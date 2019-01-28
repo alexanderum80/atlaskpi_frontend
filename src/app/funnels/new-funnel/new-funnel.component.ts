@@ -42,7 +42,7 @@ export class NewFunnelComponent implements OnInit {
 
 
   ngOnInit() {
-      this.ready$ = this.funnelService.loadDependencies$();
+      this.ready$ = this.funnelService.loadFormDependencies$();
       this.funnelService.funnelModel = this.funnelModel;
       this.renderedFunnel$ = this.funnelService.renderedFunnelModel$;
   }

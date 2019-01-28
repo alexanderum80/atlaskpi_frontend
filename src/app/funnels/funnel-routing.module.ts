@@ -5,6 +5,8 @@ import { AuthGuard } from '../shared/services';
 import { ListFunnelComponent } from './list-funnel/list-funnel.component';
 import { ShowFunnelComponent } from './show-funnel/show-funnel.component';
 import { NewFunnelComponent } from './new-funnel/new-funnel.component';
+import { EditFunnelComponent } from './edit-funnel/edit-funnel.component';
+
 
 const routes: Routes = [
     {
@@ -27,7 +29,11 @@ const routes: Routes = [
                 component: NewFunnelComponent,
                 canActivate: [AuthGuard]
             },
-
+            {
+                path: 'edit/:id',
+                component: EditFunnelComponent,
+                canActivate: [AuthGuard]
+            },
             {
                 path: ':id',
                 component: ShowFunnelComponent,

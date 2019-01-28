@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { Validators } from '@angular/forms';
+import { Validators, FormArray } from '@angular/forms';
 import { IFunnel, IFunnelStage } from '../shared/models/funnel.model';
 import { FormBuilderTypeSafe, FormGroupTypeSafe } from '../../shared/services';
 import { SelectionItem, guid } from '../../ng-material-components';
@@ -86,11 +86,16 @@ export class FunnelFormComponent implements OnInit, OnDestroy {
     }
 
     private _updateFunnelFormGroup(value: IFunnel) {
-        const { name = '' } = value || {};
+        const {
+            _id = '',
+            name = '',
+        } = value || {};
 
         this.fg.patchValue({
-            name,
-        });
+            _id,
+            name
+        }, { emitEvent: true});
+
     }
 
 }

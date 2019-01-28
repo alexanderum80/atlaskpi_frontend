@@ -11,6 +11,8 @@ import { IKpiDateRangePickerDateRange } from '../shared/models/models';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as moment from 'moment';
+import { ChartDateRangeViewModel } from '../../widgets2/widget-form/widget-form.viewmodel';
+import { get } from 'lodash';
 
 enum FunnelColorElementEnum {
   foreground = 'foreground',
@@ -172,18 +174,37 @@ export class StageFormComponent implements OnInit, OnDestroy {
         if (!value) { return this.fg.reset(); }
 
         const {
-          _id = '',
-          name = '',
-          foreground = '',
-          background = '',
+          _id = null,
+          name = null,
+          kpi = null,
+          fieldsToProject = [],
+          compareToStage = null,
+          foreground = null,
+          background = null,
         } = value || {};
+
+        const dateRange = get(value, 'dateRange');
 
         this.fg.patchValueSafe({
             _id,
             name,
+            kpi,
+            compareToStage,
             foreground,
-            background
+            background,
+            fieldsToProject
         });
+
+
+        const dateRangeFg = this.fg.getSafe(s => s.dateRange);
+
+        dateRangeFg.patchValue({
+            predefinedDateRange: get(dateRange, 'predefined') || null,
+            from: get(dateRange, 'custom.from') || null ,
+            to: get (dateRange, 'custom.to') || null
+        }, { emitEvent: true });
+
+        this._updateAvailableFields({ kpi, dateRange: dateRangeFg.value });
     }
 
     private async _updateAvailableFields(options: { kpi?: string, dateRange?: IKpiDateRangePickerDateRange }) {
