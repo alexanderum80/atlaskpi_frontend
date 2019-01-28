@@ -500,7 +500,10 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                         kpiArray.removeAt(0);
                     }
 
-                    values.kpis.forEach(k => {
+                    // maps do not have multiple kpis
+                    const kpis = values.kpis || [{ kpi: { _id: values.kpi }, type: 'map' }];
+
+                    kpis.forEach(k => {
                         kpiArray.push(that._formBuilder.group({
                             type: new FormControl(k.type, Validators.required),
                             kpi: new FormControl(k.kpi._id, Validators.required),

@@ -8,5 +8,6 @@ export const widgetsGraphqlActions = {
     previewWidget: require('graphql-tag/loader!./preview-widget.query.gql'),
     createWidget: require('graphql-tag/loader!./create-widget.mutation.gql'),
     updateWidget: require('graphql-tag/loader!./update-widget.mutation.gql'),
-    widgetQuery: require('graphql-tag/loader!./widget.query.gql')
+    widgetQuery: require('graphql-tag/loader!./widget.query.gql'),
+    kpiOldestDateQuery: require('graphql-tag/loader!./kpi-get-oldestDate.gql')
 };

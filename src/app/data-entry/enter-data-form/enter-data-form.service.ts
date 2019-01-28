@@ -151,9 +151,10 @@ export class EnterDataFormService {
         const fieldDefinition = this.getField(fieldName);
         let newValue = change.newValue;
         
+
         //- no change or empty in a required field
-        if(change.newValue === change.oldValue.toString() ||
-        (fieldDefinition.required && newValue === "" )){
+        if( change.newValue === String(change.oldValue) ||
+            (fieldDefinition.required && newValue === "" )){
             return false;
         }
 

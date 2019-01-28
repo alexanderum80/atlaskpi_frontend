@@ -71,11 +71,11 @@ export class ShowAllDataEntryComponent implements OnInit, OnDestroy {
     id: '1',
     icon: 'more-vert',
     children: [
-        {
-            id: 'upload-file',
-            icon: 'upload',
-            title: 'Upload file',
-        },
+        // {
+        //     id: 'upload-file',
+        //     icon: 'upload',
+        //     title: 'Upload file',
+        // },
         {
             id: 'download',
             icon: 'download',

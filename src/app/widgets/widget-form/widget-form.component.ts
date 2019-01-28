@@ -6,7 +6,6 @@ import {
     EventEmitter,
     Input,
     ViewChild,
-    ElementRef,
     OnDestroy,
     OnInit,
     Output,
@@ -18,14 +17,13 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { SelectionItem } from '../../ng-material-components';
 import { DialogResult } from '../../shared/models/dialog-result';
-import { IWidget } from '../shared/models';
+import { IWidget, IWidgetFormGroupValues } from '../shared/models';
 import { ValueFormatHelper } from '../../shared/helpers/format.helper';
 import { WidgetsFormService } from './widgets-form.service';
 import { IDatePickerConfig } from '../../ng-material-components/modules/forms/date-picker/date-picker/date-picker-config.model';
 import { ApolloService } from '../../shared/services/apollo.service';
 
-import { IDateRangeItem } from './../../shared/models/date-range';
-import { chartsGraphqlActions } from '../../charts/shared/graphql/charts.graphql-actions';
+import { widgetsGraphqlActions } from '../shared/graphql/widgets.graphql-actions';
 import { ChooseColorsComponent } from '../../charts/shared/ui/choose-colors/choose-colors.component';
 
 const widgetSizeList: SelectionItem[] = [
@@ -191,9 +189,9 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
             const fontColor = new FormControl(false);
             this.fg.addControl('fontColor', fontColor);
         }
-        this._subscribeToFormFields();
 
         const widgetData = this._widgetFormService.getWidgetFormValues();
+        let widgetDataFromKPI: IWidgetFormGroupValues;
 
         if (this.widgetDataFromKPI) {
             widgetData.name = this.widgetDataFromKPI.name;
@@ -205,27 +203,41 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
             widgetData.format = this.widgetDataFromKPI.format;
             widgetData.comparison = this.widgetDataFromKPI.comparison;
             widgetData.comparisonArrowDirection = this.widgetDataFromKPI.comparisonArrowDirection;
-
-            this.fg.patchValue(widgetData);
-
-            this._apolloService.networkQuery<IDateRangeItem[]>(chartsGraphqlActions.dateRanges).then(res => {
-                const dateRanges = res.dateRanges;
-                const listDateRange = dateRanges.find(d => d.dateRange.predefined === widgetData.predefinedDateRange);
-                const listComparison = listDateRange.comparisonItems.map(i => ({ id: i.key, title: i.value }));
-                this.comparisonSelectionList = listComparison;
-            });
-        } else {
-            this.fg.patchValue(widgetData);
+            
+            widgetDataFromKPI = {
+                name: this.widgetDataFromKPI.name,
+                description: 'Here goes the description',
+                order: '4',
+                type: 'numeric',
+                size: widgetData.size,
+                color: widgetData.color,
+                comparison: this.widgetDataFromKPI.comparison,
+                fontColor: widgetData.fontColor,
+                comparisonArrowDirection: this.widgetDataFromKPI.comparisonArrowDirection,
+                kpi: this.widgetDataFromKPI.kpi,
+                predefinedDateRange: this.widgetDataFromKPI.predefinedDateRange,
+                dashboards: ''
+            }
         }
+        
+        this.fg.patchValue(widgetData);
+        
 
         this._subscribeToServiceObservables();
-
+        
         this.fg.get('predefinedDateRange').valueChanges.subscribe(newDateRange => {
             that.updateComparisonItems(newDateRange);
         });
-        that.updateComparisonItems(this.fg.value.predefinedDateRange);
+        
+        this.fg.get('kpi').valueChanges.subscribe(newKpi => {
+            that.updateComparisonItems(this.fg.value.predefinedDateRange, newKpi);
+        });
+        
+        that.updateComparisonItems(this.fg.value.predefinedDateRange, null, widgetDataFromKPI ? widgetDataFromKPI : null);
         this.cdr.detectChanges();
-
+        
+        this._subscribeToFormFields();
+       
         this._widgetFormService.updateExistDuplicatedName(false);
         this._subscribeToNameChanges();
         this.loading = false;
@@ -289,13 +301,24 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
     get isDateRangeCustom() {
         return this.fg.value.predefinedDateRange === 'custom';
     }
-
-    updateComparisonItems(dateRange) {
+    
+    updateComparisonItems(dateRange, kpiId?, values?) {
         if (!dateRange) {
             this.comparisonSelectionList = [];
             return;
         }
-        this.comparisonSelectionList = this._widgetFormService.getComparisonListForDateRange(dateRange);
+        this._apolloService
+            .networkQuery < string > (widgetsGraphqlActions.kpiOldestDateQuery, 
+                { ids: kpiId ? [kpiId] : [this.fg.value.kpi] })
+        .then(kpis => {
+            this.comparisonSelectionList = this._widgetFormService
+                .getComparisonListForDateRangesAndKpiOldesDate(dateRange, kpis.getKpiOldestDate);
+                if (values) {
+                    this._widgetFormService.processFormChanges(values).then(widget => {
+                        this.widgetModel = widget;
+                    });
+                }
+        });
     }
 
     private _subscribeToFormFields() {
@@ -307,6 +330,7 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
                 .subscribe(values => {
                     const fieldNames = Object.keys(values);
                     this._widgetFormService.processFormChanges(values).then(widget => (this.widgetModel = widget));
+
                 }),
         );
     }

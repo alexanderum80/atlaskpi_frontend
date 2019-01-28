@@ -154,7 +154,7 @@ export class MapModel {
       proxyMapModel.title = fg.value.name;
       proxyMapModel.subtitle = fg.value.description;
       proxyMapModel.group = fg.value.group;
-      proxyMapModel.kpi = <any>fg.value.kpi;
+      proxyMapModel.kpi = <any>fg.value.kpis[0].kpi;
       proxyMapModel.dateRange = { predefined: fg.value.predefinedDateRange,
                                     custom: { from: fg.value.customFrom || null,
                                               to: fg.value.customTo || null  }};
