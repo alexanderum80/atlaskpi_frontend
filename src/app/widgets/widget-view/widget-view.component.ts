@@ -313,7 +313,7 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         }
     if (!this.widget.type) { return false; }
 
-        if (this.widget.materialized && !Number.isNaN(this.widget.materialized.value)) {
+    if (this.widget.materialized && this.widget.materialized.value) {
             return this.widget.size === 'small' ?
                 ValueFormatHelper.ApplyFormat(abbreviate_number(Number(this.widget.materialized.value), 0),
                     this.widget.numericWidgetAttributes.format || 'none') :
