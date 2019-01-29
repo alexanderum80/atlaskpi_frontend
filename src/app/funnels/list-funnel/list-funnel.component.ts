@@ -13,6 +13,7 @@ import SweetAlert from 'sweetalert2';
 import { ApolloService } from '../../shared/services/apollo.service';
 import { IActionItemClickedArgs } from '../../shared/ui/lists/item-clicked-args';
 import { SidebarService } from '../../navigation/sidebar/sidebar.service';
+import { CommonService } from '../../shared/services';
 
 const funnelListMock: IFunnel[] =
 // [];
@@ -84,7 +85,7 @@ export class ListFunnelComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.subscriptions.forEach(s => s.unsubscribe());
+        CommonService.unsubscribe(this.subscriptions);
     }
 
     nothing() {

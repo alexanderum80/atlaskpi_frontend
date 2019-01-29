@@ -1,1 +1,7 @@
-p show works!
+div(layout="column", layout-align="center center")
+    kpi-funnel-preview(
+        flex, 
+        [renderedFunnel]="(renderedFunnel$ | async)",
+        width="600",
+        height="600"
+        )

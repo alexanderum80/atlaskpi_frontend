@@ -1,17 +1,25 @@
-.funnel-container(layout="column", layout-align="center center")
+.funnel-container(*ngIf="renderedFunnel", layout="column", layout-align="center center")
     .funnel-name.m-10(flex-initial) {{ renderedFunnel?.name }}
 
-    .funnel-body(flex, layout="column",
-                 [style.width.px]="width",
-                 [style.height.px]="height")
-        .stage(*ngFor="let stage of renderedFunnel?.stages",
-              [style.background-color]="stage.background",
-              [style.color]="stage.foreground",
-              [style.height.px]="calcStageHeight(stage)")
-            kpi-funnel-preview-stage([stage]="stage")
+    .funnel-with-legend(flex, layout="row")
 
-        //- .stage(flex, [style.background-color]="'#FF3D00'", [style.height.px]="150")
-        //- .stage(flex-initial, [style.background-color]="'#FF6F00'", [style.height.px]="100")
-        //- .stage(flex-initial, [style.background-color]="'#FFC107'", [style.height.px]="80")    
-        //- .stage(flex, [style.background-color]="'#4CAF50'", [style.height.px]="60")
-        //- .stage(flex-initial, [style.background-color]="'#304FFE'", [style.height.px]="30")
+        .funnel-body(flex, layout="column",
+                    [style.width.px]="width",
+                    [style.height.px]="height")
+            .stage(*ngFor="let stage of renderedFunnel?.stages",
+                [style.background-color]="stage.background",
+                [style.color]="stage.foreground",
+                [style.height.px]="calcStageHeight(stage)")
+                kpi-funnel-preview-stage([stage]="stage")
+        .funnel-legend(*ngIf="!preview", 
+                flex-initial,  
+                layout="column",
+                layout-align="center end",
+                [style.width.px]="width / 2",
+                [style.height.px]="height")
+            .stage-description.w-100(flex *ngFor="let stage of renderedFunnel?.stages",
+                                     [style.height.px]="calcStageHeight(stage)")
+                .stage-description-line
+                    span.stage-description-text
+                       | {{ generateStageDescription(stage) }}
+                       

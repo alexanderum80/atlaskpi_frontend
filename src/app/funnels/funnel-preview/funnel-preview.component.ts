@@ -11,6 +11,7 @@ export class FunnelPreviewComponent implements OnInit {
     @Input() renderedFunnel: IRenderedFunnel;
     @Input() width = 400;
     @Input() height = 400;
+    @Input() preview = false;
 
     constructor() { }
 
@@ -23,6 +24,15 @@ export class FunnelPreviewComponent implements OnInit {
           .reduce((prev, next) => (prev + next));
 
         return Math.round(stage.amount * this.height / total);
+    }
+
+    generateStageDescription(stage: IRenderedFunnelStage) {
+      let description = stage.name;
+      if (stage.compareToStageName && stage.compareToStageValue) {
+        description += ` ( ${stage.compareToStageValue}% of ${stage.compareToStageName} )`;
+      }
+
+      return description;
     }
 
 

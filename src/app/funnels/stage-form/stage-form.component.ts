@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { IFunnelStage, IFunnel } from '../shared/models/funnel.model';
-import { FormGroupTypeSafe, FormBuilderTypeSafe } from '../../shared/services';
+import { FormGroupTypeSafe, FormBuilderTypeSafe, CommonService } from '../../shared/services';
 import { FormArray, Validators, FormGroup } from '@angular/forms';
 import { IChartDateRange, IDateRange } from '../../shared/models';
 import { SelectionItem, guid } from '../../ng-material-components';
@@ -120,7 +120,7 @@ export class StageFormComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.subscriptions.forEach(s => s.unsubscribe());
+        CommonService.unsubscribe(this.subscriptions);
         const filterIndex = this.parentFormArray.controls.findIndex(c => c === this.fg);
         if (filterIndex > -1) { this.parentFormArray.removeAt(filterIndex); }
     }

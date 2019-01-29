@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Validators, FormArray } from '@angular/forms';
 import { IFunnel, IFunnelStage } from '../shared/models/funnel.model';
-import { FormBuilderTypeSafe, FormGroupTypeSafe } from '../../shared/services';
+import { FormBuilderTypeSafe, FormGroupTypeSafe, CommonService } from '../../shared/services';
 import { SelectionItem, guid } from '../../ng-material-components';
 import { FunnelService } from '../shared/services/funnel.service';
 import { Subscription } from 'rxjs/Subscription';
@@ -67,7 +67,7 @@ export class FunnelFormComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.subscriptions.forEach(s => s.unsubscribe());
+        CommonService.unsubscribe(this.subscriptions);
         this.funnelService.performFunnelInvalidFlow();
     }
 
