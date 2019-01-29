@@ -15,6 +15,6 @@
         div(flex-initial)
                 .m-t-25.m-b-5(layout="row", layout-padding, layout-align="end end")
                     bw-button(flex-initial, color="blue", title="Save", icon="floppy",
-                                            class="normal", (clicked)="updateFunnel()" , [disabled]="!funnelService.formValid")
+                                            class="normal", (clicked)="updateFunnel()" , [disabled]="!formValid")
                     bw-button(flex-initial, color="gray", [simple]="true", title="Cancel", icon="close",
-                                            class="normal")
+                                            class="normal", (clicked)="cancel()")

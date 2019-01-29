@@ -10,6 +10,6 @@ kpi-item-list(
     [itemListActivityName]="actionActivityNames",
     itemType="standard",
     (onAddActionClicked)="add()",
-    (onItemActionClicked)="nothing($event)",
-    (onItemClicked)="nothing($event)")
+    (onItemActionClicked)="actionClicked($event)",
+    (onItemClicked)="editClickedList($event)")
 

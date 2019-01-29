@@ -20,6 +20,7 @@ import { MilestonePermissions } from './milestone.permissions';
 import { ActivityPermissions } from './activity-feed.permissions';
 import {SmartBarPermissions} from './smart-bar.permission';
 import { DataEntryPermissions } from './data-entry.permissions';
+import { FunnelPermissions } from './funnel.permissions';
 
 export const AllPermissions = [
     ...ActivityPermissions,
@@ -42,7 +43,8 @@ export const AllPermissions = [
     ...TargetPermissions,
     ...MilestonePermissions,
     ...AlertsPermissions,
-    ...DataEntryPermissions
+    ...DataEntryPermissions,
+    ...FunnelPermissions
 ];
 
 export function getPermissions(subject: SubjectEnum, actions: string[]) {

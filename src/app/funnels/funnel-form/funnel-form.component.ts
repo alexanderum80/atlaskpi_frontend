@@ -18,6 +18,7 @@ export class FunnelFormComponent implements OnInit, OnDestroy {
     set funnelModel(value: IFunnel) {
         this._funnelModel = value;
         this._updateFunnelFormGroup(value);
+        this.funnelService.emitStagesList();
     }
     get funnelModel(): IFunnel { return this._funnelModel; }
 
@@ -67,6 +68,7 @@ export class FunnelFormComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.subscriptions.forEach(s => s.unsubscribe());
+        this.funnelService.performFunnelInvalidFlow();
     }
 
     addStage(): void {
@@ -94,7 +96,7 @@ export class FunnelFormComponent implements OnInit, OnDestroy {
         this.fg.patchValue({
             _id,
             name
-        }, { emitEvent: true});
+        });
 
     }
 

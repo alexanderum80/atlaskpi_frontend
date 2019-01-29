@@ -479,9 +479,8 @@ export class SidebarService {
     }
 
     private _getListFunnelMenuItem(options?: IMenuItem): IMenuItem {
-        const { active = false, visible = true } = options || {};
+        const { visible = true } = options || {};
         return {
-            active,
             visible,
             id: 'list-funnel',
             title: 'Manage Funnels',

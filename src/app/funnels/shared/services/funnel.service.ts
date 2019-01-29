@@ -178,12 +178,12 @@ export class FunnelService {
 
         this._funnelModel.stages.push(newStage);
 
-        this._emitStagesList();
+        this.emitStagesList();
     }
 
     removeStage(stage: IFunnelStage) {
         this._funnelModel.stages = this.funnelModel.stages.filter(s => s !== stage);
-        this._emitStagesList();
+        this.emitStagesList();
     }
 
     updateFunnelName(name: string) {
@@ -204,8 +204,6 @@ export class FunnelService {
 
         foundDataModelStage.name = name;
 
-        this._emitStagesList();
-
         // preview
 
         if (!this.renderedFunnelModel) { return; }
@@ -220,6 +218,7 @@ export class FunnelService {
         foundPreviewModelStage.name = name;
 
         this.renderedFunnelModel$.next(this.renderedFunnelModel);
+        this.emitStagesList();
     }
 
     async renderFunnelByDefinition(funnelModel: IFunnel) {
@@ -282,6 +281,7 @@ export class FunnelService {
 
         let count = 1;
         for (const stage of data.stages) {
+
              // transform the date Range to ChartDateRange
              const stageDr = stage.dateRange as IKpiDateRangePickerDateRange;
 
@@ -300,9 +300,11 @@ export class FunnelService {
              }
              stage.dateRange = newDateRange;
 
+             // transform delimited string to array
+             stage.fieldsToProject = String(stage.fieldsToProject).split('|');
+
              // put the order
              stage.order = count;
-
              count += 1;
         }
 
@@ -319,7 +321,7 @@ export class FunnelService {
         return this._fg && this._fg.valid;
     }
 
-    private _emitStagesList() {
+    emitStagesList() {
         const stagesSelectionList
         = ToSelectionItemList(this._funnelModel.stages, '_id', 'name');
 

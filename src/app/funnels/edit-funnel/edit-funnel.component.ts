@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { CommonService } from '../../shared/services';
 import { IFunnel } from '../shared/models/funnel.model';
 import { Apollo } from 'apollo-angular';
-import { objectWithoutProperties } from '../../shared/helpers/object.helpers';
+import { objectWithoutProperties, objectWithoutProperties2 } from '../../shared/helpers/object.helpers';
 
 import { combineLatest, Observable, throwError } from 'rxjs';
 import { FunnelService } from '../shared/services/funnel.service';
@@ -54,7 +54,9 @@ export class EditFunnelComponent implements OnInit, OnDestroy {
           .switchMap((params: Params) => this._getFunnelById(params['id']))
     ).pipe(
         tap(([v, res])  => {
-          this.funnelModel = (<any>objectWithoutProperties(res.data.funnelById, ['__typename']));
+          this.funnelModel = (<any>objectWithoutProperties2(res.data.funnelById, ['__typename']));
+          // this.funnelModel = res.data.funnelById;
+
           this.funnelService.funnelModel = this.funnelModel;
         }),
         catchError(error => {
@@ -102,6 +104,14 @@ export class EditFunnelComponent implements OnInit, OnDestroy {
     } catch (err) {
         console.log(err);
     }
+  }
+
+  cancel() {
+    this._router.navigateByUrl('/funnels/list');
+  }
+
+  get formValid() {
+    return this.funnelService.formValid;
   }
 
 

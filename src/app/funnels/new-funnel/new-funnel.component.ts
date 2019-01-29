@@ -13,7 +13,7 @@ import { UserService } from '../../shared/services';
 import { Router } from '@angular/router';
 
 
-const createFunnelMutation = require('graphql-tag/loader!../shared/graphql/create-funnel.mutation.gql');
+const createFunnelMutation = require('graphql-tag/loader!./create-funnel.mutation.gql');
 
 @Component({
   selector: 'kpi-new-funnel',
@@ -29,6 +29,7 @@ export class NewFunnelComponent implements OnInit {
   ready$: Observable<boolean>;
 
   renderedFunnel$: Observable<IRenderedFunnel>;
+  formValid$: Observable<boolean>;
   currentUser: IUserInfo;
 
   constructor(
@@ -65,6 +66,14 @@ export class NewFunnelComponent implements OnInit {
         } catch (err) {
             console.log(err);
         }
+  }
+
+  cancel() {
+    this._router.navigateByUrl('/funnels/list');
+  }
+
+  get formValid() {
+      return this.funnelService.formValid;
   }
 
 }

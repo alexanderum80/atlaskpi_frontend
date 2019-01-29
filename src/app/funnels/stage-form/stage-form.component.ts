@@ -177,13 +177,15 @@ export class StageFormComponent implements OnInit, OnDestroy {
           _id = null,
           name = null,
           kpi = null,
-          fieldsToProject = [],
+          fieldsToProject = null,
           compareToStage = null,
           foreground = null,
           background = null,
         } = value || {};
 
         const dateRange = get(value, 'dateRange');
+
+        const delimitedFieldsToProject = fieldsToProject && fieldsToProject.join('|') as any;
 
         this.fg.patchValueSafe({
             _id,
@@ -192,7 +194,7 @@ export class StageFormComponent implements OnInit, OnDestroy {
             compareToStage,
             foreground,
             background,
-            fieldsToProject
+            fieldsToProject : delimitedFieldsToProject
         });
 
 
