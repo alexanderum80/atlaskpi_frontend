@@ -180,6 +180,17 @@ query DataEntries {
 }
 `;
 
+const ListFunnelSidebar = gql `
+query ListFunnelsForSidebar{
+  funnels {
+    _id
+    name
+  }
+}
+`;
+
+
+
 @Injectable()
 export class SidebarService {
     private _itemsSubject = new BehaviorSubject < MenuItem[] > (MENU_ITEMS);
@@ -211,7 +222,7 @@ export class SidebarService {
                     that.checkPemits(u);
                     that._getDashboards(u);
                     that._getManualEntrys(u);
-                    that._initializeFunnelMenuItem();
+                    that.refreshFunnels();
                 }
             });
 
@@ -248,6 +259,25 @@ export class SidebarService {
 
     refreshDashboards() {
         this._getDashboards(this._userService.user);
+    }
+
+    refreshFunnels(funnels?: IFunnel[]) {
+        if (!funnels || !funnels.length) {
+            this._apollo.query<{ funnels: IFunnel[] }>({
+                query: ListFunnelSidebar,
+                fetchPolicy: 'network-only'
+            })
+            .toPromise()
+            .then(res => {
+                const result = sortBy(res.data.funnels, ['_id']);
+                this._processFunnelSubMenu(result);
+            })
+            .catch(err => console.log('error fetching funnels ' + err));
+            return;
+        }
+
+        const list = sortBy(funnels, ['_id']);
+        this._processFunnelSubMenu(list);
     }
 
     updateSelection(menuItem: MenuItem) {
@@ -422,12 +452,7 @@ export class SidebarService {
 
     }
 
-    private _initializeFunnelMenuItem(): void {
-        // get the funnels
-        this._processFunnelSubmenu(funnelListMock);
-    }
-
-    private _processFunnelSubmenu(funnels: IFunnel[]) {
+    private _processFunnelSubMenu(funnels: IFunnel[]) {
         const menuItems = this._itemsSubject.value;
         const canAddFunnels = true;
 

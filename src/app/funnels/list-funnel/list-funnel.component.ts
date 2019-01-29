@@ -12,6 +12,7 @@ import { DeleteFunnelActivity } from '../../shared/authorization/activities/funn
 import SweetAlert from 'sweetalert2';
 import { ApolloService } from '../../shared/services/apollo.service';
 import { IActionItemClickedArgs } from '../../shared/ui/lists/item-clicked-args';
+import { SidebarService } from '../../navigation/sidebar/sidebar.service';
 
 const funnelListMock: IFunnel[] =
 // [];
@@ -39,6 +40,7 @@ export class ListFunnelComponent implements OnInit, OnDestroy {
     subscriptions: Subscription[] = [];
 
     constructor(
+        private _sidebarService: SidebarService,
         private _router: Router,
         public vm: ListFunnelViewModel,
 
@@ -76,6 +78,7 @@ export class ListFunnelComponent implements OnInit, OnDestroy {
             })
             .subscribe(res => {
                 this.vm.funnels = res.data.funnels;
+                this._sidebarService.refreshFunnels(this.vm.funnels);
             })
         );
     }
@@ -146,6 +149,7 @@ export class ListFunnelComponent implements OnInit, OnDestroy {
     private _refreshFunnelList() {
         this._apolloService.networkQuery < IFunnel[] > (listFunnelQuery).then(res => {
             this.vm.funnels = res.funnels;
+            this._sidebarService.refreshFunnels(this.vm.funnels);
         });
     }
 
