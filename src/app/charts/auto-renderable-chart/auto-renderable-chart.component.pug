@@ -4,7 +4,8 @@ bw-card.m-b-0([depth]="1")
             .position(*ngIf="chartSelected", [formGroup]="fgChart")
                 input.position.z-depth-1(formControlName="position",
                 [ngClass]="{'err-position': fgChart.controls['position'].errors}", 
-                type="text", (click)="onClickPosition()")
+                type="text", (click)="onClickPosition()",
+                (blur)="lostFocusPosition()")
                 .err-message(*ngIf="fgChart.controls['position'].errors && fgChart.controls['position'].errors.invalidDataType") Please enter a numeric value
                 .err-message(*ngIf="fgChart.controls['position'].errors && fgChart.controls['position'].errors.forbiddenName") Duplicated value
             div.m-t-10(flex-initial)

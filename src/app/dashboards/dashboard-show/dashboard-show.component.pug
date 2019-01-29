@@ -19,7 +19,7 @@ kpi-spinner(*ngIf="loading")
                 kpi-social-widget.pointer-cursor([socialWidget]="sw")
     
     .maps-container(appInViewport, (inViewportChange)="onMapInViewportChange($event)")
-        .Maps(*ngIf="showMap && mapInViewport", layout="column", layout-padding, flex="100")
+        .Maps(*ngIf="showMap", layout="column", layout-padding, flex="100")
             div(*ngFor="let mapMarkers of bigMaps",flex)
                 kpi-map-view-big.pointer-cursor([item]="mapMarkers", [allowSelected]="false",[padded]="false", [legendColors]="legendColors")
         

@@ -18,6 +18,7 @@ export class SocialWidgetComponent implements OnInit {
   swidgetSelected = false;
   selectionSubscription: Subscription;
   fgSwidget: FormGroup;
+  previousPositionValue = 0;
 
   constructor(private _selectionService: GenericSelectionService) { }
 
@@ -32,6 +33,7 @@ export class SocialWidgetComponent implements OnInit {
         const fgValue = {
           position: exist.position
         };
+        this.previousPositionValue = exist.position;
         this.fgSwidget.patchValue(fgValue);
         this.swidgetSelected = true;
       } else {
@@ -53,6 +55,7 @@ export class SocialWidgetComponent implements OnInit {
     } else {
       this.validPosition.emit(true);
       this.changePosition(value.position);
+      this.previousPositionValue = value.position;
     }
    });
   }
@@ -88,5 +91,12 @@ export class SocialWidgetComponent implements OnInit {
 
   onClickPosition() {
     this._selectionService.allowDisableSelection = false;
+  }
+
+  lostFocusPosition() {
+    if (this.fgSwidget.controls['position'].errors) {
+      const fgValue = { position: this.previousPositionValue };
+      this.fgSwidget.patchValue(fgValue);
+    }
   }
 }

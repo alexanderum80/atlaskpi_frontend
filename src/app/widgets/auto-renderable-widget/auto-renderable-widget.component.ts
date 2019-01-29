@@ -32,11 +32,13 @@ export class AutoRenderableWidgetComponent implements OnInit, AfterViewInit {
               private _selectionService: GenericSelectionService) { }
 
   ngOnInit() {
+    if (this.autoRender) { this.previewWidget(); }
+
     if (!this.isFromDashboardEdit) { return; }
     this.fgWidget = new FormGroup({
       'position': new FormControl(''),
     });
-    if (this.autoRender) { this.previewWidget(); }
+
     this.selectionSubscription = this._selectionService.selection$.subscribe(selectedItems => {
       const exist = selectedItems.find(i => i.id === this.item._id);
       if (exist) {
@@ -138,7 +140,7 @@ export class AutoRenderableWidgetComponent implements OnInit, AfterViewInit {
   }
 
   get placeholderVisible() {
-    return !this.loading && !this.widget && this.widgetPreview;
+    return !this.loading && !this.widget;
   }
 
   get previewButtonColor() {

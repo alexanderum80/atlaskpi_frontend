@@ -198,6 +198,7 @@ export class ListDashboardComponent implements OnInit {
         } else {
             this.loading = true;
             this._apolloService.networkQuery<IDashboard[]>(dashboardsQuery).then(d => {
+                debugger;
                 that.vm.dashboards = sortBy(d.dashboards, ['order', '_id']);
                 that.loading = false;
             });

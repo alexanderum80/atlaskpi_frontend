@@ -15,6 +15,7 @@ export class AutoRenderableMapComponent implements OnInit {
   mapSelected = false;
   selectionSubscription: Subscription;
   fgMap: FormGroup;
+  previousPositionValue = 0;
 
 
   constructor(private _selectionService: GenericSelectionService) { }
@@ -29,6 +30,7 @@ export class AutoRenderableMapComponent implements OnInit {
         const fgValue = {
           position: exist.position
         };
+        this.previousPositionValue = exist.position;
         this.fgMap.patchValue(fgValue);
         this.mapSelected = true;
       } else {
@@ -51,6 +53,7 @@ export class AutoRenderableMapComponent implements OnInit {
     } else {
       this.validPosition.emit(true);
       this.changePosition(value.position);
+      this.previousPositionValue = value.position;
     }
    });
   }
@@ -62,6 +65,13 @@ export class AutoRenderableMapComponent implements OnInit {
 
   onClickPosition() {
     this._selectionService.allowDisableSelection = false;
+  }
+
+  lostFocusPosition() {
+    if (this.fgMap.controls['position'].errors) {
+      const fgValue = { position: this.previousPositionValue };
+      this.fgMap.patchValue(fgValue);
+    }
   }
 
 }

@@ -306,7 +306,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
                     return w;
                 }
             });
-            that.smallWidgets = widgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Small).sort();
+            that.smallWidgets = widgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Small);
             that.smallWidgets = sortBy(that.smallWidgets, 'position');
             that.smallWidgets.forEach(sWidget => sWidget.preview = true);
             that.bigWidgets = widgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Big);
@@ -379,11 +379,12 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             that.maps.forEach(m => {
                 m.markers = m.markers.map(mk => objectWithoutProperties(mk, ['__typename']));
             });
+            that.maps = sortBy(that.maps, 'position');
             this.showMap = true;
         } else {
             this.showMap = false;
         }
-        if (data.dashboard.charts) {
+        if (data.dashboard.charts.length > 0) {
             that.charts = data.dashboard.charts.map(c => {
                 if (!c) {
                     return;
@@ -403,7 +404,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             that.charts = sortBy(that.charts, 'position');
         }
 
-        if (data.dashboard.widgets) {
+        if (data.dashboard.widgets.length > 0) {
             const widgets: IWidget[] = data.dashboard.widgets.map(w => {
                 try {
                     const widget = JSON.parse(w);
@@ -420,7 +421,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             that.bigWidgets.forEach(bWidget => bWidget.preview = true);
             that.bigWidgets = sortBy(that.bigWidgets, 'position');
         }
-        if (data.dashboard.socialwidgets) {
+        if (data.dashboard.socialwidgets.length > 0) {
             const socialWidgetsSource = data.dashboard.socialwidgets.map(sw => {
                 try {
                     const swidget = JSON.parse(sw);

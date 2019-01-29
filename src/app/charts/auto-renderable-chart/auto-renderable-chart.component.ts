@@ -28,6 +28,7 @@ export class AutoRenderableChartComponent implements OnInit, OnDestroy {
   selectionSubscription: Subscription;
   position = 0;
   fgChart: FormGroup;
+  previousPositionValue = 0;
 
   constructor(private _apollo: Apollo,
     private _selectionService: GenericSelectionService) { }
@@ -44,6 +45,7 @@ export class AutoRenderableChartComponent implements OnInit, OnDestroy {
         const fgValue = {
           position: exist.position
         };
+        this.previousPositionValue = exist.position;
         this.fgChart.patchValue(fgValue);
         this.chartSelected = true;
       } else {
@@ -65,6 +67,7 @@ export class AutoRenderableChartComponent implements OnInit, OnDestroy {
     } else {
       this.validPosition.emit(true);
       this.changePosition(value.position);
+      this.previousPositionValue = value.position;
     }
    });
   }
@@ -84,6 +87,13 @@ export class AutoRenderableChartComponent implements OnInit, OnDestroy {
 
   onClickPosition() {
     this._selectionService.allowDisableSelection = false;
+  }
+
+  lostFocusPosition() {
+    if (this.fgChart.controls['position'].errors) {
+      const fgValue = { position: this.previousPositionValue };
+      this.fgChart.patchValue(fgValue);
+    }
   }
 
   private _queryChart() {
