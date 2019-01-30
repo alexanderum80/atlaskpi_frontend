@@ -136,6 +136,8 @@ export class EnterDataFormService {
                         if(!params.value) return;
                         return moment(params.value).format('M/DD/YYYY');
                     }
+                    columnDef.filterParams = {};
+                    columnDef.filterParams.browserDatePicker = true;
                 }
 
                 if (value.sourceOrigin) {
