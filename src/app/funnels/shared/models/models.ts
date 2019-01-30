@@ -3,3 +3,10 @@ export interface IKpiDateRangePickerDateRange {
     from: string;
     to: string;
 }
+
+export interface IClickedStageInfo {
+    funnelId: string;
+    stageId: string;
+    stageName: string;
+}
+

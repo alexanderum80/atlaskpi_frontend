@@ -1,0 +1,17 @@
+
+.stage-details-list.h-100.w-100.m-10(flex, layout="column",
+                                layout-align="center center",
+                                style='width: 800px; height: 600px;')
+    .text-center(*ngIf="loading", flex)
+        bw-preloader(color="gray")
+    ag-grid-angular.w-100.ag-theme-material(
+        *ngIf="!loading",
+        flex
+        #agGrid
+        style='width: 500px; height: 500px;',
+        [rowData]='mockData.rowData',
+        [columnDefs]='mockData.columnDefs'
+    )
+    .buttons.w-100(flex-initial, layout="row", layout-align="start start")
+      .text(flex) Showing up to 1000 records
+      bw-button(flex-initial, title="Export", icon="download", color="blue", (clicked)="export()")

@@ -1,22 +1,19 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { IFunnel } from '../shared/models/funnel.model';
 import { IRenderedFunnel, IRenderedFunnelStage } from '../shared/models/rendered-funnel.model';
+import { IClickedStageInfo } from '../shared/models/models';
 
 @Component({
   selector: 'kpi-funnel-preview',
   templateUrl: './funnel-preview.component.pug',
   styleUrls: ['./funnel-preview.component.scss']
 })
-export class FunnelPreviewComponent implements OnInit {
+export class FunnelPreviewComponent {
     @Input() renderedFunnel: IRenderedFunnel;
     @Input() width = 400;
     @Input() height = 400;
     @Input() preview = false;
-
-    constructor() { }
-
-    ngOnInit() {
-    }
+    @Output() stageClicked = new EventEmitter<IClickedStageInfo>();
 
     calcStageHeight(stage: IRenderedFunnelStage): number {
         const total = this.renderedFunnel.stages
@@ -33,6 +30,18 @@ export class FunnelPreviewComponent implements OnInit {
       }
 
       return description;
+    }
+
+    emitStage($event: IRenderedFunnelStage) {
+      if (this.preview) { return; }
+
+      const stageInfo: IClickedStageInfo = {
+        funnelId: this.renderedFunnel._id,
+        stageId: $event._id,
+        stageName: $event.name
+      };
+
+      this.stageClicked.emit(stageInfo);
     }
 
 

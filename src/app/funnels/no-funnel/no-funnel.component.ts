@@ -19,7 +19,7 @@ export class NoFunnelComponent {
   }
 
   onAddFunnel() {
-    this._router.navigateByUrl('/funnels/add');
+    this._router.navigateByUrl('/funnels/new');
   }
 
 }

@@ -16,6 +16,8 @@ import { FunnelService } from './shared/services/funnel.service';
 import { FunnelPreviewComponent } from './funnel-preview/funnel-preview.component';
 import { FunnelPreviewStageComponent } from './funnel-preview-stage/funnel-preview-stage.component';
 import { EditFunnelComponent } from './edit-funnel/edit-funnel.component';
+import { FunnelStageDetailsComponent } from './funnel-stage-details/funnel-stage-details.component';
+import { AgGridModule } from '../../../node_modules/ag-grid-angular';
 
 @NgModule({
   imports: [
@@ -24,7 +26,9 @@ import { EditFunnelComponent } from './edit-funnel/edit-funnel.component';
     SharedModule,
     MaterialFormsModule,
     MaterialUserInterfaceModule,
-    FunnelRoutingModule
+    FunnelRoutingModule,
+    AgGridModule.withComponents([]),
+
   ],
   declarations: [
     FunnelComponent,
@@ -36,7 +40,8 @@ import { EditFunnelComponent } from './edit-funnel/edit-funnel.component';
     StageFormComponent,
     FunnelPreviewComponent,
     FunnelPreviewStageComponent,
-    EditFunnelComponent],
+    EditFunnelComponent,
+    FunnelStageDetailsComponent],
   exports: [FunnelComponent],
   providers: [ FunnelService ]
 })

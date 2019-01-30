@@ -3,5 +3,20 @@ div(layout="column", layout-align="center center")
         flex, 
         [renderedFunnel]="(renderedFunnel$ | async)",
         width="600",
-        height="600"
+        height="600",
+        (stageClicked)="onStageClicked($event)"
         )
+
+bw-modal(
+         #stageDetailsModal,
+         animation="true",
+         keyboard="true",
+         backdrop="true",
+         size="lg",
+         (onClose)="modalClose()",
+         (onDismiss)="modalClose()")
+    bw-modal-header([show-close]="true")
+        h4.modal-title.c-black {{selectedStageInfo?.stageName}} details:
+    bw-modal-body
+        kpi-funnel-stage-details.w-100.h-100(*ngIf="selectedStageInfo", 
+                                            [stageInfoParams]="selectedStageInfo")

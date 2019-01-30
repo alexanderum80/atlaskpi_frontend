@@ -10,7 +10,8 @@
                 [style.background-color]="stage.background",
                 [style.color]="stage.foreground",
                 [style.height.px]="calcStageHeight(stage)")
-                kpi-funnel-preview-stage([stage]="stage")
+                kpi-funnel-preview-stage([stage]="stage",
+                (click)="emitStage(stage)")
         .funnel-legend(*ngIf="!preview", 
                 flex-initial,  
                 layout="column",
@@ -22,4 +23,3 @@
                 .stage-description-line
                     span.stage-description-text
                        | {{ generateStageDescription(stage) }}
-                       

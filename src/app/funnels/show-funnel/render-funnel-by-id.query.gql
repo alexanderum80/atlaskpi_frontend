@@ -1,4 +1,4 @@
-query RenderFunnelByDefinition($id: String!) {
+query RenderFunnelById($id: String!) {
     renderFunnelById(id: $id) {
         _id
         name
