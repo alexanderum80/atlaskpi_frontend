@@ -8,7 +8,6 @@ import { TagInputModule } from 'ngx-chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 
-
 import { MaterialFormsModule, MaterialUserInterfaceModule } from '../ng-material-components';
 
 // components
@@ -39,7 +38,8 @@ import {
     UserService,
     PaginationService,
     FormBuilderTypeSafe,
-    DateService
+    DateService,
+    AgGridService,
 } from './services';
 
 import { CollapsableComponent } from './ui/collapsable/collapsable.component';
@@ -153,6 +153,7 @@ import { ChooseColorsComponent } from './ui/choose-colors/choose-colors.componen
         FormBuilderTypeSafe,
         DateService,
         NotificationService,
+        AgGridService
     ],
 })
 export class SharedModule { }

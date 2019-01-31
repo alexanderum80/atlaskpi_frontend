@@ -18,3 +18,4 @@ export * from './pagination.service';
 export * from './common.service';
 export * from './form-group-builder';
 export * from './date.service';
+export * from './ag-grid.service';

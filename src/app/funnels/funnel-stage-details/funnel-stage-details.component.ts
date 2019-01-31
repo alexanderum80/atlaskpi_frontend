@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { IClickedStageInfo } from '../shared/models/models';
 import { AgGridNg2 } from '../../../../node_modules/ag-grid-angular';
 import { ApolloService } from '../../shared/services/apollo.service';
+import { AgGridService } from '../../shared/services';
 
 const stageDetailsQuery = require('graphql-tag/loader!./funnel-stage-details.query.gql');
 export interface IReportColumn {
@@ -32,8 +33,15 @@ export class FunnelStageDetailsComponent implements OnInit {
     rowData: []
   };
 
+  private  defaultColDef = {
+    resizable: true,
+    sortable: true,
+    filter: true
+  };
+
   constructor(
     private _apolloService: ApolloService,
+    private _agGridService: AgGridService,
   ) { }
 
   ngOnInit() {
@@ -46,10 +54,8 @@ export class FunnelStageDetailsComponent implements OnInit {
     this._apolloService.networkQuery<IReportResult>(stageDetailsQuery, variables )
       .then(data => {
           const { columns, rows } = data.funnelStageDetails as IReportResult;
-          this.dataSource.columnDefs = columns.map(c => ({
-            headerName: c.name,
-            field: c.path,
-          }));
+          this.dataSource.columnDefs =
+            this._agGridService.prepareColumns(columns, { replaceNullNumbersWithZero: true });
           this.dataSource.rowData = JSON.parse(rows);
           this.loading = false;
       });
