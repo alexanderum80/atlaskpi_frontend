@@ -18,8 +18,9 @@
                 layout-align="center end",
                 [style.width.px]="width / 2",
                 [style.height.px]="height")
-            .stage-description.w-100(flex *ngFor="let stage of renderedFunnel?.stages",
+            .stage-description.w-100(flex-initial *ngFor="let stage of renderedFunnel?.stages",
                                      [style.height.px]="calcStageHeight(stage)")
                 .stage-description-line
                     span.stage-description-text
                        | {{ generateStageDescription(stage) }}
+

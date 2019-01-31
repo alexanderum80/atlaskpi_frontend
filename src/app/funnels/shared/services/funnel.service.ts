@@ -14,62 +14,7 @@ import { IChartDateRange, convertDateRangeToStringDateRange, AKPIDateFormatEnum,
 import * as moment from 'moment';
 import { IRenderedFunnel, IRenderedFunnelStage } from '../models/rendered-funnel.model';
 import { cloneDeep } from 'lodash';
-
-const sampleFunnel: IRenderedFunnel = {
-    _id: '1',
-    name: 'Inquires to Surgery Pipeline',
-    stages: [
-      {
-        _id: '1',
-        order: 1,
-        name: 'Inquires',
-        count: 100,
-        amount: 1000000,
-        foreground: '#fff',
-        background: '#FF3D00',
-      },
-      {
-        _id: '2',
-        order: 2,
-        name: 'Scheduled Consults',
-        count: 60,
-        amount: 350000,
-        foreground: '#fff',
-        background: '#FF6F00',
-      },
-      {
-        _id: '3',
-        order: 3,
-        name: 'Completed Consults',
-        count: 50,
-        amount: 320000,
-        foreground: '#fff',
-        background: '#FFC107',
-      },
-      {
-        _id: '4',
-        order: 4,
-        name: 'Scheduled Surgeries',
-        count: 33,
-        amount: 320000,
-        foreground: '#fff',
-        background: '#4CAF50',
-        compareToStageName: 'Completed Consults',
-        compareToStageValue: 65
-      },
-      {
-        _id: '5',
-        order: 5,
-        name: 'Completed Surgeries',
-        count: 30,
-        amount: 192000,
-        foreground: '#fff',
-        background: '#304FFE',
-        compareToStageName: 'Completed Consults',
-        compareToStageValue: 60
-      },
-    ]
-  };
+import { objectWithoutProperties2 } from '../../../shared/helpers/object.helpers';
 
 const kpiIdNameList = require('graphql-tag/loader!../graphql/kpi-list.query.gql');
 const renderFunnelByDefinitionQuery
@@ -267,7 +212,7 @@ export class FunnelService {
             console.log(err);
         }
 
-        this.renderedFunnelModel = rendered;
+        this.renderedFunnelModel = (<any>objectWithoutProperties2(rendered, ['__typename']));
         this.renderedFunnelModel$.next(this.renderedFunnelModel);
     }
 
