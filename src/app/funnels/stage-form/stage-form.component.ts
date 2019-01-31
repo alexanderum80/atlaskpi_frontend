@@ -1,20 +1,19 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { IFunnelStage, IFunnel } from '../shared/models/funnel.model';
-import { FormGroupTypeSafe, FormBuilderTypeSafe, CommonService } from '../../shared/services';
-import { FormArray, Validators, FormGroup } from '@angular/forms';
-import { IChartDateRange, IDateRange } from '../../shared/models';
-import { SelectionItem, guid } from '../../ng-material-components';
-import { FunnelService } from '../shared/services/funnel.service';
-import { ChooseColorsComponent } from '../../shared/ui/choose-colors/choose-colors.component';
-import { Subscription } from 'rxjs/Subscription';
-import { IKpiDateRangePickerDateRange } from '../shared/models/models';
-import { Observable, throwError, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import * as moment from 'moment';
-import { ChartDateRangeViewModel } from '../../widgets2/widget-form/widget-form.viewmodel';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { FormArray, FormGroup, Validators } from '@angular/forms';
 import { get } from 'lodash';
+import * as moment from 'moment';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs/Subscription';
 
-enum FunnelColorElementEnum {
+import { SelectionItem } from '../../ng-material-components';
+import { CommonService, FormBuilderTypeSafe, FormGroupTypeSafe } from '../../shared/services';
+import { ChooseColorsComponent } from '../../shared/ui/choose-colors/choose-colors.component';
+import { IFunnelStage } from '../shared/models/funnel.model';
+import { IKpiDateRangePickerDateRange } from '../shared/models/models';
+import { FunnelService } from '../shared/services/funnel.service';
+
+export enum FunnelColorElementEnum {
   foreground = 'foreground',
   background = 'background'
 }
@@ -129,8 +128,8 @@ export class StageFormComponent implements OnInit, OnDestroy {
       this.removeStage.emit(this._stageModel);
     }
 
-    openSelectColor(element: FunnelColorElementEnum) {
-        this.selectedColorElement = element;
+    openSelectColor(element: string) {
+        this.selectedColorElement = element as FunnelColorElementEnum;
         this.chooseColors.open();
     }
 
