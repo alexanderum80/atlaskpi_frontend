@@ -8,7 +8,7 @@
                 div(layout="row")
                    .text-center.widget-value(*ngIf="widgetValue", flex)  {{widgetValue}}  
                    .text-center.widget-no-data(*ngIf="!widgetValue", flex) Value not available
-                       .widget-no-data-subtitle(flex) Please review the KPI formula   
+                       .widget-no-data-subtitle(flex, *ngIf="!widgetComparisonValue") Please review the KPI formula   
                    .text-center.i.zmdi.arrow-icon(*ngIf="widgetArrow", class="zmdi-caret-{{widgetArrow}} {{widgetArrowColor}} ")
                 .rigth(*ngIf="Porcent") {{Porcent}} %
                 .text-center.widget-comparison-value(*ngIf="widgetComparisonValue")  {{widgetComparisonPeriod}}: {{widgetComparisonValue}}
