@@ -243,7 +243,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
 
     private _subscribeToKpiAndDateRange(): void {
         const that = this;
-        this.fg .valueChanges
+        this.fg.valueChanges
         .distinctUntilChanged()
         .debounceTime(400)
         .subscribe((value) => {
@@ -523,9 +523,8 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
     }
 
     private _updateComparisonData(yearOldestDate: string) {
-
         if (this.fg.value.predefinedDateRange === '') { return; }
-        if (!yearOldestDate) { return; }
+        if (!yearOldestDate) { return this.vm.comparisonList = []; }
 
         this.fg.controls['loadingComparison'].patchValue(true, { emitEvent: false });
 

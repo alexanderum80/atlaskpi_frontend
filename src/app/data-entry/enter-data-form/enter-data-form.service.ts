@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { isEmpty } from 'lodash';
+import * as moment from 'moment';
 
 export interface IDataChanged {
     _id: string;
@@ -77,6 +77,21 @@ export class EnterDataFormService {
 
     private prepareRecords(res: IDataEntryResponse, quantity = 1000) {
         const records = [...res.data];
+
+        //- [fieldName : string, fieldDefinition: Object]
+        const dateFieldsRaw = Object.entries(this.schema).filter( ([key, value]) => value.dataType  === 'Date');
+        
+        if(records.length && dateFieldsRaw.length){
+
+            const dateFieldsArr = dateFieldsRaw.map(val => val[1].path);
+            
+            dateFieldsArr.forEach( dateField =>
+                {
+            records.map(rec => rec[dateField] =  new Date(rec[dateField]) )
+                });
+
+        }
+
         const emptyRecord = this.getEmptyRecord(res.schema);
 
         for (let i = 0; i < quantity; i++) {
@@ -116,6 +131,15 @@ export class EnterDataFormService {
                     columnDef.type = 'numericColumn';
                 }
 
+                if(value.dataType === 'Date'){
+                    columnDef.valueFormatter = function(params) {
+                        if(!params.value) return;
+                        return moment(params.value).format('M/DD/YYYY');
+                    }
+                    columnDef.filterParams = {};
+                    columnDef.filterParams.browserDatePicker = true;
+                }
+
                 if (value.sourceOrigin) {
                     const customList = res.customLists.find(l => l._id === value.sourceOrigin);
                     columnDef.cellEditor = 'agSelectCellEditor';
@@ -152,8 +176,8 @@ export class EnterDataFormService {
         let newValue = change.newValue;
         
         //- no change or empty in a required field
-        if(change.newValue === change.oldValue.toString() ||
-        (fieldDefinition.required && newValue === "" )){
+        if( change.newValue === String(change.oldValue) ||
+            (fieldDefinition.required && newValue === "" )){
             return false;
         }
 

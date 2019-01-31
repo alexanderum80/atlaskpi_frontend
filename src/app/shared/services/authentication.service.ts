@@ -13,6 +13,7 @@ import { LocalStorageService } from './local-storage.service';
 import { NativeChannelService } from './native-channel.service';
 import { UserService } from './user.service';
 import { StoreHelper } from './store-helper.service';
+import { BrowserService } from './browser.service';
 
 @Injectable()
 export class AuthenticationService {
@@ -27,7 +28,8 @@ export class AuthenticationService {
         private _localStorageSvc: LocalStorageService,
         private _nativeChannelSvc: NativeChannelService,
         private _storeHelper: StoreHelper,
-        private _apollo: Apollo) {
+        private _apollo: Apollo,
+        private _browserService: BrowserService) {
         this._updateAuthorizationOnStartup();
     }
 
@@ -113,7 +115,7 @@ export class AuthenticationService {
         this._authenticated = true;
         if (redirect) {
             setTimeout(() => {
-                this._router.navigate(['dashboards']);
+                this._router.navigate(['/dashboards']);
             }, 500);
         }
     }

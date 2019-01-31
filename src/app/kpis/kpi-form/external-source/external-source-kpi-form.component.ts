@@ -166,7 +166,7 @@ export class ExternalSourceKpiFormComponent implements OnInit, AfterViewInit {
                         // for chart
                         this.vm.valuesPreviewChart.name = this.currrentKPI.name;
                         // TODO: Need to review this later
-                        this.vm.valuesPreviewChart.kpis = [{ type: 'column', kpi: this.currrentKPI._id }];
+                        this.vm.valuesPreviewChart.kpis = [{ type: 'column', kpi: { _id: this.currrentKPI._id } as any }];
 
                         this.fromSaveAndVisualize = !this.fromSaveAndVisualize;
                         this.previewModal.open();
