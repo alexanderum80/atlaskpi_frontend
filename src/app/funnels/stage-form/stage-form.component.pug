@@ -72,11 +72,11 @@
         div(flex)            
             .label-box.z-depth-1.p-relative(layout="row") Foreground
                 .label-slash
-                .label-color-box([ngStyle]="{'background-color': fg.value.foreground}", (click)="openSelectColor('foreground')")
+                .label-color-box([ngStyle]="{'background-color': fg.value.foreground}", (click)="openSelectForegroundColor()")
         div(flex)
             .label-box.z-depth-1.p-relative(layout="row") Background
                 .label-slash
-                .label-color-box([ngStyle]="{'background-color': fg.value.background}", (click)="openSelectColor('background')")            
+                .label-color-box([ngStyle]="{'background-color': fg.value.background}", (click)="openSelectBackgroundColor()")            
 
 
 //- Choose Color Form

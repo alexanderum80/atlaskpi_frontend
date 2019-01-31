@@ -128,9 +128,12 @@ export class StageFormComponent implements OnInit, OnDestroy {
       this.removeStage.emit(this._stageModel);
     }
 
-    openSelectColor(element: string) {
-        this.selectedColorElement = element as FunnelColorElementEnum;
-        this.chooseColors.open();
+    openSelectForegroundColor() {
+        this.openSelectColor(FunnelColorElementEnum.foreground);
+    }
+
+    openSelectBackgroundColor() {
+        this.openSelectColor(FunnelColorElementEnum.background);
     }
 
     onSelectColor(selectedColor: string) {
@@ -143,6 +146,11 @@ export class StageFormComponent implements OnInit, OnDestroy {
               this.fg.getSafe(s => s.background).patchValue(selectedColor);
               break;
         }
+    }
+
+    private openSelectColor(element: FunnelColorElementEnum) {
+        this.selectedColorElement = element;
+        this.chooseColors.open();
     }
 
     private _createStageFormGroup(): FormGroupTypeSafe<IFunnelStage> {
