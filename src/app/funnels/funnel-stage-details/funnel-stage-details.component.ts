@@ -27,19 +27,6 @@ export class FunnelStageDetailsComponent implements OnInit {
   @ViewChild('agGrid') agGrid: AgGridNg2;
   loading = true;
 
-  mockData = {
-    columnDefs: [
-      {headerName: 'Make', field: 'make' },
-      {headerName: 'Model', field: 'model' },
-      {headerName: 'Price', field: 'price'}
-    ],
-    rowData: [
-        { make: 'Toyota', model: 'Celica', price: 35000 },
-        { make: 'Ford', model: 'Mondeo', price: 32000 },
-        { make: 'Porsche', model: 'Boxter', price: 72000 }
-    ]
-  };
-
   dataSource = {
     columnDefs: [],
     rowData: []

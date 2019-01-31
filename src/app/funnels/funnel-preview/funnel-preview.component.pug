@@ -1,7 +1,13 @@
-.funnel-container(*ngIf="renderedFunnel", layout="column", layout-align="center center")
+.funnel-container.h-100(*ngIf="!renderedFunnel", flex, layout="column", layout-align="center center")
+    .funnel-with-legend(flex, layout="row", layout-align="center center")
+        .funnel-body(flex, layout="column",
+                    [style.width.px]="width",
+                    [style.height.px]="height")
+
+.funnel-container.h-100(*ngIf="renderedFunnel", flex, layout="column", layout-align="center center")
     .funnel-name.m-10(flex-initial) {{ renderedFunnel?.name }}
 
-    .funnel-with-legend(flex, layout="row")
+    .funnel-with-legend(flex, layout="row",  layout-align="center center")
 
         .funnel-body(flex, layout="column",
                     [style.width.px]="width",

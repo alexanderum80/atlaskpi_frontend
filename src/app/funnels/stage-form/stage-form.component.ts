@@ -162,7 +162,7 @@ export class StageFormComponent implements OnInit, OnDestroy {
               from: [null],
               to: [null]
             }, { validator: customDateRangeValidator () }),
-            fieldsToProject: [null],
+            fieldsToProject: [null, Validators.required],
             compareToStage: [null],
             foreground: [null, Validators.required],
             background: [null, Validators.required],

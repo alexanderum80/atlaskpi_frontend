@@ -1,5 +1,5 @@
-div(layout="column", layout-align="center center")
-    kpi-funnel-preview(
+.show-funnel-container.h-90(layout="column", layout-align="center center", layout-padding)
+    kpi-funnel-preview.w-100.h-100(
         flex, 
         [renderedFunnel]="(renderedFunnel$ | async)",
         width="600",
