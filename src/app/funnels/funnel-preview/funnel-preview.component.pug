@@ -5,9 +5,9 @@
                     [style.height.px]="height")
 
 .funnel-container.h-100(*ngIf="renderedFunnel", flex, layout="column", layout-align="center center")
-    .funnel-name.m-10(flex-initial) {{ renderedFunnel?.name }}
+    .funnel-name.m-40(flex-initial) {{ renderedFunnel?.name }}
 
-    .funnel-with-legend(flex, layout="row",  layout-align="center center")
+    .funnel-with-legend.m-40(flex-initial, layout="row",  layout-align="center center")
 
         .funnel-body(flex, layout="column",
                     [style.width.px]="width",
@@ -22,7 +22,7 @@
                 flex-initial,  
                 layout="column",
                 layout-align="center end",
-                [style.width.px]="width / 2",
+                [style.width.px]="width * 0.75",
                 [style.height.px]="height")
             .stage-description.w-100(flex-initial *ngFor="let stage of renderedFunnel?.stages",
                                      [style.height.px]="calcStageHeight(stage)")
