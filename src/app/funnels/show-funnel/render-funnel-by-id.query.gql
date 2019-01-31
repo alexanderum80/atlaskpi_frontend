@@ -1,0 +1,17 @@
+query RenderFunnelById($id: String!) {
+    renderFunnelById(id: $id) {
+        _id
+        name
+        stages {
+            _id
+            order
+            name
+            count
+            amount
+            compareToStageValue
+            compareToStageName
+            foreground
+            background
+        }
+    }
+}

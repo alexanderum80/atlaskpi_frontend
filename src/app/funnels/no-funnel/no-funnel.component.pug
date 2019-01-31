@@ -1,0 +1,15 @@
+.no-funnel-container.h-100.p-15(layout="column", layout-align="center center")
+  .space(flex)
+  
+  .text-center(flex-initial)
+    img.icon(src="./assets/img/pages/funnel_img.svg")
+
+    //- i.icon.zmdi.zmdi-collection-case-play
+  .text-center(flex)
+    h2 Looks Like there are no funnels defined yet
+    small You can use funnels among other things to show useful information coming from different sources at the same time
+  .m-t-35(flex)
+    bw-button(color="blue", title="Add First Funnel", icon="plus", [disabled]="!vm.authorizedTo('AddFunnelActivity')",
+              [rounded]="true", size="lg", (clicked)="onAddFunnel()")
+
+

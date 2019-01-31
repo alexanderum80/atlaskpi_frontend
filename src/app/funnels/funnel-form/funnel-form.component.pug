@@ -1,0 +1,19 @@
+.m-t-25(flex, layout="column", layout-padding, layout-align="start start")
+    bw-text-box.w-100(flex-initial, [fg]="fg", field="name", label="Name", leftIcon="label")
+   
+    //- pre {{ fg.value | json }}
+    //- pre funnel form valid {{ fg.valid }}
+
+    .w-100(flex-initial, *ngFor="let stage of funnelModel?.stages; let i = index")
+        kpi-collapsable.m-15(headerText="Stage", [color]="'black'")
+            kpi-stage-form(
+                [parentFormArray]="fg.get('stages')",
+                [stageModel]="stage",
+                (removeStage)="removeStage($event)"
+            )
+                
+
+    div(flex, layout="row", layout-padding, layout-align="end end")
+        div(flex-initial)
+            .m-l-15(flex)
+                bw-button(color="blue", icon="plus", title="Add Stage", (clicked)="addStage()")           

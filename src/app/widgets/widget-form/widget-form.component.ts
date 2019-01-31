@@ -24,7 +24,7 @@ import { IDatePickerConfig } from '../../ng-material-components/modules/forms/da
 import { ApolloService } from '../../shared/services/apollo.service';
 
 import { widgetsGraphqlActions } from '../shared/graphql/widgets.graphql-actions';
-import { ChooseColorsComponent } from '../../charts/shared/ui/choose-colors/choose-colors.component';
+import { ChooseColorsComponent } from '../../shared/ui/choose-colors/choose-colors.component';
 
 const widgetSizeList: SelectionItem[] = [
     {

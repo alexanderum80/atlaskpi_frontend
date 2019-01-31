@@ -11,20 +11,30 @@ import { Subscription } from 'rxjs/Subscription';
 import { IDashboard } from '../../dashboards/shared/models';
 import { MenuItem } from '../../ng-material-components';
 import { AddDashboardActivity } from '../../shared/authorization/activities/dashboards/add-dashboard.activity';
-import { IUserInfo } from '../../shared/models';
+import { IUserInfo, IMenuItem } from '../../shared/models';
 import { StoreHelper } from '../../shared/services';
 import { UserService } from '../../shared/services/user.service';
 import { SideBarViewModel } from './sidebar.viewmodel';
 import { sortBy } from 'lodash';
 import { environment } from '../../../environments/environment';
-import { IDataSource } from 'src/app/shared/domain/kpis/data-source';
+import { IDataSource } from '../../shared/domain/kpis/data-source';
+import { IFunnel } from '../../funnels/shared/models/funnel.model';
 
 export interface ISidebarItemSearchResult {
     parent?: MenuItem;
     item: MenuItem;
 }
 
-const MENU_ITEMS: MenuItem[] = [{
+const funnelListMock: IFunnel[] =
+// [];
+[
+    { _id: '1', name: 'Sales Funnel', stages: [] },
+    { _id: '2', name: 'Inquires Funnel', stages: [] },
+];
+
+
+const MENU_ITEMS: MenuItem[] = [
+{
     id: 'dashboard',
     title: 'Dashboards',
     icon: 'widgets',
@@ -77,6 +87,11 @@ const MENU_ITEMS: MenuItem[] = [{
     id: 'data-entry',
     title: 'Data entry',
     icon: 'keyboard'
+},
+{
+    id: 'funnel',
+    title: 'Funnel',
+    icon: 'triangle-down',
 }
 // , {
 //     id: 'company',
@@ -165,6 +180,17 @@ query DataEntries {
 }
 `;
 
+const ListFunnelSidebar = gql `
+query ListFunnelsForSidebar{
+  funnels {
+    _id
+    name
+  }
+}
+`;
+
+
+
 @Injectable()
 export class SidebarService {
     private _itemsSubject = new BehaviorSubject < MenuItem[] > (MENU_ITEMS);
@@ -196,6 +222,7 @@ export class SidebarService {
                     that.checkPemits(u);
                     that._getDashboards(u);
                     that._getManualEntrys(u);
+                    that.refreshFunnels();
                 }
             });
 
@@ -232,6 +259,25 @@ export class SidebarService {
 
     refreshDashboards() {
         this._getDashboards(this._userService.user);
+    }
+
+    refreshFunnels(funnels?: IFunnel[]) {
+        if (!funnels || !funnels.length) {
+            this._apollo.query<{ funnels: IFunnel[] }>({
+                query: ListFunnelSidebar,
+                fetchPolicy: 'network-only'
+            })
+            .toPromise()
+            .then(res => {
+                const result = sortBy(res.data.funnels, ['_id']);
+                this._processFunnelSubMenu(result);
+            })
+            .catch(err => console.log('error fetching funnels ' + err));
+            return;
+        }
+
+        const list = sortBy(funnels, ['_id']);
+        this._processFunnelSubMenu(list);
     }
 
     updateSelection(menuItem: MenuItem) {
@@ -406,6 +452,68 @@ export class SidebarService {
 
     }
 
+    private _processFunnelSubMenu(funnels: IFunnel[]) {
+        const menuItems = this._itemsSubject.value;
+        const canAddFunnels = true;
+
+        const isInFunnelRoute = this._currentRoute.indexOf('/funnels/') !== -1;
+
+        const funnelMenuItem = menuItems.find(i => i.id === 'funnel');
+        const listFunnelMenuItem = this._getListFunnelMenuItem();
+
+        funnelMenuItem.children = [];
+
+        if (!funnels || !funnels.length) {
+
+            if (canAddFunnels) {
+                funnelMenuItem.active = true;
+                funnelMenuItem.children = [ listFunnelMenuItem ];
+                this._itemsSubject.next(menuItems);
+            }
+
+            return;
+        }
+
+        // this.vm.listFunnel.active = false;
+
+        funnelMenuItem.children = funnels.map(x => {
+            // check if the current root is relarted to the dashboards
+            const route = `/funnels/${x._id}`;
+            const active = route === this._currentRoute;
+
+            return {
+                route,
+                active,
+                id: x.name,
+                title: x.name,
+                group: 'funnel',
+                isVisible: true
+            };
+        });
+
+        // mark the dashboards parent as selected if a dashboard was selected
+        if (isInFunnelRoute) {
+            funnelMenuItem.active = true;
+        }
+
+        if (canAddFunnels) {
+            funnelMenuItem.children.push(listFunnelMenuItem);
+        }
+
+        this._itemsSubject.next(menuItems);
+    }
+
+    private _getListFunnelMenuItem(options?: IMenuItem): IMenuItem {
+        const { visible = true } = options || {};
+        return {
+            visible,
+            id: 'list-funnel',
+            title: 'Manage Funnels',
+            icon: 'collection-text',
+            route: `/funnels/list`,
+        };
+    }
+
     resetMenuItems() {
 
         MENU_ITEMS[0] = {
@@ -426,7 +534,7 @@ export class SidebarService {
 
 
     checkPemits(user): void {
-           this._userCanAddDashSubject.next(this.addDashboardActivity.check(user));
-        }
+        this._userCanAddDashSubject.next(this.addDashboardActivity.check(user));
+    }
 
 }

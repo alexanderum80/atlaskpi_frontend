@@ -1,7 +1,7 @@
 import { FormGroup } from '@angular/forms';
-import { Colors } from './../chart-format-info/material-colors';
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { ModalComponent } from '../../../../ng-material-components';
+import { ModalComponent } from '../../../ng-material-components';
+import { Colors } from '../../models/material-colors';
 
 @Component({
   selector: 'kpi-choose-colors',

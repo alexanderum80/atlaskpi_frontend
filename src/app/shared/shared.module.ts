@@ -60,6 +60,7 @@ import { RemoveConfirmationComponent } from './ui/remove-confirmation/remove-con
 import { ErrorComponent } from './ui/error/error.component';
 import { IsInViewportDirective } from './directives/is-in-viewport.directive';
 import { NotificationService } from './services/notification.service';
+import { ChooseColorsComponent } from './ui/choose-colors/choose-colors.component';
 
 @NgModule({
     imports: [
@@ -90,6 +91,7 @@ import { NotificationService } from './services/notification.service';
         SpinnerComponent,
         ListItemStandardComponent,
         ItemListComponent,
+        ChooseColorsComponent,
         // pipes
         MomentFormatPipe,
         NgxResizeWatcherDirective,
@@ -121,6 +123,7 @@ import { NotificationService } from './services/notification.service';
         ItemListComponent,
         TagsComponent,
         FileInputComponent,
+        ChooseColorsComponent,
         // pipes
         MomentFormatPipe,
         ListItemTabularComponent,

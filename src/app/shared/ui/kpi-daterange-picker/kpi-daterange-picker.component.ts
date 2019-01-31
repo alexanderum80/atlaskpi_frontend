@@ -10,6 +10,10 @@ import {
 } from '../../../ng-material-components/modules/forms/date-picker/date-picker/date-picker-config.model';
 import { PredefinedDateRanges, IChartDateRange } from '../../models';
 import * as moment from 'moment';
+import { DateService } from '../../services';
+import { filter, map, tap, catchError } from 'rxjs/operators';
+import { combineLatest, Observable, throwError } from 'rxjs';
+import { ToSelectionItemList } from '../../extentions';
 
 @Component({
     selector: 'kpi-kpi-daterange-picker',
@@ -30,23 +34,17 @@ export class KpiDaterangePickerComponent implements OnInit, OnDestroy, AfterView
 
     datePickerConfig: IDatePickerConfig;
 
-    dateRangeList: SelectionItem[] = [{
-        id: 'custom',
-        title: 'custom',
-        selected: false,
-        disabled: false
-    }];
+    dateRangeList$: Observable<SelectionItem[]>;
 
-    constructor() {
-        toArray(PredefinedDateRanges)
-            .forEach(d => {
-                this.dateRangeList.push({
-                    id: d,
-                    title: d,
-                    selected: false,
-                    disabled: false
-                });
-            });
+    constructor(private dateService: DateService) {
+
+        this.dateRangeList$ = this.dateService.dateRanges$
+            .pipe(
+                map(_ =>
+                  ToSelectionItemList(
+                    _.map(d => d.dateRange), 'predefined', 'predefined')
+                )
+            );
     }
 
     ngOnInit() {
@@ -61,13 +59,23 @@ export class KpiDaterangePickerComponent implements OnInit, OnDestroy, AfterView
     ngAfterViewInit() {
       const that = this;
 
-      this.fg.get('predefinedDateRange').valueChanges.subscribe(value => {
-        if (value === 'custom') {
-          that._addFromToValidation();
-        } else {
-          that._removeFromToValidation();
-        }
-      });
+    //   this.fg.get('predefinedDateRange').valueChanges.subscribe(value => {
+    //     if (value === 'custom') {
+    //       that._addFromToValidation();
+    //     } else {
+    //       that._removeFromToValidation();
+    //     }
+    //   });
+
+        this.fg.valueChanges.subscribe(value => {
+            if (!value.predefinedDateRange) { return; }
+
+            if (value.predefinedDateRange === 'custom') {
+                that._addFromToValidation();
+            } else {
+                that._removeFromToValidation();
+            }
+        });
     }
 
     ngOnDestroy() {
@@ -118,8 +126,12 @@ export class KpiDaterangePickerComponent implements OnInit, OnDestroy, AfterView
     }
 
     private _setValueToForm() {
-        const from = moment.utc(this.dateRange[0].custom.from);
-        const to = moment.utc(this.dateRange[0].custom.to);
+        const dateRange = (this.dateRange || [])[0] || this.dateRange;
+
+        if (!dateRange || !dateRange.custom) { return; }
+
+        const from = moment.utc(dateRange.custom.from);
+        const to = moment.utc(dateRange.custom.to);
 
         if (!from.isValid() || !to.isValid) { return; }
 

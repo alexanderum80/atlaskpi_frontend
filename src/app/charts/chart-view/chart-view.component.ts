@@ -37,10 +37,10 @@ import { BrowserService } from '../../shared/services/browser.service';
 import { CommonService } from '../../shared/services/common.service';
 import { OverlayComponent } from '../../shared/ui/overlay/overlay.component';
 import { DrillDownService } from '../shared/services/drilldown.service';
-import { predefinedColors } from './../shared/ui/chart-format-info/material-colors';
 import { ChartViewViewModel } from './chart-view.viewmodel';
 import { TableModeService } from './table-mode/table-mode.service';
 import { IComparisonInfo } from './chart-comparison/chart-comparison.component';
+import { predefinedColors } from '../../shared/models/material-colors';
 
 const Highcharts = require('highcharts/js/highcharts');
 

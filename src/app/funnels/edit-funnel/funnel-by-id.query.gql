@@ -1,0 +1,27 @@
+query FunnelById ($id: String!) {
+  funnelById(id: $id) {
+    _id
+    name
+    createdBy
+    createdDate
+    updatedBy
+    updatedDate
+    stages {
+      _id
+      order
+      name
+      kpi
+      dateRange {
+        predefined
+        custom {
+          from
+          to
+        }
+      }
+      fieldsToProject
+      compareToStage
+      foreground
+      background
+    }
+  }
+}

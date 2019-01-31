@@ -1,10 +1,10 @@
-import { ChooseColorsComponent } from './../choose-colors/choose-colors.component';
 import { isNumber } from 'lodash';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { SelectionItem } from '../../../../ng-material-components';
 import { ChartGalleryService } from '../../services';
-import { predefinedColors, labelItems } from './material-colors';
+import { ChooseColorsComponent } from '../../../../shared/ui/choose-colors/choose-colors.component';
+import { predefinedColors, labelItems } from '../../../../shared/models/material-colors';
 
 const ExpensesGroupingList = [
     { id: 'location', title: 'location', selected: false, disabled: false },
