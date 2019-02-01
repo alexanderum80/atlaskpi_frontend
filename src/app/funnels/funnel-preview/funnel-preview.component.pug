@@ -1,8 +1,11 @@
 .funnel-container.h-100(*ngIf="!renderedFunnel", flex, layout="column", layout-align="center center")
-    .funnel-with-legend(flex, layout="row", layout-align="center center")
+    .funnel-with-legend(flex-initial, layout="row", layout-align="center center")
         .funnel-body(flex, layout="column",
                     [style.width.px]="width",
                     [style.height.px]="height")
+    .no-data-funnel-message.m-t-20(flex-initial)
+        .no-data-funnel-title.text-center Cannot represent the funnel
+        .no-data-funnel-subtitle.text-center Please review the validity of each stage
 
 .funnel-container.h-100(*ngIf="renderedFunnel", flex, layout="column", layout-align="center center")
     .funnel-name.m-40(flex-initial) {{ renderedFunnel?.name }}
@@ -29,4 +32,3 @@
                 .stage-description-line
                     span.stage-description-text
                        | {{ generateStageDescription(stage) }}
-

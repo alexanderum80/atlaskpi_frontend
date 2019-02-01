@@ -25,8 +25,12 @@ export class FunnelPreviewComponent {
 
     generateStageDescription(stage: IRenderedFunnelStage) {
       let description = stage.name;
-      if (stage.compareToStageName && stage.compareToStageValue) {
-        description += ` ( ${stage.compareToStageValue}% of ${stage.compareToStageName} )`;
+      if (stage.compareToStageName) {
+        const percent = stage.compareToStageValue === -1
+          ? 'N/A'
+          : `${stage.compareToStageValue}%`;
+
+          description += ` ( ${percent} of ${stage.compareToStageName} )`;
       }
 
       return description;
