@@ -15,13 +15,17 @@
         .funnel-body(flex, layout="column",
                     [style.width.px]="width",
                     [style.height.px]="height")
-            .stage(*ngFor="let stage of renderedFunnel?.stages",
-                [style.background-color]="stage.background",
-                [style.color]="stage.foreground",
-                [style.height.px]="calcStageHeight(stage)")
-                kpi-funnel-preview-stage([stage]="stage",
-                (click)="emitStage(stage)")
-        .funnel-legend(*ngIf="!preview", 
+            .stage( kpiTooltip, *ngFor="let stage of renderedFunnel?.stages",
+                    [style.background-color]="stage.background",
+                    [style.color]="stage.foreground",
+                    [style.height.px]="calcStageHeight(stage)",
+                    placement="top", [tooltipTitle]="generateStageDescription(stage)",
+                    [isMobile]="isMobile",
+                    [mobileOnly]="true"
+                    )
+                kpi-funnel-preview-stage([stage]="stage", 
+                                         (click)="onStageClicked(stage)")
+        .funnel-legend(*ngIf="!preview && !isMobile", 
                 flex-initial,  
                 layout="column",
                 layout-align="center end",

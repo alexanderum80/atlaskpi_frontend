@@ -28,7 +28,6 @@ import { AgGridModule } from '../../../node_modules/ag-grid-angular';
     MaterialUserInterfaceModule,
     FunnelRoutingModule,
     AgGridModule.withComponents([]),
-
   ],
   declarations: [
     FunnelComponent,
