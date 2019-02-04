@@ -3,8 +3,7 @@
         .position(*ngIf="swidgetSelected", [formGroup]="fgSwidget")
             input.position.z-depth-1(formControlName="position", 
             [ngClass]="{'err-position': fgSwidget.controls['position'].errors}",
-            type="text", (click)="onClickPosition()",
-            (blur)="lostFocusPosition()")
+            type="text", (click)="onClickPosition()")
             .err-message(*ngIf="fgSwidget.controls['position'].errors && fgSwidget.controls['position'].errors.invalidDataType") Please enter a numeric value
             .err-message(*ngIf="fgSwidget.controls['position'].errors && fgSwidget.controls['position'].errors.forbiddenName") Duplicated value
         div(layout="row", layout-align="start start", flex-none)

@@ -13,12 +13,11 @@ import { Subscription } from 'rxjs/Subscription';
 export class SocialWidgetComponent implements OnInit {
   @Input() socialWidget: SocialWidgetBase;
   @Input() isFromDashboardEdit = false;
-  @Output() validPosition = new EventEmitter<boolean>(true);
 
   swidgetSelected = false;
   selectionSubscription: Subscription;
   fgSwidget: FormGroup;
-  previousPositionValue = 0;
+  fgPatched = false;
 
   constructor(private _selectionService: GenericSelectionService) { }
 
@@ -33,29 +32,33 @@ export class SocialWidgetComponent implements OnInit {
         const fgValue = {
           position: exist.position
         };
-        this.previousPositionValue = exist.position;
-        this.fgSwidget.patchValue(fgValue);
+        if (!this.fgPatched) {
+          this.fgSwidget.patchValue(fgValue);
+          this.fgPatched = true;
+        }
         this.swidgetSelected = true;
+        if (exist.position === 0) {
+          this.fgSwidget.controls['position'].setErrors({invalidDataType: true});
+        } else {
+          if (!exist.validPosition) {
+            this.fgSwidget.controls['position'].setErrors({forbiddenName: true});
+          } else {
+            this.fgSwidget.controls['position'].setErrors(null);
+          }
+        }
       } else {
         this.swidgetSelected = false;
       }
    });
    this.fgSwidget.valueChanges.subscribe(value => {
-    if (isNaN(value.position)) {
-      this.fgSwidget.controls['position'].setErrors({invalidDataType: true});
-      this.validPosition.emit(false);
-      return;
-    }
-    // Here I must validate duplicated position value
-    const duplicatedPos = this._selectionService._selectionList.find(s => s.type === 'sw'
-    && s.position === parseInt(value.position, 0) && s.id !== this.socialWidget.connectorId);
-    if (duplicatedPos) {
-      this.fgSwidget.controls['position'].setErrors({forbiddenName: true});
-      this.validPosition.emit(false);
+    if (isNaN(value.position) || value.position === '') {
+      this.changePosition(0);
     } else {
-      this.validPosition.emit(true);
-      this.changePosition(value.position);
-      this.previousPositionValue = value.position;
+      if (this.fgPatched) {
+        this.changePosition(value.position);
+      } else {
+        this.fgPatched = true;
+      }
     }
    });
   }
@@ -85,18 +88,11 @@ export class SocialWidgetComponent implements OnInit {
   }
 
   changePosition(event) {
-    const itemChange = { id: this.socialWidget.connectorId, position: parseInt(event, 0) };
+    const itemChange = { id: this.socialWidget.connectorId, type: 'sw', position: parseInt(event, 0) };
     this._selectionService.updateItemPosition(itemChange);
   }
 
   onClickPosition() {
     this._selectionService.allowDisableSelection = false;
-  }
-
-  lostFocusPosition() {
-    if (this.fgSwidget.controls['position'].errors) {
-      const fgValue = { position: this.previousPositionValue };
-      this.fgSwidget.patchValue(fgValue);
-    }
   }
 }

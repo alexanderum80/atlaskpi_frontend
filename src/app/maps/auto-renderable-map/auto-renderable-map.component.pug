@@ -2,8 +2,7 @@
   .position(*ngIf="mapSelected", [formGroup]="fgMap")
     input.position.z-depth-1(formControlName="position",
     [ngClass]="{'err-position': fgMap.controls['position'].errors}", 
-    type="text", (click)="onClickPosition()",
-    (blur)="lostFocusPosition()")
+    type="text", (click)="onClickPosition()")
     .err-message(*ngIf="fgMap.controls['position'].errors && fgMap.controls['position'].errors.invalidDataType") Please enter a numeric value
     .err-message(*ngIf="fgMap.controls['position'].errors && fgMap.controls['position'].errors.forbiddenName") Duplicated value
   .map-title {{item.title}}

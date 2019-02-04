@@ -2,12 +2,12 @@ import { title } from 'change-case';
 import { map } from 'rxjs/operators';
 import { filter } from 'rxjs/operators';
 import { IMutationError, IMutationResponse } from '../../shared/interfaces/mutation-response.interface';
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { ApolloQueryResult } from 'apollo-client';
-import { uniq, isEmpty, sortBy, isNumber } from 'lodash';
+import { uniq, isEmpty, sortBy, isNumber, find } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 import Sweetalert from 'sweetalert2';
 
@@ -50,7 +50,7 @@ const ListMapsQuery = require('graphql-tag/loader!../../charts/shared/graphql/li
   styleUrls: ['./dashboard-form.component.scss'],
   providers: [MenuService, GenericSelectionService]
 })
-export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   @ViewChild('modal') modal: ModalComponent;
   @ViewChild('errorModal') errorModal: ModalComponent;
   @Input() fg: FormGroup;
@@ -62,6 +62,8 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   chartModel: ChartModel;
 
+  loading = false;
+  editLoading = true;
   widgetsLoading = true;
   chartsLoading = true;
   socialwidgetsLoading = true;
@@ -98,7 +100,6 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
   isAddMap = false;
   isPreviewDashboard = false;
 
-  loading = false;
   currentUser: IUserInfo;
   rawDashboard: IDashboard;
   dashboardId: string;
@@ -126,6 +127,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngOnInit() {
     const that = this;
+    this._selectionService._selectionList = [];
     this.subscriptions.push(this._userService.user$.subscribe((user: IUserInfo) => {
       that.currentUser = user;
     }));
@@ -133,6 +135,8 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     this._selectionService.enableMultiSelect();
     this.subscriptions.push(this._selectionService.selection$.subscribe(selectedItems => {
       that.selectedItems = selectedItems;
+      const anyInvalidPosition = that.selectedItems.find(i => i.validPosition === false);
+      this.validPosition = anyInvalidPosition === undefined;
     }));
     // add-search-bar
     this.fgs = new FormGroup({
@@ -175,6 +179,9 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     })));
   }
 
+  ngOnChanges() {
+  }
+
   ngAfterViewInit() {
     this._dashboardService.updateExistDuplicatedName(false);
     this._subscribeToNameChanges();
@@ -188,10 +195,6 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
         s.unsubscribe();
       }
     });
-  }
-
-  onChangePosition(valid: boolean) {
-    this.validPosition = valid;
   }
 
   updateFormTitle() {
@@ -394,7 +397,6 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     .toPromise()
     .then(response => {
       this.allMaps = response.data.listMaps.map(m => JSON.parse(m));
-    
       this._filteredMaps = this.allMaps;
       this.mapsLoading = false;
       if (options.updateSelection) {  this._updateMapSelection(); }
@@ -414,10 +416,10 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
       .then((response => {
         that.allCharts = response.data.listCharts.data;
         that._filteredCharts = that.allCharts;
-        that.chartsLoading = false;
         that._groupCharts();
         if (options.updateSelection) {  that._updateChartSelection(); }
         this._filterVisibleCharts();
+        that.chartsLoading = false;
         return resolve();
       }));
     });
@@ -682,7 +684,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
           };
 
           that.rawDashboard = rawDashboard;
-
+          this.editLoading = false;
           this.fg.patchValue(fgValues);
           return resolve();
       })

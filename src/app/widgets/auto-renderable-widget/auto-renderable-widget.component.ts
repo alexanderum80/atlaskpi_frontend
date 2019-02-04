@@ -19,14 +19,13 @@ export class AutoRenderableWidgetComponent implements OnInit, AfterViewInit {
   @Input() widgetPreview = false;
   @Input() isFromDashboardEdit = false;
   @Output() done = new EventEmitter<any>();
-  @Output() validPosition = new EventEmitter<boolean>(true);
 
   widget: IWidget;
   loading = false;
   widgetSelected = false;
   selectionSubscription: Subscription;
   fgWidget: FormGroup;
-  previousPositionValue = 0;
+  fgPatched = false;
 
   constructor(private _apollo: Apollo,
               private _selectionService: GenericSelectionService) { }
@@ -45,30 +44,33 @@ export class AutoRenderableWidgetComponent implements OnInit, AfterViewInit {
         const fgValue = {
           position: exist.position
         };
-        this.previousPositionValue = exist.position;
-        this.fgWidget.patchValue(fgValue);
+        if (!this.fgPatched) {
+          this.fgWidget.patchValue(fgValue);
+          this.fgPatched = true;
+        }
         this.widgetSelected = true;
+        if (exist.position === 0) {
+          this.fgWidget.controls['position'].setErrors({invalidDataType: true});
+        } else {
+          if (!exist.validPosition) {
+            this.fgWidget.controls['position'].setErrors({forbiddenName: true});
+          } else {
+            this.fgWidget.controls['position'].setErrors(null);
+          }
+        }
       } else {
         this.widgetSelected = false;
       }
    });
    this.fgWidget.valueChanges.subscribe(value => {
-    if (isNaN(value.position)) {
-      this.fgWidget.controls['position'].setErrors({invalidDataType: true});
-      this.validPosition.emit(false);
-      return;
-    }
-    // Here I must validate duplicated position value
-    const duplicatedPos = this._selectionService._selectionList.find(s => s.type === 'widget'
-    && s.position === parseInt(value.position, 0) && s.payload.size === this.item.size
-    && s.id !== this.item._id);
-    if (duplicatedPos) {
-      this.fgWidget.controls['position'].setErrors({forbiddenName: true});
-      this.validPosition.emit(false);
+    if (isNaN(value.position) || value.position === '') {
+      this.changePosition(0);
     } else {
-      this.validPosition.emit(true);
-      this.changePosition(value.position);
-      this.previousPositionValue = value.position;
+      if (this.fgPatched) {
+        this.changePosition(value.position);
+      } else {
+        this.fgPatched = true;
+      }
     }
    });
   }
@@ -109,15 +111,8 @@ export class AutoRenderableWidgetComponent implements OnInit, AfterViewInit {
     });
   }
 
-  lostFocusPosition() {
-    if (this.fgWidget.controls['position'].errors) {
-      const fgValue = { position: this.previousPositionValue };
-      this.fgWidget.patchValue(fgValue);
-    }
-  }
-
   changePosition(event) {
-    const itemChange = { id: this.item._id, position: parseInt(event, 0) };
+    const itemChange = { id: this.item._id, type: 'widget', size: this.item.size , position: parseInt(event, 0) };
     this._selectionService.updateItemPosition(itemChange);
   }
 

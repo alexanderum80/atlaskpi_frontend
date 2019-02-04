@@ -19,7 +19,6 @@ export class AutoRenderableChartComponent implements OnInit, OnDestroy {
   @Input() autoRender = true;
   @Input() placeholderImg;
   @Input() isFromDashboardEdit = false;
-  @Output() validPosition = new EventEmitter<boolean>(true);
 
   chart: any; // Chart;
   loading = false;
@@ -28,7 +27,7 @@ export class AutoRenderableChartComponent implements OnInit, OnDestroy {
   selectionSubscription: Subscription;
   position = 0;
   fgChart: FormGroup;
-  previousPositionValue = 0;
+  fgPatched = false;
 
   constructor(private _apollo: Apollo,
     private _selectionService: GenericSelectionService) { }
@@ -40,34 +39,38 @@ export class AutoRenderableChartComponent implements OnInit, OnDestroy {
     });
     if (this.autoRender) { this._queryChart(); }
     this.selectionSubscription = this._selectionService.selection$.subscribe(selectedItems => {
-      const exist = selectedItems.find(i => i.id === this.item._id);
+      const exist = selectedItems.find(i => i.id === this.item._id && i.type === 'chart');
       if (exist) {
         const fgValue = {
           position: exist.position
         };
-        this.previousPositionValue = exist.position;
-        this.fgChart.patchValue(fgValue);
+        if (!this.fgPatched) {
+          this.fgChart.patchValue(fgValue);
+          this.fgPatched = true;
+        }
         this.chartSelected = true;
+        if (exist.position === 0) {
+          this.fgChart.controls['position'].setErrors({invalidDataType: true});
+        } else {
+          if (!exist.validPosition) {
+            this.fgChart.controls['position'].setErrors({forbiddenName: true});
+          } else {
+            this.fgChart.controls['position'].setErrors(null);
+          }
+        }
       } else {
         this.chartSelected = false;
       }
    });
    this.fgChart.valueChanges.subscribe(value => {
-    if (isNaN(value.position)) {
-      this.fgChart.controls['position'].setErrors({invalidDataType: true});
-      this.validPosition.emit(false);
-      return;
-    }
-    // Here I must validate duplicated position value
-    const duplicatedPos = this._selectionService._selectionList.find(s => s.type === 'chart'
-    && s.position === parseInt(value.position, 0) && s.id !== this.item._id);
-    if (duplicatedPos) {
-      this.fgChart.controls['position'].setErrors({forbiddenName: true});
-      this.validPosition.emit(false);
+    if (isNaN(value.position) || value.position === '') {
+      this.changePosition(0);
     } else {
-      this.validPosition.emit(true);
-      this.changePosition(value.position);
-      this.previousPositionValue = value.position;
+      if (this.fgPatched) {
+        this.changePosition(value.position);
+      } else {
+        this.fgPatched = true;
+      }
     }
    });
   }
@@ -77,7 +80,7 @@ export class AutoRenderableChartComponent implements OnInit, OnDestroy {
   }
 
   changePosition(event) {
-    const itemChange = { id: this.item._id, position: parseInt(event, 0) };
+    const itemChange = { id: this.item._id, type: 'chart', position: parseInt(event, 0) };
     this._selectionService.updateItemPosition(itemChange);
   }
 
@@ -87,13 +90,6 @@ export class AutoRenderableChartComponent implements OnInit, OnDestroy {
 
   onClickPosition() {
     this._selectionService.allowDisableSelection = false;
-  }
-
-  lostFocusPosition() {
-    if (this.fgChart.controls['position'].errors) {
-      const fgValue = { position: this.previousPositionValue };
-      this.fgChart.patchValue(fgValue);
-    }
   }
 
   private _queryChart() {

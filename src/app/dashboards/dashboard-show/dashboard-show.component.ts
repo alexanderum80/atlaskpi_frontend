@@ -273,15 +273,15 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
         if (dashboard.charts.length > 0) {
             that.charts = dashboard.charts.map(c => {
                 if (!c) { return; }
+                const rawChart = isString(c) ?  JSON.parse(c) : c;
                 try {
-                    const rawChart = isString(c) ?  JSON.parse(c) : c;
                     let definition = this._processChartTooltipFormatter(rawChart.chartDefinition);
                     yAxisFormatterProcess(definition);
                     definition = this._processPieChartPercent(rawChart.chartDefinition);
                     rawChart.chartDefinition = definition;
                     return rawChart;
                 } catch (err) {
-                    return c;
+                    return rawChart;
                 }
             });
             that.charts = sortBy(that.charts, 'position');
@@ -361,14 +361,12 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
         const that = this;
 
         this.loading = false;
+        that.bigWidgets = [];
+        that.smallWidgets = [];
+        that.charts = [];
+        that.maps = [];
 
-        if (!data || !data.dashboard) {
-            that.bigWidgets = [];
-            that.smallWidgets = [];
-            that.charts = [];
-            that.maps = [];
-            return;
-        }
+        if (!data || !data.dashboard) { return; }
 
         this._rawDashboard = data.dashboard;
         this.dashboardId = data.dashboard._id;
@@ -389,16 +387,15 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
                 if (!c) {
                     return;
                 }
-
+                const rawChart = JSON.parse(c);
                 try {
-                    const rawChart = JSON.parse(c);
                     let definition = this._processChartTooltipFormatter(rawChart.chartDefinition);
                     yAxisFormatterProcess(definition);
                     definition = this._processPieChartPercent(rawChart.chartDefinition);
                     rawChart.chartDefinition = definition;
                     return rawChart;
                 } catch (err) {
-                    return c;
+                    return rawChart;
                 }
             });
             that.charts = sortBy(that.charts, 'position');

@@ -1,5 +1,6 @@
+import { IdName } from './../models/idName';
 import { Injectable } from '@angular/core';
-import { pullAllBy, pull } from 'lodash';
+import { pullAllBy, pull, sortBy, find } from 'lodash';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 
@@ -8,6 +9,7 @@ export interface IGenericSelectionItem {
   type: string;
   payload: any;
   position?: any;
+  validPosition?: boolean;
 }
 
 export class GenericSelectionItem implements IGenericSelectionItem {
@@ -15,12 +17,14 @@ export class GenericSelectionItem implements IGenericSelectionItem {
   type: string;
   payload: any;
   position?: any;
+  validPosition?: boolean;
 
   constructor(obj: any, type?: string, id?: string) {
     this.id = id || obj['id'] || obj['_id'] || obj['connectorId'] || null;
     this.type = type || typeof obj || null;
     this.payload = obj;
     this.position = obj.position;
+    this.validPosition = true;
   }
 }
 
@@ -52,12 +56,12 @@ export class GenericSelectionService {
     this._selectionListSubject.next(this._selectionList);
   }
 
-  toggleSelection(item: IGenericSelectionItem): void {
-    const exists = this._selectionList.find(i => i.id === item.id && i.type === item.type);
+  toggleSelection(itemChanged: IGenericSelectionItem): void {
+    const exists = this._selectionList.find(i => i.id === itemChanged.id && i.type === itemChanged.type);
     if (exists) {
       pull(this._selectionList, exists);
     } else {
-      this._selectionList.push(item);
+      this._selectionList.push(itemChanged);
     }
     this._selectionListSubject.next(this._selectionList);
   }
@@ -67,11 +71,31 @@ export class GenericSelectionService {
   }
 
   public updateItemPosition(item: any) {
-    this._selectionList.map(s => {
-      if (s.id === item.id) {
-        s.position = item.position;
+    const objIndex = this._selectionList.findIndex(obj => obj.id === item.id && obj.type === item.type);
+    if (objIndex >= 0) {
+      this._selectionList[objIndex].position = item.position;
+    }
+    this._selectionList.forEach((item, index, array) => {
+      let exist;
+      switch (item.type) {
+        case 'widget':
+        case 'map':
+          exist = array.find(a => a.id !== item.id && a.type === item.type && a.payload.size === item.payload.size
+          && a.position === item.position);
+          break;
+        case 'chart':
+        case 'sw':
+          exist = array.find(a => a.id !== item.id && a.type === item.type
+          && a.position === item.position);
+          break;
+      }
+      if (exist || item.position === 0) {
+        item.validPosition = false;
+      } else {
+        item.validPosition = true;
       }
     });
+    this._selectionListSubject.next(this._selectionList);
   }
 
   get allowDisableSelection() {

@@ -62,16 +62,16 @@
                             .message(flex)
                                 h2.p-b-40.c-gray.text-center Looks that there are no widgets defined yet
                                 
-                        .widgets.h-100.overflow-auto(*ngIf="!widgetsLoading")
+                        .widgets.h-100.overflow-auto(*ngIf="!widgetsLoading && !editLoading")
                             
                             div(layout="column", layout-gt-sm="row", layout-wrap)
                                 div(*ngFor="let widget of filteredItemsWidgetsBig", flex="100", flex-gt-sm="50", flex-gt-lg="25")
                                     kpi-selectable-item-frame([item]="widget", (click)="toggleWidgetSelection(widget)")
-                                        kpi-auto-renderable-widget([item]="widget", [autoRender]="false", [widgetPreview]="true", [isFromDashboardEdit]="true" , (validPosition)="onChangePosition($event)")
+                                        kpi-auto-renderable-widget([item]="widget", [autoRender]="false", [widgetPreview]="true", [isFromDashboardEdit]="true")
                                 
                                 div(*ngFor="let widget of filteredItemsWidgetsSmall", flex-xs="50", flex-gt-xs="50", flex-gt-sm="25", flex-gt-lg="12-5")
                                     kpi-selectable-item-frame([item]="widget", (click)="toggleWidgetSelection(widget)")
-                                        kpi-auto-renderable-widget([item]="widget", [autoRender]="false", [widgetPreview]="true", [isFromDashboardEdit]="true" , (validPosition)="onChangePosition($event)")
+                                        kpi-auto-renderable-widget([item]="widget", [autoRender]="false", [widgetPreview]="true", [isFromDashboardEdit]="true")
 
                                 bw-button.btn-addWidget(flex-none, color="blue", icon="plus", [circular]="true", (clicked)="openAddWidget()")
 
@@ -84,7 +84,7 @@
                             .message(flex)
                                 h2.p-b-40.c-gray.text-center Looks that there are no charts defined yet
                         
-                        .charts.h-100.overflow-auto(*ngIf="!chartsLoading")
+                        .charts.h-100.overflow-auto(*ngIf="!chartsLoading && !editLoading")
                             div(layout="column", layout-gt-sm="row", layout-wrap)
                                 .box(flex-xs="100", flex-gt-xs="100", flex-gt-sm="50", flex-gt-lg="33", *ngFor="let chart of filteredItemsCharts")
                                     kpi-selectable-item-frame([item]="chart", (click)="toggleChartSelection(chart)")
@@ -92,7 +92,6 @@
                                                                                 [hidden]="!displayChart",
                                                                                 [autoRender]="false",
                                                                                 [isFromDashboardEdit]="true",
-                                                                                (validPosition)="onChangePosition($event)",
                                                                                 [item]="chart", [minHeight]="200", style="width: 100%")
 
                                 bw-button.btn-addChart(flex-none, color="blue", icon="plus", [circular]="true", (clicked)="openAddChart()")
@@ -106,11 +105,11 @@
                             .message(flex)
                                 h2.p-b-40.c-gray.text-center Looks that there are no social widgets defined yet
                         
-                        .socialwidgets.h-100.overflow-auto(*ngIf="!socialwidgetsLoading", flex-none, [attr.layout-padding]="!isMobile")        
+                        .socialwidgets.h-100.overflow-auto(*ngIf="!socialwidgetsLoading && !editLoading", flex-none, [attr.layout-padding]="!isMobile")        
                             div(layout="row", layout-wrap, layout-padding)
                                 div(*ngFor="let sw of visibleSocialWidgets", flex-xs="100", flex-sm="50", flex-md="50", flex-gt-md="50")
                                     kpi-selectable-item-frame([item]="sw", (click)="toggleSocialWidgetSelection(sw)")
-                                        kpi-social-widget.pointer-cursor([socialWidget]="sw", [isFromDashboardEdit]="true", (validPosition)="onChangePosition($event)")
+                                        kpi-social-widget.pointer-cursor([socialWidget]="sw", [isFromDashboardEdit]="true")
                                                                                           
                                 // bw-button.btn-addSocialWidget(flex-none, color="blue", icon="plus", [circular]="true", (clicked)="openAddSocialWidget()")
                     bwTab.m-10.section-header(heading="Map", icon="map", (select)="switchTab('maps')")  
@@ -121,11 +120,11 @@
                                 i.zmdi.zmdi-map
                             .message(flex)
                                 h2.p-b-40.c-gray.text-center Looks that there are no maps defined yet    
-                        .maps.h-100.overflow-auto(*ngIf="!mapsLoading", flex-none, [attr.layout-padding]="!isMobile")
+                        .maps.h-100.overflow-auto(*ngIf="!mapsLoading && !editLoading", flex-none, [attr.layout-padding]="!isMobile")
                             div(layout="row", layout-wrap, layout-padding, layout-align="center center")
                                 div(*ngFor="let map of filteredItemsMaps", flex-xs="100", flex-sm="50", flex-md="50", flex-gt-md="50")
                                     kpi-selectable-item-frame([item]="map", (click)="toggleMapSelection(map)")
-                                        kpi-auto-renderable-map.pointer-cursor([item]="map", (validPosition)="onChangePosition($event)")
+                                        kpi-auto-renderable-map.pointer-cursor([item]="map")
                                 bw-button.btn-addMap(flex-none, color="blue", icon="plus", [circular]="true", (clicked)="openAddMap()")
 //- mobile device button at the end
 .hide-gt-xs(*ngIf="!isAddChart && !isAddWidget && !isAddSocialWidget && !isAddMap && !loading && !isPreviewDashboard")
