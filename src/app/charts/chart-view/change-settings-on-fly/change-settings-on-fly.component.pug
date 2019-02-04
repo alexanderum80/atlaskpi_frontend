@@ -1,19 +1,28 @@
-div(class="top-margin")
+.h-100(*ngIf="isLoading", layout="row", layout-align="center center")
+    bw-preloader.text-center(color="gray")
+
+div(*ngIf="!isLoading")
     
     .form-setting(layout="column", layout-align="center")
-        div(flex)
-            kpi-kpi-daterange-picker([fg]="fg", [dateRange]="dateRange", [required]="true", [fromRequired]="true", [toRequired]="true")
+        div(flex, layout="row")
+            kpi-kpi-daterange-picker(flex, [fg]="fg", [dateRange]="dateRange", [required]="true", [fromRequired]="true", [toRequired]="true")
             
-        div.p-t-30(flex, *ngIf="chartData.chartDefinition.chart.type != 'pie'")
-            kpi-kpi-frequency-picker([fg]="fg", [frequencyType]="chart")
+            div(flex, *ngIf="chartType != 'pie'")
+                kpi-kpi-frequency-picker([fg]="fg", [frequencyType]="'chart'")
         
-        div.p-t-30(flex)
+        div.p-t-10(flex)
             kpi-kpi-grouping-picker([fg]="fg", *ngIf="groupingList", [groupingList]="groupingList")
             
+        kpi-collapsable.collapsed-container.overflow-auto.z-depth-1(*ngIf="kpi.type != 'complex'", [collapsed]="showCollapsedFilters", headerText="Filters (Optional):", [color]="'black'")
+            .m-t-20
+                kpi-change-settings-filter-list(
+                    [filters]="filters",
+                    [dataSource]="selectedDataSource",
+                )
+
         div.p-t-30(flex)
-            div(layout="row", layout-padding, layout-align="center center")
+            div(layout="row", layout-padding, layout-align="end center")
                 div(flex-none)
-                    bw-button(icon="check", color="blue", title="SET", (clicked)="updateChart()", [disabled]="!fg.valid") 
+                    bw-button(icon="check", color="blue", title="SET", (clicked)="updateChart()", [disabled]="!isValid") 
                 div(flex-none)
                     bw-button(icon="cancel", [simple]="true", color="black", title="CANCEL", (clicked)="back()")                        
-

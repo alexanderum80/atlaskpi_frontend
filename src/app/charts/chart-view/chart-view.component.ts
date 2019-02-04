@@ -169,6 +169,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
     frequencyToUpdate: string;
     dateRangeToUpdate: any;
     predefinedDateRangeToUpdate: string;
+    filterToUpdate: any;
     from: string;
     to: string;
     groupingsToUpdate: string;
@@ -572,11 +573,12 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
         });
     }
 
-    setSettingsOnFly(predefinedDateRange: string, dateRange: DateRange, frequency: string, groupings: string) {
+    setSettingsOnFly(predefinedDateRange: string, dateRange: DateRange, frequency: string, groupings: string, filter: any) {
         this.dateRangeToUpdate = dateRange;
         this.frequencyToUpdate = frequency;
         this.predefinedDateRangeToUpdate = predefinedDateRange;
         this.groupingsToUpdate = groupings;
+        this.filterToUpdate = filter;
 
         this.updateSettingsOnFly();
         this.subscribeToChartUpdates();
@@ -597,6 +599,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
             isDrillDown: false,
             comparison: [],
             onTheFly: true,
+            kpiFilter: JSON.stringify(this.filterToUpdate)
         };
 
         that.chartSubscription = this._apollo.watchQuery<ChartResponse>({

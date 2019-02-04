@@ -1,0 +1,26 @@
+query ExternalDataSources {
+  externalDataSources {
+    id
+    name
+    description
+    dataSource
+    connectorId
+    connectorType
+    fields {
+      name
+      path
+      type
+    }
+    filterOperators {
+      Number {
+        description
+        name
+      }
+      String {
+        description
+        name
+      }
+    }
+    externalSource
+  }
+}

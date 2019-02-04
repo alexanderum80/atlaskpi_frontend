@@ -1,0 +1,9 @@
+query KPIFilterFields($input: DataSourceFilterFieldsInput) {
+    kpiFilterFields(input: $input) {
+        name
+        path
+        type
+        allowGrouping
+        available
+    }
+}

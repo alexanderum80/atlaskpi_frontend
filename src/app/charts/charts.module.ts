@@ -1,3 +1,5 @@
+import { ChangeSettingsOnFlyFilterListComponent } from './chart-view/change-settings-on-fly/filters/filter-list/filter-list.component';
+import { ChangeSettingsOnFlyFilterFormComponent } from './chart-view/change-settings-on-fly/filters/filter-form/filter-form.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
@@ -90,6 +92,8 @@ export function highchartsModules() {
         ChartDetailFilterComponent,
         ChartComparisonComponent,
         ChooseColorsComponent,
+        ChangeSettingsOnFlyFilterListComponent,
+        ChangeSettingsOnFlyFilterFormComponent
     ],
     exports: [
         ChartViewComponent,

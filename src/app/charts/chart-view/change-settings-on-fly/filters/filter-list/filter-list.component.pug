@@ -1,0 +1,10 @@
+div(layout="column", layout-padding)
+    div(flex, *ngFor="let filter of filters.controls; let i=index")
+        div(layout="row")
+            div(flex)
+                kpi-change-settings-filter-form([filter]="filter", [dataSource]="dataSource", [collectionSource]="collectionSource")
+            .p-5(flex-inital)
+                bw-button(flex-initial, icon="close", color="red", [simple]="true", (clicked)="removeFilter(filter)")
+
+.m-t-10
+    bw-button(icon="plus", title="Filter", color="blue", (clicked)="addFilter()")
