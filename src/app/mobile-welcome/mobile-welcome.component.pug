@@ -1,21 +1,7 @@
 .mobile-menu(layout="column", layout-align="center center")
     //- dashboard
-    .mobile-menu--dashboard
-        .menu-option((click)="navigateTo('/dashboards')")
+    .mobile-menu--dashboard(*ngFor="let item of navItems")
+        .menu-option([routerLink]="item.route")
             .menu-option--icon
-                i.zmdi.zmdi-view-dashboard
-            .menu-option--title Main Dashboard
-
-    //- calendar
-    .mobile-menu--calendar
-        .menu-option((click)="navigateTo('/appointments/list')")
-            .menu-option--icon
-                i.zmdi.zmdi-calendar
-            .menu-option--title Calendar
-
-    //- notifications
-    .mobile-menu--notifications
-        .menu-option((click)="navigateTo('/notifications')")
-            .menu-option--icon
-                i.zmdi.zmdi-notifications
-            .menu-option--title Notifications
+                i.zmdi(class="{{item.icon}}")
+            .menu-option--title {{ item.title }}

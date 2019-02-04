@@ -1,0 +1,15 @@
+.h-100(*ngIf = "vm.listEmpty")
+    kpi-no-funnel
+
+kpi-item-list(
+    *ngIf="!vm.listEmpty",
+    title="Funnels",
+    [items]="vm.funnelItems",
+    [itemViewModel]="vm",
+    [addItemActivityName]="'AddFunnelActivity'",
+    [itemListActivityName]="actionActivityNames",
+    itemType="standard",
+    (onAddActionClicked)="add()",
+    (onItemActionClicked)="actionClicked($event)",
+    (onItemClicked)="editClickedList($event)")
+

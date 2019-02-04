@@ -15,7 +15,6 @@ import {WidgetViewViewModel} from './widget-view.viewmodel';
 import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs/Subscription';
 import { CloneWidgetActivity } from 'src/app/shared/authorization/activities/widgets/clone-widget.activity';
-import { getNameColor } from '../../charts/shared/ui/chart-format-info/material-colors';
 
 const Highcharts = require('highcharts/js/highcharts');
 const scheduleJobByWidgetIdGql = require('graphql-tag/loader!./scheduleJob-by-widget-id.query.gql');
@@ -313,7 +312,7 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         }
     if (!this.widget.type) { return false; }
 
-        if (this.widget.materialized && !Number.isNaN(this.widget.materialized.value)) {
+    if (this.widget.materialized && this.widget.materialized.value !== null) {
             return this.widget.size === 'small' ?
                 ValueFormatHelper.ApplyFormat(abbreviate_number(Number(this.widget.materialized.value), 0),
                     this.widget.numericWidgetAttributes.format || 'none') :

@@ -101,3 +101,8 @@ div(*ngIf="groupPermissions", layout="column")
       div(layout="row")
         div(flex)
           bw-checkbox(*ngFor="let role of groupPermissions.Role", [fg]="fg", field="{{role._id}}", label="{{role.action}}")
+
+    kpi-collapsable([(collapsed)]="Funnel", headerText="Funnel")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let role of groupPermissions.Funnel", [fg]="fg", field="{{role._id}}", label="{{role.action}}")

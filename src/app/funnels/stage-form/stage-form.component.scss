@@ -1,0 +1,40 @@
+.label-box {
+    height: 30px;
+    // width: 80px;
+    width: auto;
+    padding-left: 15px;
+    padding-top: 8px;
+    margin-top: 20px;
+    // margin-left: 40px;
+    font-size: 0.9em;
+
+    .label-color-box {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        height: 18px;
+        width: 45px;
+        border: 1px solid rgb(51, 50, 50);
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    .label-slash {
+        position: absolute;
+        top: 2px;
+        right: 15px;
+        border: 0.6px solid gray;
+        height: 24px;
+        width: 0;
+        transform: rotate(45deg); 
+    }
+}
+
+
+.is-disabled {
+    filter: alpha(opacity=50);
+    opacity: 0.5;
+    z-index: 1;
+    pointer-events: none;
+}

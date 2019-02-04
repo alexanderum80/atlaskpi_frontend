@@ -1,7 +1,7 @@
-bw-select-picker.p-20(*ngIf="dateRangeList.length", flex-none, [fg]="fg",
+bw-select-picker.p-20( flex-none, [fg]="fg",
     label="Date Range"
     field="predefinedDateRange",
-    [items]="dateRangeList",
+    [items]="dateRangeList$ | async",
     [leftIcon]="icon",
     [liveSearch]="true",
     liveSearchPlaceholder="... search date ranges ...",

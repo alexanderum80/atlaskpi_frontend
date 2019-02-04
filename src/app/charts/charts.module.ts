@@ -42,7 +42,6 @@ import { ChartTypeComponent } from './shared/ui/chart-type/chart-type.component'
 import { MapsModule } from '../maps/maps.module';
 import highchartEvents from 'highcharts-custom-events';
 import { ChartComparisonComponent } from './chart-view/chart-comparison/chart-comparison.component';
-import { ChooseColorsComponent } from './shared/ui/choose-colors/choose-colors.component';
 
 // import { MyDatePickerModule } from 'mydatepicker';
 
@@ -91,7 +90,6 @@ export function highchartsModules() {
         AutoRendereableChartComponent,
         ChartDetailFilterComponent,
         ChartComparisonComponent,
-        ChooseColorsComponent,
         ChangeSettingsOnFlyFilterListComponent,
         ChangeSettingsOnFlyFilterFormComponent
     ],
@@ -105,7 +103,6 @@ export function highchartsModules() {
         AutoRendereableChartComponent,
         NewChartComponent,
         EditChartComponent,
-        ChooseColorsComponent,
     ],
     providers: [{ provide: HIGHCHARTS_MODULES, useFactory: highchartsModules }, TableModeService],
 })

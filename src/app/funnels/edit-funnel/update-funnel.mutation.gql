@@ -1,0 +1,13 @@
+mutation UpdateFunnel($_id: String!, $input: FunnelInput) {
+  updateFunnel(_id: $_id, input: $input) {
+    success 
+    entity {
+      _id
+      name
+    }
+   errors {
+     field
+     errors
+   }
+  }
+}

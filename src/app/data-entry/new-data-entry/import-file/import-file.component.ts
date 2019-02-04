@@ -29,6 +29,8 @@ export class ImportFileComponent implements OnInit {
   @Input() dataEntry: DataEntryList;
   @Output() closeUploadFile = new EventEmitter();
 
+  showUploadForm: boolean = true;
+
   // csv
   csvImagePath: string;
   csvFileData = {
@@ -120,6 +122,8 @@ export class ImportFileComponent implements OnInit {
   }
 
   save() {
+    this.showUploadForm = false;
+
     const filesData: ICustomData[] = [];
     const selectedUsers = this.usersList.filter(f => f.selected).map(u => {
       return u._id;

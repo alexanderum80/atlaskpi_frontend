@@ -99,11 +99,11 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
         const credentials = this.fg.value;
 
         this._subscription.push(this._authSvc.login(credentials).subscribe(() => {
-            // if (this._browserSvc.isMobile()) {
-            //     this._router.navigate(['/mobile-menu']);
-            // } else {
+            if (this._browserSvc.isMobile()) {
+                this._router.navigate(['/mobile-menu']);
+            } else {
                 this._router.navigate(['/dashboards']);
-            // }
+            }
         }, (err) => {
             that.authError = true;
         }));

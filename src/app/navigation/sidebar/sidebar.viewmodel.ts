@@ -8,7 +8,7 @@ export class SideBarViewModel extends ViewModel<any> {
 
     private _countNotVisibles = 0;
     private _list_Item: any = {};
-    private _listDashboard = 
+    private _listDashboard =
     {
         id: 'list-dashboard',
         title: 'List Dashboard',
@@ -40,11 +40,11 @@ export class SideBarViewModel extends ViewModel<any> {
         this._list_Item = value;
     }
 
-    get listDashboard(){
-        return  this._listDashboard;         
+    get listDashboard() {
+        return  this._listDashboard;
     }
-   
-    set listDashboard( value){
-         this._listDashboard = value;         
+
+    set listDashboard( value) {
+         this._listDashboard = value;
     }
 }

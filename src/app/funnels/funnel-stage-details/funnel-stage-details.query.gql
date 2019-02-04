@@ -1,0 +1,10 @@
+query FunnelStageDetails($funnelId: String!, $stageId: String!) {
+  funnelStageDetails(funnelId: $funnelId, stageId:$stageId) {
+    columns {
+      name
+      path
+      type
+    }
+    rows
+  }
+}

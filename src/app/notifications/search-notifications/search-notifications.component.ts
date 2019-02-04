@@ -12,6 +12,7 @@ const notificationsQuery = require('graphql-tag/loader!./notifications.gql');
 })
 export class SearchNotificationsComponent implements OnInit {
     notifications: INotification[];
+    loading = false;
 
     constructor(
         private apolloService: ApolloService,
@@ -19,6 +20,7 @@ export class SearchNotificationsComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+        this.loading = true;
         this.apolloService
             .networkQuery<INotification>(notificationsQuery)
             .then(res => {
@@ -30,7 +32,7 @@ export class SearchNotificationsComponent implements OnInit {
                     deliveryMethod: n.deliveryMethod,
 
                 }));
-                console.log(res);
+                this.loading = false;
             });
     }
 }
