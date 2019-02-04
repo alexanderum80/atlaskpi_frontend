@@ -1,0 +1,17 @@
+query RenderFunnelByDefinition($input: FunnelInput!) {
+    renderFunnelByDefinition(input: $input) {
+        _id
+        name
+        stages {
+            _id
+            order
+            name
+            count
+            amount
+            compareToStageValue
+            compareToStageName
+            foreground
+            background
+        }
+    }
+}

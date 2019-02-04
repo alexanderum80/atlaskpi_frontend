@@ -13,9 +13,10 @@
                 .widget-title  {{widget.name}}
             div(*ngIf="widget.type==='numeric'", layout="column",  layout-align="center center" , flex)
                 div(layout="row")
-                    .text-center.widget-value(*ngIf="widgetValue", flex)  {{widgetValue}}
-                    .text-center.widget-value(*ngIf="!widgetValue && widget.preview", flex)  1000.00
-                    .text-center.i.zmdi.arrow-icon(*ngIf="widgetArrow", class="zmdi-caret-{{widgetArrow}} {{widgetArrowColor}} ")
+                   .text-center.widget-value(*ngIf="widgetValue", flex)  {{widgetValue}}  
+                   .text-center.widget-no-data(*ngIf="!widgetValue", flex) Value not available
+                       .widget-no-data-subtitle(flex, *ngIf="!widgetComparisonValue") Please review the KPI formula   
+                   .text-center.i.zmdi.arrow-icon(*ngIf="widgetArrow", class="zmdi-caret-{{widgetArrow}} {{widgetArrowColor}} ")
                 .rigth(*ngIf="Porcent") {{Porcent}} %
                 .text-center.widget-comparison-value(*ngIf="widgetComparisonValue")  {{widgetComparisonPeriod}}: {{widgetComparisonValue}}
                                

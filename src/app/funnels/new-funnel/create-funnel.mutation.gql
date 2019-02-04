@@ -1,0 +1,12 @@
+mutation CreateFunnel($input: FunnelInput) {
+  createFunnel(input: $input) {
+    success 
+    entity {
+      _id
+    }
+   errors {
+     field
+     errors
+   }
+  }
+}

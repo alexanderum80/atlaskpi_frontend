@@ -1,0 +1,84 @@
+//- pre form valid {{ fg.valid }}
+.m-t-5(flex, layout="column", layout-padding)
+    .name-delete-button(flex, layout="row", layout-padding, layout-align="center center")
+        bw-text-box(flex, [fg]="fg", field="name", label="Name", leftIcon="label")
+        .m-l-10(flex-initial)
+          bw-button(color="red", title="Remove", (clicked)="onRemoveStage()")
+    
+    
+    //- bw-text-box(flex, [fg]="fg", field="kpi", label="Kpi", leftIcon="label")
+    bw-select-picker(
+        flex,
+        [fg]="fg",
+        label="Select KPI",
+        field="kpi",
+        leftIcon="device-hub",
+        [items]="kpiSelectionList",
+        [liveSearch]="true",
+        liveSearchPlaceholder="... search KPIs ...",
+        noneSelectedText="NOTHING SELECTED")
+    
+    //- bw-text-box(flex, [fg]="fg.get('dateRange')", field="predefined", label="Date Range", leftIcon="label")
+    //- bw-select-picker(
+    //-     flex, 
+    //-     [fg]="fg.get('dateRange')",
+    //-     label="Date Range",
+    //-     leftIcon="calendar",
+    //-     field="predefined",
+    //-     [items]="dateRangeSelectionList",
+    //-     [liveSearch]="true",
+    //-     liveSearchPlaceholder="... search date ranges ...",
+    //-     noneSelectedText="NOTHING SELECTED")
+    
+    //- .animated.fadeIn.m-l-15(*ngIf="showCustomDateRangeControl", flex)
+    //-     bw-date-picker.p-b-5(flex, [fg]="fg.get('dateRange').get('custom')", field="from", label="MM/DD/YYYY", [config]="datePickerConfig")
+    //-     bw-date-picker(flex, [fg]="fg.get('dateRange').get('custom')", field="to", label="MM/DD/YYYY", [config]="datePickerConfig")
+    
+    kpi-kpi-daterange-picker(
+        flex, 
+        [fg]="fg.get('dateRange')",
+        [dateRange]="stageModel.dateRange",
+        [required]="true",
+        [fromRequired]="true",
+        [toRequired]="true")
+
+    bw-select-picker(
+        flex,
+        [fg]="fg",
+        label="Select Fields to Project",
+        field="fieldsToProject",
+        [required]="true",
+        leftIcon="device-hub",
+        [items]="fieldSelectionList",
+        [multiple]="true",
+        [liveSearch]="true",
+        liveSearchPlaceholder="... search fields ...",
+        noneSelectedText="NOTHING SELECTED")
+
+    bw-select-picker(
+        [ngClass]="{'is-disabled': (compareToStageList$ | async)?.length === 0 }"
+        flex,
+        [fg]="fg",
+        label="Compare To Stage",
+        field="compareToStage",
+        leftIcon="device-hub",
+        [items]="(compareToStageList$ | async)",
+        [disabled]="(compareToStageList$ | async)?.length === 0"
+        [liveSearch]="true",
+        liveSearchPlaceholder="... select stage ...",
+        noneSelectedText="NOTHING SELECTED")
+
+    .color-picker(flex, layout="column", layout-gt-sm="row", layout-padding)
+        div(flex)            
+            .label-box.z-depth-1.p-relative(layout="row") Foreground
+                .label-slash
+                .label-color-box([ngStyle]="{'background-color': fg.value.foreground}", (click)="openSelectForegroundColor()")
+        div(flex)
+            .label-box.z-depth-1.p-relative(layout="row") Background
+                .label-slash
+                .label-color-box([ngStyle]="{'background-color': fg.value.background}", (click)="openSelectBackgroundColor()")            
+
+
+//- Choose Color Form
+kpi-choose-colors(flex, [fg]="fg", (colorChoosed)="onSelectColor($event)")
+

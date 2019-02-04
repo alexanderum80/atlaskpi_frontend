@@ -1,0 +1,8 @@
+mutation DeleteFunnel($id:  String!){
+  deleteFunnel(_id: $id) {
+    success,
+    errors {
+      field
+    }
+  }
+}

@@ -52,16 +52,43 @@ $vertical-spacing: 27px;
         -webkit-line-clamp: 1;
         -webkit-box-orient: vertical;
     }
+    .widget-no-data-subtitle {
+        text-align: left;
+        margin-left: 5px;
+        margin-top: 7px;
+        font-size: 12px;
+       // font-weight: bold;
+        overflow: hidden;
+        width: 80%;
+        padding-left: 5%;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+    }
+
     .widget-value {
         margin-top: $vertical-spacing;
         font-size: 1.8em;
         font-weight: bold;
+    }
+    .widget-no-data{
+        margin-top: $vertical-spacing;
+        font-size: 1.6em;
+        font-weight: bold; 
     }
     &.small {
         .widget-value {
             margin-top: $vertical-spacing;
             font-size: 1.2em;
             font-weight: bold;
+        }
+        .widget-no-data {
+            margin-top: $vertical-spacing;
+            font-size: 1em;
+            font-weight: bold;
+        }
+        .widget-no-data-subtitle{
+            font-weight: lighter;
         }
     }
     .widget-comparison-value {
@@ -97,6 +124,7 @@ $vertical-spacing: 27px;
     &.big .zmdi-caret-down {
         line-height: 32px;
     }
+
     .rigth {
         padding-left: 56%;
     }

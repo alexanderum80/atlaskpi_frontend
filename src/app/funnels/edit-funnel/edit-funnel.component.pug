@@ -1,0 +1,20 @@
+.z-depth-1.bgm-white.m-10.p-10.h-100(*ngIf="ready$ | async", layout="column")
+        .h-100(flex, layout-xs="column", layout-gt-sm="row", layout-align="start start")
+      
+            .funnel-form.w-100.h-100.overflow-auto(flex)
+                kpi-funnel-form([funnelModel]="funnelModel")
+
+            //- to be a funnel preview component
+            .funnel-preview.w-100.p-15(flex, layout="column", layout-align="center center")
+                p.text-center.m-b-15(flex-initial) Funnel Preview:
+
+                div(flex)
+                    kpi-funnel-preview([renderedFunnel]="(renderedFunnel$ | async)", [preview]="true")
+
+                  
+        div(flex-initial)
+                .m-t-25.m-b-5(layout="row", layout-padding, layout-align="end end")
+                    bw-button(flex-initial, color="blue", title="Save", icon="floppy",
+                                            class="normal", (clicked)="updateFunnel()" , [disabled]="!formValid")
+                    bw-button(flex-initial, color="gray", [simple]="true", title="Cancel", icon="close",
+                                            class="normal", (clicked)="cancel()")

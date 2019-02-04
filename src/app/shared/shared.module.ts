@@ -8,7 +8,6 @@ import { TagInputModule } from 'ngx-chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 
-
 import { MaterialFormsModule, MaterialUserInterfaceModule } from '../ng-material-components';
 
 // components
@@ -39,7 +38,8 @@ import {
     UserService,
     PaginationService,
     FormBuilderTypeSafe,
-    DateService
+    DateService,
+    AgGridService,
 } from './services';
 
 import { CollapsableComponent } from './ui/collapsable/collapsable.component';
@@ -60,6 +60,7 @@ import { RemoveConfirmationComponent } from './ui/remove-confirmation/remove-con
 import { ErrorComponent } from './ui/error/error.component';
 import { IsInViewportDirective } from './directives/is-in-viewport.directive';
 import { NotificationService } from './services/notification.service';
+import { ChooseColorsComponent } from './ui/choose-colors/choose-colors.component';
 
 @NgModule({
     imports: [
@@ -90,6 +91,7 @@ import { NotificationService } from './services/notification.service';
         SpinnerComponent,
         ListItemStandardComponent,
         ItemListComponent,
+        ChooseColorsComponent,
         // pipes
         MomentFormatPipe,
         NgxResizeWatcherDirective,
@@ -121,6 +123,7 @@ import { NotificationService } from './services/notification.service';
         ItemListComponent,
         TagsComponent,
         FileInputComponent,
+        ChooseColorsComponent,
         // pipes
         MomentFormatPipe,
         ListItemTabularComponent,
@@ -150,6 +153,7 @@ import { NotificationService } from './services/notification.service';
         FormBuilderTypeSafe,
         DateService,
         NotificationService,
+        AgGridService
     ],
 })
 export class SharedModule { }
