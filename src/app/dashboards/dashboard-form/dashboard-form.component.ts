@@ -143,6 +143,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy,
       search: new FormControl(null)
     });
     if ( that.actionAdd === 'actionAdd' ) {
+      this.editLoading = false;
       that._loadDashboards();
       that._loadUsers();
       that._loadWidgets();
@@ -206,8 +207,8 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy,
       this._selectionService.allowDisableSelection = true;
       return;
     }
+    const newItem = Object.assign({}, item);
     if (!item.position) {
-      const newItem = Object.assign({}, item);
       const selectedItem = this.selectedItems.find(s => s.id === item._id);
       if (selectedItem) {
         newItem['position'] = selectedItem.position;
@@ -216,7 +217,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy,
       }
       this._selectionService.toggleSelection(new GenericSelectionItem(newItem, type));
     } else {
-      this._selectionService.toggleSelection(new GenericSelectionItem(item, type));
+      this._selectionService.toggleSelection(new GenericSelectionItem(newItem, type));
     }
   }
 
@@ -640,7 +641,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy,
   private _loadDashboards() {
     this._apolloService.networkQuery < IDashboard[] > (dashboardsQuery)
     .then(d => {
-      if (!d.dashboards || d.dashboards.lenght === 0) {
+      if (!d.dashboards || d.dashboards.length === 0) {
           this.newOrder = 1;
       } else {
         this.newOrder = d.dashboards.length + 1;

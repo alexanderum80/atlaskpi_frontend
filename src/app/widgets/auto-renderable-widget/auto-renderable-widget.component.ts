@@ -60,6 +60,7 @@ export class AutoRenderableWidgetComponent implements OnInit, AfterViewInit {
         }
       } else {
         this.widgetSelected = false;
+        this.fgPatched = false;
       }
    });
    this.fgWidget.valueChanges.subscribe(value => {

@@ -48,6 +48,7 @@ export class SocialWidgetComponent implements OnInit {
         }
       } else {
         this.swidgetSelected = false;
+        this.fgPatched = false;
       }
    });
    this.fgSwidget.valueChanges.subscribe(value => {

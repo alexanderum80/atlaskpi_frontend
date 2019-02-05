@@ -46,6 +46,7 @@ export class AutoRenderableMapComponent implements OnInit {
         }
       } else {
         this.mapSelected = false;
+        this.fgPatched = false;
       }
    });
    this.fgMap.valueChanges.subscribe(value => {

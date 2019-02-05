@@ -262,11 +262,12 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
 
     private _loadDashboardData(dashboard: any) {
         const that = this;
-        if (!dashboard) {
-            that.bigWidgets = [];
+        that.bigWidgets = [];
             that.smallWidgets = [];
             that.socialWidgets = [];
             that.charts = [];
+            that.maps = [];
+        if (!dashboard) {
             return;
         }
         this.dashboardName = dashboard.name || 'Untitled';
@@ -363,6 +364,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
         this.loading = false;
         that.bigWidgets = [];
         that.smallWidgets = [];
+        that.socialWidgets = [];
         that.charts = [];
         that.maps = [];
 

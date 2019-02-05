@@ -60,6 +60,7 @@ export class AutoRenderableChartComponent implements OnInit, OnDestroy {
         }
       } else {
         this.chartSelected = false;
+        this.fgPatched = false;
       }
    });
    this.fgChart.valueChanges.subscribe(value => {
