@@ -1,8 +1,7 @@
 .h-100(*ngIf="isLoading", layout="row", layout-align="center center")
     bw-preloader.text-center(color="gray")
 
-div(*ngIf="!isLoading")
-    
+.h-100.overflow-auto(*ngIf="!isLoading")
     .form-setting(layout="column", layout-align="center")
         div(flex, layout="row")
             kpi-kpi-daterange-picker(flex, [fg]="fg", [dateRange]="dateRange", [required]="true", [fromRequired]="true", [toRequired]="true")
@@ -13,12 +12,8 @@ div(*ngIf="!isLoading")
         div.p-t-10(flex)
             kpi-kpi-grouping-picker([fg]="fg", *ngIf="groupingList", [groupingList]="groupingList")
             
-        kpi-collapsable.collapsed-container.overflow-auto.z-depth-1(*ngIf="kpi.type != 'complex'", [collapsed]="showCollapsedFilters", headerText="Filters (Optional):", [color]="'black'")
-            .m-t-20
-                kpi-change-settings-filter-list(
-                    [filters]="filters",
-                    [dataSource]="selectedDataSource",
-                )
+        kpi-collapsable.z-depth-1(*ngIf="kpi.type != 'complex'", [collapsed]="showCollapsedFilters", headerText="Filters (Optional):", [color]="'black'")
+            kpi-change-settings-filter-list([filters]="filters", [dataSource]="selectedDataSource")
 
         div.p-t-30(flex)
             div(layout="row", layout-padding, layout-align="end center")

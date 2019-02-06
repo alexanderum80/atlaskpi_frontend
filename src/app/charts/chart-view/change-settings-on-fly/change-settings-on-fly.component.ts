@@ -150,7 +150,7 @@ export class ChangeSettingsOnFlyComponent implements OnInit {
         const value = this.fg.value;
 
         if (!value.filters[0][0] || !value.filters[0][0].field) {
-            value.filters[0] = undefined;
+            value.filters[0] = [];
         }
 
         const dateRange: DateRange = {
