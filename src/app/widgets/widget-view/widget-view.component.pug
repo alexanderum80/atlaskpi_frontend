@@ -1,5 +1,10 @@
 .widget.p-relative.z-depth-1(*ngIf="widget", [ngStyle]="setStyle()", class="{{widget.size}}")
-    bw-actions.description-button(*ngIf="description", [iconColor]="actionsColor" , [actionItems]="actionItems", (actionClicked)="onActionClicked($event)")
+    bw-actions.description-button(
+        *ngIf="description", 
+        [iconColor]="actionsColor" , 
+        [actionItems]="actionItems", 
+        (actionClicked)="onActionClicked($event)", 
+        [ngStyle]="{'right.px': (widgetSelected) ? 35 : 5}")
     .p-10(layout="column")
             .position(*ngIf="widgetSelected", [formGroup]="fg")
                 input.position.z-depth-1(formControlName="position", 
