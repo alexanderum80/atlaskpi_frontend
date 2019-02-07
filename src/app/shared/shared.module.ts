@@ -1,3 +1,4 @@
+import { KpiFilterListComponent } from './ui/kpi-filters/filter-list/filter-list.component';
 import { NgxResizeWatcherDirective } from './directives/ngx-resize-watcher.directive';
 import { BrowserService } from './services/browser.service';
 import { NgModule } from '@angular/core';
@@ -21,7 +22,8 @@ import {
     TimeFormatPickerComponent,
     KpiDaterangePickerComponent,
     KpiFrequencyPickerComponent,
-    KpiGroupingPickerComponent
+    KpiGroupingPickerComponent,
+    FilterFormComponent,
 } from './ui';
 
 import {
@@ -101,7 +103,9 @@ import { ChooseColorsComponent } from './ui/choose-colors/choose-colors.componen
         RemoveConfirmationComponent,
         ErrorComponent,
         // directives
-        IsInViewportDirective
+        IsInViewportDirective,
+        KpiFilterListComponent,
+        FilterFormComponent
     ],
     exports: [
         BackgroundComponent,
@@ -130,7 +134,8 @@ import { ChooseColorsComponent } from './ui/choose-colors/choose-colors.componen
         ErrorComponent,
         RemoveConfirmationComponent,
         // directives
-        IsInViewportDirective
+        IsInViewportDirective,
+        KpiFilterListComponent,
     ],
     providers: [
         ApiService,

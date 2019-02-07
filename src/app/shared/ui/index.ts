@@ -9,3 +9,5 @@ export * from './kpi-daterange-picker';
 export * from './kpi-frequency-picker';
 export * from './kpi-grouping-picker';
 export * from './collapsable';
+export * from './kpi-filters/filter-list';
+export * from './kpi-filters/filter-form';
