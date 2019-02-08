@@ -3,10 +3,10 @@
 
 .h-100.overflow-auto(*ngIf="!isLoading")
     .form-setting(layout="column", layout-align="center")
-        div(flex, layout="row")
-            kpi-kpi-daterange-picker(flex, [fg]="fg", [dateRange]="dateRange", [required]="true", [fromRequired]="true", [toRequired]="true")
+        div(flex, layout="row", layout-sm="column", layout-xs="column")
+            kpi-kpi-daterange-picker.p-t-10(flex, [fg]="fg", [dateRange]="dateRange", [required]="true", [fromRequired]="true", [toRequired]="true")
             
-            div(flex, *ngIf="chartType != 'pie'")
+            div.p-t-10(flex, *ngIf="chartType != 'pie'")
                 kpi-kpi-frequency-picker([fg]="fg", [frequencyType]="'chart'")
         
         div.p-t-10(flex)
