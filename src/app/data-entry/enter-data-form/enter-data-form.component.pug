@@ -14,14 +14,22 @@ ag-grid-angular(
     [context]="deService.schema",
     [columnDefs]="deService.columnDefs",
     [floatingFilter]=true,
+    rowSelection='multiple',
+    [suppressRowClickSelection]=true,
+    [rowDeselection]=true,
+    (selectionChanged)="onSelectionChanged($event)",
     (cellValueChanged)="onCellValueChanged($event)",
     (gridReady)="onGridReady($event)")
 
-.actions.m-t-10(*ngIf="deService.rowData && !isLoading" layout="row", layout-align="end center")
+.actions.m-t-10(*ngIf="deService.rowData && !isLoading" layout="row", layout-xs="column", layout-align="space-between")
     div(flex-initial)
-        bw-button.addButton([disabled]="!(deService.changes$ | async).length", title="Save" color="blue", icon="check", (clicked)="save()")
+        div(layout="row", layout-padding)
+            bw-button.m-r-5.m-l-5(flex, [disabled]="!selectedRows", title="Delete", color="red", icon="delete", (clicked)="removeRows()")
+            bw-button(flex, title="Enter Data" color="blue", icon="long-arrow-down", (clicked)="goToEmptyRow()")
     div(flex-initial)
-        bw-button.addButton(color="black", title="Cancel", icon="check", [simple]="true", (clicked)="cancel()")
+        div(layout="row", layout-padding)
+            bw-button.m-r-5.m-l-5(flex, [disabled]="!(deService.changes$ | async).length", title="Save" color="blue", icon="check", (clicked)="save()")
+            bw-button(flex, color="black", title="Cancel", icon="check", [simple]="true", (clicked)="cancel()")
 
 
 //- kpi-spinner(*ngIf="isLoading")

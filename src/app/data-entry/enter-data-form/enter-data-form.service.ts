@@ -32,12 +32,19 @@ export class EnterDataFormService {
 
     columnDefs: any[];
     rowData: any[];
+    initialRecords: number = 0;
 
     private res: IDataEntryResponse;
     private _changesSubject = new BehaviorSubject<IDataChanged[]>([]);
 
+    private _recordsCount = new BehaviorSubject<number>(0);
+
     registerDataSource(res: IDataEntryResponse): any {
         this.res = res;
+
+        this.initialRecords = res.data.length;
+        this._recordsCount.next(this.initialRecords);
+
         this.columnDefs = this.prepareColumns(res);
         this.rowData = this.prepareRecords(res);
         this._changesSubject.next([]);
@@ -55,12 +62,24 @@ export class EnterDataFormService {
         return this._changesSubject.asObservable();
     }
 
+    get recordsCount$() {
+        return this._recordsCount.asObservable();
+    }
+
     get hasChanges() {
         return this._changesSubject.value.length > 0;
     }
 
     get registeredChanges(): IDataChanged[] {
         return this._changesSubject.value;
+    }
+
+    countChanged(num: number){
+        if(num > 0 && this._recordsCount.value > 0){
+            this._recordsCount.next( 
+                this._recordsCount.value - num
+             )
+        }
     }
 
     registerChange(change: any): any {
@@ -115,16 +134,18 @@ export class EnterDataFormService {
         const columns = [
             {
                 headerName: "ID",
-                width: 50,
+                width: 130,
                 // it is important to have node.id here, so that when the id changes (which happens
                 // when the row is loaded) then the cell is refreshed.
                 valueGetter: '+node.id + 1',
                 //cellRenderer: 'loadingRenderer',      /*giving a warning in the console */
                 type: 'numericColumn',
+                editable:false,
                 filter: 'agNumberColumnFilter',
-                comparator: (valueA, valueB, nodeA, nodeB) => {
-                  return this.ignoreEmptyRecordsComparator(valueA, valueB, nodeA, nodeB)
-                }
+                checkboxSelection: true,
+                // comparator: (valueA, valueB, nodeA, nodeB) => {
+                //   return this.ignoreEmptyRecordsComparator(valueA, valueB, nodeA, nodeB)
+                // }
             }];
 
         for (const [key, value] of Object.entries(res.schema)) {
