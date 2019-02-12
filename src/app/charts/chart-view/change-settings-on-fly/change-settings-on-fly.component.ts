@@ -51,12 +51,14 @@ export class ChangeSettingsOnFlyComponent implements OnInit {
     isLoading = true;
     dataSources: IDataSource;
     expression: any;
+    isMultipleKPI: boolean;
 
     constructor(private _chartViewComponent: ChartViewComponent,
                 private _apolloService: ApolloService) {}
 
     async ngOnInit() {
         this._getValueFromChart();
+        this.isMultipleKPI = this.chartData.kpis.length > 1;
         await this._getKpiInfo(this.chartData.kpis[0].kpi._id);
         await this._getGroupingList();
         await this._getDataSources();

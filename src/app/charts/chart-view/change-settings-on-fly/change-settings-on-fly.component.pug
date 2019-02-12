@@ -12,7 +12,7 @@
         div.p-t-10(flex)
             kpi-kpi-grouping-picker([fg]="fg", *ngIf="groupingList", [groupingList]="groupingList")
             
-        kpi-collapsable.z-depth-1(*ngIf="kpi.type != 'complex'", [collapsed]="showCollapsedFilters", headerText="Filters (Optional):", [color]="'black'")
+        kpi-collapsable.z-depth-1(*ngIf="!isMultipleKPI && kpi.type != 'complex'", [collapsed]="showCollapsedFilters", headerText="Filters (Optional):", [color]="'black'")
             kpi-filter-list([filters]="filters", [dataSource]="selectedDataSource")
 
         div.p-t-30(flex)
