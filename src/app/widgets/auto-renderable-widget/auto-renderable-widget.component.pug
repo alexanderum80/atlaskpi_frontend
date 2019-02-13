@@ -1,7 +1,19 @@
-kpi-widget-view(*ngIf="widget", [widget]="widget", [widgetPreview]="widgetPreview", (done)="onActionClicked($event)")
+kpi-widget-view(
+    *ngIf="widget",
+    [widget]="widget", 
+    [widgetPreview]="widgetPreview",
+    [descriptionOnlyAction]="descriptionOnlyAction", 
+    (done)="onActionClicked($event)")
 
 .widget.z-depth-1(*ngIf="!widget", class="{{item.size}}" , [ngStyle]="{'background-color': widgetBackgroundColor, 'color': widgetFontColor}",
                   layout="column")
+    
+    bw-actions.description-button(
+        *ngIf="showActions", 
+        [iconColor]="item.fontColor" , 
+        [actionItems]="actionItems", 
+        (actionClicked)="onActionClicked($event)")
+
 
     .p-5(layout="column", flex)
         .p-5(layout="row", layout-align="start start", flex-initial)

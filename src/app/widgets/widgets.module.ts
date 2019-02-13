@@ -25,6 +25,10 @@ import { WidgetAlertFormComponent } from './widget-alert-form/widget-alert-form.
 import { WidgetNoAlertsComponent } from './widget-no-alerts/widget-no-alerts.component';
 import { AutoRenderableWidgetComponent } from './auto-renderable-widget/auto-renderable-widget.component';
 import { WidgetsAlertListComponent } from './widgets-alert-list/widgets-alert-list.component';
+import { WidgetViewViewModel } from './widget-view/widget-view.viewmodel';
+import { CloneWidgetActivity } from '../shared/authorization/activities/widgets/clone-widget.activity';
+import { UpdateWidgetActivity } from '../shared/authorization/activities/widgets/update-widget.activity';
+import { DeleteWidgetActivity } from '../shared/authorization/activities/widgets/delete-widget.activity';
 
 @NgModule({
   imports: [
@@ -44,7 +48,13 @@ import { WidgetsAlertListComponent } from './widgets-alert-list/widgets-alert-li
                 ],
   exports: [WidgetViewComponent, NewWidgetComponent, WidgetAlertComponent, WidgetAlertFormComponent,
             WidgetNoAlertsComponent, WidgetsAlertListComponent, AutoRenderableWidgetComponent],
-  providers: [WidgetsFormService, UserService]
+  providers: [        
+    CloneWidgetActivity, 
+    UpdateWidgetActivity, 
+    DeleteWidgetActivity, 
+    WidgetsFormService, 
+    UserService
+  ]
 
 })
 export class WidgetsModule { }
