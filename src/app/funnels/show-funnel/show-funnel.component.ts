@@ -1,16 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { IRenderedFunnel, IRenderedFunnelStage } from '../shared/models/rendered-funnel.model';
-import { Observable, throwError } from 'rxjs';
-import { IFunnel } from '../shared/models/funnel.model';
-import { ObservableInput } from 'rxjs/Observable';
 import { ApolloQueryResult } from 'apollo-client';
-import { objectWithoutProperties2 } from '../../shared/helpers/object.helpers';
-import { filter, map, tap, catchError } from 'rxjs/operators';
-import { IClickedStageInfo } from '../shared/models/models';
+import { Observable } from 'rxjs';
+import { ObservableInput } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+
 import { ModalComponent } from '../../ng-material-components';
+import { IFunnel } from '../shared/models/funnel.model';
+import { IClickedStageInfo } from '../shared/models/models';
+import { IRenderedFunnel } from '../shared/models/rendered-funnel.model';
 
 const renderFunnelByIdQuery = require('graphql-tag/loader!./render-funnel-by-id.query.gql');
 
@@ -28,16 +27,23 @@ export class ShowFunnelComponent implements OnInit {
 
   selectedStageInfo: IClickedStageInfo;
 
+  loading = true;
+
   constructor(
     private _route: ActivatedRoute,
-    private _apollo: Apollo
-  ) { }
+    private _apollo: Apollo,
+
+  ) {
+  }
 
   ngOnInit() {
     this.renderedFunnel$ =
       this._route.params
         .switchMap((params: Params) => this.renderFunnelById(params['id']))
-        .map(res => res.data.renderFunnelById);
+        .map(res => {
+          this.loading = false;
+          return res.data.renderFunnelById;
+        });
   }
 
   onStageClicked(stageInfo: IClickedStageInfo) {

@@ -2,5 +2,6 @@ query funnelKpiList{
    kpis {
         _id
         name
+        type
     }
 }

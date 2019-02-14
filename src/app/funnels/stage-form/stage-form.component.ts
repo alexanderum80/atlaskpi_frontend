@@ -229,7 +229,7 @@ export class StageFormComponent implements OnInit, OnDestroy {
         if (selectedPayload === this._lastKpiDateRangePayload) { return; }
         this._lastKpiDateRangePayload = selectedPayload;
 
-        const res = await this._funnelService.getAvailableFields(kpi, dateRange);
+        const res = await this._funnelService.getAvailableFields(kpi);
         this.fieldSelectionList = res;
     }
 
