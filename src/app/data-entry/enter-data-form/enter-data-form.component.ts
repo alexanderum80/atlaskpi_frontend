@@ -20,6 +20,7 @@ import { BrowserService } from '../../shared/services/browser.service';
 const dataEntryIdQuery = require('graphql-tag/loader!../shared/graphql/data-entry-by-id.gql');
 const customListIdQuery = require('graphql-tag/loader!../shared/graphql/get-custom-list.gql');
 const updateDataEntryMutation = require('graphql-tag/loader!../shared/graphql/update-data-entry.gql');
+const removeRowsDataEntryMutation = require('graphql-tag/loader!../shared/graphql/remove-rows-data-entry.gql');
 
 const sidebarStyle = { width: 'calc(100vw - 240px)', height: 'calc(100vh - 210px)', padding: '10px' };
 const noSidebarStyle = { width: '100vw', height: 'calc(100vh - 210px)', padding: '10px' };
@@ -46,10 +47,13 @@ export class EnterDataFormComponent implements OnInit, OnDestroy {
 
     name: string;
     dataSourceCollection: any;
-
+    
+    selectedRows = false;
+    
     private _subscription: Subscription[] = [];
     private gridApi;
     private gridColumnApi;
+    private recordsCount: number;
 
     constructor(
         public vm: DataEntryFormViewModel,
@@ -72,6 +76,10 @@ export class EnterDataFormComponent implements OnInit, OnDestroy {
         this._subscription.push(this._browserService.viewportSize$.subscribe(size => {
             this.sidebarOpen = size.width >= 1200;
         }));
+
+        this._subscription.push(this.deService.recordsCount$.subscribe( count => 
+            this.recordsCount = count)
+            );
     }
 
     ngOnDestroy() {
@@ -85,14 +93,64 @@ export class EnterDataFormComponent implements OnInit, OnDestroy {
     onGridReady(params) {
         this.gridApi = params.api;
         this.gridColumnApi = params.columnApi;
-      }
+    }
 
     onCellValueChanged(info) {
         this.deService.registerChange(info);
     }
 
+    onSelectionChanged() {
+        const selectedRowsData = this.gridApi.getSelectedRows();
+        const selectedRowsNotEmpty = selectedRowsData.filter(row => row._id);
+
+        this.selectedRows = (selectedRowsNotEmpty && selectedRowsNotEmpty.length) ? true : false;
+    }
+
+    removeRows() {
+
+        return SweetAlert({
+            titleText: 'Are you sure you want to delete these rows?',
+            text: ` This action cannot be undone`,
+            type: 'warning',
+            showConfirmButton: true,
+            showCancelButton: true
+        })
+            .then((res) => {
+                if (res.value === true) {
+                    const selectedDataRaw = this.gridApi.getSelectedRows();
+
+                    //- making sure there are no empty rows here
+                    const docsToRemove = selectedDataRaw.filter(row => row._id);
+
+                   this.deService.countChanged( docsToRemove.length);
+                    
+                    if (docsToRemove && docsToRemove.length) {
+                        this._apolloService.mutation<any>(
+                            removeRowsDataEntryMutation,
+                            {
+                                VsId: this._route.snapshot.params.id,
+                                rowsIds: docsToRemove.map(rowData => rowData._id)
+                            },
+                            ['DataEntries']
+                            )
+                            .then(result => {
+ 
+                                if (result.data.removeRowsDataEntry.success) {
+                                       
+                                    this.gridApi.updateRowData({ remove: docsToRemove });
+                                }
+                            })
+                            .catch(err => console.log('Server errors: ' + JSON.stringify(err)));
+                    }
+                                
+                }
+            });
+
+
+    }
+
     save() {
-        this.deService.registeredChanges.map( record => record.source = "Manual entry");
+        this.deService.registeredChanges.map(record => record.source = "Manual entry");
 
         this._apolloService.mutation<any>(
             updateDataEntryMutation,
@@ -127,11 +185,11 @@ export class EnterDataFormComponent implements OnInit, OnDestroy {
                 showConfirmButton: true,
                 showCancelButton: true
             })
-            .then((res) => {
-                if (res.value === true) {
-                    this._router.navigateByUrl('/data-entry/show-all');
-                }
-            });
+                .then((res) => {
+                    if (res.value === true) {
+                        this._router.navigateByUrl('/data-entry/show-all');
+                    }
+                });
         } else {
             this._router.navigateByUrl('/data-entry/show-all');
         }
@@ -147,5 +205,31 @@ export class EnterDataFormComponent implements OnInit, OnDestroy {
             that.isLoading = false;
         });
     }
+
+    goToEmptyRow() {
+        /* if some rows are removed this index will have 
+        the correct updated index of first empty row */
+        const selectionIndex = this.recordsCount;
+
+        /* this index is the value of the first column that becomes its id, 
+        though it will not change if rows are deleted */
+        const nodeIndex = this.deService.initialRecords;
+
+        if(nodeIndex >= 0  && selectionIndex >= 0){
+            this.gridApi.ensureIndexVisible(nodeIndex + 1, null);
+            const node = this.gridApi.getRowNode(nodeIndex);
+
+            if(node){
+                node.setSelected(true);
+                this.gridApi.setFocusedCell( selectionIndex, this.deService.columnDefs[1].field);
+
+                this.gridApi.startEditingCell(
+                    {
+                        rowIndex: selectionIndex,
+                        colKey: this.deService.columnDefs[1].field
+                    });
+            }
+        }
+}
 
 }

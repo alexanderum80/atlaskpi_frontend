@@ -123,7 +123,7 @@ export class ImportFileComponent implements OnInit {
 
   save() {
     this.showUploadForm = false;
-
+    
     const filesData: ICustomData[] = [];
     const selectedUsers = this.usersList.filter(f => f.selected).map(u => {
       return u._id;

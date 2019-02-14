@@ -34,7 +34,7 @@ const menuItems: MenuItem[] = [{
     route: 'datasource'
 }, {
     id: 'data-entry',
-    title: 'Data entry',
+    title: 'Atlas Sheets',
     icon: 'keyboard',
     route: 'data-entry'
 }, {
