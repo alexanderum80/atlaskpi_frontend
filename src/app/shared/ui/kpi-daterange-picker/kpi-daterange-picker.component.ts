@@ -96,14 +96,14 @@ export class KpiDaterangePickerComponent implements OnInit, OnDestroy, AfterView
         const that = this;
 
         setTimeout(() => {
-            this._fromSubscription = this.fg.get('from').valueChanges.subscribe(from => {
+            this._fromSubscription = this.fg.get('from') && this.fg.get('from').valueChanges.subscribe(from => {
                 const to = that.fg.get('to');
                 if (to && moment(from).isAfter(moment(to.value))) {
                     to.setValue(null);
                 }
             });
 
-            this._toSubscription = this.fg.get('to').valueChanges.subscribe(to => {
+            this._toSubscription = this.fg.get('to') && this.fg.get('to').valueChanges.subscribe(to => {
             const from = that.fg.get('from');
             if (from && moment(to).isBefore(moment(from.value))) {
                 from.setValue(null);
@@ -135,8 +135,10 @@ export class KpiDaterangePickerComponent implements OnInit, OnDestroy, AfterView
 
         if (!from.isValid() || !to.isValid) { return; }
 
-        this.fg.controls['from'].setValue(from.format(this.datePickerConfig.format));
-        this.fg.controls['to'].setValue(to.format(this.datePickerConfig.format));
+        if (this.fg.controls.from && this.fg.controls.to) {
+            this.fg.controls['from'].setValue(from.format(this.datePickerConfig.format));
+            this.fg.controls['to'].setValue(to.format(this.datePickerConfig.format));
+        }
     }
 
 }

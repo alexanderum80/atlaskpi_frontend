@@ -1,0 +1,27 @@
+query Kpi($id: String!) {
+    kpi(id: $id) {
+       _id
+      code
+      name
+      baseKpi
+      description
+      group
+      groupings
+      dateRange {
+        predefined
+        custom {
+          from
+          to
+        }
+      }
+      filter
+      frequency
+      axisSelection
+      emptyValueReplacement
+      expression
+      type
+      tags
+      createdBy
+      createdDate
+    }
+}

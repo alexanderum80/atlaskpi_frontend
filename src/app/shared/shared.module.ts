@@ -1,3 +1,4 @@
+import { KpiFilterListComponent } from './ui/kpi-filters/filter-list/filter-list.component';
 import { NgxResizeWatcherDirective } from './directives/ngx-resize-watcher.directive';
 import { BrowserService } from './services/browser.service';
 import { NgModule } from '@angular/core';
@@ -21,7 +22,8 @@ import {
     TimeFormatPickerComponent,
     KpiDaterangePickerComponent,
     KpiFrequencyPickerComponent,
-    KpiGroupingPickerComponent
+    KpiGroupingPickerComponent,
+    FilterFormComponent,
 } from './ui';
 
 import {
@@ -104,7 +106,8 @@ import { TooltipDirective } from './directives/tooltip.directive';
         ErrorComponent,
         // directives
         IsInViewportDirective,
-        TooltipDirective,
+        KpiFilterListComponent,
+        FilterFormComponent
     ],
     exports: [
         BackgroundComponent,
@@ -133,8 +136,9 @@ import { TooltipDirective } from './directives/tooltip.directive';
         ErrorComponent,
         RemoveConfirmationComponent,
         // directives
-        IsInViewportDirective,
-        TooltipDirective
+        IsInViewportDirective
+        KpiFilterListComponent,
+		TooltipDirective
     ],
     providers: [
         ApiService,
