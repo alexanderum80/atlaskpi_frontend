@@ -63,6 +63,8 @@ import { ErrorComponent } from './ui/error/error.component';
 import { IsInViewportDirective } from './directives/is-in-viewport.directive';
 import { NotificationService } from './services/notification.service';
 import { ChooseColorsComponent } from './ui/choose-colors/choose-colors.component';
+import { TooltipDirective } from './directives/tooltip.directive';
+
 
 @NgModule({
     imports: [
@@ -134,8 +136,9 @@ import { ChooseColorsComponent } from './ui/choose-colors/choose-colors.componen
         ErrorComponent,
         RemoveConfirmationComponent,
         // directives
-        IsInViewportDirective,
+        IsInViewportDirective
         KpiFilterListComponent,
+		TooltipDirective
     ],
     providers: [
         ApiService,

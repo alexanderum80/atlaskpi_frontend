@@ -21,9 +21,21 @@ const renderFunnelByDefinitionQuery
     = require('graphql-tag/loader!../graphql/render-funnel-by-definition.query.gql');
 
 
+export interface FunnelStageField  {
+    name: string;
+    path: string;
+    type: string;
+    isArray: boolean;
+}
+
+export interface IFunnelStageKpiFields  {
+    id: string;
+    name: string;
+    fields: FunnelStageField[];
+}
 // TODO: Implement a getAvailableFieldsQuery in the backed.
 // now using KPIGroupings for testing purposes
-const kpiGroupingsQuery = require('graphql-tag/loader!./kpi-groupings.query.gql');
+const funnelStageFieldsQuery = require('graphql-tag/loader!./funnel-stage-fields.query.gql');
 
 @Injectable()
 export class FunnelService {
@@ -64,13 +76,16 @@ export class FunnelService {
     }
 
     loadFormDependencies$(): Observable<boolean> {
-       return this.apollo.query<{ kpis: { _id: string, name: string }[] }>({
+       return this.apollo.query<{ kpis: { _id: string, name: string, type: string }[] }>({
                 query: kpiIdNameList,
                 fetchPolicy: 'network-only',
             })
          .pipe(
-            tap(_ => {
-                this.kpiSelectionList = ToSelectionItemList(_.data.kpis, '_id', 'name');
+            tap(res => {
+                const simpleKpis = res.data.kpis.filter(k => k.type === 'simple');
+                this.kpiSelectionList = ToSelectionItemList(
+                    simpleKpis,
+                    '_id', 'name');
             }),
             catchError(error => {
                 console.log(error);
@@ -90,24 +105,19 @@ export class FunnelService {
         return ToSelectionItemList(stages, 'id', 'id');
     }
 
-    // TODO: Implement a getAvailableFieldsQuery in the backed.
-    // now using KPIGroupings for testing purposes
-    async getAvailableFields(kpi: string, dateRange: IKpiDateRangePickerDateRange ): Promise<SelectionItem[]> {
-        if (!kpi || !dateRange) { return []; }
+    async getAvailableFields(kpi: string): Promise<SelectionItem[]> {
+        if (!kpi) { return []; }
 
-        if (!dateRange.predefinedDateRange) { return []; }
+        const res = await  this.apollo.query<{ funnelStageFields: IFunnelStageKpiFields[] }>({
+            query: funnelStageFieldsQuery,
+            variables: { kpis: [kpi] },
+            fetchPolicy: 'cache-first',
+        }).toPromise();
 
-        // incomplete custom dateRange
-        if (dateRange.predefinedDateRange === 'custom'
-             && (!dateRange.from || !dateRange.to)) {
-             return [];
-        }
+        const thisKpiFieldsResponse = res.data.funnelStageFields.find(r => r.id === kpi);
+        const fields = thisKpiFieldsResponse.fields.filter(f => !f.isArray);
 
-        const input = this._getGroupingInfoInput(kpi, dateRange);
-
-        const data = await this._apolloService.networkQuery(kpiGroupingsQuery, { input });
-
-        return ToSelectionItemList(data.kpiGroupings, 'value', 'name');
+        return ToSelectionItemList(fields, 'path', 'name');
     }
 
     addStage() {

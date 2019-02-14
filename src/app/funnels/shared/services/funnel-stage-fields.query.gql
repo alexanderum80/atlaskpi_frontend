@@ -1,0 +1,12 @@
+query FunnelStageFields($kpis: [String]!) {
+  funnelStageFields(kpis: $kpis) {
+    id
+    name
+    fields {
+      name
+      path
+      type
+      isArray
+    }
+  }
+}

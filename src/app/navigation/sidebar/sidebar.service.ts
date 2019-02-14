@@ -85,7 +85,7 @@ const MENU_ITEMS: MenuItem[] = [
     ]
 }, {
     id: 'data-entry',
-    title: 'Data entry',
+    title: 'Atlas Sheets',
     icon: 'keyboard'
 },
 {
