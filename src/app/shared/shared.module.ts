@@ -106,6 +106,7 @@ import { TooltipDirective } from './directives/tooltip.directive';
         ErrorComponent,
         // directives
         IsInViewportDirective,
+        TooltipDirective,
         KpiFilterListComponent,
         FilterFormComponent
     ],
@@ -136,7 +137,7 @@ import { TooltipDirective } from './directives/tooltip.directive';
         ErrorComponent,
         RemoveConfirmationComponent,
         // directives
-        IsInViewportDirective
+        IsInViewportDirective,
         KpiFilterListComponent,
 		TooltipDirective
     ],

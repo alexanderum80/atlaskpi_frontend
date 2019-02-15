@@ -83,10 +83,13 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
     lastKpiDateRangePayload: any;
     lastOldestDatePayload = '';
     previousChartType = '';
+    subscribedToFrequency = false;
 
     @ViewChild('frequencyPicker') set frequencyContent(content: SelectPickerComponent) {
         if (content) {
             this.frequencyPicker = content;
+            if(!this.subscribedToFrequency)
+                this._subscribeToFrequencyAndXAxisChanges();
         }
     }
     @ViewChild('xSourcePicker') set xSourceContent(content: SelectPickerComponent) {
@@ -209,13 +212,17 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
     }
 
     updateXaxisSourceList(value: string): void {
+
+        if(this.chartType === "pie") return;
+
         const xAxisSelectionList = [];
         const xAxisSource = this.fg.value.xAxisSource;
-        if (this.fg.value.frequency && this.fg.value.frequency.length > 0) {
+        const frequency = this.fg.value.frequency;
+        if (frequency && frequency.length > 0) {
             xAxisSelectionList.push({ id: 'frequency', title: 'frequency', selected: xAxisSource === 'frequency' ? true : false,
                                         disabled: false });
             setTimeout(()  => {
-                if (!xAxisSource) {
+                if (!xAxisSource || xAxisSource != value) {
                     this.fg.controls['xAxisSource'].setValue('frequency');
                 }
             }, 50);
@@ -223,9 +230,21 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
 
         if (value && value.length > 0) {
             const titleValue = camelCase(value);
-            xAxisSelectionList.push({id: value, title: titleValue, selected: false, disabled: false });
+            xAxisSelectionList.push({id: value, title: titleValue, selected: (!frequency)? true : false, disabled: false });
+            if(!frequency){
+                setTimeout(()  => {
+                    //if (!xAxisSource) {
+                        this.fg.controls['xAxisSource'].setValue(value);
+                    //}
+                }, 50);
+            }
         }
 
+        if(!xAxisSelectionList.length){
+            setTimeout(()  => {
+                this.fg.controls['xAxisSource'].setValue(null);
+            }, 50);
+        }
         this.xAxisSourceList = xAxisSelectionList;
     }
 
@@ -427,6 +446,26 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                     }
                 })
             );
+        }
+    }
+
+    private _subscribeToFrequencyAndXAxisChanges(): void {
+        const that = this;
+        if (that.fg.controls['frequency']) {        
+            that._subscription.push(
+                that.fg.controls['frequency'].valueChanges
+                .debounceTime(100)
+                .subscribe(result => {
+                    const xAxisPicker: string =  that.fg.value.xAxisSource;
+                    const frequency: string = result;
+                    
+                    if ((!frequency && xAxisPicker === 'frequency') ||
+                        (frequency && !xAxisPicker)) {
+                            that.updateXaxisSourceList(this.fg.value.grouping)
+                    }
+                })
+            );                   
+            this.subscribedToFrequency = true;
         }
     }
 

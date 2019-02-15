@@ -487,7 +487,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
                     that.fg.controls['frequency'].patchValue(values.frequency);
                     that.fg.controls['group'].patchValue(values.group);
-
+                    that.fg.controls['xAxisSource'].patchValue(values.xAxisSource);
                     that.fg.controls['dashboards'].setValue(values.dashboards.replace(',', '|'));
                 }, 100);
 
@@ -652,6 +652,8 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             return !isEmpty(this.fg.value.name) &&
             !isEmpty(this.fg.value.kpis) &&
             !isEmpty(this.fg.value.predefinedDateRange) &&
+            ( (this.chartType !==  'pie' && this.fg.value.xAxisSource) ||
+            (this.chartType ===  'pie' && !this.fg.value.xAxisSource))&&
             this.isChartCustomTopValid &&
             this.tooltipValid;
         }
