@@ -107,7 +107,8 @@ import { TooltipDirective } from './directives/tooltip.directive';
         // directives
         IsInViewportDirective,
         KpiFilterListComponent,
-        FilterFormComponent
+        FilterFormComponent,
+        TooltipDirective
     ],
     exports: [
         BackgroundComponent,
@@ -136,9 +137,9 @@ import { TooltipDirective } from './directives/tooltip.directive';
         ErrorComponent,
         RemoveConfirmationComponent,
         // directives
-        IsInViewportDirective
+        IsInViewportDirective,
         KpiFilterListComponent,
-		TooltipDirective
+        TooltipDirective
     ],
     providers: [
         ApiService,
