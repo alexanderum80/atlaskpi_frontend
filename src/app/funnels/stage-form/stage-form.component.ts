@@ -28,7 +28,7 @@ function customDateRangeValidator() {
         return null;
       }
 
-      if (!moment(from.value).isValid() || !moment(to.value).isValid()) {
+      if (!moment(from && from.value).isValid() || !moment(to && to.value).isValid()) {
           return {
               dateRangeInvalid: true
           };
