@@ -18,13 +18,13 @@ export interface IDashboard {
 
 export class Dashboard implements IDashboard {
   private __id: string;
-  get _id(): string{ return this.__id; }
+  get _id(): string { return this.__id; }
 
   private _name: string;
-  get name(): string{ return this._name; }
+  get name(): string { return this._name; }
 
   private _description: string;
-  get description(): string{ return this._description; }
+  get description(): string { return this._description; }
 
   private _charts: string[];
   get charts(): string[] { return this._charts; }

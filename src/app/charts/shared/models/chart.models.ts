@@ -76,6 +76,7 @@ export interface IChart {
     xAxisSource: string;
     dashboards?: string[];
     size?: string;
+    position?: number;
     createdBy?: string;
     createdDate?: Date;
     updatedBy?: string;

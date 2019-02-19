@@ -3,8 +3,6 @@ query allDashboard {
     _id
     name
     description
-    charts
-    widgets
     owner
     visible
     order
