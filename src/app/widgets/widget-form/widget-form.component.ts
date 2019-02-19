@@ -203,7 +203,7 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
             widgetData.format = this.widgetDataFromKPI.format;
             widgetData.comparison = this.widgetDataFromKPI.comparison;
             widgetData.comparisonArrowDirection = this.widgetDataFromKPI.comparisonArrowDirection;
-            
+
             widgetDataFromKPI = {
                 name: this.widgetDataFromKPI.name,
                 description: 'Here goes the description',
@@ -217,27 +217,26 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
                 kpi: this.widgetDataFromKPI.kpi,
                 predefinedDateRange: this.widgetDataFromKPI.predefinedDateRange,
                 dashboards: ''
-            }
+            };
         }
-        
+
         this.fg.patchValue(widgetData);
-        
 
         this._subscribeToServiceObservables();
-        
+
         this.fg.get('predefinedDateRange').valueChanges.subscribe(newDateRange => {
             that.updateComparisonItems(newDateRange);
         });
-        
+
         this.fg.get('kpi').valueChanges.subscribe(newKpi => {
             that.updateComparisonItems(this.fg.value.predefinedDateRange, newKpi);
         });
-        
+
         that.updateComparisonItems(this.fg.value.predefinedDateRange, null, widgetDataFromKPI ? widgetDataFromKPI : null);
         this.cdr.detectChanges();
-        
+
         this._subscribeToFormFields();
-       
+
         this._widgetFormService.updateExistDuplicatedName(false);
         this._subscribeToNameChanges();
         this.loading = false;
@@ -301,14 +300,14 @@ export class WidgetFormComponent implements OnInit, AfterViewInit, OnDestroy {
     get isDateRangeCustom() {
         return this.fg.value.predefinedDateRange === 'custom';
     }
-    
+
     updateComparisonItems(dateRange, kpiId?, values?) {
         if (!dateRange) {
             this.comparisonSelectionList = [];
             return;
         }
         this._apolloService
-            .networkQuery < string > (widgetsGraphqlActions.kpiOldestDateQuery, 
+            .networkQuery < string > (widgetsGraphqlActions.kpiOldestDateQuery,
                 { ids: kpiId ? [kpiId] : [this.fg.value.kpi] })
         .then(kpis => {
             this.comparisonSelectionList = this._widgetFormService

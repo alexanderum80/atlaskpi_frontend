@@ -2,12 +2,12 @@ import { title } from 'change-case';
 import { map } from 'rxjs/operators';
 import { filter } from 'rxjs/operators';
 import { IMutationError, IMutationResponse } from '../../shared/interfaces/mutation-response.interface';
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { ApolloQueryResult } from 'apollo-client';
-import { uniq, isEmpty, sortBy, isNumber } from 'lodash';
+import { uniq, isEmpty, sortBy, isNumber, find } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 import Sweetalert from 'sweetalert2';
 
@@ -36,6 +36,7 @@ import * as moment from 'moment';
 export interface IMap {
   _id: string;
   imgpath: string;
+  position?: number;
 }
 
 const dashboardByNameQuery = require('graphql-tag/loader!../shared/graphql/dashboard-by-name.gql');
@@ -49,7 +50,7 @@ const ListMapsQuery = require('graphql-tag/loader!../../charts/shared/graphql/li
   styleUrls: ['./dashboard-form.component.scss'],
   providers: [MenuService, GenericSelectionService]
 })
-export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   @ViewChild('modal') modal: ModalComponent;
   @ViewChild('errorModal') errorModal: ModalComponent;
   @Input() fg: FormGroup;
@@ -61,6 +62,8 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   chartModel: ChartModel;
 
+  loading = false;
+  editLoading = true;
   widgetsLoading = true;
   chartsLoading = true;
   socialwidgetsLoading = true;
@@ -97,7 +100,6 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
   isAddMap = false;
   isPreviewDashboard = false;
 
-  loading = false;
   currentUser: IUserInfo;
   rawDashboard: IDashboard;
   dashboardId: string;
@@ -105,6 +107,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
   previewDashboardModel: IDashboard;
   newOrder = 1;
   errorMessage: string;
+  validPosition = true;
 
   private _filteredVisibleCharts: IChart[] = [];
 
@@ -124,6 +127,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngOnInit() {
     const that = this;
+    this._selectionService._selectionList = [];
     this.subscriptions.push(this._userService.user$.subscribe((user: IUserInfo) => {
       that.currentUser = user;
     }));
@@ -131,12 +135,15 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     this._selectionService.enableMultiSelect();
     this.subscriptions.push(this._selectionService.selection$.subscribe(selectedItems => {
       that.selectedItems = selectedItems;
+      const anyInvalidPosition = that.selectedItems.find(i => i.validPosition === false);
+      this.validPosition = anyInvalidPosition === undefined;
     }));
     // add-search-bar
     this.fgs = new FormGroup({
       search: new FormControl(null)
     });
     if ( that.actionAdd === 'actionAdd' ) {
+      this.editLoading = false;
       that._loadDashboards();
       that._loadUsers();
       that._loadWidgets();
@@ -173,6 +180,9 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     })));
   }
 
+  ngOnChanges() {
+  }
+
   ngAfterViewInit() {
     this._dashboardService.updateExistDuplicatedName(false);
     this._subscribeToNameChanges();
@@ -192,20 +202,65 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     this.formTitle = 'Modify Dashboard';
   }
 
+  toggleAnySelection(item: any, type: string) {
+    if (!this._selectionService.allowDisableSelection) {
+      this._selectionService.allowDisableSelection = true;
+      return;
+    }
+    const newItem = Object.assign({}, item);
+    if (!item.position) {
+      const selectedItem = this.selectedItems.find(s => s.id === item._id);
+      if (selectedItem) {
+        newItem['position'] = selectedItem.position;
+      } else {
+        newItem['position'] = this.computeNewPosition(item, type);
+      }
+      this._selectionService.toggleSelection(new GenericSelectionItem(newItem, type));
+    } else {
+      this._selectionService.toggleSelection(new GenericSelectionItem(newItem, type));
+    }
+  }
+
+  computeNewPosition(item: any, type: string): number {
+    // Here  I must compute the value for position
+    let positions;
+    let maxPosition;
+    let itemsWithSameSize;
+    switch (type) {
+      case 'widget':
+      case 'map':
+        itemsWithSameSize = this.selectedItems.filter(w => w.type === type && w.payload.size === item.size);
+        if (itemsWithSameSize.length > 0) {
+          positions = itemsWithSameSize.map(i => i.position);
+          maxPosition = Math.max.apply(null, positions);
+        }
+        break;
+      case 'chart':
+      case 'sw':
+        itemsWithSameSize = this.selectedItems.filter(w => w.type === type);
+        if (itemsWithSameSize.length > 0) {
+          positions = itemsWithSameSize.map(i => i.position);
+          maxPosition = Math.max.apply(null, positions);
+        }
+        break;
+    }
+    return maxPosition ? maxPosition + 1 : 1;
+  }
+
   toggleWidgetSelection(item: any) {
-    this._selectionService.toggleSelection(new GenericSelectionItem(item, 'widget'));
+    this.toggleAnySelection(item, 'widget');
   }
 
   toggleSocialWidgetSelection(item: any) {
-    this._selectionService.toggleSelection(new GenericSelectionItem(item, 'sw'));
+    this.toggleAnySelection(item, 'sw');
   }
 
   toggleMapSelection(item: any) {
-    this._selectionService.toggleSelection(new GenericSelectionItem(item, 'map'));
+    this.toggleAnySelection(item, 'map');
   }
 
   toggleChartSelection(item: any) {
-    this._selectionService.toggleSelection(new GenericSelectionItem(item, 'chart'));
+    this.toggleAnySelection(item, 'chart');
   }
 
   save() {
@@ -343,7 +398,6 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
     .toPromise()
     .then(response => {
       this.allMaps = response.data.listMaps.map(m => JSON.parse(m));
-    
       this._filteredMaps = this.allMaps;
       this.mapsLoading = false;
       if (options.updateSelection) {  this._updateMapSelection(); }
@@ -363,10 +417,10 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
       .then((response => {
         that.allCharts = response.data.listCharts.data;
         that._filteredCharts = that.allCharts;
-        that.chartsLoading = false;
         that._groupCharts();
         if (options.updateSelection) {  that._updateChartSelection(); }
         this._filterVisibleCharts();
+        that.chartsLoading = false;
         return resolve();
       }));
     });
@@ -396,8 +450,33 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
       dashboardGraphqlActions.previewDashboard,
       { input: payload }
     )
-    .then((res: { previewDashboard: IDashboard }) => {
-      that.dashboardPayload = res.previewDashboard;
+    .then((res: { previewDashboard: any }) => {
+      const widgets: any[] = res.previewDashboard.widgets.map(w => JSON.parse(w)) || [];
+      widgets.map(w => {
+        w['position'] = this._selectionService._selectionList.find(s => s.id === w._id && s.type === 'widget').position;
+      } );
+      const charts: any[] = res.previewDashboard.charts.map(c => JSON.parse(c)) || [];
+      charts.map(w => {
+        w['position'] = this._selectionService._selectionList.find(s => s.id === w._id && s.type === 'chart').position;
+      } );
+      const swidgets: any[] = res.previewDashboard.socialwidgets.map(s => JSON.parse(s)) || [];
+      swidgets.map(w => {
+        w['position'] = this._selectionService._selectionList.find(s => s.id === w.connectorId && s.type === 'sw').position;
+      } );
+      const maps: any[] = res.previewDashboard.maps.map(m => JSON.parse(m)) || [];
+      maps.map(w => {
+        w['position'] = this._selectionService._selectionList.find(s => s.id === w._id && s.type === 'map').position;
+      } );
+      that.dashboardPayload = {
+        name: res.previewDashboard.name,
+        description: res.previewDashboard.description,
+        users: res.previewDashboard.users,
+        order: that.dashboardModel.order,
+        widgets: widgets,
+        charts: charts,
+        socialwidgets: swidgets,
+        maps: maps
+        };
       that.loading = false;
       that.isPreviewDashboard = true;
     });
@@ -426,13 +505,29 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
               confirmButtonText: 'Ok'
           });
       }
+      const _selectedWidgets = that._selectionService._selectionList.filter(i => i.type === 'widget')
+        .map(w => {
+          return JSON.stringify({ 'id': w.id, 'position': w.position });
+      });
+      const _selectedSWidgets = that._selectionService._selectionList.filter(i => i.type === 'sw')
+        .map(sw => {
+        return JSON.stringify({ 'id': sw.id, 'position': sw.position });
+      });
+      const _selectedCharts = that._selectionService._selectionList.filter(i => i.type === 'chart')
+        .map(c => {
+          return JSON.stringify({ 'id': c.id, 'position': c.position });
+      });
+      const _selectedMaps = that._selectionService._selectionList.filter(i => i.type === 'map')
+        .map(m => {
+        return JSON.stringify({ 'id': m.id, 'position': m.position });
+      });
       const dashboardPayload = {
         name: that.dashboardModel.name.trim(),
         description: that.dashboardModel.description,
-        charts: that.selectedCharts.map((c: IChart) => c._id),
-        widgets: that.selectedWidgets.map((w: IWidget) => w._id),
-        socialwidgets: that.selectedSocialWidgets.map((sw: SocialWidgetBase) => sw.connectorId),
-        maps: that.selectedMaps.map((m: IMap) => m._id),
+        charts: _selectedCharts,
+        widgets: _selectedWidgets,
+        socialwidgets: _selectedSWidgets,
+        maps: _selectedMaps,
         users: that.dashboardModel.users,
         owner: that.currentUser._id,
         order: Math.round(that.dashboardModel.order),
@@ -474,19 +569,34 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
               confirmButtonText: 'Ok'
           });
       }
+      const _selectedWidgets = that._selectionService._selectionList.filter(i => i.type === 'widget')
+        .map(w => {
+          return JSON.stringify({ 'id': w.id, 'position': w.position });
+      });
+      const _selectedSWidgets = that._selectionService._selectionList.filter(i => i.type === 'sw')
+        .map(sw => {
+        return JSON.stringify({ 'id': sw.id, 'position': sw.position });
+      });
+      const _selectedCharts = that._selectionService._selectionList.filter(i => i.type === 'chart')
+        .map(c => {
+          return JSON.stringify({ 'id': c.id, 'position': c.position });
+      });
+      const _selectedMaps = that._selectionService._selectionList.filter(i => i.type === 'map')
+        .map(m => {
+        return JSON.stringify({ 'id': m.id, 'position': m.position });
+      });
       const dashboardPayload = {
         name: that.dashboardModel.name.trim(),
         description: that.dashboardModel.description,
-        charts: that.selectedCharts.map((c: IChart) => c._id),
-        widgets: that.selectedWidgets.map((w: IWidget) => w._id),
-        socialwidgets: that.selectedSocialWidgets.map((sw: SocialWidgetBase) => sw.connectorId),
-        maps: that.selectedMaps.map((m: IMap) => m._id),
+        charts: _selectedCharts,
+        widgets: _selectedWidgets,
+        socialwidgets: _selectedSWidgets,
+        maps: _selectedMaps,
         users: that.dashboardModel.users,
         order: Math.round(that.dashboardModel.order),
         updatedBy: that.currentUser._id,
         updatedDate: moment().toDate()
       };
-
       this._apollo.mutate({
         mutation: dashboardGraphqlActions.updateDashboard,
         variables: { id: this.dashboardId, input: dashboardPayload },
@@ -531,7 +641,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
   private _loadDashboards() {
     this._apolloService.networkQuery < IDashboard[] > (dashboardsQuery)
     .then(d => {
-      if (!d.dashboards || d.dashboards.lenght === 0) {
+      if (!d.dashboards || d.dashboards.length === 0) {
           this.newOrder = 1;
       } else {
         this.newOrder = d.dashboards.length + 1;
@@ -575,7 +685,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
           };
 
           that.rawDashboard = rawDashboard;
-
+          this.editLoading = false;
           this.fg.patchValue(fgValues);
           return resolve();
       })
@@ -668,44 +778,36 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
   private _updateWidgetSelection() {
     if (!this.rawDashboard || !this.rawDashboard.widgets) { return; }
     const that = this;
-    this.allWidgets.forEach(w => {
-      const initialWidgetsSelection = (<any>that.rawDashboard.widgets).map(rw => JSON.parse(rw)._id);
-      if (initialWidgetsSelection.includes(w._id)) {
-        that.toggleWidgetSelection(w);
-      }
+    const initialWidgetsSelection = (<any>that.rawDashboard.widgets).map(rw => JSON.parse(rw));
+    initialWidgetsSelection.map(iws => {
+      that.toggleWidgetSelection(iws);
     });
   }
 
   private _updateSocialWidgetSelection() {
     if (!this.rawDashboard || !this.rawDashboard.socialwidgets) { return; }
     const that = this;
-    this.allSocialWidgets.forEach(sw => {
-      const initialSocialWidgetsSelection = (<any>that.rawDashboard.socialwidgets).map(rw => JSON.parse(rw).connectorId);
-      if (initialSocialWidgetsSelection.includes(sw.connectorId)) {
-        that.toggleSocialWidgetSelection(sw);
-      }
+    const initialSocialWidgetsSelection = (<any>that.rawDashboard.socialwidgets).map(rsw => JSON.parse(rsw));
+    initialSocialWidgetsSelection.map(isw => {
+      that.toggleSocialWidgetSelection(isw);
     });
   }
 
   private _updateMapSelection() {
     if (!this.rawDashboard || !this.rawDashboard.maps) { return; }
     const that = this;
-    this.allMaps.forEach(m => {
-      const initialMapsSelection = (<any>that.rawDashboard.maps).map(mw => JSON.parse(mw)._id);
-      if (initialMapsSelection.includes(m._id)) {
-        that.toggleMapSelection(m);
-      }
+    const initialMapsSelection = (<any>that.rawDashboard.maps).map(rm => JSON.parse(rm));
+    initialMapsSelection.map(ims => {
+      that.toggleMapSelection(ims);
     });
   }
 
   private _updateChartSelection() {
     if (!this.rawDashboard || !this.rawDashboard.charts) { return; }
     const that = this;
-    this.allCharts.forEach(c => {
-      const initialChartsSelection = (<any>that.rawDashboard.charts).map(rc => JSON.parse(rc)._id);
-      if (initialChartsSelection.includes(c._id)) {
-        that.toggleChartSelection(c);
-      }
+    const initialChartsSelection = (<any>that.rawDashboard.charts).map(rc => JSON.parse(rc));
+    initialChartsSelection.map(ics => {
+      that.toggleChartSelection(ics);
     });
   }
 
@@ -839,7 +941,7 @@ export class DashboardFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
   get valid(): boolean {
     return (this.fg.valid && this.selectedItems.length !== 0) &&
-            this.validDashboardName;
+            this.validDashboardName && this.validPosition;
   }
 
   get validDashboardName(): boolean {

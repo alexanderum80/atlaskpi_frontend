@@ -56,7 +56,6 @@ export class EditWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
         .switchMap((params: Params) => that._getWidgetByIdQuery(params['id']))
         .subscribe(response => {
           const data: IWidget = Object.assign({ preview: true}, response.data.widget);
-
           that._widgetFormService.loadModel(data);
           that.loading = false;
         })

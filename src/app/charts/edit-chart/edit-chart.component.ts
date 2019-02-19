@@ -182,7 +182,7 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
             this.chartFormComponent.processFormatChanges(this.fg.value);
             const model = ChartModel.fromFormGroup(this.fg, this.chartFormComponent.getChartDefinition(), true);
 
-            //add-created-updated-by-date
+            // add-created-updated-by-date
             model.updatedBy = this.currentUser._id;
             model.updatedDate = moment().toDate();
             // Apollo doesnt send the property when using Link Batch, if the data type is not the same as in the schema
@@ -231,7 +231,7 @@ export class EditChartComponent implements AfterViewInit, OnDestroy, OnInit {
 
             // this.chartFormComponent.processFormatChanges(this.fg.value);
             const model = MapModel.fromFormGroup(this.fg);
-            //add-created-updated-by-date
+            // add-created-updated-by-date
             model.updatedBy = this.currentUser._id;
             model.updatedDate = moment().toDate();
 

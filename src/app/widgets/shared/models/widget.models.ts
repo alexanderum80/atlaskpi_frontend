@@ -103,6 +103,7 @@ export interface IWidget {
     // preview
     preview?: boolean;
     tags?: string[];
+    position?: number;
    /*  //add-created-updated-by-date
     createdBy?: string;
     updatedBy?: string;
