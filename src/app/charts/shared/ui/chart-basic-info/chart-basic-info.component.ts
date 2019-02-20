@@ -449,13 +449,24 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
             that.chartCombinations = chart.combinations || [chart.type];
             const kpiFormArray = that.fg.controls['kpis'] as FormArray;
 
+            const firstKpiSelection =
+                kpiFormArray.value.length
+                    ? kpiFormArray.value[0]
+                    : null;
+
             while (kpiFormArray.length !== 0) {
                 kpiFormArray.removeAt(0);
             }
 
-            that.chartCombinations.map(c => that._createKpiFormGroup(c)).forEach(c => {
+            that.chartCombinations.map((c, index) => that._createKpiFormGroup(c)).forEach(c => {
                 kpiFormArray.push(c);
             });
+
+            if (firstKpiSelection) {
+                const newKpiChartSelection = kpiFormArray.value[0];
+                newKpiChartSelection.kpi = firstKpiSelection.kpi;
+                kpiFormArray.controls[0].setValue(firstKpiSelection);
+            }
 
             that.groupingList = [];
             this._getGroupingInfo(chart);
