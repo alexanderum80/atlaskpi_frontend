@@ -75,6 +75,7 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
     resultName: string;
     isLoading = true;
 
+    filtersValid = false;
     fromSaveAndVisualize: boolean;
     currrentKPI: IKPI;
     widgetModel: IWidget;
@@ -259,7 +260,8 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     get valid(): boolean {
-        return this.vm.fg.valid && !isEmpty(this.expressionFieldValue);
+        debugger;
+        return this.vm.fg.valid && !isEmpty(this.expressionFieldValue) && this.filtersValid;
     }
 
     get hasFgControls(): boolean {
@@ -359,5 +361,9 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
         this.vm.fg.controls['expression'].get('dataSource').valueChanges.subscribe(value => {
             console.log('data source changed: ' + value);
         });
+    }
+
+    filtersReady(filterReady){
+        this.filtersValid = filterReady;
     }
 }

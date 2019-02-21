@@ -106,6 +106,7 @@
                                         [filters]="vm.fg.get('filter')",
                                         [dataSource]="vm.selectedDataSource",
                                         [collectionSource]="vm.source",
+                                        (formReady)="filtersReady($event)"
                                     )
 
             //- actions

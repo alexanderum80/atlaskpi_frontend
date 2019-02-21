@@ -10,6 +10,8 @@ import {
 ViewChild,
 ElementRef,
 Renderer,
+Output,
+EventEmitter,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
@@ -44,6 +46,7 @@ export class FilterFormComponent implements AfterViewInit, OnChanges, OnDestroy 
 
     @Input() fromRequired = false;
     @Input() toRequired = false;
+    @Output() filterFormReady = new EventEmitter<boolean>(false);
 
     loading: ElementRef;
     isLoading = true;
@@ -175,6 +178,8 @@ export class FilterFormComponent implements AfterViewInit, OnChanges, OnDestroy 
                 }
             }).subscribe(result => {
                 that.isLoading = false;
+                debugger;
+                this.filterFormReady.next(true);
                 let criteriaValues = [];
                 if (result && result.data) {
                     criteriaValues = result.data.kpiCriteria.criteriaValue;
@@ -216,6 +221,7 @@ export class FilterFormComponent implements AfterViewInit, OnChanges, OnDestroy 
                 fetchPolicy: 'network-only'
             }).subscribe(({ data }) => {
                 that.isLoading = false;
+                //this.filterFormReady.next(true);
                 if (!data || isEmpty(data.kpiFilterFields)) {
                     return;
                 }

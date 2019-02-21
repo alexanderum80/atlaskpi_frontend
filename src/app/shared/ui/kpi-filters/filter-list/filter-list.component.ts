@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 
 import { IDataSource } from '../../../../shared/domain/kpis/data-source';
@@ -15,6 +15,8 @@ export class KpiFilterListComponent implements OnInit, OnDestroy {
     @Input() filters: FormArray;
     @Input() dataSource: IDataSource;
     @Input() collectionSource: string;
+
+    @Output() formReady = new EventEmitter<boolean>(false);
 
     constructor(
         private _apolloService: ApolloService,
@@ -42,5 +44,9 @@ export class KpiFilterListComponent implements OnInit, OnDestroy {
         if (filterIndex > -1) {
             this.filters.removeAt(filterIndex);
         }
+    }
+
+    formReadyEvent(val){
+        this.formReady.next(val);
     }
 }
