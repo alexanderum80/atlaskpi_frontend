@@ -17,7 +17,7 @@ import {
     Renderer,
     ViewChild,
 } from '@angular/core';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 import SweetAlert from 'sweetalert2';
 // import { Observable } from 'rxjs/Observable';
 // import { Subject } from 'rxjs/Subject';
@@ -32,10 +32,11 @@ import { ApolloService } from '../../../shared/services/apollo.service';
 import { SimpleKpiFormViewModel } from './simple-kpi-form.viewmodel';
 import { ITag } from '../../../shared/domain/shared/tag';
 import { IKPIPayload } from '../shared/simple-kpi-payload';
-import {CommonService} from '../../../shared/services/common.service';
-import { Apollo, QueryRef  } from 'apollo-angular';
+import { CommonService } from '../../../shared/services/common.service';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { timeout } from 'rxjs/operators';
 import { UserService } from '../../../shared/services';
+import { KPIFiltersService } from 'src/app/shared/services/kpi-filters.service';
 
 const dataSources = require('graphql-tag/loader!../data-sources.gql');
 const tags = require('graphql-tag/loader!./tags.gql');
@@ -50,7 +51,7 @@ const getKpiFilterExpressionQuery = require('graphql-tag/loader!../kpi-filter-ex
 @Component({
     selector: 'kpi-simple-kpi-form',
     templateUrl: './simple-kpi-form.component.pug',
-    styleUrls: [ './simple-kpi-form.component.scss' ]
+    styleUrls: ['./simple-kpi-form.component.scss']
 })
 export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() model: IKPI;
@@ -75,7 +76,7 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
     resultName: string;
     isLoading = true;
 
-    filtersValid = false;
+    filtersQueriesCompleted = false;
     fromSaveAndVisualize: boolean;
     currrentKPI: IKPI;
     widgetModel: IWidget;
@@ -92,12 +93,26 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
         private _apollo: Apollo,
         private _router: Router,
         private _cdr: ChangeDetectorRef,
-        private _userService: UserService
-
-    ) {}
+        private _userService: UserService,
+        private _filtersService: KPIFiltersService
+    ) { }
 
     ngOnInit(): void {
         this._getDataSources();
+        
+        const filters = (this.model && this.model.filter) ? JSON.parse(this.model.filter) : null;
+
+        if (filters && (filters.length > 1 ||
+            (filters.length === 1 && filters[0].field !== "source"))) {
+            this._subscription.push(
+                this._filtersService.filterFormReady$()
+                    .subscribe(
+                        val => this.filtersQueriesCompleted = val
+                    )
+            )
+        }else{
+            this.filtersQueriesCompleted = true;
+        }
     }
 
     ngAfterViewInit() {
@@ -117,8 +132,8 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     _closePreviewModal() {
-        if ( this.newWidgetFromKPI === true || this. newChartFromKPI === true ) {
-                        this.previewModal.close();
+        if (this.newWidgetFromKPI === true || this.newChartFromKPI === true) {
+            this.previewModal.close();
         } else {
             this.previewModal.close();
             this._goToListKpis();
@@ -150,7 +165,7 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
             });
         }
 
-        this._apolloService.networkQuery < IKPI > (getKPIByName, { name: this.payload.input.name }).then(d => {
+        this._apolloService.networkQuery<IKPI>(getKPIByName, { name: this.payload.input.name }).then(d => {
             if ((d.kpiByName && this.resultName === 'createKPI') ||
                 (d.kpiByName && this.resultName === 'updateKPI' && d.kpiByName._id !== this.payload.id)) {
 
@@ -188,37 +203,37 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
                             type: 'error',
                             showConfirmButton: true,
                             confirmButtonText: 'Ok'
-                          });
+                        });
                     }
 
                     this._apolloService.mutation<any>(this.mutation, this.payload)
-                    .then(res => {
-                        if (res.data[this.resultName].errors) {
-                            return SweetAlert({
-                                title: 'Some errors were found while saving this KPI. Please try again later',
-                                type: 'error',
-                                showConfirmButton: true,
-                                confirmButtonText: 'Ok'
-                              });
-                        }
-                        if (this.fromSaveAndVisualize) {
-                            // for widget
-                            this.currrentKPI = res.data[this.resultName].entity;
-                            this.vm.valuesPreviewWidget.name = this.currrentKPI.name;
-                            this.vm.valuesPreviewWidget.kpi = this.currrentKPI._id;
-                            this.vm.valuesPreviewWidget.color = this.vm.selectColorWidget();
-                            this.vm.valuesPreviewWidget.fontColor = this.vm.valuesPreviewWidget.color === '#fff'
-                            ? '#434348' : '#fff';
-                            // for chart
-                            this.vm.valuesPreviewChart.name = this.currrentKPI.name;
-                            this.vm.valuesPreviewChart.kpis = [{ type: 'column', kpi: { _id: this.currrentKPI._id } as any }];
+                        .then(res => {
+                            if (res.data[this.resultName].errors) {
+                                return SweetAlert({
+                                    title: 'Some errors were found while saving this KPI. Please try again later',
+                                    type: 'error',
+                                    showConfirmButton: true,
+                                    confirmButtonText: 'Ok'
+                                });
+                            }
+                            if (this.fromSaveAndVisualize) {
+                                // for widget
+                                this.currrentKPI = res.data[this.resultName].entity;
+                                this.vm.valuesPreviewWidget.name = this.currrentKPI.name;
+                                this.vm.valuesPreviewWidget.kpi = this.currrentKPI._id;
+                                this.vm.valuesPreviewWidget.color = this.vm.selectColorWidget();
+                                this.vm.valuesPreviewWidget.fontColor = this.vm.valuesPreviewWidget.color === '#fff'
+                                    ? '#434348' : '#fff';
+                                // for chart
+                                this.vm.valuesPreviewChart.name = this.currrentKPI.name;
+                                this.vm.valuesPreviewChart.kpis = [{ type: 'column', kpi: { _id: this.currrentKPI._id } as any }];
 
-                            this.fromSaveAndVisualize = !this.fromSaveAndVisualize;
-                            this.previewModal.open();
-                        } else {
-                            this._router.navigateByUrl('/kpis/list');
-                        }
-                    });
+                                this.fromSaveAndVisualize = !this.fromSaveAndVisualize;
+                                this.previewModal.open();
+                            } else {
+                                this._router.navigateByUrl('/kpis/list');
+                            }
+                        });
                 });
 
         });
@@ -239,11 +254,11 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
             showConfirmButton: true,
             showCancelButton: true
         })
-        .then((res) => {
-            if (res.dismiss !== 'cancel' as any) {
-                that._goToListKpis();
-            }
-        });
+            .then((res) => {
+                if (res.dismiss !== 'cancel' as any) {
+                    that._goToListKpis();
+                }
+            });
     }
 
     get vmFg(): boolean {
@@ -252,7 +267,7 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
 
     get isNameInvalid() {
         return this.vm.fg.controls['name'].value &&
-                this.vm.fg.controls['name'].invalid;
+            this.vm.fg.controls['name'].invalid;
     }
 
     get expressionFieldValue(): string {
@@ -260,8 +275,7 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     get valid(): boolean {
-        debugger;
-        return this.vm.fg.valid && !isEmpty(this.expressionFieldValue) && this.filtersValid;
+        return this.vm.fg.valid && !isEmpty(this.expressionFieldValue) && this.filtersQueriesCompleted;
     }
 
     get hasFgControls(): boolean {
@@ -298,16 +312,16 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
                 const nameInput = n.trim();
 
                 if (nameInput.length < 5) {
-                    this.vm.fg.controls['name'].setErrors({required: true});
+                    this.vm.fg.controls['name'].setErrors({ required: true });
                 } else {
                     if (this.vm.getExistDuplicatedName() === true) {
-                        this._apolloService.networkQuery < IKPI > (getKPIByName, { name: nameInput }).then(d => {
+                        this._apolloService.networkQuery<IKPI>(getKPIByName, { name: nameInput }).then(d => {
                             if (!((d.kpiByName && this.resultName === 'createKPI') ||
                                 (d.kpiByName && this.resultName === 'updateKPI' && d.kpiByName._id !== this.payload.id))) {
 
                                 this.vm.fg.controls['name'].setErrors(null);
                             } else {
-                                this.vm.fg.controls['name'].setErrors({forbiddenName: true});
+                                this.vm.fg.controls['name'].setErrors({ forbiddenName: true });
                             }
                         });
                     } else {
@@ -361,9 +375,5 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
         this.vm.fg.controls['expression'].get('dataSource').valueChanges.subscribe(value => {
             console.log('data source changed: ' + value);
         });
-    }
-
-    filtersReady(filterReady){
-        this.filtersValid = filterReady;
     }
 }

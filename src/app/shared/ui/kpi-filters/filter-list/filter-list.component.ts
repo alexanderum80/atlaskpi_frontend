@@ -1,9 +1,10 @@
-import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 
 import { IDataSource } from '../../../../shared/domain/kpis/data-source';
 import { ApolloService } from '../../../../shared/services/apollo.service';
 import { FilterListViewModel } from './filter-list.viewmodel';
+import { KPIFiltersService } from 'src/app/shared/services/kpi-filters.service';
 
 @Component({
     selector: 'kpi-filter-list',
@@ -16,17 +17,17 @@ export class KpiFilterListComponent implements OnInit, OnDestroy {
     @Input() dataSource: IDataSource;
     @Input() collectionSource: string;
 
-    @Output() formReady = new EventEmitter<boolean>(false);
-
     constructor(
         private _apolloService: ApolloService,
+        private _filterService: KPIFiltersService,
         public vm: FilterListViewModel
     ) { }
 
-    ngOnInit() { }
+    ngOnInit() {}
 
     ngOnDestroy() {
         (this.filters as FormArray).controls.length = 0;
+        this._filterService.resetFilterSubjects();
     }
 
     addFilter(): void {
@@ -44,9 +45,5 @@ export class KpiFilterListComponent implements OnInit, OnDestroy {
         if (filterIndex > -1) {
             this.filters.removeAt(filterIndex);
         }
-    }
-
-    formReadyEvent(val){
-        this.formReady.next(val);
     }
 }

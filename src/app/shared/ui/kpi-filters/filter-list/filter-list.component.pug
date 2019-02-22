@@ -5,8 +5,7 @@ div(layout="column", layout-padding)
                 kpi-filter-form(
                     [filter]="filter", 
                     [dataSource]="dataSource", 
-                    [collectionSource]="collectionSource",
-                    (filterFormReady)="formReadyEvent($event)")
+                    [collectionSource]="collectionSource")
             .p-5(flex-inital)
                 bw-button(flex-initial, icon="close", color="red", [simple]="true", (clicked)="removeFilter(filter)")
 
