@@ -47,12 +47,12 @@ const MENU_ITEMS: MenuItem[] = [
 }, 
 {
     id: 'funnel',
-    title: 'Funnel',
+    title: 'Funnels',
     icon: 'triangle-down',
 },
 {
     id: 'charts-slideshow',
-    title: 'Chart Slideshow',
+    title: 'Slideshows',
     icon: 'collection-image-o',
     route: '/charts-slideshow'
 }, 
@@ -60,7 +60,7 @@ const MENU_ITEMS: MenuItem[] = [
     id: 'alerts',
     icon: 'notifications-active',
     route: '/alerts',
-    title: 'Alerts'
+    title: 'Live Alerts'
 },
 {
     id: 'data-entry',
