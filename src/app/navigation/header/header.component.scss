@@ -17,7 +17,8 @@ header#app-header {
 
 .header-logo {
     height: 40px;
-
+    cursor: pointer;
+    
     @include for-size(phone-only) {
         height: 30px;
     }
