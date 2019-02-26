@@ -57,7 +57,6 @@ export class RoleFormComponent implements OnInit, AfterViewInit {
     this._roleService.getPermissions()
       .then(({data}) => {
         that.permissions = (<any>data).findAllPermissions;
-
         const labelFriendlyPermissions = cloneDeep(that.permissions) as IPermission[];
         labelFriendlyPermissions.forEach(c => {
           c.action = titleCase(c.action);
