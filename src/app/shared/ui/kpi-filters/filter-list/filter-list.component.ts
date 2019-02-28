@@ -4,6 +4,7 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { IDataSource } from '../../../../shared/domain/kpis/data-source';
 import { ApolloService } from '../../../../shared/services/apollo.service';
 import { FilterListViewModel } from './filter-list.viewmodel';
+import { KPIFiltersService } from 'src/app/shared/services/kpi-filters.service';
 
 @Component({
     selector: 'kpi-filter-list',
@@ -18,13 +19,15 @@ export class KpiFilterListComponent implements OnInit, OnDestroy {
 
     constructor(
         private _apolloService: ApolloService,
+        private _filterService: KPIFiltersService,
         public vm: FilterListViewModel
     ) { }
 
-    ngOnInit() { }
+    ngOnInit() {}
 
     ngOnDestroy() {
         (this.filters as FormArray).controls.length = 0;
+        this._filterService.resetFilterSubjects();
     }
 
     addFilter(): void {
