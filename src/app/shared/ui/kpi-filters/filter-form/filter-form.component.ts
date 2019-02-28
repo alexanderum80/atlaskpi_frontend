@@ -10,6 +10,8 @@ import {
 ViewChild,
 ElementRef,
 Renderer,
+Output,
+EventEmitter,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
@@ -25,6 +27,7 @@ import 'rxjs/add/observable/combineLatest';
 import { Observable } from 'rxjs/Observable';
 import { isEmpty } from 'lodash';
 import {objectWithoutProperties} from '../../../../shared/helpers/object.helpers';
+import { KPIFiltersService } from '../../../services/kpi-filters.service';
 
 const criteriaQuery = require('graphql-tag/loader!./kpi-criteria.gql');
 const kpiFilterFieldsQuery = require('graphql-tag/loader!./kpi-filter-fields.query.gql');
@@ -44,10 +47,10 @@ export class FilterFormComponent implements AfterViewInit, OnChanges, OnDestroy 
 
     @Input() fromRequired = false;
     @Input() toRequired = false;
-
+    
     loading: ElementRef;
     isLoading = true;
-
+        
     public sourcesAndCollectionPairSubject: Subject<any> = new Subject();
 
     // @ViewChild('vmOperators') set operators(content: SelectPickerComponent) {
@@ -83,7 +86,8 @@ export class FilterFormComponent implements AfterViewInit, OnChanges, OnDestroy 
         public vm: FilterFormViewModel,
         private _apollo: Apollo,
         private _cdr: ChangeDetectorRef,
-        private _renderer: Renderer
+        private _renderer: Renderer,
+        private _filterService: KPIFiltersService
     ) { }
 
     ngAfterViewInit() {
@@ -175,6 +179,7 @@ export class FilterFormComponent implements AfterViewInit, OnChanges, OnDestroy 
                 }
             }).subscribe(result => {
                 that.isLoading = false;
+                this._filterService.emitNewCriteriaValue(true);
                 let criteriaValues = [];
                 if (result && result.data) {
                     criteriaValues = result.data.kpiCriteria.criteriaValue;
@@ -216,6 +221,7 @@ export class FilterFormComponent implements AfterViewInit, OnChanges, OnDestroy 
                 fetchPolicy: 'network-only'
             }).subscribe(({ data }) => {
                 that.isLoading = false;
+                this._filterService.emitNewFiltersValue(true);
                 if (!data || isEmpty(data.kpiFilterFields)) {
                     return;
                 }

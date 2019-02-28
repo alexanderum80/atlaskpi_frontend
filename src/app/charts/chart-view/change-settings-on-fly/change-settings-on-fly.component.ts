@@ -53,6 +53,8 @@ export class ChangeSettingsOnFlyComponent implements OnInit {
     expression: any;
     isMultipleKPI: boolean;
 
+    private _sourceFilter;
+
     constructor(private _chartViewComponent: ChartViewComponent,
                 private _apolloService: ApolloService) {}
 
@@ -160,8 +162,10 @@ export class ChangeSettingsOnFlyComponent implements OnInit {
             to: value.to
         };
 
+        const filters = [].concat(this._sourceFilter, value.filters[0]).filter(f => f);
+
         this._chartViewComponent.setSettingsOnFly(value.predefinedDateRange, dateRange,
-             value.frequency, value.groupings, value.filters[0]);
+             value.frequency, value.groupings, filters);
     }
 
     private async _getKpiInfo(id: string): Promise < IKPI > {
@@ -186,6 +190,15 @@ export class ChangeSettingsOnFlyComponent implements OnInit {
                                 })
                             );
                         });
+
+                        const foundSourceFilter = JSON.parse(this.kpi.filter).find(f => f.field === 'source');
+
+                        if (!foundSourceFilter) {
+                            this._sourceFilter = null;
+                            return;
+                        }
+
+                        this._sourceFilter = foundSourceFilter;
                     }
                 }
             });

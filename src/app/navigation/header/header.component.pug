@@ -8,7 +8,7 @@ header#app-header.header(layout="row", layout-align="space-between")
         //-   li
         //-     a(routerLink='/') Home
         //-   li KPIs
-    img.header-logo.hidden-md.hidden-lg(src='./assets/img/logos/{{logoPath}}')
+    img.header-logo.hidden-md.hidden-lg(src='./assets/img/logos/{{logoPath}}', (click)="onClickLogo()")
     .right-header([ngClass]="{'p-event-none': !smartBarPermission()}")
         kpi-global-search.m-r-15([showSearchPage]="showSearchPage", (closed)="onSearchClosed()")
     .right-header.hidden-md.hidden-lg.hide-more-vert

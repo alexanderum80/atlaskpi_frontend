@@ -1,7 +1,8 @@
 .mobile-menu(layout="column", layout-align="center center")
     //- dashboard
-    .mobile-menu--dashboard(*ngFor="let item of navItems")
-        .menu-option([routerLink]="item.route")
-            .menu-option--icon
-                i.zmdi(class="{{item.icon}}")
-            .menu-option--title {{ item.title }}
+    .parent
+        .mobile-menu--dashboard(*ngFor="let item of navItems")
+            .menu-option([routerLink]="item.route")
+                .menu-option--icon
+                    i.zmdi(class="{{item.icon}}")
+                .menu-option--title {{ item.title }}

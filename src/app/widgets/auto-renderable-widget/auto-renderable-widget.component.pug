@@ -1,9 +1,16 @@
-kpi-widget-view(*ngIf="widget", [widget]="widget", [widgetPreview]="widgetPreview", (done)="onActionClicked($event)")
+kpi-widget-view(*ngIf="widget", [widget]="widget", [fg]="fgWidget", [widgetPreview]="widgetPreview", (done)="onActionClicked($event)")
 
 .widget.z-depth-1(*ngIf="!widget", class="{{item.size}}" , [ngStyle]="{'background-color': widgetBackgroundColor, 'color': widgetFontColor}",
                   layout="column")
 
     .p-5(layout="column", flex)
+        .position(*ngIf="widgetSelected", [formGroup]="fgWidget")
+            input.position.z-depth-1(formControlName="position", 
+                type="text",
+                [ngClass]="{'err-position': fgWidget.controls['position'].errors}",
+                (click)="onClickPosition()")
+            .err-message(*ngIf="fgWidget.controls['position'].errors && fgWidget.controls['position'].errors.invalidDataType") Please enter a numeric value
+            .err-message(*ngIf="fgWidget.controls['position'].errors && fgWidget.controls['position'].errors.forbiddenName") Duplicated value
         .p-5(layout="row", layout-align="start start", flex-initial)
             .widget-title  {{item.name}}
         

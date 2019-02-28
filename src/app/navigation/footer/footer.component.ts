@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import * as moment from 'moment';
 
 @Component({
   selector: 'kpi-footer',
@@ -6,10 +7,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent implements OnInit {
-
-  constructor() { }
+  year: number;
+  
+  constructor() { 
+    this.year = moment().year();
+  }
 
   ngOnInit() {
   }
+
 
 }

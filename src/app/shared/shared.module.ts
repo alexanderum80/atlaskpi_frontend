@@ -96,6 +96,8 @@ import { TooltipDirective } from './directives/tooltip.directive';
         ListItemStandardComponent,
         ItemListComponent,
         ChooseColorsComponent,
+        KpiFilterListComponent,
+        FilterFormComponent,
         // pipes
         MomentFormatPipe,
         NgxResizeWatcherDirective,
@@ -106,9 +108,7 @@ import { TooltipDirective } from './directives/tooltip.directive';
         ErrorComponent,
         // directives
         IsInViewportDirective,
-        TooltipDirective,
-        KpiFilterListComponent,
-        FilterFormComponent
+        TooltipDirective
     ],
     exports: [
         BackgroundComponent,
@@ -131,15 +131,15 @@ import { TooltipDirective } from './directives/tooltip.directive';
         TagsComponent,
         FileInputComponent,
         ChooseColorsComponent,
+        KpiFilterListComponent,
+        ListItemTabularComponent,
+        RemoveConfirmationComponent,
+        ErrorComponent,
         // pipes
         MomentFormatPipe,
-        ListItemTabularComponent,
-        ErrorComponent,
-        RemoveConfirmationComponent,
         // directives
         IsInViewportDirective,
-        KpiFilterListComponent,
-		TooltipDirective
+        TooltipDirective
     ],
     providers: [
         ApiService,

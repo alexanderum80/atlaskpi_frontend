@@ -32,6 +32,8 @@ export class KpiDaterangePickerComponent implements OnInit, OnDestroy, AfterView
     private _fromSubscription: Subscription;
     private _toSubscription: Subscription;
 
+    private _lastValue;
+
     datePickerConfig: IDatePickerConfig;
 
     dateRangeList$: Observable<SelectionItem[]>;
@@ -58,6 +60,7 @@ export class KpiDaterangePickerComponent implements OnInit, OnDestroy, AfterView
 
     ngAfterViewInit() {
       const that = this;
+      this._setValueToForm();
 
     //   this.fg.get('predefinedDateRange').valueChanges.subscribe(value => {
     //     if (value === 'custom') {
@@ -69,6 +72,9 @@ export class KpiDaterangePickerComponent implements OnInit, OnDestroy, AfterView
 
         this.fg.valueChanges.subscribe(value => {
             if (!value.predefinedDateRange) { return; }
+            if (JSON.stringify(value) === JSON.stringify(this._lastValue)) { return; }
+
+            this._lastValue = value;
 
             if (value.predefinedDateRange === 'custom') {
                 that._addFromToValidation();
@@ -96,21 +102,26 @@ export class KpiDaterangePickerComponent implements OnInit, OnDestroy, AfterView
         const that = this;
 
         setTimeout(() => {
-            this._fromSubscription = this.fg.get('from') && this.fg.get('from').valueChanges.subscribe(from => {
-                const to = that.fg.get('to');
-                if (to && moment(from).isAfter(moment(to.value))) {
-                    to.setValue(null);
-                }
-            });
 
-            this._toSubscription = this.fg.get('to') && this.fg.get('to').valueChanges.subscribe(to => {
-            const from = that.fg.get('from');
-            if (from && moment(to).isBefore(moment(from.value))) {
-                from.setValue(null);
+            if (!this._fromSubscription) {
+                this._fromSubscription = this.fg.get('from') && this.fg.get('from').valueChanges.subscribe(from => {
+                    const to = that.fg.get('to');
+                    if (to && moment(from).isAfter(moment(to.value))) {
+                        to.setValue(null);
+                    }
+                });
             }
-            });
 
-            that._setValueToForm();
+            if (!this._toSubscription) {
+                this._toSubscription = this.fg.get('to') && this.fg.get('to').valueChanges.subscribe(to => {
+                    const from = that.fg.get('from');
+                    if (from && moment(to).isBefore(moment(from.value))) {
+                        from.setValue(null);
+                    }
+                });
+            }
+
+            // that._setValueToForm();
 
         }, 100);
     }
@@ -118,27 +129,28 @@ export class KpiDaterangePickerComponent implements OnInit, OnDestroy, AfterView
     private _removeFromToValidation() {
         if (this._fromSubscription) {
             this._fromSubscription.unsubscribe();
+            this._fromSubscription = null;
         }
 
         if (this._toSubscription) {
             this._toSubscription.unsubscribe();
+            this._toSubscription = null;
         }
     }
 
     private _setValueToForm() {
-        const dateRange = (this.dateRange || [])[0] || this.dateRange;
+        setTimeout(() => {
+            const dateRange = (this.dateRange || [])[0] || this.dateRange;
 
-        if (!dateRange || !dateRange.custom) { return; }
-
-        const from = moment.utc(dateRange.custom.from);
-        const to = moment.utc(dateRange.custom.to);
-
-        if (!from.isValid() || !to.isValid) { return; }
-
-        if (this.fg.controls.from && this.fg.controls.to) {
-            this.fg.controls['from'].setValue(from.format(this.datePickerConfig.format));
-            this.fg.controls['to'].setValue(to.format(this.datePickerConfig.format));
-        }
+            if (!dateRange || !dateRange.custom) { return; }
+            const from = moment.utc(dateRange.custom.from);
+            const to = moment.utc(dateRange.custom.to);
+            if (!from.isValid() || !to.isValid) { return; }
+            if (this.fg.controls.from && this.fg.controls.to) {
+                this.fg.controls['from'].setValue(from.format(this.datePickerConfig.format));
+                this.fg.controls['to'].setValue(to.format(this.datePickerConfig.format));
+            }
+        }, 100);
     }
 
 }

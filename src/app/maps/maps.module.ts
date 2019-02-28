@@ -10,6 +10,8 @@ import { ShowMapComponent } from './show-map/show-map.component';
 import { ShowMapFormComponent } from './show-map-form/show-map-form.component';
 import { MapViewMiniComponent } from './map-view-mini/map-view-mini.component';
 import { MapViewBigComponent } from './map-view-big/map-view-big.component';
+import { AutoRenderableMapComponent } from './auto-renderable-map/auto-renderable-map.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
     imports: [
@@ -18,18 +20,21 @@ import { MapViewBigComponent } from './map-view-big/map-view-big.component';
             apiKey: environment.googleMapApi
         }),
         MaterialUserInterfaceModule,
-        MaterialFormsModule
+        MaterialFormsModule,
+        ReactiveFormsModule
     ],
     declarations: [
         ShowMapComponent,
         ShowMapFormComponent,
         MapViewMiniComponent,
-        MapViewBigComponent
+        MapViewBigComponent,
+        AutoRenderableMapComponent
     ],
     exports: [
         ShowMapComponent,
         MapViewMiniComponent,
-        MapViewBigComponent
+        MapViewBigComponent,
+        AutoRenderableMapComponent
     ],
     providers: [
         LegendService
