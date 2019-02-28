@@ -111,7 +111,6 @@ export class SidebarItemComponent implements OnInit, OnDestroy {
         const that = this;
 
         this._routeEventsSub = this._router.events.subscribe(r => {
-
             if (r instanceof NavigationEnd) {
                 const route = r.url;
 
