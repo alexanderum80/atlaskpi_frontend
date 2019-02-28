@@ -57,6 +57,7 @@ export class ExternalSourceKpiFormViewModel extends ViewModel<IKPI> {
         group: 'pre-defined',
         frequency: 'monthly',
         grouping: 'location.name',
+        xAxisSource : 'frequency',
         tooltipEnabled: true,
         predefinedTooltipFormat: 'multiple_percent',
         kpis: [],

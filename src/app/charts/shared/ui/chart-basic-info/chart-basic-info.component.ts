@@ -83,18 +83,22 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
     lastKpiDateRangePayload: any;
     lastOldestDatePayload = '';
     previousChartType = '';
-    subscribedToFrequency = false;
+    subscribedToFrequencyAndGrouping = false;
+    subscribedToXaxisSource = false;
 
     @ViewChild('frequencyPicker') set frequencyContent(content: SelectPickerComponent) {
         if (content) {
             this.frequencyPicker = content;
-            if(!this.subscribedToFrequency)
-                this._subscribeToFrequencyAndXAxisChanges();
+            if(!this.subscribedToFrequencyAndGrouping)
+                this._subscribeToFrequencyAndGroupingChanges();
         }
     }
     @ViewChild('xSourcePicker') set xSourceContent(content: SelectPickerComponent) {
         if (content) {
             this.xSourcePicker = content;
+            if(!this.subscribedToXaxisSource){
+                this._subscribeToXAxisChanges()
+            }
         }
     }
 
@@ -198,10 +202,10 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
     ngAfterViewInit() {
         this._subscribeToKpiAndDateRange();
         this._subscribeToChartTypeChanges();
-        this._subscribeToXAxisChanges();
+       // this._subscribeToXAxisChanges();
         this._subscribeToComparisonChanges();
         this._subscribeToSortCriteriaListChanges();
-        this._subscribeToFrequencyAndGroupingChanges();
+       // this._subscribeToFrequencyAndGroupingChanges();
         this.isMobile = this._browser.isMobile();
         this._resetCustomDateRangeControls();
         this._canShowTour();
@@ -222,7 +226,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
             xAxisSelectionList.push({ id: 'frequency', title: 'frequency', selected: xAxisSource === 'frequency' ? true : false,
                                         disabled: false });
             setTimeout(()  => {
-                if (!xAxisSource || xAxisSource != value) {
+                if (!value) {
                     this.fg.controls['xAxisSource'].setValue('frequency');
                 }
             }, 50);
@@ -422,14 +426,18 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
     }
 
     private _subscribeToFrequencyAndGroupingChanges(): void {
-        if (this.fg.get('grouping')) {
+        if (this.fg.get('grouping') && this.fg.get('frequency')) {
+
+            this.subscribedToFrequencyAndGrouping = true;
+
             this._subscription.push(
                 Observable.combineLatest(
-                    this.fg.get('frequency') ? this.fg.get('frequency').valueChanges : '',
+                    this.fg.get('frequency').valueChanges,
                     this.fg.get('grouping').valueChanges
                 )
                 .debounceTime(300)
                 .subscribe(result => {
+
                     const frequency: string = result[0];
                     const grouping: string = result[1];
                     const isBothEmpty: boolean = isEmpty(frequency) && isEmpty(grouping);
@@ -440,32 +448,15 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                         }
 
                         const xAxisSourceListHasFrequency = find(this.xAxisSourceList, (list: SelectionItem) => list.id === 'frequency');
-                        if (frequency && grouping && !xAxisSourceListHasFrequency) {
+                        if (frequency && !xAxisSourceListHasFrequency) {
                             this.updateXaxisSourceList(grouping);
                         }
                     }
-                })
-            );
-        }
-    }
-
-    private _subscribeToFrequencyAndXAxisChanges(): void {
-        const that = this;
-        if (that.fg.controls['frequency']) {        
-            that._subscription.push(
-                that.fg.controls['frequency'].valueChanges
-                .debounceTime(100)
-                .subscribe(result => {
-                    const xAxisPicker: string =  that.fg.value.xAxisSource;
-                    const frequency: string = result;
-                    
-                    if ((!frequency && xAxisPicker === 'frequency') ||
-                        (frequency && !xAxisPicker)) {
-                            that.updateXaxisSourceList(this.fg.value.grouping)
+                    else if(isBothEmpty && this.xAxisSourceList.length ){
+                        this.updateXaxisSourceList(null);
                     }
                 })
-            );                   
-            this.subscribedToFrequency = true;
+            );
         }
     }
 
@@ -548,10 +539,16 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
     private _subscribeToXAxisChanges() {
         const that = this;
         if (that.fg.controls['xAxisSource']) {
+
+            this.subscribedToXaxisSource = true;
+
             that._subscription.push(that.fg.controls['xAxisSource'].valueChanges
                 .debounceTime(100)
                 .distinctUntilChanged()
                 .subscribe(x => {
+                    if(!that.xAxisSourceList.length && x === 'frequency'){
+                        this.updateXaxisSourceList(this.fg.value.grouping);
+                    }
                     const xAxisSelectionList =  clone(that.xAxisSourceList);
                     for (let i = 0; i < xAxisSelectionList.length; i++) {
                         xAxisSelectionList[i].selected = xAxisSelectionList[i].id === x ? true : false;

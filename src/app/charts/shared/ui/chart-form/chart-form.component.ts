@@ -652,11 +652,19 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
             return !isEmpty(this.fg.value.name) &&
             !isEmpty(this.fg.value.kpis) &&
             !isEmpty(this.fg.value.predefinedDateRange) &&
-            ( (this.chartType !==  'pie' && this.fg.value.xAxisSource) ||
-            (this.chartType ===  'pie' && !this.fg.value.xAxisSource))&&
+            (this.validXAxisNoPie ||
+            (this.chartType ===  'pie' && !this.fg.value.xAxisSource)) &&
             this.isChartCustomTopValid &&
             this.tooltipValid;
         }
+    }
+
+    get validXAxisNoPie(): boolean{
+       const result = this.chartType !==  'pie' && 
+                    (this.fg.value.xAxisSource || 
+                        (!this.fg.value.frequency && !this.fg.value.grouping))
+       
+       return result;
     }
 
     get tooltipValid(): boolean {
