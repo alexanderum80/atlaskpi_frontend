@@ -28,6 +28,7 @@ import { UserProfileComponent } from '../../users/user-profile/user-profile.comp
 import { IHelpCenter, IHelpCenterDataResponse } from '../help-center/help-center.component';
 import { HelpCenterService } from '../help-center/help-center.service';
 import { HeaderViewModel } from './header.viewmodel';
+import { BrowserService } from 'src/app/shared/services/browser.service';
 
 const helpCenterQueryGql = require('graphql-tag/loader!./help-center.query.gql');
 const updateUserPreference = require('graphql-tag/loader!./update-user-preference.mutation.gql');
@@ -129,6 +130,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         public viewKpiActivity: ViewKpiActivity,
         public viewSmartBarActivity: ViewSmartBarActivity,
         private _router: Router,
+        private _browser: BrowserService,
         // yojanier
         private _apolloService: ApolloService,
     ) {
@@ -430,6 +432,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
             this.logoPath = 'white-logo.png';
         } else {
             this.logoPath = 'logo.png';
+        }
+    }
+
+    onClickLogo(){
+        if(this._browser.isMobile()){
+            this._router.navigate(['mobile-menu']);
+        }
+        else{
+            this._router.navigate(['dashboards'])
         }
     }
 }
