@@ -1130,8 +1130,8 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
         const that = this;
         const freqback: number = this.neededFrequency;
         const dateRangeNew = {
-          from: moment().subtract(<any>freqback, this.frequencyName).startOf(<any>this.frequencyName).toDate(),
-          to: moment().subtract(<any>freqback, this.frequencyName).endOf('year').toDate()
+          from: moment().subtract(<any>freqback, this.frequencyName).startOf(<any>this.frequencyName).format('MM/DD/YYYY'),
+          to: moment().subtract(<any>freqback, this.frequencyName).endOf('year').format('MM/DD/YYYY')
         };
         const dataInput = {
           dateRange: [{
