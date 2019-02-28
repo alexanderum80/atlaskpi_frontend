@@ -105,7 +105,12 @@ export class EnterDataFormService {
             const dateFieldsArr = dateFieldsRaw.map(val => val[1].path);
 
             dateFieldsArr.forEach(dateField => {
-                records.map(rec => rec[dateField] = new Date(rec[dateField]))
+                records.map(rec => 
+                    {
+                        const date = new Date(rec[dateField]) 
+                        const userOffset = date.getTimezoneOffset()*60000;
+                        rec[dateField] =  new Date( date.getTime() + userOffset)
+                    })
             });
 
         }
