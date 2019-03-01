@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, QueryRef } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { toArray, map } from 'lodash';
+import { toArray, map, sortBy, isString } from 'lodash';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import SweetAlert from 'sweetalert2';
@@ -136,7 +136,6 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this._dateRangesQuery();
         this.legendColors = this._legendService.getLegendColors();
-
         const that = this;
         this._getSocialWidgets();
         if (this.isFromDashboard) {
@@ -263,44 +262,45 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
 
     private _loadDashboardData(dashboard: any) {
         const that = this;
-        if (!dashboard) {
-            that.bigWidgets = [];
+        that.bigWidgets = [];
             that.smallWidgets = [];
             that.socialWidgets = [];
             that.charts = [];
+            that.maps = [];
+        if (!dashboard) {
             return;
         }
-
         this.dashboardName = dashboard.name || 'Untitled';
-        if (dashboard.charts) {
+        if (dashboard.charts.length > 0) {
             that.charts = dashboard.charts.map(c => {
                 if (!c) { return; }
+                const rawChart = isString(c) ?  JSON.parse(c) : c;
                 try {
-                    const rawChart = JSON.parse(c);
                     let definition = this._processChartTooltipFormatter(rawChart.chartDefinition);
                     yAxisFormatterProcess(definition);
                     definition = this._processPieChartPercent(rawChart.chartDefinition);
                     rawChart.chartDefinition = definition;
                     return rawChart;
                 } catch (err) {
-                    return c;
+                    return rawChart;
                 }
             });
+            that.charts = sortBy(that.charts, 'position');
         }
         if (dashboard.maps.length > 0) {
-            that.maps = dashboard.maps.map(dm => JSON.parse(dm));
+            that.maps = dashboard.maps.map(dm => isString(dm) ? JSON.parse(dm) : dm);
             that.maps.forEach(m => {
                 m.markers = m.markers.map(mk => objectWithoutProperties(mk, ['__typename']));
             });
+            that.maps = sortBy(that.maps, 'position');
             this.showMap = true;
         } else {
-            
             this.showMap = false;
         }
-        if (dashboard.widgets) {
+        if (dashboard.widgets.length > 0) {
             const widgets: IWidget[] = dashboard.widgets.map(w => {
                 try {
-                    const widget = JSON.parse(w);
+                    const widget = isString(w) ? JSON.parse(w) : w;
                     return widget;
                 } catch (err) {
                     console.dir(w);
@@ -308,15 +308,17 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
                 }
             });
             that.smallWidgets = widgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Small);
+            that.smallWidgets = sortBy(that.smallWidgets, 'position');
             that.smallWidgets.forEach(sWidget => sWidget.preview = true);
             that.bigWidgets = widgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Big);
+            that.bigWidgets = sortBy(that.bigWidgets, 'position');
             that.bigWidgets.forEach(bWidget => bWidget.preview = true);
         }
 
-        if (dashboard.socialwidgets) {
+        if (dashboard.socialwidgets.lenght > 0) {
             const socialWidgetsSource = dashboard.socialwidgets.map(sw => {
                 try {
-                    const swidget = JSON.parse(sw);
+                    const swidget = isString(sw) ? JSON.parse(sw) : sw;
                     return swidget;
                 } catch (err) {
                     console.dir(sw);
@@ -324,6 +326,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
                 }
             });
             that.socialWidgets = socialWidgetsSource.map(d => new SocialWidgetBase(<any>objectWithoutProperties(d, ['__typename'])));
+            that.socialWidgets = sortBy(that.socialWidgets, 'position');
         }
         this.loading = false;
     }
@@ -359,14 +362,13 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
         const that = this;
 
         this.loading = false;
+        that.bigWidgets = [];
+        that.smallWidgets = [];
+        that.socialWidgets = [];
+        that.charts = [];
+        that.maps = [];
 
-        if (!data || !data.dashboard) {
-            that.bigWidgets = [];
-            that.smallWidgets = [];
-            that.charts = [];
-            that.maps = [];
-            return;
-        }
+        if (!data || !data.dashboard) { return; }
 
         this._rawDashboard = data.dashboard;
         this.dashboardId = data.dashboard._id;
@@ -377,30 +379,31 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             that.maps.forEach(m => {
                 m.markers = m.markers.map(mk => objectWithoutProperties(mk, ['__typename']));
             });
+            that.maps = sortBy(that.maps, 'position');
             this.showMap = true;
         } else {
             this.showMap = false;
         }
-        if (data.dashboard.charts) {
+        if (data.dashboard.charts.length > 0) {
             that.charts = data.dashboard.charts.map(c => {
                 if (!c) {
                     return;
                 }
-
+                const rawChart = JSON.parse(c);
                 try {
-                    const rawChart = JSON.parse(c);
                     let definition = this._processChartTooltipFormatter(rawChart.chartDefinition);
                     yAxisFormatterProcess(definition);
                     definition = this._processPieChartPercent(rawChart.chartDefinition);
                     rawChart.chartDefinition = definition;
                     return rawChart;
                 } catch (err) {
-                    return c;
+                    return rawChart;
                 }
             });
+            that.charts = sortBy(that.charts, 'position');
         }
 
-        if (data.dashboard.widgets) {
+        if (data.dashboard.widgets.length > 0) {
             const widgets: IWidget[] = data.dashboard.widgets.map(w => {
                 try {
                     const widget = JSON.parse(w);
@@ -412,10 +415,12 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             });
             that.smallWidgets = widgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Small);
             that.smallWidgets.forEach(sWidget => sWidget.preview = true);
+            that.smallWidgets = sortBy(that.smallWidgets, 'position');
             that.bigWidgets = widgets.filter(w => WidgetSizeMap[w.size] === WidgetSizeEnum.Big);
             that.bigWidgets.forEach(bWidget => bWidget.preview = true);
+            that.bigWidgets = sortBy(that.bigWidgets, 'position');
         }
-        if (data.dashboard.socialwidgets) {
+        if (data.dashboard.socialwidgets.length > 0) {
             const socialWidgetsSource = data.dashboard.socialwidgets.map(sw => {
                 try {
                     const swidget = JSON.parse(sw);
@@ -426,6 +431,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
                 }
             });
             that.socialWidgets = socialWidgetsSource.map(d => new SocialWidgetBase(<any>objectWithoutProperties(d, ['__typename'])));
+            that.socialWidgets = sortBy(that.socialWidgets, 'position');
         }
     }
 
@@ -523,11 +529,15 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
     }
 
     private chartIdValues(dataDashboard) {
-            const charts: string[] = [];
+            let charts = [];
 
             if (dataDashboard.dashboard.charts) {
-                dataDashboard.dashboard.charts.forEach(item => {
-                    charts.push(JSON.parse(item)._id); });
+                charts = dataDashboard.dashboard.charts.map(item => {
+                    return {
+                        id: JSON.parse(item)._id,
+                        position: JSON.parse(item).position
+                    };
+                });
                 return charts;
             }
             return;
@@ -542,10 +552,8 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
         }).then(res => {
             const that = this;
             const value = res.data;
-            const chartValues = this.chartIdValues(value).filter(c => c !== idChart);
-
             const resultChartValues = {
-                    charts: chartValues
+                    charts: [idChart]
             } as any;
 
             if (value.dashboard._id) {
@@ -553,7 +561,6 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
             }
             this._apolloService.mutation < DashboardResponse > (dashboardGraphqlActions.deleteChartIdFromDashboard, resultChartValues)
                 .then(res => {
-                    // that.ngOnInit();
                     that._loadDashboard(value.dashboard._id);
             })
                 .catch(err => that._displayServerErrors(err));

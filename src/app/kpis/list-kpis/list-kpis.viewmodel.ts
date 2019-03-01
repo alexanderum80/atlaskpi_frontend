@@ -60,7 +60,7 @@ export class ListKpisViewModel extends ViewModel<IFilter> {
             return;
         }
 
-        this._kpis = list;
+        this._kpis = list.filter(k => k);
         this._kpiItemList = this._kpis.map(d => {
             return {
                 id: d._id,

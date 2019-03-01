@@ -193,7 +193,6 @@ export class ListDashboardComponent implements OnInit {
 
     private _refreshDashboards(refresh?: boolean) {
         const that = this;
-
         if (this.timeWait === false) {
             this._timeWait();
         } else {

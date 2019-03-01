@@ -28,7 +28,7 @@ function customDateRangeValidator() {
         return null;
       }
 
-      if (!moment(from.value).isValid() || !moment(to.value).isValid()) {
+      if (!moment(from && from.value).isValid() || !moment(to && to.value).isValid()) {
           return {
               dateRangeInvalid: true
           };
@@ -229,7 +229,7 @@ export class StageFormComponent implements OnInit, OnDestroy {
         if (selectedPayload === this._lastKpiDateRangePayload) { return; }
         this._lastKpiDateRangePayload = selectedPayload;
 
-        const res = await this._funnelService.getAvailableFields(kpi, dateRange);
+        const res = await this._funnelService.getAvailableFields(kpi);
         this.fieldSelectionList = res;
     }
 

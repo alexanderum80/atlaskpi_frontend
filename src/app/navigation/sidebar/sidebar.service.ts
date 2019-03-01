@@ -1,4 +1,4 @@
-import { IDataEntrySource } from '../../data-entry/shared/models/data-entry.models';
+    import { IDataEntrySource } from '../../data-entry/shared/models/data-entry.models';
 import { observable } from 'rxjs/symbol/observable';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -44,12 +44,30 @@ const MENU_ITEMS: MenuItem[] = [
     title: 'Appointments',
     icon: 'calendar',
     route: '/appointments/list'
-}, {
+}, 
+{
+    id: 'funnel',
+    title: 'Funnels',
+    icon: 'triangle-down',
+},
+{
     id: 'charts-slideshow',
-    title: 'Chart Slideshow',
+    title: 'Slideshows',
     icon: 'collection-image-o',
     route: '/charts-slideshow'
-}, {
+}, 
+{
+    id: 'alerts',
+    icon: 'notifications-active',
+    route: '/alerts',
+    title: 'Live Alerts'
+},
+{
+    id: 'data-entry',
+    title: 'Atlas Sheets',
+    icon: 'keyboard'
+},
+{
     id: 'data-lab',
     title: 'Data Lab',
     icon: 'layers',
@@ -76,23 +94,9 @@ const MENU_ITEMS: MenuItem[] = [
             title: 'Data Sources',
             icon: 'grid',
             route: '/datasource'
-        }, {
-            id: 'alerts',
-            icon: 'notifications-active',
-            route: '/alerts',
-            title: 'Alerts'
         }
     ]
-}, {
-    id: 'data-entry',
-    title: 'Data entry',
-    icon: 'keyboard'
-},
-{
-    id: 'funnel',
-    title: 'Funnel',
-    icon: 'triangle-down',
-}
+} 
 // , {
 //     id: 'company',
 //     title: 'Company',
@@ -281,7 +285,6 @@ export class SidebarService {
     }
 
     updateSelection(menuItem: MenuItem) {
-
         if (!menuItem) {
             return;
         }
@@ -415,13 +418,23 @@ export class SidebarService {
         }
     }
 
+    findItemIndexById(id: string){
+        const items = this._itemsSubject.value;
+        for(let [index, value] of Object.entries(items)){
+            if(value.id === id){
+                return +index;
+            }
+        }
+    }
+
     private _processDataEntriesSubmenu(dataEntries: IDataEntrySource[]) {
         const items = this._itemsSubject.value;
+        const index = this.findItemIndexById('data-entry')
 
-        items[4].children = [];
+        items[index].children = [];
 
         if (dataEntries || dataEntries.length) {
-            items[4].children = dataEntries.map(d => {
+            items[index].children = dataEntries.map(d => {
                 // check if the current root is relarted to the data entry
                 const lastIndexExtension = d.description.lastIndexOf('.');
                 const route = `/data-entry/enter-data/${d._id}`;
@@ -434,7 +447,7 @@ export class SidebarService {
             });
         }
 
-        items[4].children.push({
+        items[index].children.push({
                 id: 'custom-lists',
                 title: 'Custom Lists',
                 icon: 'storage',
@@ -442,7 +455,7 @@ export class SidebarService {
                 active: false
         });
 
-        items[4].children.push({
+        items[index].children.push({
             id: 'show-all',
             title: 'Show All',
             icon: 'collection-text',

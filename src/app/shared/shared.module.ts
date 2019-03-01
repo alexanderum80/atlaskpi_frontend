@@ -1,3 +1,4 @@
+import { KpiFilterListComponent } from './ui/kpi-filters/filter-list/filter-list.component';
 import { NgxResizeWatcherDirective } from './directives/ngx-resize-watcher.directive';
 import { BrowserService } from './services/browser.service';
 import { NgModule } from '@angular/core';
@@ -21,7 +22,8 @@ import {
     TimeFormatPickerComponent,
     KpiDaterangePickerComponent,
     KpiFrequencyPickerComponent,
-    KpiGroupingPickerComponent
+    KpiGroupingPickerComponent,
+    FilterFormComponent,
 } from './ui';
 
 import {
@@ -61,6 +63,8 @@ import { ErrorComponent } from './ui/error/error.component';
 import { IsInViewportDirective } from './directives/is-in-viewport.directive';
 import { NotificationService } from './services/notification.service';
 import { ChooseColorsComponent } from './ui/choose-colors/choose-colors.component';
+import { TooltipDirective } from './directives/tooltip.directive';
+
 
 @NgModule({
     imports: [
@@ -92,6 +96,8 @@ import { ChooseColorsComponent } from './ui/choose-colors/choose-colors.componen
         ListItemStandardComponent,
         ItemListComponent,
         ChooseColorsComponent,
+        KpiFilterListComponent,
+        FilterFormComponent,
         // pipes
         MomentFormatPipe,
         NgxResizeWatcherDirective,
@@ -101,7 +107,8 @@ import { ChooseColorsComponent } from './ui/choose-colors/choose-colors.componen
         RemoveConfirmationComponent,
         ErrorComponent,
         // directives
-        IsInViewportDirective
+        IsInViewportDirective,
+        TooltipDirective
     ],
     exports: [
         BackgroundComponent,
@@ -124,13 +131,15 @@ import { ChooseColorsComponent } from './ui/choose-colors/choose-colors.componen
         TagsComponent,
         FileInputComponent,
         ChooseColorsComponent,
+        KpiFilterListComponent,
+        ListItemTabularComponent,
+        RemoveConfirmationComponent,
+        ErrorComponent,
         // pipes
         MomentFormatPipe,
-        ListItemTabularComponent,
-        ErrorComponent,
-        RemoveConfirmationComponent,
         // directives
-        IsInViewportDirective
+        IsInViewportDirective,
+        TooltipDirective
     ],
     providers: [
         ApiService,

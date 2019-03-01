@@ -18,7 +18,8 @@ export class SelectableItemFrameComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
      this.selectionSubscription = this._selectionService.selection$.subscribe(selectedItems => {
-       const exist = selectedItems.find(i => i.payload === this.item);
+       const id = this.item.connectorId ? this.item.connectorId : this.item._id;
+       const exist = selectedItems.find(i => i.id === id);
        if (exist) {
          this.selected = true;
          return;

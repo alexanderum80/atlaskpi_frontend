@@ -1,7 +1,18 @@
 .widget.p-relative.z-depth-1(*ngIf="widget", [ngStyle]="setStyle()", class="{{widget.size}}")
-    bw-actions.description-button([iconColor]="actionsColor" , [actionItems]="actionItems", (actionClicked)="onActionClicked($event)")
-
+    bw-actions.description-button(
+        [iconColor]="actionsColor" , 
+        [actionItems]="actionItems", 
+        (actionClicked)="onActionClicked($event)", 
+        [ngStyle]="{'right.px': (widgetSelected) ? 35 : 5}")
     .p-10(layout="column")
+            .position(*ngIf="widgetSelected", [formGroup]="fg")
+                input.position.z-depth-1(formControlName="position", 
+                    type="text",
+                    [ngClass]="{'err-position': fg.controls['position'].errors}",
+                    (click)="onClickPosition()", 
+                    (blur)="lostFocusPosition()")
+                .err-message(*ngIf="fg.controls['position'].errors && fg.controls['position'].errors.invalidDataType") Please enter a numeric value
+                .err-message(*ngIf="fg.controls['position'].errors && fg.controls['position'].errors.forbiddenName") Duplicated value
             div(layout="row", layout-align="start start", flex-none)
                 .widget-title  {{widget.name}}
             div(*ngIf="widget.type==='numeric'", layout="column",  layout-align="center center" , flex)

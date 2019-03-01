@@ -6,6 +6,8 @@ import { IMenuItem, IUserInfo } from '../../shared/models';
 import { StoreHelper, Store } from '../../shared/services';
 import { CommonService } from '../../shared/services/common.service';
 import { SidebarService } from './sidebar.service';
+import { BrowserService } from 'src/app/shared/services/browser.service';
+import { Router } from '@angular/router';
 
 const menuItems: MenuItem[] = [{
     id: 'dashboard',
@@ -34,7 +36,7 @@ const menuItems: MenuItem[] = [{
     route: 'datasource'
 }, {
     id: 'data-entry',
-    title: 'Data entry',
+    title: 'Atlas Sheets',
     icon: 'keyboard',
     route: 'data-entry'
 }, {
@@ -82,6 +84,8 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
     constructor(
         private _storeHelper: StoreHelper,
         private _sidebarService: SidebarService,
+        private _browser: BrowserService,
+        private _router: Router,
         private _store: Store) {
             this._subscription.push(
                 this._store.changes$.subscribe(
@@ -129,5 +133,16 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
             this.logoPath = 'logo.png';
         }
+    }
+
+    onClickLogo(){
+        if(this._browser.isMobile()){
+            this._router.navigate(['mobile-menu']);
+        }
+        else{
+            this._router.navigate(['dashboards'])
+        }
+
+        this._storeHelper.update('sideBarOpen', false);
     }
 }

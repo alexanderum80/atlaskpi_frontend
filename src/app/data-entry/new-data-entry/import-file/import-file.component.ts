@@ -123,7 +123,7 @@ export class ImportFileComponent implements OnInit {
 
   save() {
     this.showUploadForm = false;
-
+    
     const filesData: ICustomData[] = [];
     const selectedUsers = this.usersList.filter(f => f.selected).map(u => {
       return u._id;
@@ -209,6 +209,14 @@ export class ImportFileComponent implements OnInit {
 
     const fileExtensionIndex = this.file.name.lastIndexOf('.') !== -1 ? this.file.name.lastIndexOf('.') : this.file.name.length - 1;
     const fileName = this.file.name.substr(0, fileExtensionIndex);
+
+    if (!fileName.match(/^[A-Z]/i)) {
+      return Sweetalert({
+        title: 'Invalid file name!',
+            text: 'The name of a file should start with a letter. Please change it and try again.',
+            type: 'error',
+      })
+   }
 
     this._apolloService.networkQuery(dataSourceByNameQuery, { name: camelCase(fileName).toLowerCase() })
       .then(res => {

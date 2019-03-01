@@ -121,7 +121,7 @@ export interface IRunRate {
     data: number;
 }
 
-export interface IChartDetailComparison{
+export interface IChartDetailComparison {
     comparisonValue: string;
     from: Date;
     to: Date;
@@ -169,6 +169,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
     frequencyToUpdate: string;
     dateRangeToUpdate: any;
     predefinedDateRangeToUpdate: string;
+    filterToUpdate: any;
     from: string;
     to: string;
     groupingsToUpdate: string;
@@ -204,7 +205,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
     isStack = false;
     isComparison = false;
     originalChartData: any;
-    runrateValues:IRunRate[] = [];
+    runrateValues: IRunRate[] = [];
     totalrunrateValues = 0;
     targetsVisible = false;
 
@@ -314,7 +315,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
         this.AnalizeFrequency();
         this.getShowRunRate();
 
-        this.userTouchSub = this._broserService.userTouching$.subscribe(val => this.userTouching = val)
+        this.userTouchSub = this._broserService.userTouching$.subscribe(val => this.userTouching = val);
 
     }
 
@@ -365,19 +366,19 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
                 if (this.chartData.top.predefined === 'other') {
                     this.N_Result = this.chartData.top.custom;
                 } else {
-                    this.N_Result = this.chartData.top.predefined.substr(4,3);
+                    this.N_Result = this.chartData.top.predefined.substr(4, 3);
                 }
             }
         }
 
         if (this.chartData.sortingCriteria && this.chartData.sortingOrder ) {
 
-            let scValue = this.chartData.sortingCriteria;
+            const scValue = this.chartData.sortingCriteria;
 
             for (let i = 0;  i < scValue.length; i++) {
-                
+
                 if (scValue[i] === scValue[i].toUpperCase()) {
-                    this.formatSortingCrit = this.chartData.sortingCriteria.replace(scValue[i], ' ' + scValue[i].toLocaleLowerCase())
+                    this.formatSortingCrit = this.chartData.sortingCriteria.replace(scValue[i], ' ' + scValue[i].toLocaleLowerCase());
                 }
             }
 
@@ -468,7 +469,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
             frequency: this.chartData.frequency,
             isDataOnFly: false,
             isDrillDown: false,
-            isCompared: ( this.chartData.comparison && this.chartData.comparison.length > 0 &&  this.chartData.comparison[0] !== "" ),
+            isCompared: ( this.chartData.comparison && this.chartData.comparison.length > 0 &&  this.chartData.comparison[0] !== ''),
             comparison: this.chartData.comparison
         };
 
@@ -479,11 +480,11 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
             // this._updateComparisonOptions();
         }
     }
-    
+
     getComparisonArrayChartDetails(): void {
         this.getComparisonValue();
         this.getComparisonDateRange();
-        this.comparisonArrayChartDetails = this.comparisonValue.map( 
+        this.comparisonArrayChartDetails = this.comparisonValue.map(
                                             (comparisonValue, index) => ({comparisonValue, ...this.comparisonDateRange[index] }));
     }
 
@@ -534,7 +535,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
     ngOnDestroy() {
         this.chartData = null;
 
-        if(this.userTouchSub){
+        if (this.userTouchSub) {
             this.userTouchSub.unsubscribe();
         }
 
@@ -572,11 +573,12 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
         });
     }
 
-    setSettingsOnFly(predefinedDateRange: string, dateRange: DateRange, frequency: string, groupings: string) {
+    setSettingsOnFly(predefinedDateRange: string, dateRange: DateRange, frequency: string, groupings: string, filter: any) {
         this.dateRangeToUpdate = dateRange;
         this.frequencyToUpdate = frequency;
         this.predefinedDateRangeToUpdate = predefinedDateRange;
         this.groupingsToUpdate = groupings;
+        this.filterToUpdate = filter;
 
         this.updateSettingsOnFly();
         this.subscribeToChartUpdates();
@@ -597,6 +599,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
             isDrillDown: false,
             comparison: [],
             onTheFly: true,
+            kpiFilter: JSON.stringify(this.filterToUpdate)
         };
 
         that.chartSubscription = this._apollo.watchQuery<ChartResponse>({
@@ -688,8 +691,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
             this.chart.options.plotOptions.series = {};
         }
 
-        /* 
-                
+        /*
                 code for mobile drilldown starts here
 
         */
@@ -703,12 +705,12 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
                             const isShared: boolean = this.series.chart.tooltip.shared === true;
                             const param = isShared ? [this] : this;
 
-                            //this.setState(['hover']);
+                            // this.setState(['hover']);
                             this.series.chart.tooltip.refresh(param);
                         },
                         dblclick: function (event) {
                             const chart = event.target.point || event.point;
-                            if(chart){
+                            if (chart) {
                                 that.processDrillDown(chart);
                             }
                         },
@@ -718,15 +720,14 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
                     }
                 }
             });
-        }
-        //- end of drilldown mobile code
-        else{
+        } else {
+        // - end of drilldown mobile code
         this.chart.options.plotOptions.series = Object.assign(this.chart.options.plotOptions.series, {
             point: {
                 events: {
                     click: function (event) {
                         const chart = event.target.point || event.point;
-                        if(chart){
+                        if (chart) {
                             that.processDrillDown(chart);
                         }
                     }
@@ -739,7 +740,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
     }
 
 
-    processDrillDown(chart): void{
+    processDrillDown(chart): void {
         const that = this;
         if (that._drillDownSvc.getFrequencyType(chart.category) && !chart.series.userOptions.targetId) {
 
@@ -802,7 +803,8 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
                 that.enableDrillDown();
 
                 const nodeId = that._nonce();
-                const isCompareValue= ( that.currentNode.comparison && that.currentNode.comparison.length > 0 &&  that.currentNode.comparison[0] !== "" );
+                const isCompareValue = ( that.currentNode.comparison && that.currentNode.comparison.length > 0
+                    &&  that.currentNode.comparison[0] !== '');
 
                 const newNode: IChartTreeNode = {
                     id: nodeId,
@@ -862,7 +864,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
                     this.descriptionAnimation = 'fadeOut';
                     setTimeout(() => this.showDescription = false, 1000);
                 } else {
-                    this.getComparisonDateRange()
+                    this.getComparisonDateRange();
                     this.showDescription = true;
                     this.descriptionAnimation = 'fadeIn';
                 }
@@ -918,14 +920,14 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
             case 'remove-this-dashboard':
                 const that = this;
 
-                if(!this.vm.authorizedTo(this.modifyDashboardActivity.name)){
+                if (!this.vm.authorizedTo(this.modifyDashboardActivity.name)) {
                     this._router.navigateByUrl('/unauthorized');
                     return;
                  }
 
                 return SweetAlert({
                     titleText: 'Are you sure you want to remove this chart from this dashboard?',
-                    text: `Remember that you can always put it back either from the chart 
+                    text: `Remember that you can always put it back either from the chart
                             edit screen or from de dashboard edit screen.`,
                     type: 'warning',
                     width: '600px',
@@ -1016,11 +1018,11 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
         let  avgValue = 0;
         this.totalrunrateValues = 0;
         this.runrateValues = [];
-        let freqbackCount = 0
+        let freqbackCount = 0;
 
         if (!this._hasGrouping()) {
             // calculate simple AVG
-            for(let i = 0; i < this.previousfreq; i++) {
+            for (let i = 0; i < this.previousfreq; i++) {
                 if (isNumber(series[0].data[i])) {
                     total += series[0].data[i];
                 }
@@ -1046,7 +1048,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
                 total = 0;
                 totalBack = 0;
                 freqbackCount = 0;
-                for(let i = 0; i < this.previousfreq; i++) {
+                for (let i = 0; i < this.previousfreq; i++) {
                     if (isNumber(s.data[i])) {
                         total += s.data[i];
                     }
@@ -1054,7 +1056,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
                 if (seriesBack) {
                     const seriesFilt = seriesBack.filter(sf => sf.name === s.name);
                     seriesFilt.map(fs => {
-                        fs.data.map(d =>{
+                        fs.data.map(d => {
                             if (isNumber(d)) {
                                 freqbackCount += 1;
                                 totalBack += d;
@@ -1128,8 +1130,8 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
         const that = this;
         const freqback: number = this.neededFrequency;
         const dateRangeNew = {
-          from: moment().subtract(<any>freqback, this.frequencyName).startOf(<any>this.frequencyName).toDate(),
-          to: moment().subtract(<any>freqback, this.frequencyName).endOf('year').toDate()
+          from: moment().subtract(<any>freqback, this.frequencyName).startOf(<any>this.frequencyName).format('MM/DD/YYYY'),
+          to: moment().subtract(<any>freqback, this.frequencyName).endOf('year').format('MM/DD/YYYY')
         };
         const dataInput = {
           dateRange: [{
@@ -1331,7 +1333,8 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
                 frequency: rawChart.frequency,
                 isDataOnFly: this.isDataOnFly,
                 isDrillDown: false,
-                isCompared: ( this.currentNode.comparison && this.currentNode.comparison.length > 0 &&  this.currentNode.comparison[0] !== "" ),
+                isCompared: ( this.currentNode.comparison && this.currentNode.comparison.length > 0
+                    &&  this.currentNode.comparison[0] !== ''),
                 comparison: rawChart.comparison
             };
 
@@ -1368,7 +1371,8 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
             frequency: rawChart.frequency,
             isDataOnFly: this.isDataOnFly,
             isDrillDown: false,
-            isCompared: ( this.currentNode.comparison && this.currentNode.comparison.length > 0 &&  this.currentNode.comparison[0] !== "" ),
+            isCompared: ( this.currentNode.comparison && this.currentNode.comparison.length > 0
+                &&  this.currentNode.comparison[0] !== ''),
             comparison: rawChart.comparison
         };
 
@@ -1402,7 +1406,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
     }
 
     chartIsEmpty(): boolean {
-        const value =_get(this.chartData, 'chartDefinition.series', 0);
+        const value = _get(this.chartData, 'chartDefinition.series', 0);
         return !value || value === 0 || value.length === 0;
     }
 
@@ -1538,8 +1542,8 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
             const formatterFactory = new FormatterFactory();
             definition.tooltip.formatter = formatterFactory.getFormatter(definition.tooltip.formatter, stack).exec;
         } else {
-            var targetExists = null;
-            if(definition.series == !undefined) {
+            let targetExists = null;
+            if (definition.series !== undefined) {
                 targetExists =  definition.series.find(s => s.targetId);
             }
 

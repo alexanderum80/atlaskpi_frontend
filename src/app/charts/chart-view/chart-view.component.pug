@@ -62,26 +62,26 @@
                                 .flex(flex-xs="40", flex-sm="40", flex-md="60", flex-gt-md="60") "{{ chartData.frequency }}"
                 .chart-info.zmdi.zmdi-device-hub(flex="100")
                     |   KPI General Info
-                    .chart-detail(flex, *ngFor="let Kpi of chartData.kpis")
-                        .m-5(layout="row", layout-padding) 
-                            div(flex="50", layout="row", layout-padding, *ngIf="Kpi.name")
+                    ul.chart-detail(flex, *ngFor="let Kpi of chartData.kpis")
+                        li.m-5(layout="row", layout-padding) 
+                            div(flex="50", layout="row", layout-padding, *ngIf="Kpi.kpi.name")
                                 .bold(flex-xs="50", flex-sm="50", flex-md="40", flex-gt-md="40") Name:
-                                .flex(flex-xs="50", flex-sm="50", flex-md="60", flex-gt-md="60") "{{ Kpi.name }}"
-                            div(flex="25", layout="row", layout-padding, *ngIf="Kpi.type")
+                                .flex(flex-xs="50", flex-sm="50", flex-md="60", flex-gt-md="60") "{{ Kpi.kpi.name }}"
+                            div(flex="25", layout="row", layout-padding, *ngIf="Kpi.kpi.type")
                                 .bold(flex-xs="50", flex-sm="50", flex-md="40", flex-gt-md="40") Type:
-                                .flex(flex-xs="50", flex-sm="50", flex-md="60", flex-gt-md="60") "{{ Kpi.type }}"
-                            div(flex="25", layout="row", layout-padding, *ngIf="Kpi.group")
+                                .flex(flex-xs="50", flex-sm="50", flex-md="60", flex-gt-md="60") "{{ Kpi.kpi.type }}"
+                            div(flex="25", layout="row", layout-padding, *ngIf="Kpi.kpi.group")
                                 .bold(flex-xs="50", flex-sm="50", flex-md="40", flex-gt-md="40") Group:
-                                .flex(flex-xs="50", flex-sm="50", flex-md="60", flex-gt-md="60") "{{ Kpi.group }}"
-                        .m-5(layout="row", layout-padding, *ngIf="Kpi.description") 
+                                .flex(flex-xs="50", flex-sm="50", flex-md="60", flex-gt-md="60") "{{ Kpi.kpi.group }}"
+                        .m-5(layout="row", layout-padding, *ngIf="Kpi.kpi.description") 
                             div.bold(flex-xs="100", flex-sm="50", flex-md="30", flex-gt-md="20", layout="column") Description:
-                            div(flex, layout="column") "{{ Kpi.description }}"
+                            div(flex, layout="column") "{{ Kpi.kpi.description }}"
                         .m-5(layout="row", layout-padding, *ngIf="dataSource") 
                             div.bold(flex-xs="100", flex-sm="50", flex-md="30", flex-gt-md="20", layout="column") Data Source:
                             div(flex, layout="column") "{{ dataSource }}"
-                        .m-5(layout="row", layout-padding, *ngIf="Kpi.expression") 
+                        .m-5(layout="row", layout-padding, *ngIf="Kpi.kpi.expression") 
                             div.bold(flex-xs="100", flex-sm="50", flex-md="30", flex-gt-md="20", layout="column") Formula used:
-                            div(flex, layout="column") "{{ Kpi.expression }}"
+                            div(flex, layout="column") "{{ Kpi.kpi.expression }}"
                 .chart-info.zmdi.zmdi-filter-list(*ngIf="filterData")
                     |   Filters on Data
                     .chart-detail(flex, *ngFor="let item of filterData")
