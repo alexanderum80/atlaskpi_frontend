@@ -4,6 +4,7 @@ kpi-no-widgets(*ngIf="!loading && bigWidgetsCollectionEmpty && smallWidgetsColle
 //- widget alerts
 kpi-widget-alert(#widgetAlert)
 
+kpi-spinner(*ngIf="loading")
 //- Big widgets
 div(layout="column", layout-padding, *ngIf="!bigWidgetsCollectionEmpty")
     div(layout="column", layout-gt-xs="row")
