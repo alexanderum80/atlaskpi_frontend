@@ -1,7 +1,20 @@
-kpi-widget-view(*ngIf="widget", [widget]="widget", [fg]="fgWidget", [widgetPreview]="widgetPreview", (done)="onActionClicked($event)")
+kpi-widget-view(
+    *ngIf="widget",
+    [widget]="widget", 
+    [fg]="fgWidget",
+    [widgetPreview]="widgetPreview",
+    [descriptionOnlyAction]="descriptionOnlyAction", 
+    (done)="onActionClicked($event)")
 
 .widget.z-depth-1(*ngIf="!widget", class="{{item.size}}" , [ngStyle]="{'background-color': widgetBackgroundColor, 'color': widgetFontColor}",
                   layout="column")
+    
+    bw-actions.description-button(
+        *ngIf="showActions", 
+        [iconColor]="item.fontColor" , 
+        [actionItems]="actionItems", 
+        (actionClicked)="onActionClicked($event)")
+
 
     .p-5(layout="column", flex)
         .position(*ngIf="widgetSelected", [formGroup]="fgWidget")
@@ -20,3 +33,7 @@ kpi-widget-view(*ngIf="widget", [widget]="widget", [fg]="fgWidget", [widgetPrevi
         div(*ngIf="placeholderVisible", layout="column", layout-align="center center", flex)
             bw-button(flex-initial, [color]="previewButtonColor", title="Preview",
                       icon="eye", (clicked)="previewWidget()")
+    
+    div(*ngIf="item.hasAlerts && showActions", layout="row", layout-align="end end")
+        div.notifications-bell(flex-initial)
+            i.zmdi.zmdi-notifications

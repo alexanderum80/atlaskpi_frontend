@@ -25,13 +25,15 @@ const scheduleJobByWidgetIdGql = require('graphql-tag/loader!./scheduleJob-by-wi
     selector: 'kpi-widget-view',
     templateUrl: './widget-view.component.pug',
     styleUrls: ['./widget-view.component.scss'],
-    providers: [WidgetViewViewModel, CloneWidgetActivity,
-                UpdateWidgetActivity, DeleteWidgetActivity]
+    providers: [
+        WidgetViewViewModel
+    ]
 })
 export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
     @Input() widget: IWidget;
     @Input() fg: FormGroup = null;
     @Input() widgetPreview: boolean;
+    @Input() descriptionOnlyAction: boolean = true;
     @Output() done = new EventEmitter<any>();
     @Output() validPosition = new EventEmitter<boolean>(true);
 
@@ -108,7 +110,8 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
 
         const widgetPreviewChanges = changes['widgetPreview'];
         if (widgetPreviewChanges) {
-            if (widgetPreviewChanges.currentValue) {
+            if (widgetPreviewChanges.currentValue && this.descriptionOnlyAction) {
+
                 const infoItem: MenuItem = Object.assign({}, this.actionInfoItem);
 
                 infoItem.active = true;
@@ -304,7 +307,7 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     get showNotificationBell(): boolean {
-        return this.widget.hasAlerts && !this.widgetPreview;
+        return this.widget.hasAlerts /* && !this.widgetPreview */;
     }
 
     get widgetBackgroundColor() {
@@ -393,15 +396,15 @@ export class WidgetViewComponent implements OnInit, OnChanges, OnDestroy {
         }
     }
 
-    get description() {
-        if (this.actionItems.length === 1 && !this.actionItems[0].children) {
-            if (this.widget.description) {
-                return true;
-            }
-            return false;
-        }
-        return true;
-    }
+    // get description() {
+    //     if (this.actionItems.length === 1 && !this.actionItems[0].children) {
+    //         if (this.widget.description) {
+    //             return true;
+    //         }
+    //         return false;
+    //     }
+    //     return true;
+    // }
 
     get actionsColor() {
         if (this.widget) {

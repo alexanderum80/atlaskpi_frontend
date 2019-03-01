@@ -120,16 +120,16 @@ export class ListWidgetsComponent implements OnInit, OnDestroy {
   onActionClicked(item) {
     switch (item.id) {
       case 'edit':
-        this._router.navigateByUrl(`/widgets/edit/${item.payload.id}`);
+        this._router.navigateByUrl(`/widgets/edit/${item.payload._id}`);
         break;
       case 'clone':
-        this._router.navigateByUrl(`/widgets/clone/${item.payload.id}`);
+        this._router.navigateByUrl(`/widgets/clone/${item.payload._id}`);
         break;
       case 'alert':
-        this.widgetAlert.open(item.widget);
+        this.widgetAlert.open(item.payload);
         break;
       case 'delete':
-        this.removeWidget(item.payload.id);
+        this.removeWidget(item.payload._id);
         break;
     }
   }
@@ -147,7 +147,7 @@ export class ListWidgetsComponent implements OnInit, OnDestroy {
     this._apollo.mutate<{removeWidget: IMutationResponse}>({
       mutation: widgetsGraphqlActions.removeWidget,
       variables: { id: that.selectedWidgetId },
-      refetchQueries: ['WidgetList']
+      refetchQueries: ['WidgetList', 'WidgetListNoData']
     })
     .subscribe(res => {
       if (res.data.removeWidget.success) {
