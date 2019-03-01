@@ -25,14 +25,11 @@ import { WidgetAlertFormComponent } from './widget-alert-form/widget-alert-form.
 import { WidgetNoAlertsComponent } from './widget-no-alerts/widget-no-alerts.component';
 import { AutoRenderableWidgetComponent } from './auto-renderable-widget/auto-renderable-widget.component';
 import { WidgetsAlertListComponent } from './widgets-alert-list/widgets-alert-list.component';
-<<<<<<< HEAD
 import { WidgetViewViewModel } from './widget-view/widget-view.viewmodel';
 import { CloneWidgetActivity } from '../shared/authorization/activities/widgets/clone-widget.activity';
 import { UpdateWidgetActivity } from '../shared/authorization/activities/widgets/update-widget.activity';
 import { DeleteWidgetActivity } from '../shared/authorization/activities/widgets/delete-widget.activity';
-=======
 import { GenericSelectionService } from '../shared/services/generic-selection.service';
->>>>>>> 36ebe1a1e04fcfa79ccacd06f3de1d6473637b5e
 
 @NgModule({
   imports: [
@@ -52,17 +49,13 @@ import { GenericSelectionService } from '../shared/services/generic-selection.se
                 ],
   exports: [WidgetViewComponent, NewWidgetComponent, WidgetAlertComponent, WidgetAlertFormComponent,
             WidgetNoAlertsComponent, WidgetsAlertListComponent, AutoRenderableWidgetComponent],
-<<<<<<< HEAD
   providers: [        
     CloneWidgetActivity, 
     UpdateWidgetActivity, 
     DeleteWidgetActivity, 
     WidgetsFormService, 
-    UserService
+    UserService,
+    GenericSelectionService
   ]
-=======
-  providers: [WidgetsFormService, UserService, GenericSelectionService]
->>>>>>> 36ebe1a1e04fcfa79ccacd06f3de1d6473637b5e
-
 })
 export class WidgetsModule { }
