@@ -42,6 +42,7 @@ export class ComplexKpiFormViewModel extends ViewModel<IKPI> {
         dashboards: '',
         group: 'pre-defined',
         frequency: 'monthly',
+        xAxisSource : 'frequency',
         grouping: '',
         tooltipEnabled: true,
         predefinedTooltipFormat: 'multiple_percent',
