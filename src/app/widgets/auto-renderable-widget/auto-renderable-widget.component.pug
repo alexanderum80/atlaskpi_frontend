@@ -25,3 +25,7 @@ kpi-widget-view(
         div(*ngIf="placeholderVisible", layout="column", layout-align="center center", flex)
             bw-button(flex-initial, [color]="previewButtonColor", title="Preview",
                       icon="eye", (clicked)="previewWidget()")
+    
+    div(*ngIf="item.hasAlerts && showActions", layout="row", layout-align="end end")
+        div.notifications-bell(flex-initial)
+            i.zmdi.zmdi-notifications
