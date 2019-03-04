@@ -36,6 +36,7 @@ import { IDateRangeItem, parseComparisonDateRange, IChartDateRange } from './../
 import { ApolloService } from './../../../../shared/services/apollo.service';
 import { chartsGraphqlActions } from './../../graphql/charts.graphql-actions';
 import { ChartBasicInfoViewModel } from './chart-basic-info.viewmodel';
+import { startWith } from 'rxjs/operators';
 
 
 const kpiOldestDateQuery = require('graphql-tag/loader!./kpi-get-oldestDate.gql');
@@ -432,8 +433,8 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
 
             this._subscription.push(
                 Observable.combineLatest(
-                    this.fg.get('frequency').valueChanges,
-                    this.fg.get('grouping').valueChanges
+                    this.fg.get('frequency').valueChanges.pipe(startWith(null)),
+                    this.fg.get('grouping').valueChanges.pipe(startWith(null))
                 )
                 .debounceTime(300)
                 .subscribe(result => {
