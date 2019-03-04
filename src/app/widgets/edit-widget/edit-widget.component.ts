@@ -1,4 +1,4 @@
-import { WindowService, UserService } from '../../shared/services';
+import { UserService } from '../../shared/services';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -18,6 +18,7 @@ import { IWidget } from '../shared/models';
 import { widgetsGraphqlActions } from '../shared/graphql/widgets.graphql-actions';
 import { WidgetsFormService } from '../widget-form/widgets-form.service';
 import * as moment from 'moment';
+import { Location } from '@angular/common';
 
 const getWidgetByTitle = require('graphql-tag/loader!../shared/graphql/get-widget-by-name.gql');
 
@@ -41,7 +42,7 @@ export class EditWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
               private _router: Router,
               private fb: FormBuilder,
               private _route: ActivatedRoute,
-              private windowService: WindowService,
+              private _location: Location,
               private _userService: UserService) {
                 const that = this;
                 this._subscription.push(this._userService.user$.subscribe((user) => {
@@ -76,7 +77,7 @@ export class EditWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
           break;
 
       case DialogResult.CANCEL:
-          this.windowService.nativeWindow.history.back();
+          this._location.back()
           break;
     }
   }
@@ -109,7 +110,8 @@ export class EditWidgetComponent implements OnInit, AfterViewInit, OnDestroy {
         })
         .subscribe(response => {
             if (response.data.updateWidget.success) {
-                this.windowService.nativeWindow.history.back();
+                this._location.back()
+                //this.windowService.nativeWindow.history.back();
             }
 
             if (response.data.updateWidget.errors) {

@@ -18,6 +18,7 @@ import { CommonService } from '../../shared/services/common.service';
 import { IWidget } from '../shared/models';
 import { widgetsGraphqlActions } from '../shared/graphql/widgets.graphql-actions';
 import { WidgetsFormService } from '../widget-form/widgets-form.service';
+import { Location } from '@angular/common';
 
 const getWidgetByTitle = require('graphql-tag/loader!../shared/graphql/get-widget-by-name.gql');
 
@@ -43,7 +44,7 @@ export class CloneWidgetComponent implements OnInit, OnDestroy {
               private _router: Router,
               private fb: FormBuilder,
               private _route: ActivatedRoute,
-              private windowService: WindowService,
+              private _location: Location,
               private _userService: UserService) {
     this.currentUser = _userService.user;
   }
@@ -74,7 +75,8 @@ export class CloneWidgetComponent implements OnInit, OnDestroy {
           break;
 
       case DialogResult.CANCEL:
-          this.windowService.nativeWindow.history.back();
+          this._location.back();
+          //this.windowService.nativeWindow.history.back();
           break;
     }
   }
@@ -112,7 +114,8 @@ export class CloneWidgetComponent implements OnInit, OnDestroy {
           })
           .subscribe(response => {
               if (response.data.createWidget.entity) {
-                this.windowService.nativeWindow.history.back();
+                this._location.back();
+                //this.windowService.nativeWindow.history.back();
               }
 
               if (response.data.createWidget.errors) {
