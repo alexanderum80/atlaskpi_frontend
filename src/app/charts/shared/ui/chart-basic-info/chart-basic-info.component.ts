@@ -403,6 +403,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                 } else {
                     nextGropingValue = currentGroupingValue;
                 }
+
                 that.fg.controls['grouping'].patchValue(nextGropingValue, { emitEvent: false });
                 that.fg.controls['loadingGroupings'].patchValue(false, { emitEvent: true });
             });
@@ -453,7 +454,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                             this.updateXaxisSourceList(grouping);
                         }
                     }
-                    else if(isBothEmpty && this.xAxisSourceList.length ){
+                    else if(isBothEmpty && this.xAxisSourceList.length){
                         this.updateXaxisSourceList(null);
                     }
                 })
