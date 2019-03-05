@@ -41,6 +41,7 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
     widgetModel: IWidget;
     newWidgetFromKPI: boolean;
     newChartFromKPI: boolean;
+    loading: boolean = true;
 
     constructor(
         public vm: ComplexKpiFormViewModel,
@@ -54,6 +55,7 @@ export class ComplexKpiFormComponent implements OnInit, AfterViewInit {
         this.vm.initialize(this.model);
 
         this._apolloService.networkQuery(kpisQuery).then(res => {
+            this.loading = false;
             that.vm.updateKpis(res.kpis);
         });
 

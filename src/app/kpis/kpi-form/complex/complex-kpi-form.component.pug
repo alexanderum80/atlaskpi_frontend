@@ -51,7 +51,9 @@
                                 | Enter kpi expression
                                 
                             .m-t-35(flex)
-                                kpi-expression-parser([kpis]="vm.kpis", [dataSources]="vm.dataSources", [expression]="vm.fg.get('expression')")
+                                kpi-expression-parser(*ngIf="!loading", [kpis]="vm.kpis", [dataSources]="vm.dataSources", [expression]="vm.fg.get('expression')")
+                                div(*ngIf="loading", style="text-align: center")
+                                    bw-preloader(color="gray")
 
                             //- filters
                             div(flex)
