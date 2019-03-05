@@ -73,15 +73,17 @@ export class AutoRenderableWidgetComponent implements OnInit, AfterViewInit {
     public cloneWidgetActivity: CloneWidgetActivity
   ) { }
   
-
+  
   ngOnInit() {
     if (this.autoRender) { this.previewWidget(); }
-
+    
+    this._disabledActionItem();
+    
     if (!this.isFromDashboardEdit) { return; }
     this.fgWidget = new FormGroup({
       'position': new FormControl(''),
     });
-
+    
     this.selectionSubscription = this._selectionService.selection$.subscribe(selectedItems => {
       const exist = selectedItems.find(i => i.id === this.item._id);
       if (exist) {
@@ -118,8 +120,6 @@ export class AutoRenderableWidgetComponent implements OnInit, AfterViewInit {
       }
     }
   });
-
-    this._disabledActionItem();
   }
 
   // find the object in the array of actionItems

@@ -485,9 +485,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                         }
                     }
 
-                    that.fg.controls['frequency'].patchValue(values.frequency);
                     that.fg.controls['group'].patchValue(values.group);
-                    that.fg.controls['xAxisSource'].patchValue(values.xAxisSource);
                     that.fg.controls['dashboards'].setValue(values.dashboards.replace(',', '|'));
                 }, 100);
 
@@ -538,7 +536,11 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                     }
                 }, 800);
                 setTimeout(() => {
-                    that.fg.controls['xAxisSource'].setValue(values.xAxisSource);
+                    /* these 3 controls depend heavily on eachother, need to be patched together
+                        or the creation of the list for XAxis source may end up with wrong options or empty.
+                    */
+                    that.fg.controls['xAxisSource'].patchValue(values.xAxisSource);
+                    that.fg.controls['frequency'].patchValue(values.frequency);
                     if (that.fg.controls['grouping'] && values.grouping) {
 
                         let groupingValue;
@@ -550,7 +552,7 @@ export class ChartFormComponent implements OnInit, AfterViewInit, OnDestroy, OnC
                         } else {
                             groupingValue = values.grouping;
                         }
-                        that.fg.controls['grouping'].setValue(groupingValue);
+                        that.fg.controls['grouping'].patchValue(groupingValue);
 
                     }
                     // zipCodeSource
