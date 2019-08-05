@@ -9,6 +9,7 @@ import { ViewModel, Field, ArrayField } from '../ng-material-components/viewMode
 import { Injectable } from '@angular/core';
 import { SelectionItem, MenuItem } from '../ng-material-components';
 import { FormArray, FormGroup, FormControl } from '@angular/forms';
+import { IUserInfo } from '../shared/models';
 
 export class DataEntrySchemaViewModel extends ViewModel<ICustomSchemaInfo> {
     @Field({ type: String, required: true })
@@ -20,8 +21,17 @@ export class DataEntrySchemaViewModel extends ViewModel<ICustomSchemaInfo> {
     @Field({ type: Boolean })
     required: boolean;
 
+    @Field({ type: Boolean })
+    allowGrouping: boolean;
+
     @Field({ type: String })
     sourceOrigin?: string;
+
+    @Field({ type: String })
+    path?: string;
+
+    @Field({ type: String, required: true })
+    defaultValue: string;
 
     initialize(model: ICustomSchemaInfo): void {
         this.onInit(model);
@@ -39,6 +49,8 @@ export class DataEntryDataViewModel extends ViewModel<ICustomDataInfo> {
 
 @Injectable()
 export class DataEntryFormViewModel extends ViewModel<ICustomSchema> {
+    protected _user: IUserInfo;
+
     private _dataType: IDataType = {
         number: 'Number',
         string: 'String' ,
@@ -83,6 +95,8 @@ export class DataEntryFormViewModel extends ViewModel<ICustomSchema> {
 
     private _defaultInputSchema: ICustomSchema;
 
+    public _InputSchema: ICustomSchema;
+
     private _defaultDateRangeSchema: ICustomSchema;
 
     private _customListSource: ICustomList[];
@@ -98,7 +112,7 @@ export class DataEntryFormViewModel extends ViewModel<ICustomSchema> {
     constructor(
         private _userSvc: UserService
     ) {
-        super(null);
+        super(_userSvc);
 
         this._defaultSchema = {
             schema: [
@@ -128,9 +142,9 @@ export class DataEntryFormViewModel extends ViewModel<ICustomSchema> {
 
         this._defaultInputSchema = {
             schema : [
-                { columnName: '', dataType: this._dataType.number, required: true, sourceOrigin: undefined },
-                { columnName: '', dataType: this._dataType.date, required: true, sourceOrigin: undefined },
-                { columnName: '', dataType: this._dataType.string, required: false, sourceOrigin: undefined },
+                { columnName: '', dataType: this._dataType.number, required: true, sourceOrigin: undefined, path: undefined },
+                { columnName: '', dataType: this._dataType.date, required: true, sourceOrigin: undefined, path: undefined },
+                { columnName: '', dataType: this._dataType.string, required: false, sourceOrigin: undefined, path: undefined },
             ],
             data: [],
             dataName: '',
@@ -145,6 +159,8 @@ export class DataEntryFormViewModel extends ViewModel<ICustomSchema> {
         ];
 
         this.selectedInputType = DataEntryTypeEnum.None;
+
+        this._InputSchema = null;
     }
 
     @ArrayField({ type: DataEntrySchemaViewModel })
@@ -176,6 +192,14 @@ export class DataEntryFormViewModel extends ViewModel<ICustomSchema> {
 
     getDefaultInputSchema() {
         return this._defaultInputSchema;
+    }
+
+    getInputSchema() {
+        return this._InputSchema;
+    }
+
+    setInputSchema(schema) {
+        this._InputSchema = schema;
     }
 
     getDefaultDateRangeSchema() {

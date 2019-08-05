@@ -1,3 +1,4 @@
+import { cloneDeep } from 'apollo-utilities';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { ICustomData } from './../../shared/models/data-entry-form.model';
 import Sweetalert from 'sweetalert2';
@@ -11,13 +12,15 @@ import { SelectionItem } from 'src/app/ng-material-components';
 import { NewCustomListComponent } from '../../custom-list/new-custom-list/new-custom-list.component';
 import { Subscription } from 'rxjs';
 import { ICustomList, CustomListFormViewModel } from '../../custom-list/custom-list.viewmodel';
-import { union } from 'lodash';
+import { union, forEach, map } from 'lodash';
+import { InvalidRowsPopupComponent } from '../import-file/invalid-rows-popup/invalid-rows-popup.component';
 
 const allUserQuery = require('graphql-tag/loader!../../shared/graphql/get-all-users.gql');
 const getCustomListQuery = require('graphql-tag/loader!../../shared/graphql/get-custom-list.gql');
 const updateCustomListMutation = require('graphql-tag/loader!../../shared/graphql/update-custom-list.gql');
 const dataSourceByNameQuery = require('graphql-tag/loader!../../shared/graphql/data-source-by-name.query.gql');
 const addDataEntryMutation = require('graphql-tag/loader!../../shared/graphql/add-data-entry.gql');
+const updateSchemaMutation = require('graphql-tag/loader!../../shared/graphql/update-virtualsource-schema.gql');
 
 @Component({
   selector: 'kpi-define-schema',
@@ -26,11 +29,17 @@ const addDataEntryMutation = require('graphql-tag/loader!../../shared/graphql/ad
 })
 export class SchemaFormComponent implements OnInit {
   @ViewChild(NewCustomListComponent) newCustomListComponent: NewCustomListComponent;
+  @ViewChild(InvalidRowsPopupComponent) invalidRowsPopupComponent: InvalidRowsPopupComponent;
+  @Input() schema;
+  @Input() importFile = false;
 
   schemas: FormArray;
   defaultDateRangeField: number;
   isCollapsedSchema = false;
   isCollapsedAssignUser = true;
+  isEditing: boolean;
+  invalidData = undefined;
+  invalidDataReady = false;
 
   usersList: [{
     _id: string;
@@ -41,7 +50,7 @@ export class SchemaFormComponent implements OnInit {
 
   currentUser: IUserInfo;
   customList: SelectionItem[] = [];
-
+  selectedNewList: SelectionItem[] = [];
   customListOptions: SelectionItem[] = [
     { id: 'selectionList', title: 'Selection List', disabled: true },
     { id: 'createList', title: ' + Create List', disabled: false }
@@ -49,9 +58,12 @@ export class SchemaFormComponent implements OnInit {
 
   subscription: Subscription[] = [];
 
-  lisOfCustomListQuery: QueryRef<any>;
+  listOfCustomListQuery: QueryRef<any>;
 
   lastInsertedCustomList: ICustomList;
+
+  indexModified = 0;
+  dataTypeUpdated = false;
 
   constructor(
     public vmData: DataEntryFormViewModel,
@@ -59,17 +71,18 @@ export class SchemaFormComponent implements OnInit {
     private _apollo: Apollo,
     private _userService: UserService,
     private _router: Router
-  ) {
-    this.vmData.initialize(this.vmData.getDefaultInputSchema());
-    this.vmListForm.initialize(this.vmListForm.defaultCustomListModel);
-    this.schemas = vmData.fg.get('schema') as FormArray;
-    this.defaultDateRangeField = this.vmData.fg.controls.schema.value.findIndex(f => f.dataType === 'Date');
-  }
+  ) {}
 
-  async ngOnInit() {
+  ngOnInit() {
+    this.isEditing = !!(this.schema);
+    const model = (this.schema) ? this.schema : this.vmData.getDefaultInputSchema();
+    this.vmData.initialize(model);
+    this.vmListForm.initialize(this.vmListForm.defaultCustomListModel);
+    this.schemas = this.vmData.fg.get('schema') as FormArray;
+    this.defaultDateRangeField = this.vmData.fg.controls.schema.value.findIndex(f => f.dataType === 'Date');
     this._getCurrentUser();
     this._getAllUsers();
-    await this._getCustomList();
+    this._getCustomList();
     this._subscribeToFormChange();
   }
 
@@ -84,23 +97,33 @@ export class SchemaFormComponent implements OnInit {
   private _getAllUsers() {
       this._apollo.query({ query: allUserQuery, fetchPolicy: 'network-only' }).subscribe(({data}) => {
         this.usersList = (<any>data).allUsers.map(u => {
+          let selectedUsers = [];
+          let userSelected = false;
+
+          if (this.isEditing) {
+            selectedUsers = this.schema.users;
+            userSelected = (selectedUsers) ? selectedUsers.includes(u._id) : false;
+          } else {
+            userSelected = !!(this.currentUser._id === u._id);
+          }
+
           return {
             _id: u._id,
             fullName: u.profile.firstName + ' ' + u.profile.lastName,
             pictureUrl: u.profilePictureUrl,
-            selected: this.currentUser._id === u._id ? true : false
+            selected: userSelected
           };
         });
       });
   }
 
   private _getCustomList() {
-    this.lisOfCustomListQuery = this._apollo.watchQuery<any>({
+    this.listOfCustomListQuery = this._apollo.watchQuery<any>({
       query: getCustomListQuery,
       fetchPolicy: 'network-only'
     });
 
-    this.subscription.push(this.lisOfCustomListQuery.valueChanges.subscribe(res => {
+    this.subscription.push(this.listOfCustomListQuery.valueChanges.subscribe(res => {
       this.vmData.setCustomListSource(res.data.customList);
       // load default custom list
       this.customList = [];
@@ -151,6 +174,11 @@ export class SchemaFormComponent implements OnInit {
   }
 
   private _subscribeToFormChange() {
+    this.schemas.controls.forEach(fg => {
+      fg.get('dataType').valueChanges.subscribe(c => {
+        this.dataTypeUpdated = true;
+    });
+    });
     this.schemas.valueChanges.subscribe(fg => {
       fg.map(value => {
         if (value.dataType === 'createList') {
@@ -192,9 +220,10 @@ export class SchemaFormComponent implements OnInit {
   }
 
   isFormValid() {
-    const selectedUsers = this.usersList ? this.usersList.filter(u => u.selected === true) : [];
-    const dateFields = this.vmData.fg.get('schema').value.filter(f => f.dataType === 'Date');
-    return this.vmData.fg.controls['dataName'].value !== '' && selectedUsers.length && dateFields.length;
+    return true;
+    // const selectedUsers = this.usersList ? this.usersList.filter(u => u.selected === true) : [];
+    // const dateFields = this.vmData.fg.get('schema').value.filter(f => f.dataType === 'Date');
+    // return this.vmData.fg.controls['dataName'].value !== '' && selectedUsers.length && dateFields.length;
   }
 
   updateUserSelection(selected, index) {
@@ -202,83 +231,171 @@ export class SchemaFormComponent implements OnInit {
   }
 
   save() {
-    const tableFields = [];
-    const tableRecords = [];
+    if (this.dataTypeUpdated === true) {
+      Sweetalert({
+        type: 'warning',
+        title: 'Are you sure?',
+        text: `Changing the data type of fields may result in losing some data
+               not complying with your new definicion.
+               Are you sure you want to continue?`,
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonText: '[Yes, continue]',
+        cancelButtonText: '[No, Cancel]',
+      }).then(result => {
+        if (result.dismiss === Sweetalert.DismissReason.cancel) {
+          return;
+        }
+        if (result.value === true) {
+          this.continueSavingData();
+          return;
+        }
+      });
+    }
+    this.continueSavingData();
+  }
 
+  continueSavingData() {
+    const tableFields = [];
+    let tableRecords = [];
     const schemaFormGroup = <any>this.vmData.fg.get('schema') as FormArray;
     schemaFormGroup.controls.map(s => {
       const schema = <any>s;
       tableFields.push(schema.value);
     });
+    if (this.importFile) {
+      tableRecords = this.schema.data;
+    } else {
+      const dataFormGroup = this.vmData.fg.get('data') as FormArray;
+      dataFormGroup.controls.map(d => {
+        const controlGroup = <any>d;
+        const data = [];
+        controlGroup.controls.map(c => {
+          data.push(c.value);
+        });
 
-    const dataFormGroup = this.vmData.fg.get('data') as FormArray;
-    dataFormGroup.controls.map(d => {
-      const controlGroup = <any>d;
-      const data = [];
-      controlGroup.controls.map(c => {
-        data.push(c.value);
+        tableRecords.push(data);
       });
-
-      tableRecords.push(data);
-    });
+    }
 
     const selectedUsers = this.usersList.filter(f => f.selected).map(u => {
       return u._id;
     });
 
+    /* value could be either a number indicating the index of the date in
+    the tableFields array or a string with the path of the field itself*/
+    const dateFieldControl = this.vmData.fg.controls['dateRangeField'].value;
+
+    const dateFieldIndex = (!isNaN(dateFieldControl)) ?
+                            +dateFieldControl :
+                            tableFields.findIndex(f => f.path.toLowerCase() === dateFieldControl.toLowerCase());
+
     const tableData: ICustomData = {
       inputName: this.vmData.fg.controls['dataName'].value,
       fields: JSON.stringify(tableFields),
       records: JSON.stringify(tableRecords),
-      dateRangeField: tableFields[this.vmData.fg.controls['dateRangeField'].value].columnName,
+      dateRangeField: tableFields[dateFieldIndex].columnName,
       users: selectedUsers
     };
 
-    this._apollo.query<any>({
-      query: dataSourceByNameQuery,
-      fetchPolicy: 'network-only',
-      variables: { name: tableData.inputName }
-    })
+    if (this.isEditing && !this.importFile) {
+
+      this._apollo.mutate<any> ({
+        mutation: updateSchemaMutation,
+        variables: {id: this.schema.id, input: tableData },
+        refetchQueries: ['DataEntries']})
       .toPromise()
-      .then(res => {
-        if (res.data.dataSourceByName) {
-          return Sweetalert({
-            title: 'Data name exists!',
-            text: `Already exists data with name: '${tableData.inputName}'. Please change the data name.`,
-            type: 'error',
-            showConfirmButton: true,
-            confirmButtonText: 'Ok'
-          });
-        }
-        this._apollo.mutate<any> ({
-          mutation: addDataEntryMutation,
-          variables: { input: tableData },
-          refetchQueries: ['DataEntries']})
-        .toPromise()
-        .then(result => {
-          const resultData = result.data.addDataEntry || null;
-          if (resultData) {
-            const customList = this.vmData.customListSource;
-            const sourceOrigin = customList.filter(list => {
-              const customListField = tableFields.find(f => f.dataType === list._id);
-              if (customListField) {
-                return list;
-              }
-            });
-            if (sourceOrigin.length) {
-              sourceOrigin.forEach(list => {
-                this._updateCustomListUsers(list, selectedUsers).then(() => {
-                  this._router.navigate(['data-entry', 'enter-data', resultData._id]);
-                });
-              });
-            } else {
-              this._router.navigate(['data-entry', 'enter-data', resultData._id]);
+      .then(result => {
+
+        const resultData = result.data.updateVirtualSourceSchema || null;
+        if (resultData.success) {
+          const customList = this.vmData.customListSource;
+          const sourceOrigin = customList.filter(list => {
+            const customListField = tableFields.find(f => f.dataType === list._id);
+            if (customListField) {
+              return list;
             }
+          });
+          if (sourceOrigin.length) {
+            sourceOrigin.forEach(list => {
+              this._updateCustomListUsers(list, selectedUsers).then(() => {
+                this._router.navigate(['data-entry', 'enter-data', resultData.entity.id]);
+              });
+            });
+          } else {
+            this._router.navigate(['data-entry', 'enter-data', resultData.entity.id]);
           }
-        })
-        .catch(err => console.log('Server errors: ' + JSON.stringify(err)));
+        }
       })
       .catch(err => console.log('Server errors: ' + JSON.stringify(err)));
+
+    } else {
+    // add new data entry
+      this._apollo.query<any>({
+        query: dataSourceByNameQuery,
+        fetchPolicy: 'network-only',
+        variables: { name: tableData.inputName }
+      })
+        .toPromise()
+        .then(res => {
+          if (res.data.dataSourceByName) {
+            return Sweetalert({
+              title: 'Data name exists!',
+              text: `Already exists data with name: '${tableData.inputName}'. Please change the data name.`,
+              type: 'error',
+              showConfirmButton: true,
+              confirmButtonText: 'Ok'
+            });
+          }
+          this._apollo.mutate<any> ({
+            mutation: addDataEntryMutation,
+            variables: { input: tableData },
+            refetchQueries: ['DataEntries']})
+          .toPromise()
+          .then(result => {
+            const resultData = result.data.addDataEntry || null;
+            if (resultData) {
+              const customList = this.vmData.customListSource;
+              const sourceOrigin = customList.filter(list => {
+                const customListField = tableFields.find(f => f.dataType === list._id);
+                if (customListField) {
+                  return list;
+                }
+              });
+              const invalidRows = JSON.parse(resultData.invalidRows);
+              if (invalidRows.length > 0) {
+              // Here i Must Open a new window popup
+                // showing the invalid rows
+                this.invalidData = cloneDeep(this.schema);
+                this.invalidData.schema = {};
+                this.schema.schema.map(s => {
+                  const collection = {};
+                  this.invalidData.schema[s.columnName] = {
+                    dataType: s.dataType,
+                    path: s.path,
+                    required: s.required
+                  };
+                });
+                debugger;
+                this.invalidData.data = invalidRows;
+                this.invalidDataReady = true;
+                this.invalidRowsPopupComponent.open();
+              }
+              if (sourceOrigin.length) {
+                sourceOrigin.forEach(list => {
+                  this._updateCustomListUsers(list, selectedUsers).then(() => {
+                    this._router.navigate(['data-entry', 'enter-data', resultData._id]);
+                  });
+                });
+              } else {
+                this._router.navigate(['data-entry', 'enter-data', resultData._id]);
+              }
+            }
+          })
+          .catch(err => console.log('Server errors: ' + JSON.stringify(err)));
+        })
+        .catch(err => console.log('Server errors: ' + JSON.stringify(err)));
+    }
   }
 
   cancel() {
@@ -310,8 +427,21 @@ export class SchemaFormComponent implements OnInit {
   }
 
   selectNewCustomList(list) {
+    this.selectedNewList = list.listValue.map(v => {
+      return {
+        id: v,
+        title: v,
+        selected: false,
+        disabled: false
+      };
+    });
     this.lastInsertedCustomList = list;
-    this.lisOfCustomListQuery.refetch().then(() => this._getCustomList());
+    this.listOfCustomListQuery.refetch().then(() => this._getCustomList());
+  }
+
+  closeInvalidRowsModal() {
+    this.invalidDataReady = false;
+    this.invalidRowsPopupComponent.close();
   }
 
 }

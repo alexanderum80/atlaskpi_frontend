@@ -1,0 +1,11 @@
+mutation ($input: [CommentInput]!) {
+    createComment(input: $input) {
+        entity {
+            _id
+        }
+        errors {
+            field
+            errors
+        }
+    }
+}

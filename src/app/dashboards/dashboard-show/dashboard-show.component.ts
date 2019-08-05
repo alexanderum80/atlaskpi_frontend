@@ -343,7 +343,7 @@ export class DashboardShowComponent implements OnInit, OnDestroy {
         return this.socialWidgets.length > 0;
     }
 
-    private _loadDashboard(id) {
+    public _loadDashboard(id) {
         this._dashboardQuery.refetch({
             id: id
         }).then(res => {

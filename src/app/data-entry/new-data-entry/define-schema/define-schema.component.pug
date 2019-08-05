@@ -1,45 +1,31 @@
 .define-schema-container
     div(layout="row")
         i.zmdi.zmdi-local-offer.p-t-15.p-r-10
-        bw-text-box.flex-60.flex-sm-80.flex-xs-100([fg]="vmData.fg", field="dataName", label="Enter a name for this file", [required]="true", color="black")
+        bw-text-box.flex-60.flex-sm-80.flex-xs-100(
+            [fg]="vmData.fg", 
+            field="dataName", 
+            label="Enter a name for this file", 
+            [required]="true", 
+            color="black"
+            )
 
     kpi-collapsable.m-l-15.m-b-15([(collapsed)]="isCollapsedSchema", headerText="Define your schema")
         //- table header
         .table-header(layout="row")
-            div(flex="40", layout="column", layout-padding)
+            div(flex="30", layout="column", layout-padding)
                 .schema-header Column name:
-            div(flex="40", layout="column", layout-padding)
+            div(flex="20", layout="column", layout-padding)
                 .schema-header Data Validation
             div(flex="15", layout="column", layout-padding)
                 .schema-header Is required
+            div(flex="15", layout="column", layout-padding)
+                .schema-header Allow Grouping
+            div(flex="15", layout="column", layout-padding)
+                .schema-header Default Value        
 
         //- table body
         div(flex, *ngFor="let schema of schemas.controls; let i=index")
-            .schema-form-container(flex="100", layout="row")
-                div(flex="40", layout="row", layout-padding)
-                    .zmdi.zmdi-view-headline
-                    div(flex="100", layout="row") 
-                        bw-text-box.w-100(
-                                    [fg]="schema",
-                                    field="columnName",
-                                    [required]="true",
-                                    placeholder="Choose a name")
-
-                div(flex="40", layout="column", layout-padding)
-                    div(flex="100", layout="row") 
-                        bw-select-picker.w-100(
-                                    [fg]="schema",
-                                    field="dataType",
-                                    [required]="true",
-                                    [items]="customList",
-                                    [liveSearch]="true",
-                                    liveSearchPlaceholder="...search...",
-                                    noneSelectedText="NOTHING SELECTED")
-                
-                bw-checkbox(flex="15", [fg]="schema", field="required", [value]="schema.required")
-                
-                .zmdi.zmdi-close(flex-none, (click)="removeSchema(schema)")
-            
+            kpi-define-schema-details([schema]="schema", [customList]="customList", [selectedNewList]="selectedNewList")
             .date-field.p-b-10
                 bw-radio-group(*ngIf="moreThanOneDateField(schema)", [fg]="vmData.fg", field="dateRangeField", [defaultValue]="defaultDateRangeField")
                     bw-radio(
@@ -60,3 +46,7 @@
         bw-button(icon="close", title="CANCEL", [simple]="true", color="black", (clicked)="cancel()")
 
 kpi-new-custom-list((newCustomListId)="selectNewCustomList($event)")
+
+div(*ngIf="invalidDataReady")
+    //- Popup for invalid rows saving input file
+    kpi-invalid-rows-popup((done)="closeInvalidRowsModal()", [invalidData]="invalidData")

@@ -36,6 +36,19 @@ export abstract class ViewModel < T > {
         if (userService) {
             this._watchUserChanges(userService);
         }
+
+        // TODO: INVESTIGATE WHY SOMETIMES THE __metadata__ object contains the form group of a preview instance
+        // THAT'S THE REASON THE COMMENTS WERE NOT REMOVED
+        if (!this.__metadata__ || !this.__metadata__.fg) {
+            // console.log('view model base class constructor  -- this.fg: NO FORM');
+        } else {
+            // console.log('view model base class constructor  -- this.fg: ' + JSON.stringify(this.__metadata__.fg.value));
+            // console.log('view model base class constructor  -- setting fg to null');
+
+            // SETTING THIS FORM GROUP TO NULL FIXES https://kpi-bi.atlassian.net/browse/CORE-2583
+            // BUG: Function "Count" and sum in simple kpi is not setting field value when editing
+            this.__metadata__.fg = null;
+        }
     }
 
     abstract initialize(model: T): void;

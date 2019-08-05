@@ -51,7 +51,10 @@ const getKpiFilterExpressionQuery = require('graphql-tag/loader!../kpi-filter-ex
 @Component({
     selector: 'kpi-simple-kpi-form',
     templateUrl: './simple-kpi-form.component.pug',
-    styleUrls: ['./simple-kpi-form.component.scss']
+    styleUrls: ['./simple-kpi-form.component.scss'],
+    providers: [
+        SimpleKpiFormViewModel
+    ]
 })
 export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() model: IKPI;
@@ -83,12 +86,12 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
     newWidgetFromKPI: boolean;
     newChartFromKPI: boolean;
 
-    vm: SimpleKpiFormViewModel;
+    // vm: SimpleKpiFormViewModel;
 
     private _subscription: Subscription[] = [];
 
     constructor(
-        // public vm: SimpleKpiFormViewModel,
+        public vm: SimpleKpiFormViewModel,
         private _apolloService: ApolloService,
         private _apollo: Apollo,
         private _router: Router,
@@ -347,7 +350,7 @@ export class SimpleKpiFormComponent implements OnInit, AfterViewInit, OnDestroy 
                  * edit-kpi to add-kpi and vice-versa for name and description
                  */
                 that.isLoading = false;
-                that.vm = new SimpleKpiFormViewModel(that._apollo, this._cdr, this._userService);
+                // that.vm = new SimpleKpiFormViewModel(that._apollo, this._cdr, this._userService);
 
                 that._getTags();
 

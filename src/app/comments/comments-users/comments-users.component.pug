@@ -1,0 +1,12 @@
+div(flex)
+  div(*ngFor="let user of users", layout="column")
+    .userRow(flex="100", layout="row", (click)="onUserSelected(user)")
+      div(flex="30")
+        bw-cropped-image(*ngIf="user.profilePictureUrl", [width]="30", image="{{user.profilePictureUrl}}", [borderWidth]="1")
+        bw-cropped-image(*ngIf="!user.profilePictureUrl", [width]="30", image="/assets/img/users/users.png", [borderWidth]="1")
+      .firstName(flex="35") {{user.profile.firstName}}
+      .lastName(flex="35") {{user.profile.lastName}}
+
+
+
+    

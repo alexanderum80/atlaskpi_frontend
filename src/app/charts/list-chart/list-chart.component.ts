@@ -26,6 +26,7 @@ import { ModifyChartActivity } from 'src/app/shared/authorization/activities/cha
 import { DeleteChartActivity } from 'src/app/shared/authorization/activities/charts/delete-chart.activity';
 import { IUserInfo } from '../../shared/models';
 import { ApolloService } from '../../shared/services/apollo.service';
+import SweetAlert from 'sweetalert2';
 
 const Highcharts = require('highcharts/js/highcharts');
 
@@ -52,6 +53,7 @@ export class ListChartComponent implements OnInit, OnDestroy {
     loadingMaps: boolean;
     charts: IChart[] = [];
     maps: any[] = [];
+    selectedType = '';
     fg: FormGroup = new FormGroup({});
 
     inspectorOpen$: Observable<boolean>;
@@ -64,8 +66,6 @@ export class ListChartComponent implements OnInit, OnDestroy {
     selectedChartId: string;
     itemType: string;
     user: IUserInfo;
-    selectedType: string;
-
 
     constructor(private _apollo: Apollo,
                 private _apolloService: ApolloService,
@@ -184,7 +184,25 @@ export class ListChartComponent implements OnInit, OnDestroy {
     delete(item: any) {
         this.selectedChartId = item.id;
         this.selectedType = item.type;
-        this.removeConfirmModal.open();
+        if (item.type === 'chart') {
+            SweetAlert({
+                    type: 'warning',
+                    title: 'Are you sure?',
+                    text: `Note that this chart may have a conversation associated.
+                        Removing this chart will also remove such thread.
+                        Are you sure you want to continue?`,
+                    showConfirmButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete',
+                    cancelButtonText: 'No, cancel',
+                  }).then(result => {
+                    if (result.value === true) {
+                        this.onDialogResult(DialogResult.OK);
+                    }
+            });
+        } else {
+            this.removeConfirmModal.open();
+        }
     }
 
     onDialogResult(result: DialogResult) {
@@ -277,7 +295,7 @@ export class ListChartComponent implements OnInit, OnDestroy {
     private _refresUserInfo(refresh ?: boolean) {
         const that = this;
         this._apolloService.networkQuery < IUserInfo > (updateUserInfo).then(d => {
-            this.itemType = d.User.preferences.charts.listMode === "standardView" ? 'standard' : 'table';
+            this.itemType = d.User.preferences.charts.listMode === 'standardView' ? 'standard' : 'table';
         });
     }
 

@@ -62,8 +62,11 @@ export class SidebarItemComponent implements OnInit, OnDestroy {
         if (this.menuItem.active) {
             this.sidebarService.updateSelection(this.menuItem);
         }
-        this.sidebarService.itemsNotVisibles$.subscribe(items => {
-            this.vm.countnotvisibles = items;
+        this.sidebarService.dashboardsNotVisibles$.subscribe(items => {
+            this.vm.countDashboardsNotVisibles = items;
+        });
+        this.sidebarService.dataEntriesNotVisibles$.subscribe(items => {
+            this.vm.countDataEntriesNotVisibles = items;
         });
     }
 
@@ -86,9 +89,9 @@ export class SidebarItemComponent implements OnInit, OnDestroy {
     }
     isVisible(menuItem: any): boolean {
         return !menuItem.parent
-        || menuItem.parent.title.toLowerCase() !== 'dashboards'
-        || (menuItem.parent.title.toLowerCase() === 'dashboards' &&
-        menuItem.visible === this.childrenVisible);
+        || (menuItem.parent.title.toLowerCase() !== 'dashboards' && menuItem.parent.title.toLowerCase() !== 'atlas sheets')
+        || ((menuItem.parent.title.toLowerCase() === 'dashboards' || menuItem.parent.title.toLowerCase() === 'atlas sheets')
+        &&  menuItem.visible === this.childrenVisible);
     }
 
     isDashboardChildren(menuItem: any): boolean {

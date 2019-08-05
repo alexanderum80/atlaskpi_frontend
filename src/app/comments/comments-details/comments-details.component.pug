@@ -1,0 +1,16 @@
+div(flex="100", layout="row", layout-padding)
+  div.w-40.flex-none
+    bw-cropped-image([width]="imgwith", image="{{pictureurl}}", [borderWidth]="1")
+  div.p-l-10(flex-gt-sm="85", flex-xs="100",flex-sm="100", layout="column")
+    .createdBy(flex, layout="row")            
+      .firstName.flex-none {{firstName}}
+      .lastName.flex {{lastName}}
+    .divTime(flex, layout="row")
+      i.zmdi.zmdi-time.timeicon.flex-none
+      .timeAgo.flex {{ComputeTimeAgo(comment)}}
+    .msgContainer(layout="row", layout-padding , [ngClass]="{'notReaded': !isRead()}") 
+      div([innerHtml]="comment.formattedMessage")
+      i.zmdi.zmdi-circle.notReadedIcon.flex(*ngIf="!isRead()")
+    .options(flex, layout="row", layout-padding)
+      .reply((click)="onReplyComment()") Reply
+      .remove.m-l-15((click)="onDeleteComment()", *ngIf="canRemove()") Remove

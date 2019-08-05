@@ -568,7 +568,7 @@ export class SelectPickerComponent extends InputBase implements OnChanges, OnDes
         let newSelection: string[] = [];
 
         if (typeof value === 'string') { // coma delimited string
-            dataItems = value.split(this.valueSeparator).map(i => i.trim());
+            dataItems = value.split(this.valueSeparator);
         } else if (isArray(value)) { // array of ids
             dataItems = value.map(d => String(d));
         }

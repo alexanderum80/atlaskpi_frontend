@@ -6,7 +6,8 @@ import { MenuItem } from 'src/app/ng-material-components';
 @Injectable()
 export class SideBarViewModel extends ViewModel<any> {
 
-    private _countNotVisibles = 0;
+    private _countDashboardsNotVisibles = 0;
+    private _countDataEntriesNotVisibles = 0;
     private _list_Item: any = {};
     private _listDashboard =
     {
@@ -17,6 +18,26 @@ export class SideBarViewModel extends ViewModel<any> {
         visible: true,
         active: false
     } ;
+
+    private _customListDataEntry =
+    {
+        id: 'custom-lists',
+        title: 'Custom Lists',
+        icon: 'storage',
+        route: 'data-entry/custom-lists',
+        active: false,
+        visible: true
+    };
+
+    private _showAllDataEntry = {
+        id: 'show-all',
+        title: 'Show All',
+        icon: 'collection-text',
+        route: 'data-entry/show-all',
+        active: false,
+        visible: true
+    };
+
     constructor(userService: UserService) {
         super(userService);
     }
@@ -25,11 +46,20 @@ export class SideBarViewModel extends ViewModel<any> {
         this.onInit(model);
     }
 
-    get countnotvisibles() {
-        return this._countNotVisibles;
+    get countDashboardsNotVisibles() {
+        return this._countDashboardsNotVisibles;
     }
-    set countnotvisibles(value: number) {
-        this._countNotVisibles = value;
+
+    set countDashboardsNotVisibles(value: number) {
+        this._countDashboardsNotVisibles = value;
+    }
+
+    set countDataEntriesNotVisibles(value: number) {
+        this._countDataEntriesNotVisibles = value;
+    }
+
+    get countDataEntriesNotVisibles() {
+        return this._countDataEntriesNotVisibles;
     }
 
     get list_item() {
@@ -47,4 +77,21 @@ export class SideBarViewModel extends ViewModel<any> {
     set listDashboard( value) {
          this._listDashboard = value;
     }
+
+    get customListDataEntry() {
+        return this._customListDataEntry;
+    }
+
+    set customListDataEntry(value) {
+        this._customListDataEntry = value;
+    }
+
+    get showAllDataEntry() {
+        return this._showAllDataEntry;
+    }
+
+    set showAllDataEntry(value) {
+        this._showAllDataEntry = value;
+    }
+
 }

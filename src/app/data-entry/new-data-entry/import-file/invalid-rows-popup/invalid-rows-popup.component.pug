@@ -1,0 +1,21 @@
+bw-modal(size="md",#invalidRowsPopup='')
+  bw-modal-header
+    .header-text The following records could not be saved because they contain data validation errors
+  bw-modal-body 
+    ag-grid-angular(
+            *ngIf="deService.rowData && !isLoading",
+            [ngStyle]="{'height': height}",
+            class="ag-theme-material",
+            [rowData]="deService.rowData",
+            [defaultColDef]="defaultColDef",
+            [pagination]=true,
+            [paginationAutoPageSize]=true,
+            [context]="deService.schema",
+            [columnDefs]="deService.columnDefs",
+            [floatingFilter]=true,
+            rowSelection='multiple',
+            [suppressRowClickSelection]=true,
+            [rowDeselection]=true,
+            (gridReady)="onGridReady($event)")
+  bw-modal-footer
+    bw-button(title="OK", color="blue", (clicked)="closeModal()")

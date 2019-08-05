@@ -2,23 +2,26 @@ import { Injectable } from '@angular/core';
 
 import { Apollo } from 'apollo-angular';
 import { filter, map, tap, catchError } from 'rxjs/operators';
-import { Observable, throwError, BehaviorSubject } from 'rxjs';
+import { Observable, throwError, BehaviorSubject, combineLatest } from 'rxjs';
 import { SelectionItem, guid } from '../../../ng-material-components';
 import { ToSelectionItemList } from '../../../shared/extentions';
 import { FormGroupTypeSafe, UserService } from '../../../shared/services';
 import { IFunnel, IFunnelStage, IFunnelStageOptions } from '../models/funnel.model';
 import { IKpiDateRangePickerDateRange } from '../models/models';
 import { ApolloService } from '../../../shared/services/apollo.service';
-import { isEmpty } from 'lodash';
+import { get } from 'lodash';
 import { IChartDateRange, convertDateRangeToStringDateRange, AKPIDateFormatEnum, IUserInfo } from '../../../shared/models';
 import * as moment from 'moment';
 import { IRenderedFunnel, IRenderedFunnelStage } from '../models/rendered-funnel.model';
 import { cloneDeep } from 'lodash';
 import { objectWithoutProperties2 } from '../../../shared/helpers/object.helpers';
+import { IBasicUser } from '../../../targets/shared/models/target-user';
+import { IUser } from '../../../users/shared';
 
 const kpiIdNameList = require('graphql-tag/loader!../graphql/kpi-list.query.gql');
 const renderFunnelByDefinitionQuery
     = require('graphql-tag/loader!../graphql/render-funnel-by-definition.query.gql');
+const usersQuery = require('graphql-tag/loader!./get-users.query.gql');
 
 
 export interface FunnelStageField  {
@@ -55,6 +58,8 @@ export class FunnelService {
     }
 
     kpiSelectionList: SelectionItem[] = [];
+    userSelectionList: SelectionItem[] = [];
+
 
     stagesSelectionList$ = new BehaviorSubject<SelectionItem[]>([]);
 
@@ -76,16 +81,36 @@ export class FunnelService {
     }
 
     loadFormDependencies$(): Observable<boolean> {
-       return this.apollo.query<{ kpis: { _id: string, name: string, type: string }[] }>({
-                query: kpiIdNameList,
-                fetchPolicy: 'network-only',
-            })
-         .pipe(
-            tap(res => {
-                const simpleKpis = res.data.kpis.filter(k => k.type === 'simple');
+    return combineLatest(
+        this.apollo.query<{ kpis: { _id: string, name: string, type: string }[] }>({
+            query: kpiIdNameList,
+            fetchPolicy: 'network-only',
+        }),
+        this.apollo.query<{ allUsers: IUserInfo[] }>({
+            query: usersQuery,
+            fetchPolicy: 'network-only',
+        }),
+    )  .pipe(
+            filter(([kpis, users]) => {
+                return kpis.data.kpis !== undefined &&
+                       users.data.allUsers !== undefined;
+            }),
+            tap(([kpis, users]) => {
+                const simpleKpis = kpis.data.kpis.filter(k => k.type === 'simple');
                 this.kpiSelectionList = ToSelectionItemList(
                     simpleKpis,
                     '_id', 'name');
+                this.userSelectionList = users.data.allUsers
+                    .filter(u => !this._isAccountOwner(u) && !this._isFunnelOwner(u))
+                    .map(user => {
+                    return new SelectionItem(
+                        user._id,
+                        (user.profile.firstName)
+                            ? user.profile.firstName + ' ' + user.profile.lastName
+                            : user.username,
+                        this.funnelModel && (this.funnelModel.users || []).includes(user._id)
+                    );
+                });
             }),
             catchError(error => {
                 console.log(error);
@@ -263,6 +288,9 @@ export class FunnelService {
              count += 1;
         }
 
+        // transform user delimited string to array
+        data.users = String(data.users).split('|');
+
         // add-created-updated-by-date
         data.createdBy = this.currentUser._id;
         data.updatedBy = this.currentUser._id;
@@ -310,6 +338,17 @@ export class FunnelService {
         // this._renderedFunnelModel.name = name;
 
         this.renderedFunnelModel$.next(this.renderedFunnelModel);
+    }
+
+    private _isAccountOwner(user: IUserInfo): boolean {
+        return user && user.roles[0] && (user.roles[0].name === 'owner') ;
+    }
+
+    private _isFunnelOwner(user: IUserInfo): boolean {
+        if (!this.funnelModel || !this.funnelModel._id) {
+          return user._id === this.currentUser._id;
+        }
+        return user._id === (this.funnelModel && this.funnelModel.createdBy);
     }
 
 }

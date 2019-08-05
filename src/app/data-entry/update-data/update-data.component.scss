@@ -1,0 +1,76 @@
+.body-container{
+
+    border: 2px dashed #d3d3d3;
+    padding: 20px;
+    margin: 30px;
+
+    .import-btn{
+        margin-top: 5px;
+    }
+
+    .loader-center{
+        text-align: center;
+        position: absolute;
+        z-index: 100;
+    }
+
+    input[type="file"] {
+        display: none;
+    }
+    
+    .custom-file-upload {
+        border: none;
+        color: white;
+        display: inline-block;
+        padding: 6px 12px;
+        cursor: pointer;
+
+        &.custom-disabled {
+            cursor: not-allowed;
+            opacity: 0.65 !important;
+        }
+    }
+
+    
+    img {
+        height: 140px;
+    }
+    
+    .import-scv, .import-excel {
+        position: relative;
+        opacity: 0.6;
+        padding: 20px;
+        margin: 10px;
+        width: 200px;
+
+        &.selected-file{
+            border: 2px solid #5DA5DA;
+            border-radius: 5px;
+            opacity: 1 !important;
+        }
+
+        .file-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap; 
+            font-size: 14px;
+        }
+    
+        .close-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+    
+        .close-icon:hover {
+            cursor: pointer;
+        }
+    
+        .check-icon {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            color: #5DA5DA;
+        }
+    }
+}

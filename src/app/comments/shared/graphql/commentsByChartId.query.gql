@@ -1,0 +1,3 @@
+query ($id: String) {
+    commentsByChartId(id: $id)
+}

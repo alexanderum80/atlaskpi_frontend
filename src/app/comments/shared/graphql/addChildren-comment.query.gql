@@ -1,0 +1,3 @@
+query AddChildrencomment ($id: String, $input: CommentChildrenInput!) {
+    addChildrenComment(id:$id, input:$input) 
+}

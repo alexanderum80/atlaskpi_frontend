@@ -1,0 +1,3 @@
+query VirtualSourceById($id: String!) {
+  virtualSourceById(id: $id) 
+}

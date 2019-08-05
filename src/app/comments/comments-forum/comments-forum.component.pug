@@ -1,0 +1,25 @@
+div.mycard(flex, 
+    layout="column", 
+    [ngClass]="{'cardBig': hasComments && !chartMaximized, 'cardSmall': !hasComments, 'cardExtra': hasComments && chartMaximized}")
+  .allcomments(flex, *ngIf="hasComments")
+    div(*ngFor="let comment of comments", layout="column")
+      kpi-comments-details(*ngIf="!comment.deleted", [comment]="comment", (refreshComments)="onRefreshComments()", (replyComment)="replyThisComment($event)")
+      kpi-collapsable.grouped(*ngIf="ismoreThanOneChildren(comment)", 
+            [(collapsed)]="isCollapsed", 
+            headerText="Show replies", 
+            headerTextExpanded="Hide replies",
+            [enableShadow]="false")
+        .allreply
+          div(*ngFor="let children of comment.children", layout="column")
+            kpi-comments-details(*ngIf="!children.deleted", [parent]="comment", [comment]="children", (refreshComments)="onRefreshComments()", (replyComment)="replyThisComment($event)")
+      .allreply(flex, *ngIf="!ismoreThanOneChildren(comment)")
+        div(*ngFor="let children of comment.children", layout="column")
+          kpi-comments-details(*ngIf="!children.deleted", [parent]="comment", [comment]="children", (refreshComments)="onRefreshComments()", (replyComment)="replyThisComment($event)")
+  .container(flex, *ngIf="!replyInProgress" , [ngClass]="{'container-small': !hasComments}")          
+    kpi-comment-new([chartId]="chartId", [comments]="comments", [chartMaximized]="chartMaximized")
+  .container-reply(flex, *ngIf="replyInProgress")
+    kpi-comment-reply([commentToReply]="commentToReply", [dashBoardId]="dashBoardId", (refreshComments)="onRefreshComments()", (close)="onCommentReplyClose()")
+
+  .buttons(*ngIf="!replyInProgress")
+    bw-button(flex-none, color="blue", icon="mail-send", title="DONE", class="normal", [disabled]="!validComments()" , (clicked)="saveAndSendNotification()")
+    bw-button.m-l-10(flex-none, color="black", [simple]="true", icon="close", title="CANCEL", class="normal", (clicked)="closeComment()")  

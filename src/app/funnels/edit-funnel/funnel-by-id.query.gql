@@ -2,6 +2,7 @@ query FunnelById ($id: String!) {
   funnelById(id: $id) {
     _id
     name
+    users
     createdBy
     createdDate
     updatedBy

@@ -1,0 +1,34 @@
+.comment-area {
+    position: absolute;
+    height: 140px;
+    top: auto;
+    bottom: 65px;
+    left: 11%;
+    right: 14%;
+    border: 2px solid lightgray;
+    border-radius: 5px;
+    overflow: auto;
+    @media only screen and (max-width: 500px) {
+        left: 20%;
+        right: 15%;
+    }
+}
+
+.textbox {
+    font-size: 0.75em;
+    padding-top: 1.5em;
+    padding-left: 1.8em;
+    padding-right: 1.83em;
+    @media only screen and (max-width: 500px) {
+        font-size: 0.63em;
+        padding-left: 0.63em;
+        padding-right: 0.63em;
+    }
+}
+
+.buttons {
+    position: absolute;
+    right: 40px;
+    bottom: 20px;
+}
+

@@ -1,6 +1,16 @@
 .m-t-25(flex, layout="column", layout-padding, layout-align="start start")
     bw-text-box.w-100(flex-initial, [fg]="fg", field="name", label="Name", leftIcon="label")
-   
+
+    bw-select-picker.w-100(
+        flex,
+        [fg]="fg",
+        label="Select Users",
+        field="users",
+        leftIcon="account",
+        [items]="userSelectionList",
+        [multiple]="true",
+        noneSelectedText="Select Users")
+
     //- pre {{ fg.value | json }}
     //- pre funnel form valid {{ fg.valid }}
 

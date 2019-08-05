@@ -20,6 +20,16 @@ import { NewCustomListComponent } from './custom-list/new-custom-list/new-custom
 import { CustomListFormViewModel } from './custom-list/custom-list.viewmodel';
 import { CustomListComponent } from './custom-list/custom-list.component';
 import { AgGridModule } from 'ag-grid-angular';
+import { UnsavedChangesGuard } from './unsaved-changes-guard.service';
+import { UpdateDataComponent } from './update-data/update-data.component';
+import { EditDataEntryComponent } from './edit-data-entry/edit-data-entry.component';
+import { UpdateDataAtlasSheetsActivity } from '../shared/authorization/activities/atlas-sheets/update-data-atlas-sheets.activity';
+import { AddAtlasSheetsActivity } from '../shared/authorization/activities/atlas-sheets/add-atlas-sheets.activity';
+import { DeleteAtlasSheetsActivity } from '../shared/authorization/activities/atlas-sheets/delete-atlas-sheets.activity';
+import { UpdateShemaAtlasSheetsActivity } from '../shared/authorization/activities/atlas-sheets/update-schema-atlas-sheets.activity';
+import { ViewAtlasSheetsActivity } from '../shared/authorization/activities/atlas-sheets/view-atlas-sheets.activity';
+import { DefineSchemaDetailsComponent } from './new-data-entry/define-schema-details/define-schema-details.component';
+import { InvalidRowsPopupComponent } from './new-data-entry/import-file/invalid-rows-popup/invalid-rows-popup.component';
 
 @NgModule({
   imports: [
@@ -33,8 +43,18 @@ import { AgGridModule } from 'ag-grid-angular';
   declarations: [DataEntryComponent, ShowAllDataEntryComponent,
         NewDataEntryComponent, ImportFileComponent, SchemaFormComponent,
         EnterDataFormComponent, DateFieldPopupComponent, UserSelectionComponent, PredefinedTemplateComponent,
-        CustomListFormComponent, NewCustomListComponent, CustomListComponent, CustomListSummaryComponent],
+        CustomListFormComponent, NewCustomListComponent, CustomListComponent,
+        CustomListSummaryComponent, UpdateDataComponent, EditDataEntryComponent, DefineSchemaDetailsComponent, InvalidRowsPopupComponent],
   exports: [DataEntryComponent],
-  providers: [DataEntryFormViewModel, CustomListFormViewModel]
+  providers: [
+    DataEntryFormViewModel,
+    CustomListFormViewModel,
+    UnsavedChangesGuard,
+    UpdateDataAtlasSheetsActivity,
+    AddAtlasSheetsActivity,
+    DeleteAtlasSheetsActivity,
+    UpdateShemaAtlasSheetsActivity,
+    ViewAtlasSheetsActivity
+  ]
 })
 export class DataEntryModule { }

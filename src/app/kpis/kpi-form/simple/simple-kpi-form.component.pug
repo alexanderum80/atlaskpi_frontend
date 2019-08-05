@@ -1,7 +1,4 @@
-.simple-kpi-form-container(*ngIf="!vmFg")
-    .p-b-20
-        div(layout="column", layout-align="center center")
-            bw-preloader.text-center(flex, color="gray")
+kpi-spinner(*ngIf="(vm.isLoading || !filtersQueriesCompleted) && !newWidgetFromKPI && !newChartFromKPI")
 
 .simple-kpi-form-container(*ngIf="vmFg && !newWidgetFromKPI && !newChartFromKPI ")
     .bgm-white.z-depth-1.p-30(flex="grow")

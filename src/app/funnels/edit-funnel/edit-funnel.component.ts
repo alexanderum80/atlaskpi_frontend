@@ -29,7 +29,8 @@ export class EditFunnelComponent implements OnInit, OnDestroy {
 
   funnelModel: IFunnel = {
     name: '',
-    stages: [ ]
+    stages: [ ],
+    users: [ ]
   };
 
   ready$: Observable<boolean>;

@@ -3,7 +3,7 @@
     .no-data(*ngIf="!dataEntries && !loading", flex, layout="column", layout-align="center center")
         i.zmdi.zmdi-storage
         .no-manual-text You have no manual source entered yet. Click add button to start adding your custom data sources.
-        bw-button(title="ADD SOURCE", icon="plus", color="blue", [rounded]="true", (clicked)="addDataEntry()")
+        bw-button(title="ADD SOURCE", icon="plus", color="blue", [rounded]="true", (clicked)="addDataEntry()", [disabled]="!addSheetPermission()")
 
     .data(*ngIf="dataEntries && !loading", layout="row")
         .data-entry-container.z-depth-1.p-relative(*ngFor="let dataEntry of dataEntries", layout="column", layout-align="start center")
@@ -12,8 +12,11 @@
             .title {{ dataEntry.description }}
             .created-by {{ dataEntry.createdBy }}
     
-        kpi-add-item((onItemClicked)="addDataEntry()")
+        kpi-add-item([itemViewModel]="vm", [addItemActivityName]="addAtlasSheetActivity.name", (onItemClicked)="addDataEntry()")
 
-kpi-import-file(*ngIf="uploadingFile", [dataEntry]="dataEntryToUpload", (closeUploadFile)="closeUploadFile()")
+kpi-import-file(*ngIf="uploadingFile", [dataEntry]="dataEntryToUpload")
 
 app-error([error]="lastError")
+
+//-update data
+kpi-update-data([virtualSource]="dataEntryToUpload")

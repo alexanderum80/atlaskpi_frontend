@@ -13,7 +13,7 @@ interface SingleChartResponse {
   chart: string;
 }
 
-export interface IchartAndId{
+export interface IchartAndId {
 chart: Chart;
 chartId: string;
 }
@@ -45,9 +45,8 @@ export class ChartViewDashboardComponent implements OnInit, OnDestroy {
     ngOnInit() {
 
       this._subscribeToChartQuery();
-         
       this.areSelected(this.item._id);
-     
+
       if (!this.selectable) {
         return;
       }
@@ -62,7 +61,7 @@ export class ChartViewDashboardComponent implements OnInit, OnDestroy {
       }));
 
     }
- 
+
     ngOnDestroy() {
       CommonService.unsubscribe(this._subscription);
     }
@@ -75,7 +74,7 @@ export class ChartViewDashboardComponent implements OnInit, OnDestroy {
         definition.exporting = definition.exporting || { };
         definition.exporting.enabled = false;
         definition.credits = { enabled: false };
-        //definition.legend = { enabled: false };
+        // definition.legend = { enabled: false };
         definition.tooltip = { enabled: false };
         definition.plotOptions = definition.plotOptions || {};
         definition.plotOptions.series = definition.plotOptions.series || {};
@@ -103,22 +102,21 @@ export class ChartViewDashboardComponent implements OnInit, OnDestroy {
             const chart = JSON.parse(response.data.chart);
             chart.chartDefinition = that._simplifyChartDefinition(chart.chartDefinition);
             that.chart = new Chart(chart.chartDefinition);
-                
+
             that.chartRef.emit({ chart: that.chart, chartId: chart._id });
-          
-            //- reflow first chart of the slideshow here
+
+            // reflow first chart of the slideshow here
             that._subscription.push( that.chart.ref$.subscribe(ref => {
               setTimeout(() => {
-                      try{
-                        ref.reflow();
+                      try {
+                          ref.reflow();
+                        } catch (e) {
+                          console.log('HIghchart error: ', e);
                         }
-                        catch(e){
-                          console.log("HIghchart error: ", e);
-                        }
-              }, 0)}
+              }, 0); }
            ));
 
-        }));        
+        }));
     }
 
     private areSelected(id: string) {

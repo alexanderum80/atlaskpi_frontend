@@ -1,0 +1,6 @@
+.container
+  .comment-area(flex-none, layout="column")
+    bw-text-area.textbox([fg]="fg", field="newComment", label="write a reply...")
+.buttons
+  bw-button(flex-none, color="blue", icon="mail-send", title="REPLY", class="normal", [disabled]="!validComment()" , (clicked)="saveChildComment()")
+  bw-button.m-l-10(flex-none, color="black", [simple]="true", icon="close", title="CANCEL", class="normal", (clicked)="closeComment()")  

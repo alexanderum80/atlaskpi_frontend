@@ -23,15 +23,15 @@ export class CustomListFormComponent implements OnInit, OnChanges {
   constructor(
     public vm: CustomListFormViewModel,
     private _apolloService: ApolloService
-  ) {
-    this.dataTypeItems = [
-      { id: 'String', title: vm.dataTypeItems.string, selected: true },
-      { id: 'Number', title: vm.dataTypeItems.number, selected: false }
-    ];
-    this.vm.customListModel = this.vm.fg.get('listValue') as FormArray;
-  }
+  ) {}
 
   ngOnInit() {
+    this.dataTypeItems = [
+      { id: 'String', title: this.vm.dataTypeItems.string, selected: true },
+      { id: 'Number', title: this.vm.dataTypeItems.number, selected: false }
+    ];
+    this.vm.customListModel = this.vm.fg.get('listValue') as FormArray;
+
     if (!(this.vm.fg.get('listValue') as FormArray).controls.length) {
       this.vm.customListModel.push(
         new FormGroup({ value: new FormControl('')})

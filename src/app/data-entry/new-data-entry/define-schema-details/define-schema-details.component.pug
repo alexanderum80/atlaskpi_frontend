@@ -1,0 +1,47 @@
+.schema-form-container(flex="100", layout="row")
+  div(flex="30", layout="row", layout-padding)
+      .zmdi.zmdi-view-headline
+      div(flex="100", layout="row") 
+          bw-text-box(
+                      [fg]="schema",
+                      field="columnName",
+                      [required]="true",
+                      placeholder="Choose a name")
+
+  div(flex="20", layout="column", layout-padding)
+      div(flex="100", layout="row") 
+          bw-select-picker.w-100(
+                      [fg]="schema",
+                      field="dataType",
+                      [required]="true",
+                      [items]="customList",
+                      [liveSearch]="true",
+                      liveSearchPlaceholder="...search...",
+                      noneSelectedText="NOTHING SELECTED")
+  
+  bw-checkbox(flex="15", [fg]="schema", field="required", [value]="schema.required")
+
+  bw-checkbox(flex="15", [fg]="schema", field="allowGrouping", [value]="schema.allowGrouping")
+
+  div(flex="15", *ngIf="schema.value.dataType === 'Date'")
+      bw-date-picker([fg]="schema", field="defaultValue", label="MM/DD/YYYY", [required]="true", [config]="datePickerConfig")
+  
+  div(*ngIf="schema.value.dataType === 'Boolean'")
+      bw-checkbox(flex="15", [fg]="schema", field="defaultValue", [value]="schema.defaultValue")
+
+  div(*ngIf="schema.value.dataType === 'Number' || schema.value.dataType ==='String'", flex="15")
+      bw-text-box.w-90(
+                  [fg]="schema",
+                  field="defaultValue",
+                  [required]="true")
+  div(*ngIf="schema.value.dataType !== 'Number' && schema.value.dataType !== 'String' && schema.value.dataType !== 'Boolean' && schema.value.dataType !== 'Date' && schema.value.dataType !== 'createList'")                 
+      div(flex="100", layout="row") 
+          bw-select-picker.w-100(
+                      [fg]="schema",
+                      field="defaultValue",
+                      [required]="true",
+                      [items]="selectedList",
+                      [liveSearch]="true",
+                      liveSearchPlaceholder="...search...",
+                      noneSelectedText="NOTHING SELECTED")
+  .zmdi.zmdi-close(flex-none, (click)="removeSchema(schema)")

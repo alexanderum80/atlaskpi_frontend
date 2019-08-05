@@ -1,0 +1,14 @@
+.container
+    .comment-title( 
+        [ngClass]="{'comment-title-small': hasComments}") {{title}}
+    .comment-area(flex-none, 
+        layout="column", 
+        [ngClass]="{'comment-area-small': hasComments && !chartMaximized, 'comment-area-extra': hasComments && chartMaximized}")
+      .allComments(*ngIf="hasComments")
+        .comments(*ngFor='let comment of newComments, index as i', layout="column")
+          .row.m-t-20((click)="editMessage(i)", layout="row")
+            .message.flex([innerHtml]="comment.formattedMessage")
+      bw-text-area.p-t-10.textbox([ngClass]="{'textbox-small': hasComments}", 
+                          [fg]="fg", field="newComment", 
+                          (keyup)="checkKey($event)" , 
+                          label="Tag other users by typing @ and select them from the list")

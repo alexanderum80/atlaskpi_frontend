@@ -23,7 +23,8 @@ const createFunnelMutation = require('graphql-tag/loader!./create-funnel.mutatio
 export class NewFunnelComponent implements OnInit {
   funnelModel: IFunnel = {
       name: '',
-      stages: [ ]
+      stages: [ ],
+      users: [ ]
   };
 
   ready$: Observable<boolean>;

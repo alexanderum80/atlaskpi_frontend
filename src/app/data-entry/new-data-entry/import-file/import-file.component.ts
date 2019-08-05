@@ -7,16 +7,19 @@ import { ICustomData, ICustomSchemaInfo } from '../../shared/models/data-entry-f
 import Sweetalert from 'sweetalert2';
 import { Component, ViewChild, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import * as XLSX from 'ts-xlsx';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { DateFieldPopupComponent } from './date-field-popup/date-field-popup.component';
 import { CustomFormViewModel } from './custom-form.view-model';
 import { camelCase } from 'change-case';
+import * as moment from 'moment';
 
 const addDataEntryMutation = require('graphql-tag/loader!../../shared/graphql/add-data-entry.gql');
 const updateDataEntryMutation = require('graphql-tag/loader!../../shared/graphql/update-data-entry.gql');
 const dataSourceByNameQuery = require('graphql-tag/loader!../../shared/graphql/data-source-by-name.query.gql');
 const allUserQuery = require('graphql-tag/loader!../../shared/graphql/get-all-users.gql');
 const processImportFileQuery = require('graphql-tag/loader!../../shared/graphql/process-import-file.gql');
+
+const FIELD_NAME_REGEX_REPLACEMENT = new RegExp(/\W/g);
 
 @Component({
   selector: 'kpi-import-file',
@@ -29,8 +32,7 @@ export class ImportFileComponent implements OnInit {
   @Input() dataEntry: DataEntryList;
   @Output() closeUploadFile = new EventEmitter();
 
-  showUploadForm: boolean = true;
-
+  showUploadForm = true;
   // csv
   csvImagePath: string;
   csvFileData = {
@@ -43,6 +45,9 @@ export class ImportFileComponent implements OnInit {
 
   file: any;
 
+  inputSchema = {};
+  importCompleted = false;
+
   // excel
   excelImagePath: string;
   excelFileData = {
@@ -52,6 +57,8 @@ export class ImportFileComponent implements OnInit {
     dateRangeField: undefined,
     filePath: ''
   };
+
+  fileData: any;
 
   usersList: [{
     _id: string;
@@ -64,8 +71,10 @@ export class ImportFileComponent implements OnInit {
 
   constructor(
     public vm: CustomFormViewModel,
+    public vmData: DataEntryFormViewModel,
     private _apolloService: ApolloService,
     private _router: Router,
+    private _activatedRoute: ActivatedRoute,
     private _userService: UserService
   ) {
     this.excelImagePath = '../../../assets/img/datasources/CustomExcel.DataSource.MainImage.png';
@@ -123,7 +132,6 @@ export class ImportFileComponent implements OnInit {
 
   save() {
     this.showUploadForm = false;
-    
     const filesData: ICustomData[] = [];
     const selectedUsers = this.usersList.filter(f => f.selected).map(u => {
       return u._id;
@@ -147,7 +155,6 @@ export class ImportFileComponent implements OnInit {
         users: selectedUsers
       });
     }
-
     const mutation = !this.dataEntry ? addDataEntryMutation : updateDataEntryMutation;
 
     filesData.map(file => {
@@ -215,7 +222,7 @@ export class ImportFileComponent implements OnInit {
         title: 'Invalid file name!',
             text: 'The name of a file should start with a letter. Please change it and try again.',
             type: 'error',
-      })
+      });
    }
 
     this._apolloService.networkQuery(dataSourceByNameQuery, { name: camelCase(fileName).toLowerCase() })
@@ -230,15 +237,14 @@ export class ImportFileComponent implements OnInit {
           });
         }
 
-      if (this.dataEntry) {
-        this._csvFileReset();
-        this._excelFileReset();
-      }
+        if (this.dataEntry) {
+          this._csvFileReset();
+          this._excelFileReset();
+        }
 
-      if (this.isCSVFile(this.file)) {
-        this._processCsvFile(this.file);
-      }
-
+        if (this.isCSVFile(this.file)) {
+          this._processCsvFile(this.file);
+        }
         if (this.isXLSFile(this.file)) {
           this._processExcelFile(this.file);
         }
@@ -266,6 +272,33 @@ export class ImportFileComponent implements OnInit {
         const result = JSON.parse(res.processImportFile);
         this.csvFileData.fields = result.fields;
         this.csvFileData.records = result.records;
+
+        // checking that columns names dont start with numbers
+        let invalidColumnNamesArr = [];
+        invalidColumnNamesArr = result.fields.filter(f => !f.columnName.match(/^[A-Z]/i));
+        const invalidColLength = invalidColumnNamesArr.length;
+
+        if (invalidColLength) {
+          const columnNames = ''.concat(... invalidColumnNamesArr.map((f, i) => {
+           if (i === 0) { return f.columnName; }
+           if (i === invalidColLength - 1 ) {
+             return ' and ' + f.columnName;
+           }
+            return ', ' + f.columnName;
+          }
+          ));
+
+          this._excelFileReset();
+          const plural = (invalidColLength > 1) ? 's: ' : ': ';
+
+          return Sweetalert({
+            title: 'Invalid column name' + plural + columnNames,
+            text: 'Column names cannot start with numbers. Please change it and try again',
+            type: 'error',
+            showConfirmButton: true,
+            confirmButtonText: 'Ok'
+          });
+        }
 
         if (!this.vm.isRequiredDataTypePresent(this.csvFileData.fields)) {
           this._csvFileReset();
@@ -315,6 +348,7 @@ export class ImportFileComponent implements OnInit {
         } else {
           this._verifyDateFields(this.csvFileData.fields);
         }
+        this.gotoModifySchema(this.csvFileData);
       });
     };
 
@@ -327,7 +361,6 @@ export class ImportFileComponent implements OnInit {
 
   private _processExcelFile(file) {
       this._excelFileReset();
-
       const fileReader = new FileReader();
       fileReader.onload = () => {
           const arrayBuffer = fileReader.result;
@@ -340,12 +373,38 @@ export class ImportFileComponent implements OnInit {
           const workbook = XLSX.read(bstr, {type: 'binary'});
           const first_sheet_name = workbook.SheetNames[0];
           const worksheet = JSON.stringify(workbook.Sheets[first_sheet_name]);
-
-          this._apolloService.networkQuery(processImportFileQuery, { fileData: worksheet, fileType: 'excel' }).then(res => {
+          this._apolloService.networkQuery(processImportFileQuery, { fileData: worksheet, fileType: 'excel' })
+          .then(res => {
             const result = JSON.parse(res.processImportFile);
             this.excelFileData.fields = result.fields;
             this.excelFileData.records = result.records;
 
+            // checking that columns names dont start with numbers
+            let invalidColumnNamesArr = [];
+            invalidColumnNamesArr = result.fields.filter(f => !f.columnName.match(/^[A-Z]/i));
+            const invalidColLength = invalidColumnNamesArr.length;
+
+            if (invalidColLength) {
+              const columnNames = ''.concat(... invalidColumnNamesArr.map((f, i) => {
+                if (i === 0) { return  f.columnName; }
+                if (i === invalidColLength - 1 ) {
+                  return ' and ' + f.columnName;
+                }
+                return ', ' + f.columnName;
+              }
+              ));
+
+              this._excelFileReset();
+              const plural = (invalidColLength > 1) ? 's: ' : ': ';
+
+              return Sweetalert({
+                title: 'Invalid column name' + plural + columnNames,
+                text: 'Column names cannot start with numbers. Please change it and try again',
+                type: 'error',
+                showConfirmButton: true,
+                confirmButtonText: 'Ok'
+              });
+            }
             if (!this.vm.isRequiredDataTypePresent(this.excelFileData.fields)) {
               this._excelFileReset();
 
@@ -359,10 +418,34 @@ export class ImportFileComponent implements OnInit {
             } else {
               this._verifyDateFields(this.excelFileData.fields);
             }
+            this.gotoModifySchema(this.excelFileData);
           });
       };
       fileReader.readAsArrayBuffer(file);
       this.excelFileData.inputName = file.name;
+  }
+
+  private gotoModifySchema(fileData: any) {
+    const schema = [];
+    fileData.fields.map(f => {
+      schema.push({
+        columnName: f.columnName,
+        dataType: f.dataType,
+        required: true,
+        allowGrouping: true,
+        path: f.columnName.toLowerCase().replace(FIELD_NAME_REGEX_REPLACEMENT, '_'),
+        defaultValue: f.dataType === 'Number' ? 0 : f.dataType === 'Date' ? moment(new (Date)).format('MM/DD/YYYY') : null
+      });
+    });
+    if (!this.noFileImported) {
+        this.inputSchema = {
+          schema: schema,
+          data: fileData.records,
+          dataName: fileData.inputName,
+          dateRangeField: fileData.dateRangeField
+        };
+        this.importCompleted = true;
+      }
   }
 
   private _csvFileReset() {
@@ -399,7 +482,6 @@ export class ImportFileComponent implements OnInit {
     this.dateFieldPopupComponent.close();
     this._updateDateField(this.vm.dateRangeField);
   }
-
   private _updateDateField(dateFieldName) {
     const fileType = this.isCSVFile(this.file) ? 'csv' : 'xls';
     const selectedDateFieldIndex = fileType === 'csv' ?
@@ -415,5 +497,4 @@ export class ImportFileComponent implements OnInit {
   updateUserSelection(selected, index) {
     this.usersList[index].selected = selected;
   }
-
 }

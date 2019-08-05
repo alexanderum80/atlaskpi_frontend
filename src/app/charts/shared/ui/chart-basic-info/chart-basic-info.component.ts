@@ -3,7 +3,7 @@ import { IChartGalleryItem, ChartType } from './../../models/chart.models';
 import { OnFieldChanges } from '../../../../ng-material-components/viewModels';
 import 'rxjs/add/operator/debounceTime';
 
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, OnChanges } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, OnChanges, ElementRef, Renderer } from '@angular/core';
 import { FormControl, FormGroup, FormArray, Validators, FormBuilder } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { camelCase, title } from 'change-case';
@@ -86,6 +86,8 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
     previousChartType = '';
     subscribedToFrequencyAndGrouping = false;
     subscribedToXaxisSource = false;
+    loadingGroupings = true;
+    loadingGEle : ElementRef;
 
     @ViewChild('frequencyPicker') set frequencyContent(content: SelectPickerComponent) {
         if (content) {
@@ -100,6 +102,12 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
             if(!this.subscribedToXaxisSource){
                 this._subscribeToXAxisChanges()
             }
+        }
+    }
+
+    @ViewChild('loadingG') set loadingContent(content: ElementRef){
+        if(content){
+            this.loadingGEle = content;
         }
     }
 
@@ -168,7 +176,9 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                 private _apolloService: ApolloService,
                 private _browser: BrowserService,
                 public vm: ChartBasicInfoViewModel,
-                private formBuilder: FormBuilder) {
+                private formBuilder: FormBuilder,
+                private _renderer: Renderer) {
+
         this._dateRangesQuery();
         toArray(PredefinedDateRanges)
          .forEach(d => { this.dateRangeList.push({ id: d, title: d, selected: false, disabled: false }); });
@@ -183,6 +193,8 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
             showGoToCurrent: false,
             format: 'MM/DD/YYYY'
         };
+
+        this._loadingGroupings();
     }
     ngOnChanges() {
         if (this.chartType === 'map') {
@@ -271,7 +283,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         .distinctUntilChanged()
         .debounceTime(400)
         .subscribe((value) => {
-            const loadingGroupings = value.ideoloadingGroupings || false;
+            const loadingGroupings = value.loadingGroupings || false;
             const loadingComparison = value.loadingComparison || false;
             const kpiIds = value.kpis.map(k => k.kpi) as string[];
 
@@ -284,7 +296,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
             }
             // const kpi_ids = this.fg.value.kpis;
             // Enable-Disable the map type chart
-            // FIX THIS 
+            // FIX THIS
             if (kpiIds && kpiIds.filter(k => !!k).length) {
                 // let resSources;
                 this._getZipCodesSource(value)
@@ -371,7 +383,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
 
     private _getGroupingInfo(item: any) { /* get groupingInfo */
         const that = this;
-
+        this.loadingGroupings = true;
         // basic payload check
         if (!item.kpis || !item.predefinedDateRange) {
             return;
@@ -388,13 +400,15 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
 
         this._apolloService.networkQuery(kpiGroupingsQuery, { input })
             .then(data => {
+
+                that.loadingGroupings = false;
                 let groupingList = [];
                 that.groupingList = [];
 
                 if (data || !isEmpty(data.kpiGroupings)) {
                     groupingList = data.kpiGroupings.map(d => new SelectionItem(d.value, d.name));
                 }
-
+               
                 that.groupingList = groupingList;
                 const currentGroupingValue = this.fg.get('grouping').value || '';
                 let nextGropingValue;
@@ -403,7 +417,7 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                 } else {
                     nextGropingValue = currentGroupingValue;
                 }
-
+                
                 that.fg.controls['grouping'].patchValue(nextGropingValue, { emitEvent: false });
                 that.fg.controls['loadingGroupings'].patchValue(false, { emitEvent: true });
             });
@@ -596,12 +610,18 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
                 this.comparisonList.push(newItem);
             }
         }
-
         this.vm.comparisonList = this.comparisonList;
         const currentComparisonValue = this.fg.get('comparison') ? this.fg.get('comparison').value : '';
+
+        let currentComparisonValueArr = [];
+        if(currentComparisonValue && currentComparisonValue.length){
+            currentComparisonValueArr = (currentComparisonValue.includes('|')) ? 
+                                        currentComparisonValue.split('|') : [currentComparisonValue]
+        }
+
         let nextComparisonValue;
         const comparisonIds = this.comparisonList.map(g => g.id);
-        if (!comparisonIds.length || !comparisonIds.includes(currentComparisonValue)) {
+        if (!comparisonIds.length || !currentComparisonValueArr.some(v => comparisonIds.includes(v) )) {
             nextComparisonValue = '';
         } else {
             nextComparisonValue = currentComparisonValue;
@@ -655,4 +675,27 @@ export class ChartBasicInfoComponent implements OnInit, AfterViewInit, OnChanges
         );
     }
   }
+
+  private _loadingGroupings(): void {
+    let interval: any;
+
+    if (this.loadingGroupings) {
+        const that = this;
+        let text = '';
+        interval = setInterval(() => {
+            text += '.';
+
+            if (text.length === 8) {
+                text = '';
+            }
+            that._renderer.setElementProperty(
+                that.loadingGEle.nativeElement,
+                'innerHTML',
+                `Loading Grouping List, please wait ${text}`
+            );
+        }, 200);
+    } else {
+        clearInterval(interval);
+    }
+}
 }

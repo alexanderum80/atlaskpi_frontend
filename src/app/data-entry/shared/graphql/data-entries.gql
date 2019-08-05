@@ -3,6 +3,7 @@ query DataEntries {
     _id
     name
     description
+    dateField
     dataSource
     externalSource
     fields {
@@ -10,6 +11,7 @@ query DataEntries {
       path
       type
       sourceOrigin
+      required
     }
     filterOperators {
       Number {

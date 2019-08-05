@@ -3,5 +3,6 @@ mutation AddDataEntry($input: IDataEntryInput!) {
     _id
     name
     description
+    invalidRows
   }
 }

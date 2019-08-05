@@ -341,8 +341,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 that.currentUser.preferences = {};
             }
 
-            const preferences: IUserPreference = objectWithoutProperties(response.entity.preferences, ['__typename']) as IUserPreference;
-            that.currentUser.preferences.helpCenter = preferences.helpCenter;
+            this._userService.updateUserInfo(true);
         }));
     }
 

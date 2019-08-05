@@ -58,11 +58,15 @@
                 noneSelectedText="NOTHING SELECTED",
                 [disabled]="chartType == 'pie'")
 
-    //- groupins and xAxis Soruce
+    //- groupings and xAxis Source
     .m-10(flex, layout-xs="column", layout-gt-sm="row")
-        //- groupins
-        #select-grouping(flex)
-            bw-select-picker.p-l-35(flex, [fg]="fg",
+        //- groupings
+        .grouping-loader(flex, [ngClass]="{invisible: !loadingGroupings}")
+            div(#loadingG)
+        #select-grouping(flex, [ngClass]="{invisible: loadingGroupings}")
+            bw-select-picker.p-l-35(
+                flex,
+                [fg]="fg",
                 label="Grouping",
                 leftIcon="group-work",
                 field="grouping",

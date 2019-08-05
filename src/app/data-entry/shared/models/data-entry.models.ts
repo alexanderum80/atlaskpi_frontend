@@ -13,6 +13,7 @@ export interface IDataSourceField {
     type: string;
     allowGrouping: boolean;
     available?: boolean;
+    required?: boolean;
 }
 
 export interface IFilterOperator {
@@ -33,6 +34,7 @@ export interface IDataEntrySource {
     name: string;
     description: string;
     dataSource: string;
+    dateField: string;
     fields: IDataSourceField[];
     groupings: string[];
     filterOperators: IDataTypeFilters;

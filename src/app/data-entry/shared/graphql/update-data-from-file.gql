@@ -1,0 +1,5 @@
+mutation UpdateDataFromFile($vSId: String!, $input: String!) {
+  updateDataFromFile(vSId: $vSId, input: $input) {
+    success
+  }
+}

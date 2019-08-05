@@ -212,7 +212,8 @@ function tooltip_total(stack?: string, sorting?: string) {
                         <div flex layout="row">
                             <div flex style="color: ${p.series.color}">${p.series.name} (target progress): </div>
                             <div flex-initial style="color: ${p.series.color}">
-                                <span style="font-weight: bold">${Highcharts.numberFormat(p.series.userOptions.percentageCompletion, 0)}%</span>
+                                <span style="font-weight: bold">
+                                ${Highcharts.numberFormat(p.series.userOptions.percentageCompletion, 0)}%</span>
                             </div>
                         </div>
                     `;
@@ -247,7 +248,7 @@ function tooltip_total(stack?: string, sorting?: string) {
                         </div>
                 `;
             }
-        } if(calculateComparison) {
+        } if (calculateComparison) {
             tooltip_html += `
                     <div flex layout="row">
                         <div flex>Difference: </div>
@@ -262,7 +263,7 @@ function tooltip_total(stack?: string, sorting?: string) {
     };
 }
 
-function tooltip_point_percentaje_total_formatter(stack?: string, sorting? :string) {
+function tooltip_point_percentaje_total_formatter(stack?: string, sorting?: string) {
     this.exec = function () {
 
         let custom_tooltip_html = ``;
@@ -283,26 +284,27 @@ function tooltip_point_percentaje_total_formatter(stack?: string, sorting? :stri
         });
 
         this.points.forEach(p => {
-            if(p.series.userOptions.hasOwnProperty('stack'))
-                totalStacks.add(p.series.userOptions.stack);          
+            if (p.series.userOptions.hasOwnProperty('stack')) {
+               totalStacks.add(p.series.userOptions.stack);
+            }
         });
 
         if (!stack) {
             stack = this.points[0].series.userOptions.hasOwnProperty('stack') ? this.points[0].series.userOptions.stack : '';
         }
 
-        if (totalStacks.size == 1 || (totalStacks.size == 2 && totalStacks.has("main"))) {
+        if (totalStacks.size === 1 || (totalStacks.size === 2 && totalStacks.has('main'))) {
             calculateComparison = calculateComparisonDifference(this.points);
         }
 
-             //- beatriz code begins
-        //- to show the values in the tooltip sorted low to high 
-        if(sorting === 'low_high') {
+             // beatriz code begins
+        // to show the values in the tooltip sorted low to high 
+        if (sorting === 'low_high') {
             points = this.points.sort(function(a, b){
             return ((a.y < b.y) ? -1 : ((a.y > b.y) ? 1 : 0));
         });
          }
-         //- to show the values in the tooltip sorted high to low 
+         // to show the values in the tooltip sorted high to low
          else if(sorting === 'high_low'){
             points = this.points.sort(function(a, b){
             return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));

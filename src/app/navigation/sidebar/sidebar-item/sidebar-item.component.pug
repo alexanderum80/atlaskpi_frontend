@@ -3,10 +3,14 @@ li
       i.zmdi.zmdi.chart-title(aria-hidden='true', class="zmdi-{{menuItem.icon}}")
       | {{menuItem.title}} 
       i.zmdi.zmdi-caret-down.down-icon.zmdi-hc-2x(*ngIf="menuItem.active && menuItem.children")
-    ul.sub_menu(*ngIf="menuItem.children || (menuItem.id === 'dashboard' && canAddDashboard)", [style.display]="menuItem.active ? 'block' : 'none'")
+    ul.sub_menu(*ngIf="menuItem.children || (menuItem.id === 'dashboard' && canAddDashboard) || menuItem.id === 'custom-lists' || menuItem.id === 'show-all'", [style.display]="menuItem.active ? 'block' : 'none'")
       kpi-sidebar-item(*ngFor="let i of menuItem.children", [menuItem]="i", [parent]="menuItem", [childrenVisible]="true")
-      kpi-collapsable(*ngIf="menuItem.title.toLowerCase() === 'dashboards' && vm.countnotvisibles > 0", [enableShadow] = "false", [(collapsed)]="isCollapsedNotVisible", headerText="Show {{vm.countnotvisibles}} more", headerTextExpanded="Show Less", [color]="'white'", [marginBottom]= "'15px'")
+      kpi-collapsable(*ngIf="menuItem.title.toLowerCase() === 'dashboards' && vm.countDashboardsNotVisibles > 0", [enableShadow] = "false", [(collapsed)]="isCollapsedNotVisible", headerText="Show {{vm.countDashboardsNotVisibles}} more", headerTextExpanded="Show Less", [color]="'white'", [marginBottom]= "'15px'")
+        kpi-sidebar-item(*ngFor="let i of menuItem.children", [menuItem]="i", [parent]="menuItem", [childrenVisible]="false")  
+      kpi-collapsable(*ngIf="menuItem.title.toLowerCase() === 'atlas sheets' && vm.countDataEntriesNotVisibles > 0", [enableShadow] = "false", [(collapsed)]="isCollapsedNotVisible", headerText="Show {{vm.countDataEntriesNotVisibles}} more", headerTextExpanded="Show Less", [color]="'white'", [marginBottom]= "'15px'")
         kpi-sidebar-item(*ngFor="let i of menuItem.children", [menuItem]="i", [parent]="menuItem", [childrenVisible]="false")  
       kpi-sidebar-item(*ngIf="(menuItem.id === 'dashboard' && canAddDashboard)", [menuItem]="vm.listDashboard", [parent]="menuItem", [childrenVisible]="true")  
+      kpi-sidebar-item(*ngIf="menuItem.id === 'data-entry'", [menuItem]="vm.customListDataEntry", [parent]="menuItem", [childrenVisible]="true")  
+      kpi-sidebar-item(*ngIf="menuItem.id === 'data-entry'", [menuItem]="vm.showAllDataEntry", [parent]="menuItem", [childrenVisible]="true")  
 
         

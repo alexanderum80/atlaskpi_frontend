@@ -15,7 +15,7 @@ import autosize from './autosize';
     selector: 'bw-text-area',
     template: `
         <div class="text-area">
-            <label *ngIf="label">
+            <label *ngIf="label" style="height: 1em">
                 <span class="c-red">{{requiredSymbol}}</span>{{label}}
             </label>
             <div class="input-group m-b-25 w-100" [class.fc-alt]="alt"

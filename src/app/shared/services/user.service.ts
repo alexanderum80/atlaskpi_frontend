@@ -76,11 +76,14 @@ export class UserService {
                 that._setUser(data);
             }));
         } else {
-            if (!this._userSubject.value) {
+            /* I commented this out because user preferences like hide/show in atlas sheets were not
+             being updated after deletion, not sure if it will generate further issues. */
+
+            //if (!this._userSubject.value) {
                 this.currentUserQuery.refetch().then(({ data }) => {
                     that._setUser(data);
                 });
-            }
+            //}
         }
     }
 

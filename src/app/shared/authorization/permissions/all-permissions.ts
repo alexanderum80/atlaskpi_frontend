@@ -21,6 +21,7 @@ import { ActivityPermissions } from './activity-feed.permissions';
 import {SmartBarPermissions} from './smart-bar.permission';
 import { DataEntryPermissions } from './data-entry.permissions';
 import { FunnelPermissions } from './funnel.permissions';
+import { AtlasSheetsPermissions } from './atlas-sheets.permissions';
 
 export const AllPermissions = [
     ...ActivityPermissions,
@@ -44,7 +45,8 @@ export const AllPermissions = [
     ...MilestonePermissions,
     ...AlertsPermissions,
     ...DataEntryPermissions,
-    ...FunnelPermissions
+    ...FunnelPermissions,
+    ...AtlasSheetsPermissions
 ];
 
 export function getPermissions(subject: SubjectEnum, actions: string[]) {

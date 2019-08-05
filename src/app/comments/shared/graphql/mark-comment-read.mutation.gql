@@ -1,0 +1,3 @@
+mutation ($id: String!, $user: String!) {
+    markCommentRead(id: $id, user: $user)
+}

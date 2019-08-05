@@ -33,7 +33,7 @@ ng-template(#tableItem, let-item="item")
             h2.title {{ item.updatedDate | date:'M/dd/yyyy'}}
             small {{ item.updatedBy }}
 //- confirm remove widget modal
-app-remove-confirmation([element]="'chart'", (dialogResult)="onDialogResult($event)")
+app-remove-confirmation([element]="'map'", (dialogResult)="onDialogResult($event)")
 
 //- error modal
 app-error([error]="lastError")

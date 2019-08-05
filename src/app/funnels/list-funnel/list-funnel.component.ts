@@ -15,12 +15,12 @@ import { IActionItemClickedArgs } from '../../shared/ui/lists/item-clicked-args'
 import { SidebarService } from '../../navigation/sidebar/sidebar.service';
 import { CommonService } from '../../shared/services';
 
-const funnelListMock: IFunnel[] =
-// [];
-[
-    { _id: '1', name: 'Sales Funnel', stages: [] },
-    { _id: '2', name: 'Inquires Funnel', stages: [] },
-];
+// const funnelListMock: IFunnel[] =
+// // [];
+// [
+//     { _id: '1', name: 'Sales Funnel', stages: [] },
+//     { _id: '2', name: 'Inquires Funnel', stages: [] },
+// ];
 
 const listFunnelQuery = require('graphql-tag/loader!./list-funnels.query.gql');
 const removeFunnelMutation = require('graphql-tag/loader!./remove-funnel.mutation.gql');

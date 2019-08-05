@@ -67,6 +67,7 @@ export class IUserPreference {
     mobileCalendar?: string;
     calendarTimeZone?: string;
     dashboardIdNoVisible?: string;
+    atlasSheetsIdNoVisible?: string;
     dashboards?: {
         listMode: string;
     };
@@ -138,7 +139,7 @@ export class User implements IUserInfo {
             this.permissions = AllPermissions;
             return;
         }
- 
+
         const flattenPermissions = flatten(this.roles.map(r => r.permissions));
         const serverPermissions: IPermission[] = uniqBy(flattenPermissions, (p) => `${p.subject}-${p.action}`);
 

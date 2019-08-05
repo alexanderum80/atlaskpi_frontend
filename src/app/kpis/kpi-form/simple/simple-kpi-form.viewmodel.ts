@@ -82,6 +82,9 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         seriesDataLabels: false
       };
       currentUser: IUserInfo;
+
+    isLoading = true;
+
     constructor(private _apollo: Apollo, private _cdr: ChangeDetectorRef, private _userService: UserService) {
         super(null);
         const that = this;
@@ -89,6 +92,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
         this._subscription.push(this._userService.user$.subscribe((user) => {
             that.currentUser = user;
         }));
+
     }
 
     @Field({ type: String, validators: [
@@ -126,6 +130,8 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
 
     @Field({ type: Date })
     createdDate: Date;
+
+
 
     initialize(model: any): void {
         const that = this;
@@ -184,6 +190,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             this._cdr.detectChanges();
         } else {
             this.onInit(model);
+            that.isLoading = false;
             this._cdr.detectChanges();
         }
 
@@ -431,6 +438,7 @@ export class SimpleKpiFormViewModel extends ViewModel<IKPI> {
             }
         }).subscribe(({ data }) => {
             that.updateExpressionFields(data.kpiExpressionFields);
+            that.isLoading = false;
             this._cdr.markForCheck();
         });
     }

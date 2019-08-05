@@ -1,11 +1,11 @@
 
 kpi-spinner(*ngIf="!showUploadForm")
-.m-5.p-30.h-100.bgm-white(*ngIf="showUploadForm", layout="column")
+.m-5.p-30.h-100.bgm-white(*ngIf="showUploadForm && !importCompleted", layout="column")
   .import-file-header(layout="row")
     i.zmdi.zmdi-storage
     .title Import your file
-  .import-file-body(layout="row", layout-xs="column")
-    .left-panel.flex
+  .import-file-body(layout="column", layout-align="center center")
+    .left-panel
       .m-20(layout="row", layout-align="center center")
         .import-scv(*ngIf="csvFileData.inputName || noFileImported", layout="column", [class.selected-file]="csvFileData.inputName")
           i.zmdi.zmdi-close.close-icon(*ngIf="csvFileData.inputName", (click)="dropImportedFile('csv')")
@@ -24,13 +24,9 @@ kpi-spinner(*ngIf="!showUploadForm")
           i.zmdi.zmdi-download.p-r-10
           input(type="file", (change)="importFile($event)") 
           | BROWSE
-    .p-l-40.flex.overflow-auto(layout="column")
-      .p-b-10 Assign users with access to this file:
-      .user-selection(*ngFor="let user of usersList, index as i", layout="column")
-        kpi-user-selection(layout="row", [user]="user", (selectedStatus)="updateUserSelection($event, i)")
-  .button-panel(layout="row", layout-align="end end")
-      bw-button(icon="floppy", title="SAVE", color="blue", (clicked)="save()", [disabled]="!isFormValid() || !(vm.dateFields && vm.dateFields.length)")
-      bw-button(icon="close", title="CANCEL", [simple]="true", color="black", (clicked)="cancel()")
 
-  //- Popup for select date field
-  kpi-date-field-popup((done)="closeModal()")
+.hv-100(*ngIf="showUploadForm && importCompleted")
+  kpi-edit-data-entry.animated.fadeIn([inputSchema]="inputSchema", [importFile]="true")
+
+//- Popup for select date field
+kpi-date-field-popup((done)="closeModal()")

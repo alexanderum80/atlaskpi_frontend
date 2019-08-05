@@ -25,12 +25,12 @@ export interface ISidebarItemSearchResult {
     item: MenuItem;
 }
 
-const funnelListMock: IFunnel[] =
-// [];
-[
-    { _id: '1', name: 'Sales Funnel', stages: [] },
-    { _id: '2', name: 'Inquires Funnel', stages: [] },
-];
+// const funnelListMock: IFunnel[] =
+// // [];
+// [
+//     { _id: '1', name: 'Sales Funnel', stages: [] },
+//     { _id: '2', name: 'Inquires Funnel', stages: [] },
+// ];
 
 
 const MENU_ITEMS: MenuItem[] = [
@@ -203,8 +203,10 @@ export class SidebarService {
     private _subscription: Subscription[] = [];
     private _dashboardQuery: QueryRef<{}>;
     private _dataEntriesQuery: QueryRef<{}>;
-    private _itemsNotVisibles = 0;
-    private _itemsNotVisiblesSubject = new BehaviorSubject < number > (0);
+    private _dashboardsNotVisibles = 0;
+    private _dataEntriesNotVisibles = 0;
+    private _dashboardsNotVisiblesSubject = new BehaviorSubject < number > (0);
+    private _dataEntriesNotVisiblesSubject = new BehaviorSubject < number > (0);
     private _userCanAddDashSubject = new BehaviorSubject < boolean > (false);
 
     userCanAddDashboard: boolean;
@@ -245,8 +247,12 @@ export class SidebarService {
         return this._itemsSubject.asObservable();
     }
 
-    get itemsNotVisibles$(): Observable <number> {
-        return this._itemsNotVisiblesSubject.asObservable();
+    get dashboardsNotVisibles$(): Observable <number> {
+        return this._dashboardsNotVisiblesSubject.asObservable();
+    }
+
+    get dataEntriesNotVisibles$(): Observable <number> {
+        return this._dataEntriesNotVisiblesSubject.asObservable();
     }
 
     get selected$(): Observable < MenuItem > {
@@ -314,7 +320,6 @@ export class SidebarService {
     }
 
     private _getDashboards(user: IUserInfo) {
-
         const that = this;
         if (!this._dashboardQuery) {
             this._dashboardQuery = this._apollo.watchQuery({
@@ -358,7 +363,7 @@ export class SidebarService {
         }
 
         this.vm.listDashboard.active = false;
-        this._itemsNotVisibles = 0;
+        this._dashboardsNotVisibles = 0;
         items[0].children = dashboards.map(d => {
             // check if the current root is relarted to the dashboards
             const route = `/dashboards/${d._id}`;
@@ -372,7 +377,7 @@ export class SidebarService {
                 isVisible = listdashboardIdNoVisible.find(l => l === d._id) ? false : true;
             }
             if (isVisible === false) {
-                this._itemsNotVisibles += 1;
+                this._dashboardsNotVisibles += 1;
             }
             return {
                 id: d.name,
@@ -397,7 +402,7 @@ export class SidebarService {
             this._router.navigate([firstDashboard]);
         }
         this._itemsSubject.next(items);
-        this._itemsNotVisiblesSubject.next(this._itemsNotVisibles);
+        this._dashboardsNotVisiblesSubject.next(this._dashboardsNotVisibles);
     }
 
     private _getManualEntrys(user: IUserInfo) {
@@ -418,10 +423,10 @@ export class SidebarService {
         }
     }
 
-    findItemIndexById(id: string){
+    findItemIndexById(id: string) {
         const items = this._itemsSubject.value;
-        for(let [index, value] of Object.entries(items)){
-            if(value.id === id){
+        for (let [index, value] of Object.entries(items)) {
+            if (value.id === id) {
                 return +index;
             }
         }
@@ -429,47 +434,49 @@ export class SidebarService {
 
     private _processDataEntriesSubmenu(dataEntries: IDataEntrySource[]) {
         const items = this._itemsSubject.value;
-        const index = this.findItemIndexById('data-entry')
+        const index = this.findItemIndexById('data-entry');
 
         items[index].children = [];
+        let isVisible = true;
+        let atlasSheetsIdNoVisible;
+        if (this._userService.user && this._userService.user.preferences
+            && this._userService.user.preferences.atlasSheetsIdNoVisible !== null) {
+                atlasSheetsIdNoVisible = this._userService.user.preferences.atlasSheetsIdNoVisible.split('|');
+        }
+
+        this._dataEntriesNotVisibles = 0;
 
         if (dataEntries || dataEntries.length) {
             items[index].children = dataEntries.map(d => {
                 // check if the current root is relarted to the data entry
                 const lastIndexExtension = d.description.lastIndexOf('.');
                 const route = `/data-entry/enter-data/${d._id}`;
-                return {
+                if (!atlasSheetsIdNoVisible) {
+                    isVisible = true;
+                } else {
+                    isVisible = atlasSheetsIdNoVisible.find(l => l === d._id) ? false : true;
+                }
+                if (isVisible === false) {
+                    this._dataEntriesNotVisibles += 1;
+                }
+                    return {
                     id: d.name,
                     title: d.description.substr(0, lastIndexExtension !== -1 ? lastIndexExtension : d.description.length),
                     route: route,
                     group: 'data-entry',
+                    visible: isVisible
                 };
             });
         }
 
-        items[index].children.push({
-                id: 'custom-lists',
-                title: 'Custom Lists',
-                icon: 'storage',
-                route: 'data-entry/custom-lists',
-                active: false
-        });
-
-        items[index].children.push({
-            id: 'show-all',
-            title: 'Show All',
-            icon: 'collection-text',
-            route: 'data-entry/show-all',
-            active: false
-        });
-
+        this._dataEntriesNotVisiblesSubject.next(this._dataEntriesNotVisibles);
     }
 
     private _processFunnelSubMenu(funnels: IFunnel[]) {
         const menuItems = this._itemsSubject.value;
         const canAddFunnels = true;
 
-        const isInFunnelRoute = this._currentRoute.indexOf('/funnels/') !== -1;
+        const isInFunnelRoute = this._currentRoute && this._currentRoute.indexOf('/funnels/') !== -1;
 
         const funnelMenuItem = menuItems.find(i => i.id === 'funnel');
         const listFunnelMenuItem = this._getListFunnelMenuItem();
@@ -479,7 +486,6 @@ export class SidebarService {
         if (!funnels || !funnels.length) {
 
             if (canAddFunnels) {
-                funnelMenuItem.active = true;
                 funnelMenuItem.children = [ listFunnelMenuItem ];
                 this._itemsSubject.next(menuItems);
             }
@@ -542,7 +548,7 @@ export class SidebarService {
     }
 
     resetItemsNotVisible() {
-        this._itemsNotVisiblesSubject.next(0);
+        this._dashboardsNotVisiblesSubject.next(0);
     }
 
 

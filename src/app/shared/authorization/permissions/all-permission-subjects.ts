@@ -20,6 +20,7 @@ export enum SubjectEnum {
     target = 'target',
     alert = 'alert',
     dataEntry = 'dataentry',
-    funnel = 'funnel'
+    funnel = 'funnel',
+    atlasSheets = 'atlasSheets'
     // ...
 }

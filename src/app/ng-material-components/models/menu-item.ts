@@ -58,4 +58,9 @@ export class MenuItem {
      * disabled the item
      */
     public disabled?: boolean;
+
+    /**
+     * item visible
+     */
+    public visible?: boolean;
 }

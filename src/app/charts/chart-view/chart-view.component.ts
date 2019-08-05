@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { IComment } from './../../shared/models/comments';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { Chart } from 'angular-highcharts';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -41,6 +42,8 @@ import { ChartViewViewModel } from './chart-view.viewmodel';
 import { TableModeService } from './table-mode/table-mode.service';
 import { IComparisonInfo } from './chart-comparison/chart-comparison.component';
 import { predefinedColors } from '../../shared/models/material-colors';
+import { UserService } from '../../shared/services';
+import { CommentsService } from '../../comments/shared/services/comments.service';
 
 const Highcharts = require('highcharts/js/highcharts');
 
@@ -49,6 +52,10 @@ const ChartQuery = gql`
         chart(id: $id, input: $input)
      }
 `;
+
+const usersQuery = require('graphql-tag/loader!../shared/graphql/all-users.gql');
+
+const commentsByChartIdQuery = require('graphql-tag/loader!../../comments/shared/graphql/commentsByChartId.query.gql');
 
 export enum frequencyEnum {
     Daily = 'daily',
@@ -98,6 +105,7 @@ export interface ChartData {
     subtitle: string;
     groupings: string[];
     xAxisSource: string;
+    comments?: IComment[];
 }
 
 export interface DateRange {
@@ -140,7 +148,7 @@ export interface IChartDetailComparison {
     ],
     // changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentInit */ {
+export class ChartViewComponent implements OnInit, OnChanges , OnDestroy /*, AfterContentInit */ {
     @Input() chartData: ChartData;
     @Input() dateRanges: IDateRangeItem[] = [];
     @Input() isFromDashboard = false;
@@ -209,8 +217,19 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
     totalrunrateValues = 0;
     targetsVisible = false;
 
+    subscriptions: Subscription[] = [];
+
     userTouchSub: Subscription;
     userTouching: boolean;
+
+    showForum = false;
+    showForumUsers: Boolean = false;
+    comments: IComment[] = [];
+    commentsToCurrentUser: IComment[] = [];
+    commentsNotRead = 0;
+    hasComments = false;
+
+    userSubscription: Subscription;
 
 
     compareActions: MenuItem[] = [{
@@ -287,7 +306,9 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
         public compareOnFlyActivity: CompareOnFlyActivity,
         public seeChartInfoActivity: SeeInfoActivity,
         public downloadChartActivity: DownloadChartActivity,
-        private _apolloService: ApolloService) {
+        private _apolloService: ApolloService,
+        private _userSvc: UserService,
+        private _commentsSvc: CommentsService) {
         Highcharts.setOptions({
             lang: {
                 decimalPoint: '.',
@@ -314,9 +335,102 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
         this.isComparison = this.getIsComparison();
         this.AnalizeFrequency();
         this.getShowRunRate();
-
         this.userTouchSub = this._broserService.userTouching$.subscribe(val => this.userTouching = val);
+        this._commentsSvc.showUsers$.subscribe(showUser => {
+            if (!showUser || !this.chartData || (<any>showUser).chartId !== this.chartData._id) { return; }
+            this.showForumUsers = (<any>showUser).show;
+        });
+        this._apolloService.networkQuery < any > (usersQuery)
+        .then(users => {
+            this._commentsSvc.allUsers = users.allUsers;
+        });
+        this.loadComments();
+    }
 
+    ngOnChanges() {
+        if (!this.userSubscription) {
+            this.userSubscription  = this._userSvc.user$.subscribe(currentUser => {
+                this._commentsSvc.currentUser = currentUser;
+            });
+        }
+    }
+
+    ngOnDestroy() {
+        this.chartData = null;
+
+        if (this.userTouchSub) {
+            this.userTouchSub.unsubscribe();
+        }
+
+        this.userSubscription.unsubscribe();
+
+        CommonService.unsubscribe([
+            ...this._subscription,
+        ]);
+    }
+
+    onRefreshComments() {
+        this.loadComments();
+    }
+
+    loadComments() {
+        const that = this;
+        that._apollo.query<any>({
+            query: commentsByChartIdQuery,
+            variables: { id: this.chartData._id },
+            fetchPolicy: 'network-only'
+        })
+        .toPromise()
+        .then(response => {
+            this.commentsToCurrentUser = [];
+            this.commentsNotRead = 0;
+            this.comments = JSON.parse(response.data.commentsByChartId);
+            if (!this.comments || this.comments.length === 0) { return; }
+            if (!this._commentsSvc.currentUser) { return; }
+            this.comments.map(c => {
+                if (!c.deleted && c.users.length > 0) {
+                    c.users.map(u => {
+                        this.commentsToCurrentUser.push(c);
+                        if (u.id === this._commentsSvc.currentUser._id) {
+                            if (u.read === false) {
+                                this.commentsNotRead += 1;
+                            }
+                        }
+                    });
+                }
+                c.children.map(d => {
+                    if (!d.deleted && d.users.length > 0) {
+                        d.users.map(s => {
+                            if (s.id === this._commentsSvc.currentUser._id && d.createdBy !== this._commentsSvc.currentUser._id) {
+                                if (s.read === false) {
+                                    this.commentsNotRead += 1;
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+            this.hasComments = this.commentsToCurrentUser.length > 0;
+            if (!this.hasComments) { this.showForum = false; }
+        });
+    }
+
+    getForumStyle() {
+        return {
+            'color': this.comments.filter(c => c.deleted === false).length > 0 ? '#37A0f4' : 'lightgray'
+        };
+    }
+
+    showUsersForm() {
+        this.showForumUsers = true;
+    }
+
+    onForumClose() {
+        this.showForum = false;
+    }
+
+    showForumComment() {
+        this.showForum = true;
     }
 
     onInViewportChange(inViewport: boolean) {
@@ -532,18 +646,6 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
         }
     }
 
-    ngOnDestroy() {
-        this.chartData = null;
-
-        if (this.userTouchSub) {
-            this.userTouchSub.unsubscribe();
-        }
-
-        CommonService.unsubscribe([
-            ...this._subscription,
-        ]);
-    }
-
     getComparisonValue() {
         const dateRange = this.dateRanges.find(d => d.dateRange.predefined === this.chartData.dateRange[0].predefined);
         if (!dateRange) { return; }
@@ -721,22 +823,20 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
                 }
             });
         } else {
-        // - end of drilldown mobile code
-        this.chart.options.plotOptions.series = Object.assign(this.chart.options.plotOptions.series, {
-            point: {
-                events: {
-                    click: function (event) {
-                        const chart = event.target.point || event.point;
-                        if (chart) {
-                            that.processDrillDown(chart);
+            // - end of drilldown mobile code
+            this.chart.options.plotOptions.series = Object.assign(this.chart.options.plotOptions.series, {
+                point: {
+                    events: {
+                        click: function (event) {
+                            const chart = event.target.point || event.point;
+                            if (chart) {
+                                that.processDrillDown(chart);
+                            }
                         }
                     }
                 }
-            }
-
-        });
-    }
-
+            });
+        }
     }
 
 
@@ -803,8 +903,8 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
                 that.enableDrillDown();
 
                 const nodeId = that._nonce();
-                const isCompareValue = ( that.currentNode.comparison && that.currentNode.comparison.length > 0
-                    &&  that.currentNode.comparison[0] !== '');
+                const isCompareValue = ( that.currentNode.comparison
+                    && that.currentNode.comparison.length > 0 &&  that.currentNode.comparison[0] !== '');
 
                 const newNode: IChartTreeNode = {
                     id: nodeId,
@@ -924,8 +1024,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
                     this._router.navigateByUrl('/unauthorized');
                     return;
                  }
-
-                return SweetAlert({
+                 return SweetAlert({
                     titleText: 'Are you sure you want to remove this chart from this dashboard?',
                     text: `Remember that you can always put it back either from the chart
                             edit screen or from de dashboard edit screen.`,
@@ -939,7 +1038,7 @@ export class ChartViewComponent implements OnInit, OnDestroy /*, AfterContentIni
                         this.chartSelectedDashId.emit({ idDashboard: this.dashBoardId, idChart: this.chartData._id } );
                     }
                 });
-
+                
             default:
                 return;
 

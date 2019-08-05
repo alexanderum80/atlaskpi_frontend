@@ -7,6 +7,9 @@ import { AuthGuard } from '../shared/services';
 import { NewDataEntryComponent } from './new-data-entry/new-data-entry.component';
 import { CustomListComponent } from './custom-list/custom-list.component';
 import { ImportFileComponent } from './new-data-entry/import-file/import-file.component';
+import { UnsavedChangesGuard } from './unsaved-changes-guard.service';
+import { EditDataEntryComponent } from './edit-data-entry/edit-data-entry.component';
+import { IDataEntrySource } from './shared/models/data-entry.models';
 
 const routes: Routes = [
   {
@@ -14,7 +17,8 @@ const routes: Routes = [
       { path: 'custom-lists', component: CustomListComponent, canActivate: [AuthGuard] },
       { path: 'show-all', component: ShowAllDataEntryComponent, canActivate: [AuthGuard] },
       { path: 'new', component: NewDataEntryComponent, canActivate: [AuthGuard] },
-      { path: 'enter-data/:id', component: EnterDataFormComponent, canActivate: [AuthGuard] },
+      { path: 'edit/:id', component: EditDataEntryComponent, canActivate: [AuthGuard]},
+      { path: 'enter-data/:id', component: EnterDataFormComponent, canActivate: [AuthGuard], canDeactivate: [UnsavedChangesGuard] },
       { path: 'upload', component: ImportFileComponent, canActivate: [AuthGuard] },
     ]
   }

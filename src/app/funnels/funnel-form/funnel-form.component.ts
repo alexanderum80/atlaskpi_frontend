@@ -22,6 +22,8 @@ export class FunnelFormComponent implements OnInit, OnDestroy {
     }
     get funnelModel(): IFunnel { return this._funnelModel; }
 
+    userSelectionList: SelectionItem[] = [];
+
     private _fg: FormGroupTypeSafe<IFunnel>;
     get fg(): FormGroupTypeSafe<IFunnel> {
         return this._fg;
@@ -38,6 +40,8 @@ export class FunnelFormComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.funnelService.fg = this._fg;
+
+        this.userSelectionList = this.funnelService.userSelectionList;
 
         this.subscriptions.push(
             this.fg
@@ -83,6 +87,7 @@ export class FunnelFormComponent implements OnInit, OnDestroy {
         return this.fb.group<IFunnel>({
             _id: [null],
             name: [null, Validators.required],
+            users: [null],
             stages: this.fb.array([], Validators.required)
         });
     }
@@ -91,11 +96,15 @@ export class FunnelFormComponent implements OnInit, OnDestroy {
         const {
             _id = '',
             name = '',
+            users = [],
         } = value || {};
+
+        const delimitedUsers = users && users.join('|') as any;
 
         this.fg.patchValue({
             _id,
-            name
+            name,
+            users: delimitedUsers
         });
 
     }

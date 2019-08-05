@@ -1,3 +1,4 @@
+import { CommentsModule } from './comments/comments.module';
 import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
 import { HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { NgModule } from '@angular/core';
@@ -63,7 +64,7 @@ import { DateService } from './shared/services';
         NotificationUsersComponent,
         AlertsSummaryComponent,
         AlertsDetailsComponent,
-        MobileWelcomeComponent,
+        MobileWelcomeComponent
     ],
     imports: [
         BrowserModule,
@@ -102,7 +103,8 @@ import { DateService } from './shared/services';
         // SimpleImageUploadModule
 
         TargetsModule,
-        FunnelModule
+        FunnelModule,
+        CommentsModule
     ],
     providers: [
         WindowService,

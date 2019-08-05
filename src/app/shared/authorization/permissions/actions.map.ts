@@ -17,7 +17,9 @@ export const ActionsMap = {
     CompareOnFly: 'CompareOnFly',
     Download: 'Download',
     SeeInfo: 'SeeInfo',
-    AssignUserTo: 'Assign User To'
+    AssignUserTo: 'Assign User To',
+    ModifyShema: 'Modify Schema',
+    UpdateData: 'Update Data'
 };
 
 export const CrudActions = [

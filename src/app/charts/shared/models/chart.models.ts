@@ -160,7 +160,7 @@ export interface IChartFormValues {
   seriesDataLabels: boolean;
   // gridlines
   gridLineWidth?: number;
-  //add-created-updated-by-date
+  // add-created-updated-by-date
  // dataUserDate?: IDataUserDate;
 
 }
@@ -213,7 +213,7 @@ export class ChartModel {
     xAxisSource: string;
     comparison?: string[];
     dashboards: IDashboard[];
-    //add-created-updated-by-date
+    // add-created-updated-by-date
     createdBy?: string;
     updatedBy?: string;
     createdDate?: Date;
@@ -230,7 +230,7 @@ export class ChartModel {
     static fromFormGroup(fg: FormGroup, chartDefinition: any, checkFormatter?: boolean): ChartModel {
       const proxyChartModel = new ChartModel({});
 
-     // const dataUserDate = new 
+     // const dataUserDate = new
       proxyChartModel.chartDefinition = chartDefinition;
       // basic info
       proxyChartModel.title = fg.value.name;
@@ -307,10 +307,7 @@ export class ChartModel {
       }
       // convert the definition to string
       proxyChartModel.chartDefinition = JSON.stringify(proxyChartModel.chartDefinition);
-     //add-created-updated-by-date
-     
-     
-      
+     // add-created-updated-by-date
       return proxyChartModel;
     }
 

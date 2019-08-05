@@ -50,6 +50,7 @@ export class RoleFormComponent implements OnInit, AfterViewInit {
   SmartBar = true;
   Appointments = true;
   Funnel = true;
+  AtlasSheets = true;
 
   constructor(private _apollo: Apollo, private _roleService: RolesService,
     private _apolloService: ApolloService) {

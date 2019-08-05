@@ -1,0 +1,3 @@
+mutation ($id: String!, $children: String) {
+    markCommentChildrenDeleted(id: $id, children: $children)
+}

@@ -1,0 +1,12 @@
+mutation ($from: String!, $to: String!, $dashboardId: String!) {
+    commentNotify(from: $from, to: $to, dashboardId: $dashboardId) {
+        success
+        entity {
+            _id
+        }
+        errors {
+            field
+            errors
+        }
+    }
+}

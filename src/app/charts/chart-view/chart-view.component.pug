@@ -127,3 +127,13 @@
         bw-button.closeDescription(*ngIf="showDescription", flex-none, color="blue", icon="arrow-left", title="BACK", class="normal", (clicked)="closeDescription()" )
 
         app-targets-screen(*ngIf="targetsVisible", [chart]="chartData", (closed)="onCloseTargets($event)")
+
+        .forum-icon.text-center(flex, [ngStyle]="getForumStyle()", (click)="showForumComment()")
+            i.zmdi.zmdi-comments
+        .comments-circle(*ngIf="commentsNotRead > 0 ", flex, layout="column")
+            i.zmdi.zmdi-circle
+            .new-comments(flex) {{commentsNotRead}}
+        .forumComment(*ngIf="showForum", flex)
+            kpi-comments-forum([dashBoardId]="dashBoardId", [comments]="commentsToCurrentUser", [chartId]="chartData._id", [chartMaximized]="maximized" , (close)="onForumClose()", (refreshComments)="onRefreshComments()", (showUsers)="showUsersForm()")
+        .forumUsers(*ngIf="showForumUsers", [ngClass]="{'forumUsersMax': maximized}")    
+            kpi-comments-users(flex, [chartId]="chartData._id")

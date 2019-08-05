@@ -10,10 +10,10 @@ export interface IRunRate {
 
 @Injectable()
 export class ChartViewViewModel extends ViewModel<any> {
-    
+
     private _runRateList: IRunRate[] = [];
     private _seriesBack: any[];
-    
+
     constructor(userService: UserService) {
         super(userService);
     }

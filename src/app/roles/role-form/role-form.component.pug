@@ -106,3 +106,13 @@ div(*ngIf="groupPermissions", layout="column")
       div(layout="row")
         div(flex)
           bw-checkbox(*ngFor="let role of groupPermissions.Funnel", [fg]="fg", field="{{role._id}}", label="{{role.action}}")
+    
+    kpi-collapsable([(collapsed)]="AtlasSheets", headerText="Atlas Sheets")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let role of groupPermissions.AtlasSheets", [fg]="fg", field="{{role._id}}", label="{{role.action}}")
+
+    kpi-collapsable([(collapsed)]="Comments", headerText="Comments")
+      div(layout="row")
+        div(flex)
+          bw-checkbox(*ngFor="let role of groupPermissions.Comment", [fg]="fg", field="{{role._id}}", label="{{role.action}}")      

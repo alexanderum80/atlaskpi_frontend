@@ -1,0 +1,42 @@
+
+bw-modal(#updateData)
+  bw-modal-header
+    h4.modal-title.text-center How do you want to update the data for this sheet?
+  bw-modal-body
+    .m-l-30
+      bw-radio-group(*ngIf="true", , [fg]="fg", field="overRide", [defaultValue]="false")
+        bw-radio(label="I want to add aditional records", [value]="false")
+        bw-radio(
+          label="I would like to complete overwrite the data", 
+          [value]="true")
+    .body-container(layout="column", layout-align="center center")
+      div(flex)
+        .import-container(layout="row", layout-align="center center")
+          .loader-center(*ngIf="!readyToSave && file")
+            bw-preloader(color="gray")
+          .import-scv(*ngIf="showCsvPic()",[class.selected-file]="readyToSave", flex)
+            i.zmdi.zmdi-close.close-icon(*ngIf="readyToSave && !showSpinner", (click)="resetComponentVariables()")
+            img(src="{{ csvImagePath }}", alt="Enter data image")
+            .file-name(*ngIf="file?.name && readyToSave && isCSVFile()") {{file?.name}}
+            i.zmdi.zmdi-check-circle.check-icon(*ngIf="readyToSave")
+          .import-excel(*ngIf="showXLSXPic()", [class.selected-file]="readyToSave", flex)
+            i.zmdi.zmdi-close.close-icon(*ngIf="readyToSave && !showSpinner", (click)="resetComponentVariables()")
+            img( src="{{ excelImagePath }}", alt="Enter data image")
+            .file-name(*ngIf="file?.name && readyToSave && isXLSFile()") {{file?.name}}
+            i.zmdi.zmdi-check-circle.check-icon(*ngIf="readyToSave")
+
+      .import-btn(flex)
+        label.custom-file-upload.bgm-blue.btn.waves-effect([class.custom-disabled]="showSpinner")
+          i.zmdi.zmdi-download.p-r-10
+          input(type="file", (change)="updateFile($event)", [disabled]="showSpinner") 
+          | BROWSE
+  bw-modal-footer
+    bw-button(
+      color="blue", 
+      title="Save", 
+      icon="floppy", 
+      class="normal", 
+      (clicked)="save()",
+      [rotateIcon]="showSpinner",
+      [disabled]="!readyToSave || showSpinner")
+    bw-button(title="Cancel", [simple]="true", (clicked)="updateData.close()")

@@ -1,7 +1,10 @@
 import { DataEntryFormViewModel } from '../data-entry.viewmodel';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Activity } from 'src/app/shared/authorization/decorators/component-activity.decorator';
+import { AddAtlasSheetsActivity } from 'src/app/shared/authorization/activities/atlas-sheets/add-atlas-sheets.activity';
 
+@Activity(AddAtlasSheetsActivity)
 @Component({
   selector: 'kpi-new-data-entry',
   templateUrl: './new-data-entry.component.pug',

@@ -10,6 +10,7 @@ export interface ICustomSchemaInfo {
     dataType: string;
     required: boolean;
     sourceOrigin?: string;
+    path?: string;
 }
 
 export interface ICustomDataInfo {

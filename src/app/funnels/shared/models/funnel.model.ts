@@ -4,6 +4,7 @@ export interface IFunnel {
     _id?: string;
     name: string;
     stages: IFunnelStage[];
+    users: string[];
 
     createdBy?: string;
     updatedBy?: string;

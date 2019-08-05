@@ -1,0 +1,58 @@
+.schema-form-container {
+    margin: 0 50px;
+    font-size: 15px;
+    position: relative;
+
+    .zmdi.zmdi-view-headline {
+        padding-top: 20px;
+        padding-right: 15px;
+        font-size: 25px;
+    }
+
+    .columnName {
+        .zmdi {
+            font-weight: bold;
+            color: black;
+        }
+    }
+
+    .dataType {
+        .zmdi {
+            font-weight: bold;
+            color: black;
+        }
+    }
+
+    bw-checkbox {
+        padding: 10px 30px;
+    }
+
+    .zmdi.zmdi-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        color: red;
+        font-size: 25px;
+        font-weight: bold;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
+
+@media screen and (max-width: 736px)  {
+
+    .define-schema-container {
+        padding: 2px;
+    }
+
+    .schema-form-container {
+        margin: 0 20px !important;
+    }
+
+    .zmdi.zmdi-close {
+        right: 0px !important;
+    }
+
+}

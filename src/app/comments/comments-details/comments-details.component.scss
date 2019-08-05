@@ -1,0 +1,66 @@
+.msgContainer {
+    font-weight: normal;
+    font-size: 0.8em;
+    width: 90%;
+    text-align: justify;
+    line-height: initial;
+}
+.notReaded {
+    font-weight: bold;
+}
+
+.target {
+    font-size: 0.8em;
+    color: lightblue;
+}
+
+.notReadedIcon {
+    color: blue;
+    transform: scale(0.5);
+    text-align: right;
+}
+
+.options {
+    padding-top: 13px;
+    font-size: 0.9em;
+    color: lightgray;
+    @media only screen and (max-width: 500px) {
+        font-size: 0.8em;
+    }
+}
+
+.reply:hover {
+    cursor: pointer;
+}
+
+.remove:hover {
+    cursor: pointer;
+}
+
+.createdBy {
+    margin-top: 10px;
+    font-weight: bold;
+    @media only screen and (max-width: 500px) {
+        font-size: 0.8em;
+    }
+}
+
+.divTime {
+    padding-top: 8px;
+    margin-bottom: 10px;
+    font-size: 0.8em;
+    color: lightgray;
+}
+
+.timeAgo {
+    margin-left: 10px;
+    margin-top: 7px;
+}
+
+.firstName {
+    text-align: left;    
+}
+.lastName {
+    text-align: left;
+    margin-left: 10px;
+}
